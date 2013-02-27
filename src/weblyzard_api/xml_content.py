@@ -24,20 +24,24 @@ from lxml import etree
 RDF_NS = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
 WL_NS = {'wl': 'http://www.weblyzard.com/wl/2005'}
 
-SENTENCE_ATTRIBUTES = ('pos_tags', 'token_list', 'sem_orient', 'significance', 'md5sum')
+SENTENCE_ATTRIBUTES = {'pos_tag_list': 'pos', 
+                       'token_list'  : 'token',
+                       'significance': 'significance',
+                       'sem_orient'  : 'sem_orient',
+                       'md5sum'      : 'id' }.items()
 
 logger = logging.getLogger('wl_core.xml_content')
 
 class Sentence(object):
     
-    def __init__(self, md5sum, pos_tags=None, sem_orient=None, 
-                 sentence=None, significance=None, token=None):
+    def __init__(self, md5sum, pos_tag_list=None, sem_orient=None, 
+                 sentence=None, significance=None, token_list=None):
         self.md5sum = md5sum
-        self.pos_tag_list = pos_tags
+        self.pos_tag_list = pos_tag_list
         self.sem_orient = sem_orient
         self.sentence = sentence
         self.significance = significance
-        self.token_list = token
+        self.token_list = token_list
 
     def as_dict(self):
         '''
@@ -142,7 +146,7 @@ class XMLContent(object):
         if len(self.sentence_objects):
             return self.sentence_objects
         
-        processed_sentences = []
+        processed_sentences = set()
         sentences = []
         
         if self.root is None:
@@ -150,29 +154,20 @@ class XMLContent(object):
         
         for sent_element in self.root.iterfind(self.sentence_xpath, 
                                                namespaces=WL_NS):
+
+            sentence_attr = { obj_attr: sent_element.attrib[xml_attr_name]
+                              for obj_attr, xml_attr_name in SENTENCE_ATTRIBUTES
+                              if xml_attr_name in sent_element.attrib }
+                              
                
-            sentence = Sentence(md5sum=sent_element.attrib[self.id_attribute],
-                                sentence=self.get_text(sent_element.text)) 
+            sentence = Sentence(sentence=self.get_text(sent_element.text), 
+                                **sentence_attr)
     
             if sentence.md5sum in processed_sentences:
                 logger.info('Skipping double sentence %s' % sentence.md5sum)
                 continue
     
-            processed_sentences.append(sentence.md5sum)
-    
-            for sentence_attr in SENTENCE_ATTRIBUTES:
-                if sentence_attr in sent_element.attrib:
-                    value = sent_element.attrib[sentence_attr]
-                    if not value or value == 'None':
-                        value = None
-                    else:
-                        try:
-                            # try to convert strings
-                            value = json.loads(value)
-                        except ValueError:
-                            value = value
-                    setattr(sentence, sentence_attr, value)
-                
+            processed_sentences.add(sentence.md5sum)
             sentences.append(sentence)
 
         return sentences
@@ -180,21 +175,22 @@ class XMLContent(object):
     def update_sentences(self, sentences):
         ''' updates the values of the existing sentences. if the list of 
         sentence object is empty, sentence_objects will be set to the new
-        sentences. WARNING: this function will not add new sentences
+        sentences. 
+        WARNING: this function will not add new sentences
         @param sentences: list of Sentence objects 
         '''
         if not self.sentence_objects or self.root is None:
             self.sentence_objects = sentences 
         else:
-            sentence_dict = dict((sent.md5sum, sent) for sent in sentences)
+            sentence_dict = { sent.md5sum: sent for sent in sentences }
             
             for sentence in self.sentence_objects:
                 if sentence.md5sum in sentence_dict:
                     new_sentence = sentence_dict[sentence.md5sum]
-                    for attrib in SENTENCE_ATTRIBUTES:
-                        new_value = getattr(new_sentence, attrib)
+                    for obj_attr_name, _ in SENTENCE_ATTRIBUTES:
+                        new_value = getattr(new_sentence, obj_attr_name)
                         if new_value:
-                            setattr(sentence, attrib, new_value)
+                            setattr(sentence, obj_attr_name, new_value)
 
     def get_content_id(self):
         wl_page = self.root.find(".")
@@ -220,7 +216,7 @@ class XMLContent(object):
     def get_xml_document(self):
         ''' returns the string representation of the xml content '''
         ns = '{%s}' % WL_NS['wl']
-        root = etree.Element(ns + 'page', nsmap=WL_NS)
+        root = etree.Element( 'page', nsmap=WL_NS)
         
         for attr, value in self.attributes.iteritems():
             root.set(attr, value)
@@ -228,10 +224,10 @@ class XMLContent(object):
         for sentence in self.sentences:
             child = etree.SubElement(root, ns + 'sentence')
             child.text = etree.CDATA(sentence.sentence)
-            for sentence_attr in SENTENCE_ATTRIBUTES:
-                value = getattr(sentence, sentence_attr)
+            for obj_attr_name, xml_attrib_name in SENTENCE_ATTRIBUTES:
+                value = getattr(sentence, obj_attr_name)
                 if value:
-                    child.set(sentence_attr, str(value))
+                    child.set(xml_attrib_name, str(value))
 
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
@@ -257,8 +253,8 @@ class TestXMLContent(unittest.TestCase):
     
     def test_update_sentences(self):
         xml_content = self.xml_content
-        sentences = (Sentence('7e985ffb692bb6f617f25619ecca39a9'),
-                     Sentence('7e985ffb692bb6f617f25619ecca3910'))
+        sentences = (Sentence('7f3251087b6552159846493558742f18'),
+                     Sentence('93f56b9d196787d1cf662a06ab5f866b'))
         
         for s in sentences: 
             s.pos_tags = 'nn nn'
