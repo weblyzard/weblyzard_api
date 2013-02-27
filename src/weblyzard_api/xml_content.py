@@ -74,7 +74,7 @@ class Sentence(object):
 
         tokens = self.token_list.split(" ")
         for token_pos in tokens:
-            start, end = token_pos.split(",")
+            start, end = map(int, token_pos.split(","))
             yield self.sentence[start:end]
 
     def set_token(self, token):
@@ -242,7 +242,6 @@ class XMLContent(object):
 class TestXMLContent(unittest.TestCase):
     
     def setUp(self):
-    
         self.xml_content = '''
         <?xml version="1.0" encoding="UTF-8"?>
           <page xmlns:wl="http://www.weblyzard.com/wl/2005" content_id="http://www.youtube.com/watch?v=nmywf7a9OlI" content_type="text/html" lang="en" nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" title="Global Dimming">
@@ -250,7 +249,52 @@ class TestXMLContent(unittest.TestCase):
              <wl:sentence id="93f56b9d196787d1cf662a06ab5f866b" pos="CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG ." token="0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183"><![CDATA[But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.]]></wl:sentence>
         </page>
          '''
-    
+        # reference data sets
+        self.sentence_pos_tags = {'7f3251087b6552159846493558742f18': 
+                                   ' ( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP'
+                                   ' VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP :'
+                                   ' PRP VBD PRP JJ NN .'.split(),
+                                   '93f56b9d196787d1cf662a06ab5f866b':
+                                   ' CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN'
+                                   ' VBD RB VB IN DT CD CC RB IN DT CD NNS VBP'
+                                   ' VBN DT JJ VBG .'.split(), }
+        self.sentence_tokens = {'7f3251087b6552159846493558742f18':
+                                 ['(', '*', 'FULL', 'DOCUMENTARY', ')',
+                                  'Since', 'measurements', 'began', 'in',
+                                  'the', '1950s', ',', 'scientists', 'have',
+                                  'discovered', 'that', 'there', 'has', 'been',
+                                  'a', 'decline', 'of', 'sunlight', 'reaching',
+                                  'the', 'Earth', ';', 'they', 'called', 'it',
+                                  'global', 'dimming', '.'
+                                 ],
+                                 '93f56b9d196787d1cf662a06ab5f866b':
+                                 ['But', 'according', 'to', 'a', 'paper',
+                                  'published', 'in', 'the', 'journal', 'of',
+                                  'Science', ',', 'the', 'dimming', 'did',
+                                  'not', 'continue', 'into', 'the', '1990s',
+                                  'and', 'indeed', 'since', 'the', '1980s',
+                                  'scientists', 'have', 'observed', 'a',
+                                  'widespread', 'brightening', '.'
+                                 ] 
+                                }
+
+    def test_tokenization(self):
+        ''' tests the tokenization '''
+        xml = XMLContent( self.xml_content )
+        for sentence in xml.sentences:
+            for token, reference_token in zip(
+                sentence.token, self.sentence_tokens[ sentence.md5sum ]):
+                print token, reference_token
+                self.assertEqual(token, reference_token)
+
+    def test_token_to_pos_mapping(self):
+        ''' verifiy that the number of pos tags corresponds
+            to the number of available tokens '''
+        xml = XMLContent( self.xml_content )
+        for sentences in xml.sentences:
+            self.assertEqual( len(sentences.pos_tags), 
+                              len( list(sentences.token)) )
+
     def test_update_sentences(self):
         xml_content = self.xml_content
         sentences = (Sentence('7f3251087b6552159846493558742f18'),
