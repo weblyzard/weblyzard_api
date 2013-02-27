@@ -24,7 +24,7 @@ from lxml import etree
 RDF_NS = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
 WL_NS = {'wl': 'http://www.weblyzard.com/wl/2005'}
 
-SENTENCE_ATTRIBUTES = ('pos_tags', 'token', 'sem_orient', 'significance', 'md5sum')
+SENTENCE_ATTRIBUTES = ('pos_tags', 'token_list', 'sem_orient', 'significance', 'md5sum')
 
 logger = logging.getLogger('wl_core.xml_content')
 

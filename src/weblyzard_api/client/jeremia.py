@@ -6,7 +6,7 @@ Created on Jan 4, 2013
 from unittest import main, TestCase
 
 from eWRT.ws.rest import RESTClient
-from weblyzardServices.xml_content import XMLContent
+from weblyzard_api.xml_content import XMLContent
 
 JEREMIA_URL = "http://localhost:8080/jeremia/rest"
 

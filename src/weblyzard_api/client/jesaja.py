@@ -11,7 +11,7 @@ from cPickle import load
 from os.path import join as os_join, dirname
 
 from eWRT.ws.rest import RESTClient
-from weblyzardServices.xml_content import XMLContent
+from weblyzard_api.xml_content import XMLContent
 
 JESAJA_URL = "http://localhost:8080/jesaja/rest"
 
