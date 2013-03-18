@@ -42,7 +42,7 @@ class Sentence(object):
         self.sentence = sentence
         self.significance = significance
         self.token_list = token_list
-
+        
     def as_dict(self):
         '''
         @return: a dictionary representation of the given sentence object
@@ -51,7 +51,7 @@ class Sentence(object):
         return {'value'    : self.sentence, # used for the @XMLValue field
                 'id'       : self.md5sum,
                 'token'    : self.token_list,
-                'pos'      : self.pos_list }
+                'pos'      : self.pos_tag_list }
 
     def get_pos_tags(self):
         '''
