@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-    weblyzard_api.rst
+   weblyzard_api.rst
 
 
 Indices and tables
