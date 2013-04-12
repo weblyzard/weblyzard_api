@@ -3,7 +3,7 @@ from setuptools.command import sdist
 
 setup (
     name = 'weblyzard_api',
-    version = '0.1.1',
+    version = '0.2.0',
     description= ' Web services for weblyzard',
     author = 'Heinz-Peter Lang and Albert Weichselbraun',
     author_email = 'lang@weblyzard.com',
