@@ -17,10 +17,10 @@ client Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`entitylyzard` Module
+:mod:`recognize` Module
 --------------------------
 
-.. automodule:: weblyzard_api.client.entitylyzard
+.. automodule:: weblyzard_api.client.recognize
     :members:
     :undoc-members:
     :show-inheritance:
