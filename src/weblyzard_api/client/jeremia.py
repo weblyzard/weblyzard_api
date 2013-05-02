@@ -9,13 +9,17 @@ from eWRT.ws.rest import RESTClient
 from weblyzard_api.xml_content import XMLContent
 
 JEREMIA_URL = "http://localhost:8080/jeremia/rest"
+#JEREMIA_URL = "https://noah.semanticlab.net/ws/jeremia/rest"
+USER=None
+PASS=None
+
 
 class Jeremia(RESTClient):
     '''
     Jeremia Web Service
     '''
     
-    def __init__(self, url=JEREMIA_URL, usr=None, pwd=None):
+    def __init__(self, url=JEREMIA_URL, usr=USER, pwd=PASS):
         RESTClient.__init__(self, url, usr, pwd)
 
     def commit(self, batch_id):
