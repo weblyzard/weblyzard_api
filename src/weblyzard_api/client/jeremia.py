@@ -5,7 +5,7 @@ Created on Jan 4, 2013
 '''
 from unittest import main, TestCase
 
-from eWRT.ws.rest import RESTClient
+from eWRT.ws.rest import RESTClient, MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
 
 JEREMIA_URL = "http://localhost:8080/jeremia/rest"
@@ -46,6 +46,54 @@ class Jeremia(RESTClient):
     def status(self):
         return self.execute('status')
 
+
+class JeremiaClient2(MultiRESTClient):
+    
+    def __init__(self, service_urls=JEREMIA_URL):
+        MultiRESTClient.__init__(self, service_urls)
+    
+    def commit(self, batch_id):
+        ''' returns a generator ''' 
+        while True:
+            result = self.request('commit/%s' % batch_id)
+            if not result:
+                break
+            else:
+                for doc in result:
+                    yield doc
+    
+    def submit_documents(self, batch_id, documents):
+        return self.request('submit_documents/%s' % batch_id, documents)
+
+    def submit_documents_blacklist(self, batch_id, documents, source_id):
+        url = 'submit_documents_blacklist/%s/%s' % (batch_id, source_id)
+        return self.request(url, documents)
+    
+    def update_blacklist(self, source_id, blacklist):
+        ''' updates an existing blacklist cache '''
+        url = 'cache/updateBlacklist/%s' % source_id
+        return self.request(url, blacklist)
+        
+    def clear_blacklist(self, source_id):
+        ''' empties existing blacklist cache ''' 
+        return self.request('cache/clearBlacklist/%s' % source_id)
+        
+    def get_blacklist(self, source_id):
+        return self.request('cache/getBlacklist/%s' % source_id)
+
+    def submit(self, batch_id, documents, source_id=None, use_blacklist=False):
+         
+        if use_blacklist: 
+            if not source_id:
+                raise Exception('Blacklist requires a source_id')
+        
+            url = 'submit_documents_blacklist/%s/%s' % (batch_id, source_id)
+        else: 
+            url = 'submit_documents/%s' % batch_id
+            
+        self.request(url, documents)
+        
+        return self.commit(batch_id) 
 
 class JeremiaTest(TestCase):
 
