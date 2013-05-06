@@ -28,7 +28,7 @@ SENTENCE_ATTRIBUTES = {'pos_tag_list': 'pos',
                        'token_list'  : 'token',
                        'significance': 'significance',
                        'sem_orient'  : 'sem_orient',
-                       'md5sum'      : 'id' }.items()
+                       'md5sum'      : 'md5sum' }.items()
 
 logger = logging.getLogger('wl_core.xml_content')
 
@@ -49,7 +49,7 @@ class Sentence(object):
               that can be used for REST services.
         '''
         return {'value'    : self.sentence, # used for the @XMLValue field
-                'id'       : self.md5sum,
+                'md5sum'       : self.md5sum,
                 'token'    : self.token_list,
                 'pos'      : self.pos_tag_list }
 
@@ -85,7 +85,7 @@ class Sentence(object):
 
 class XMLContent(object):
     sentence_xpath = './/wl:sentence'
-    id_attribute = 'id'
+    id_attribute = 'md5sum'
     
     def __init__(self, xml_content):
         ''' '''
@@ -158,8 +158,9 @@ class XMLContent(object):
             sentence_attr = { obj_attr: sent_element.attrib[xml_attr_name]
                               for obj_attr, xml_attr_name in SENTENCE_ATTRIBUTES
                               if xml_attr_name in sent_element.attrib }
-                              
+
                
+
             sentence = Sentence(sentence=self.get_text(sent_element.text), 
                                 **sentence_attr)
     
