@@ -7,19 +7,19 @@ from unittest import main, TestCase
 
 from eWRT.ws.rest import RESTClient, MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
+from os import getenv
 
-JEREMIA_URL = "http://localhost:8080/jeremia/rest"
-#JEREMIA_URL = "https://noah.semanticlab.net/ws/jeremia/rest"
-USER=None
-PASS=None
-
+JEREMIA_API_URL  = getenv("WEBLYZARD_API_URL") or "http://localhost:8080"
+JEREMIA_API_USER = getenv("WEBLYZARD_API_USER")
+JEREMIA_API_PASS = getenv("WEBLYZARD_API_PASS")
 
 class Jeremia(RESTClient):
     '''
     Jeremia Web Service
     '''
     
-    def __init__(self, url=JEREMIA_URL, usr=USER, pwd=PASS):
+    def __init__(self, url=JEREMIA_API_URL, usr=JEREMIA_API_USER, pwd=JEREMIA_API_PASS):
+        url += '/jeremia/rest'
         RESTClient.__init__(self, url, usr, pwd)
 
     def commit(self, batch_id):
@@ -49,7 +49,7 @@ class Jeremia(RESTClient):
 
 class JeremiaClient2(MultiRESTClient):
     
-    def __init__(self, service_urls=JEREMIA_URL):
+    def __init__(self, service_urls):
         MultiRESTClient.__init__(self, service_urls)
     
     def commit(self, batch_id):
@@ -167,8 +167,8 @@ if __name__ == '__main__':
     print doc
     for s in sentences:
         print s.sentence
-        print s.pos
-        print s.token
+        print s.pos_tags
+        print list(s.token)
 
     exit()
     main()

@@ -58,7 +58,7 @@ class Recognize(RESTClient):
         '''
         assert output_format in self.OUTPUT_FORMATS
         if not profile_name in self.list_profiles():
-            add_profile(profile_name)
+            self.add_profile(profile_name)
         query_parameters =  {'rescore': max_entities, 'buckets': buckets, 'limit': limit, 'wt': output_format }
         return self.execute("search", profile_name, text, query_parameters=query_parameters)
 
@@ -76,7 +76,7 @@ class Recognize(RESTClient):
         '''
         assert output_format in self.OUTPUT_FORMATS
         if not profile_name in self.list_profiles():
-            add_profile(profile_name)
+            self.add_profile(profile_name)
         query_parameters = { 'rescore': max_entities, 'buckets': buckets, 'limit': limit, 'wt':output_format }
         return self.execute("searchDocuments", profile_name, doc_list, query_parameters=query_parameters)
     

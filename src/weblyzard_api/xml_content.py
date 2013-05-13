@@ -37,7 +37,7 @@ class Sentence(object):
     def __init__(self, md5sum, pos_tag_list=None, sem_orient=None, 
                  sentence=None, significance=None, token_list=None):
         self.md5sum = md5sum
-        self.pos_tag_list = pos_tag_list
+        self.pos_tag_list = pos_tag_list.split(" ")
         self.sem_orient = sem_orient
         self.sentence = sentence
         self.significance = significance
