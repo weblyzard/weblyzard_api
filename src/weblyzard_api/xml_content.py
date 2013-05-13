@@ -28,7 +28,7 @@ SENTENCE_ATTRIBUTES = {'pos_tag_list': 'pos',
                        'token_list'  : 'token',
                        'significance': 'significance',
                        'sem_orient'  : 'sem_orient',
-                       'md5sum'      : 'md5sum' }.items()
+                       'md5sum'      : 'id' }.items()
 
 logger = logging.getLogger('wl_core.xml_content')
 
