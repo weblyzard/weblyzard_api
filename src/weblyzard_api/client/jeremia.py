@@ -8,6 +8,7 @@ from unittest import main, TestCase
 from eWRT.ws.rest import RESTClient, MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
 from os import getenv
+import time
 
 JEREMIA_API_URL  = getenv("WEBLYZARD_API_URL") or "http://localhost:8080"
 JEREMIA_API_USER = getenv("WEBLYZARD_API_USER")
@@ -45,6 +46,19 @@ class Jeremia(RESTClient):
         
     def status(self):
         return self.execute('status')
+    
+    def get_xml_doc(self, text, content_id = 1):
+        """
+        Processes text and returns a XMLContent object.
+        @param text: the text to process
+        @param content_id: optional content id
+        """
+        batch = [{'content_id': content_id, 'content': text, 'content_type': 'html/text'}]
+        num = str(int(time.time()))
+        self.submit_documents(num, batch)
+        results = list(self.commit(num))
+        result = results[0]
+        return XMLContent(result['xml_content'])
 
 
 class JeremiaClient2(MultiRESTClient):
