@@ -97,10 +97,10 @@ class JeremiaClient2(MultiRESTClient):
 
 class JeremiaTest(TestCase):
 
-    DOCS = [ {'content_id': content_id,
+    DOCS = [ {'xml:id': content_id,
               'content': 'Good day Mr. President! Hello "world" ' + str(content_id),
               'title': 'Hello "world" more ',
-              'content_type': 'html/text',
+              'format': 'html/text',
               'header': {}}  for content_id in xrange(1000,1020)]
 
     def test_batch_processing(self):
@@ -130,10 +130,10 @@ class JeremiaTest(TestCase):
             self.assertEqual( len(sentences), 2 )
 
     def test_illegal_xml_format_filtering(self):
-        DOCS = [ {'content_id': "alpha",
+        DOCS = [ {'xml:id': "alpha",
                   'content': 'This is an illegal XML Sequence: J\x1amica',
                   'title': 'Hello "world" more ',
-                  'content_type': 'html/text',
+                  'format': 'html/text',
                   'header': {}}  ]
 
         j = Jeremia()
@@ -155,16 +155,16 @@ if __name__ == '__main__':
     from sys import argv
     d = [ {'title': '',
            'content': argv[1].strip(), 
-           'content_id': 99933,
-           'content_type': 'text/html',
-           'header': {},
+           'xml:id': 99933,
+           'format': 'text/html',
+           'header': {'dc:related': 'http://www.heise.de http://www.kurier.at'},
           } 
         ]
     print d
     j.submit_documents( "1239", d )
     doc = list( j.commit("1239") )[0]
+    print doc['xml_content']
     sentences = XMLContent(doc['xml_content']).sentences
-    print doc
     for s in sentences:
         print s.sentence
         print s.pos_tags
