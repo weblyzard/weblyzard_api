@@ -6,7 +6,8 @@ Created on Feb, 27 2013
 @author: heinz-peterlang
          albert weichselbraun
 
-Successor of the xml_content library.
+Handles the new (http://www.weblyzard.com/wl/2013#) weblyzard
+XML format.
 
 Functions added:
  - support for sentence tokens and pos iterators
@@ -16,79 +17,100 @@ Remove functions:
  - support for the old POS tags mapping.
 '''
 
-import json
 import unittest
 import logging
 from lxml import etree
 
-RDF_NS = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
-WL_NS = {'wl': 'http://www.weblyzard.com/wl/2005'}
+DOCUMENT_NAMESPACE  = {'wl': 'http://www.weblyzard.com/wl/2013#',
+                       'dc': 'http://purl.org/dc/elements/1.1/',
+                       'xml': 'http://www.w3.org/XML/1998/namespace',
+                       }
 
-SENTENCE_ATTRIBUTES = {'pos_tag_list': 'pos', 
-                       'token_list'  : 'token',
-                       'significance': 'significance',
-                       'sem_orient'  : 'sem_orient',
-                       'md5sum'      : 'id' }.items()
+SENTENCE_ATTRIBUTES = {
+    'pos_tag_string': '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'pos'), 
+    'token_indices' : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'token'),
+    'significance'  : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'significance'),
+    'sem_orient'    : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'sem_orient'),
+    'md5sum'        : '{%s}%s' % (DOCUMENT_NAMESPACE['xml'], 'id'),
+}.items()
 
 logger = logging.getLogger('wl_core.xml_content')
 
 class Sentence(object):
-    
-    def __init__(self, md5sum, pos_tag_list=None, sem_orient=None, 
-                 sentence=None, significance=None, token_list=None):
+    '''
+    The sentence class used for accessing single sentences.
+
+    Note: the class provides convenient properties for accessing pos tags 
+          and tokens:
+            .sentence: sentence text
+            .tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
+            .pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
+    '''
+
+    def __init__(self, md5sum, pos_tag_string=None, token_indices=None, 
+                 sem_orient=None, sentence=None, significance=None):
+        '''
+        @param pos_tag_string: a string containing the sentences pos
+                               tags (e.g. 'NN VB NN')
+        @param token_indices: a string containing the token indices
+                              (e.g. '0:1 3:12')
+
+        '''
         self.md5sum = md5sum
-        self.pos_tag_list = pos_tag_list.split(" ")
+        self.pos_tag_string = pos_tag_string
         self.sem_orient = sem_orient
         self.sentence = sentence
         self.significance = significance
-        self.token_list = token_list
+        self.token_indices = token_indices
         
     def as_dict(self):
         '''
         @return: a dictionary representation of the given sentence object
               that can be used for REST services.
         '''
-        return {'value'    : self.sentence, # used for the @XMLValue field
-                'md5sum'       : self.md5sum,
-                'token'    : self.token_list,
-                'pos'      : self.pos_tag_list }
+        return {'value'         : self.sentence, # used for the @XMLValue field
+                'xml:id'        : self.md5sum,
+                'token_indices' : self.token_indices,
+                'pos_tag_string': self.pos_tag_string,
+                'sem_orient'    : self.sem_orient,
+                'significance'  : self.significance,
+                }
 
     def get_pos_tags(self):
         '''
         @return: a list of the sentence's POS tags
         '''
-        if not self.pos_tag_list:
+        if not self.pos_tag_string:
             return []
         else:
-            return self.pos_tag_list.split(" ")
-
-    def set_pos_tags(self, pos_tags):
-        self.pos_tag_list = pos_tags
+            return self.pos_tag_string.split(" ")
 
     def get_token(self):
         '''
         @return: an iterator providing the sentence's tokens 
         '''
-        if not self.token_list:
+        if not self.token_indices:
             raise StopIteration
 
-        tokens = self.token_list.split(" ")
+        tokens = self.token_indices.split(" ")
         for token_pos in tokens:
             start, end = map(int, token_pos.split(","))
             yield self.sentence[start:end]
 
-    def set_token(self, token):
-        self.token_list = token
 
-    pos_tags = property(get_pos_tags, set_pos_tags)
-    token    = property(get_token, set_token)
+    # convenient functions for directly accessing 
+    # pos tags and tokens
+    pos_tags = property(get_pos_tags)
+    tokens   = property(get_token)
+
 
 class XMLContent(object):
-    sentence_xpath = './/wl:sentence'
-    id_attribute = 'md5sum'
+    SENTENCE_XPATH = './/wl:sentence'
     
     def __init__(self, xml_content):
         ''' '''
+        if xml_content and xml_content.find(DOCUMENT_NAMESPACE['wl']) == -1:
+            raise ValueError("Unsupported XML format.")
         self.root, self.attributes = self._set_root(xml_content)
         self.sentence_objects = []
         self.sentence_objects = self.get_sentences()
@@ -98,15 +120,16 @@ class XMLContent(object):
         @return: a dictionary representation of the given
                  XMLDocument that can be used for REST services
         '''
-        return {'content_id'  : self.content_id,
+        return {'xml:id'      : self.content_id,
                 'title'       : self.title,
                 'sentence'    : [ s.as_dict() for s in self.sentences ],
-                'content_type': self.content_type,
+                'format'      : self.content_type,
                 'lang'        : self.lang,
                 'nilsimsa'    : self.nilsimsa }
 
     def _set_root(self, xml_content):
-        ''' parses the xml_content and returns the root object and its attributes
+        ''' parses the xml_content and returns the root object and 
+            its attributes
         @param xml_content: XML document string
         @return: (lxml root, attributes) 
         ''' 
@@ -116,30 +139,15 @@ class XMLContent(object):
         if not xml_content: 
             logger.debug('XML content is empty -> thats ok, if not used')
         else:
-            # remove the encoding, because lxml doesn't like that in UTF-8 strings
+            # remove the encoding, because lxml doesn't like that in UTF-8 
+            # strings
             parser = etree.XMLParser(recover=True, strip_cdata=False)
             root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''), 
                                     parser=parser)
             attributes = root.attrib
-            if 'content_type' in attributes:
-                # TODO: temporal fix: removes double content_type entry
-                del root.attrib['content_type']
-                root.set('content_type', 'text/html')
-        
+       
         return root, attributes
-    
-    def get_plain_text(self):
-        ''' returns the plain text of the XML content '''
-        if not len(self.sentences):
-            return ''
-        return '\n'.join([sent.sentence for sent in self.sentences])
-    
-    def get_text(self, text):
-        ''' encodes the text ''' 
-        if isinstance(text, str):
-            text = text.decode('utf-8')
-        return text
-    
+          
     def get_sentences(self):
         ''' 'extracts the sentences of the root objects
         @return: list of Sentence objects '''
@@ -152,14 +160,12 @@ class XMLContent(object):
         if self.root is None:
             return sentences
         
-        for sent_element in self.root.iterfind(self.sentence_xpath, 
-                                               namespaces=WL_NS):
+        for sent_element in self.root.iterfind(self.SENTENCE_XPATH, 
+                                               namespaces=DOCUMENT_NAMESPACE):
 
             sentence_attr = { obj_attr: sent_element.attrib[xml_attr_name]
                               for obj_attr, xml_attr_name in SENTENCE_ATTRIBUTES
                               if xml_attr_name in sent_element.attrib }
-
-               
 
             sentence = Sentence(sentence=self.get_text(sent_element.text), 
                                 **sentence_attr)
@@ -193,31 +199,44 @@ class XMLContent(object):
                         if new_value:
                             setattr(sentence, obj_attr_name, new_value)
 
+    def get_plain_text(self):
+        ''' returns the plain text of the XML content '''
+        if not len(self.sentences):
+            return ''
+        return '\n'.join([sent.sentence for sent in self.sentences])
+ 
     def get_content_id(self):
         wl_page = self.root.find(".")
-        return wl_page.attrib['content_id']
+        return wl_page.attrib['xml:id']
 
     def get_nilsimsa(self):
         wl_page = self.root.find(".")
-        return wl_page.get('nilsimsa', None)
+        return wl_page.get('wl:nilsimsa', None)
 
     def get_title(self):
         wl_page = self.root.find(".")
-        return wl_page.get('title', None)
+        return wl_page.get('dc:title', None)
 
     def get_lang(self):
         wl_page = self.root.find(".")
-        return wl_page.get('lang', None)
+        return wl_page.get('xml:lang', None)
 
     def get_content_type(self):
         wl_page = self.root.find(".")
-        return wl_page.get('content_type', None)
+        return wl_page.get('dc:format', None)
 
+    @staticmethod
+    def get_text(text):
+        ''' encodes the text ''' 
+        if isinstance(text, str):
+            text = text.decode('utf-8')
+        return text
+ 
    
     def get_xml_document(self):
         ''' returns the string representation of the xml content '''
-        ns = '{%s}' % WL_NS['wl']
-        root = etree.Element( 'page', nsmap=WL_NS)
+        ns = '{%s}' % DOCUMENT_NAMESPACE['wl']
+        root = etree.Element( ns + 'page', nsmap=DOCUMENT_NAMESPACE)
         
         for attr, value in self.attributes.iteritems():
             root.set(attr, value)
@@ -245,10 +264,10 @@ class TestXMLContent(unittest.TestCase):
     def setUp(self):
         self.xml_content = '''
         <?xml version="1.0" encoding="UTF-8"?>
-          <page xmlns:wl="http://www.weblyzard.com/wl/2005" content_id="http://www.youtube.com/watch?v=nmywf7a9OlI" content_type="text/html" lang="en" nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" title="Global Dimming">
-             <wl:sentence id="7f3251087b6552159846493558742f18" pos="( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP : PRP VBD PRP JJ NN ." token="0,1 1,2 2,6 7,18 18,19 20,25 26,38 39,44 45,47 48,51 52,57 57,58 59,69 70,74 75,85 86,90 91,96 97,100 101,105 106,107 108,115 116,118 119,127 128,136 137,140 141,146 146,147 148,152 153,159 160,162 163,169 170,177 177,178"><![CDATA[(*FULL DOCUMENTARY) Since measurements began in the 1950s, scientists have discovered that there has been a decline of sunlight reaching the Earth; they called it global dimming.]]></wl:sentence>\n   
-             <wl:sentence id="93f56b9d196787d1cf662a06ab5f866b" pos="CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG ." token="0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183"><![CDATA[But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.]]></wl:sentence>
-        </page>
+          <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" xml:id="http://www.youtube.com/watch?v=nmywf7a9OlI" dc:format="text/html" xml:lang="en" wl:nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" dc:title="Global Dimming">
+             <wl:sentence xml:id="7f3251087b6552159846493558742f18" wl:pos="( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP : PRP VBD PRP JJ NN ." wl:token="0,1 1,2 2,6 7,18 18,19 20,25 26,38 39,44 45,47 48,51 52,57 57,58 59,69 70,74 75,85 86,90 91,96 97,100 101,105 106,107 108,115 116,118 119,127 128,136 137,140 141,146 146,147 148,152 153,159 160,162 163,169 170,177 177,178"><![CDATA[(*FULL DOCUMENTARY) Since measurements began in the 1950s, scientists have discovered that there has been a decline of sunlight reaching the Earth; they called it global dimming.]]></wl:sentence>\n   
+             <wl:sentence xml:id="93f56b9d196787d1cf662a06ab5f866b" wl:pos="CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG ." wl:token="0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183"><![CDATA[But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.]]></wl:sentence>
+        </wl:page>
          '''
         # reference data sets
         self.sentence_pos_tags = {'7f3251087b6552159846493558742f18': 
@@ -258,7 +277,7 @@ class TestXMLContent(unittest.TestCase):
                                    '93f56b9d196787d1cf662a06ab5f866b':
                                    ' CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN'
                                    ' VBD RB VB IN DT CD CC RB IN DT CD NNS VBP'
-                                   ' VBN DT JJ VBG .'.split(), }
+                                   ' VBN DT JJ VBG .'.split() }
         self.sentence_tokens = {'7f3251087b6552159846493558742f18':
                                  ['(', '*', 'FULL', 'DOCUMENTARY', ')',
                                   'Since', 'measurements', 'began', 'in',
@@ -284,7 +303,7 @@ class TestXMLContent(unittest.TestCase):
         xml = XMLContent( self.xml_content )
         for sentence in xml.sentences:
             for token, reference_token in zip(
-                sentence.token, self.sentence_tokens[ sentence.md5sum ]):
+                sentence.tokens, self.sentence_tokens[ sentence.md5sum ]):
                 print token, reference_token
                 self.assertEqual(token, reference_token)
 
@@ -294,7 +313,7 @@ class TestXMLContent(unittest.TestCase):
         xml = XMLContent( self.xml_content )
         for sentences in xml.sentences:
             self.assertEqual( len(sentences.pos_tags), 
-                              len( list(sentences.token)) )
+                              len( list(sentences.tokens)) )
 
     def test_update_sentences(self):
         xml_content = self.xml_content
@@ -302,7 +321,7 @@ class TestXMLContent(unittest.TestCase):
                      Sentence('93f56b9d196787d1cf662a06ab5f866b'))
         
         for s in sentences: 
-            s.pos_tags = 'nn nn'
+            s.pos_tag_string = 'nn nn'
             s.significance = 3
             s.sem_orient = 1
         
@@ -325,10 +344,10 @@ class TestXMLContent(unittest.TestCase):
 
     def test_double_sentences(self):
         xml_content = ''' 
-            <page xmlns:wl="http://www.weblyzard.com/wl/2005" content_id="http://www.youtube.com/watch?v=nmywf7a9OlI" content_type="text/html" lang="en" nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" title="Global Dimming">
-                <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9" token="0,3 5,10" pos="DET NN NN"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
-                <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9" token="0,3 5,10" pos="DET NN NN"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
-            <page> '''
+         <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" xml:id="http://www.youtube.com/watch?v=nmywf7a9OlI" dc:format="text/html" xml:lang="en" wl:nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" dc:title="Global Dimming">
+            <wl:sentence xml:id="7e985ffb692bb6f617f25619ecca39a9" wl:token="0,3 5,10" wl:pos="DET NN NN"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
+            <wl:sentence xml:id="7e985ffb692bb6f617f25619ecca39a9" wl:token="0,3 5,10" wl:pos="DET NN NN"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
+         <wl:page> '''
     
         xml = XMLContent(xml_content)
         assert len(xml.sentences) == 1
@@ -343,4 +362,3 @@ class TestXMLContent(unittest.TestCase):
         
 if __name__ == '__main__':
     unittest.main()
-        
