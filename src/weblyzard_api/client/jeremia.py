@@ -47,13 +47,13 @@ class Jeremia(RESTClient):
     def status(self):
         return self.execute('status')
     
-    def get_xml_doc(self, text, content_id = 1):
+    def get_xml_doc(self, text, content_id = "1"):
         """
         Processes text and returns a XMLContent object.
         @param text: the text to process
         @param content_id: optional content id
         """
-        batch = [{'content_id': content_id, 'content': text, 'content_type': 'html/text'}]
+        batch = [{'xml:id': content_id, 'content': text, 'format': 'html/text'}]
         num = str(int(time.time()))
         self.submit_documents(num, batch)
         results = list(self.commit(num))
