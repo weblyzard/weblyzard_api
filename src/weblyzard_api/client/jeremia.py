@@ -53,7 +53,7 @@ class Jeremia(RESTClient):
         @param text: the text to process
         @param content_id: optional content id
         """
-        batch = [{'xml:id': content_id, 'content': text, 'format': 'html/text'}]
+        batch = [{'id': content_id, 'content': text, 'format': 'html/text'}]
         num = str(int(time.time()))
         self.submit_documents(num, batch)
         results = list(self.commit(num))
