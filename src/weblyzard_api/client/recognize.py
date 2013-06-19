@@ -78,8 +78,8 @@ class Recognize(RESTClient):
                          following formats:
                          (a) dict: ( {'content_id': 12, 
                                       'content': u'the text to analyze'})
-                         (b) weblyzardXML: ( '<?xml version="1.0"...', 
-                                             '<?xml versoin="1.0"...')
+                         (b) weblyzardXML: ( XMLContent('<?xml version="1.0"...').as_list(),
+                                             XMLContent('<?xml version="1.0"...').as_list(), )
 
         :param debug: compute and return an explanation
         :param buckets: only return n buckets of hits with the same score
@@ -100,7 +100,7 @@ class Recognize(RESTClient):
             search_command = 'searchXmlDocuments'
             content_type = 'application/json'
         else:
-            raise ValueError("Unknown input format.")
+            raise ValueError("Unsupported input format.")
 
         if not profile_name in self.list_profiles():
             self.add_profile(profile_name)
@@ -109,12 +109,35 @@ class Recognize(RESTClient):
                             query_parameters=query_parameters, 
                             content_type=content_type)
     
+    def get_focus(self, profile_names, doc_list):
+        ''' 
+        Returns the focus and annotations of the given document 
+
+        :param profile_names: a list of profile names
+        :param doc_list: a list of documents to analyze based on the weblyzardXML format
+
+        query: recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
+        '''
+        assert( isinstance(profile_names, list) or isinstance(profile_names, tuple) )
+        if not doc_list:
+            return
+        elif 'id' not in doc_list[0]:
+            raise ValueError("Unsupported input format.")
+
+        profile_name = '?profiles=' + '&profiles'.join(profile_names)
+        return self.execute('focus', profile_name, doc_list)
+
     def status(self):
         return self.execute('status')
 
 
 class EntityLyzardTest(TestCase):
-    
+
+    DOCS = [
+            XMLContent(
+            """<?xml version="1.0" encoding="UTF-8"?> <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="www.awp.ch/msg/20100831000483" dc:format="text/html" xml:lang="de" wl:nilsimsa="73bc3a300602edc022682a717af9b9e015af88d1411373e59c334b9aca36d26d" dc:title="" date="201008310900" teledata_id="18180">\n  <wl:sentence wl:pos="( NN ADV VVFIN APPR NN APPR ART ADJA NN KON APPR ADJA NN APPRART NN ) NE $( ART NN NE VMFIN ART ADJA NN APPRART ADJA NN CARD APPR ADV APPR NN VVINF $." wl:token="0,1 1,8 9,21 22,29 30,32 33,40 41,43 44,47 48,57 58,67 68,71 72,74 75,82 83,91 93,96 97,105 105,106 107,112 114,115 116,119 120,127 128,134 135,141 142,145 146,159 160,166 167,169 170,176 177,185 186,190 191,193 195,199 200,203 204,219 220,226 226,227" wl:id="6fbbd8032f0d722b0cbcbb5490e77fcc"><![CDATA[(Meldung insbesondere erg\xc3\xa4nzt um Angaben zu den laufenden Projekten und um weitere Aussagen  zum Ausblick) Basel  - Die Warteck Invest konnte den betrieblichen Ertrag im ersten Halbjahr 2010 in  etwa auf Vorjahresniveau halten.]]></wl:sentence>\n  <wl:sentence wl:pos="APPR ART ADJA $, APPR NN APPR NN ADJA NN VVFIN ADV ART ADJA NN $." wl:token="0,8 9,14 15,22 22,23 24,27 28,36 37,40 41,63 65,74 75,95 96,107 108,118 119,122 123,129 130,144 144,145" wl:id="60b7482cdb8dfc0d4f943859cff84be9"><![CDATA[Aufgrund eines starken, von Gewinnen aus Liegenschaftsverk\xc3\xa4ufen  gepr\xc3\xa4gten Vorjahresergebnisses resultierte allerdings ein klarer Gewinnr\xc3\xbcckgang.]]></wl:sentence>\n</wl:page>""").as_dict()
+               ]
+     
     def test_entity_lyzard(self):
         docs = [ 
                  {'content_id': '12', 'content': u'Franz Klammer fährt Ski'}, 
@@ -127,13 +150,17 @@ class EntityLyzardTest(TestCase):
         print e.search_documents('People.DACH.de', docs)
 
     def test_search_xml(self):
-        docs = [
-            XMLContent(
-            """<?xml version="1.0" encoding="UTF-8"?> <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="www.awp.ch/msg/20100831000483" dc:format="text/html" xml:lang="de" wl:nilsimsa="73bc3a300602edc022682a717af9b9e015af88d1411373e59c334b9aca36d26d" dc:title="" date="201008310900" teledata_id="18180">\n  <wl:sentence wl:pos="( NN ADV VVFIN APPR NN APPR ART ADJA NN KON APPR ADJA NN APPRART NN ) NE $( ART NN NE VMFIN ART ADJA NN APPRART ADJA NN CARD APPR ADV APPR NN VVINF $." wl:token="0,1 1,8 9,21 22,29 30,32 33,40 41,43 44,47 48,57 58,67 68,71 72,74 75,82 83,91 93,96 97,105 105,106 107,112 114,115 116,119 120,127 128,134 135,141 142,145 146,159 160,166 167,169 170,176 177,185 186,190 191,193 195,199 200,203 204,219 220,226 226,227" wl:id="6fbbd8032f0d722b0cbcbb5490e77fcc"><![CDATA[(Meldung insbesondere erg\xc3\xa4nzt um Angaben zu den laufenden Projekten und um weitere Aussagen  zum Ausblick) Basel  - Die Warteck Invest konnte den betrieblichen Ertrag im ersten Halbjahr 2010 in  etwa auf Vorjahresniveau halten.]]></wl:sentence>\n  <wl:sentence wl:pos="APPR ART ADJA $, APPR NN APPR NN ADJA NN VVFIN ADV ART ADJA NN $." wl:token="0,8 9,14 15,22 22,23 24,27 28,36 37,40 41,63 65,74 75,95 96,107 108,118 119,122 123,129 130,144 144,145" wl:id="60b7482cdb8dfc0d4f943859cff84be9"><![CDATA[Aufgrund eines starken, von Gewinnen aus Liegenschaftsverk\xc3\xa4ufen  gepr\xc3\xa4gten Vorjahresergebnisses resultierte allerdings ein klarer Gewinnr\xc3\xbcckgang.]]></wl:sentence>\n</wl:page>""").as_dict()
-               ]
         e = Recognize()
         e.add_profile('People.DACH.de')
-        print 'xmlsearch::::',e.search_documents('People.DACH.de', docs)
+        print 'xmlsearch::::',e.search_documents('People.DACH.de', self.DOCS)
+
+    def test_focus_search(self):
+        e = Recognize()
+        e.add_profile('People.DACH.de')
+        result =  e.get_focus(['People.DACH.de', ], self.DOCS)
+        print 'xmlfocus:::', result
+        assert u'focus' in result[0]
+        assert u'annotations' in result[0]
         
 
 if __name__ == '__main__':
