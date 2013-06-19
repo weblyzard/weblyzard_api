@@ -111,7 +111,7 @@ class JeremiaClient2(MultiRESTClient):
 
 class JeremiaTest(TestCase):
 
-    DOCS = [ {'xml:id': content_id,
+    DOCS = [ {'id': content_id,
               'content': 'Good day Mr. President! Hello "world" ' + str(content_id),
               'title': 'Hello "world" more ',
               'format': 'html/text',
@@ -144,7 +144,7 @@ class JeremiaTest(TestCase):
             self.assertEqual( len(sentences), 2 )
 
     def test_illegal_xml_format_filtering(self):
-        DOCS = [ {'xml:id': "alpha",
+        DOCS = [ {'id': "alpha",
                   'content': 'This is an illegal XML Sequence: J\x1amica',
                   'title': 'Hello "world" more ',
                   'format': 'html/text',
@@ -169,7 +169,7 @@ if __name__ == '__main__':
     from sys import argv
     d = [ {'title': '',
            'content': argv[1].strip(), 
-           'xml:id': 99933,
+           'id': 99933,
            'format': 'text/html',
            'header': {'dc:related': 'http://www.heise.de http://www.kurier.at'},
           } 
