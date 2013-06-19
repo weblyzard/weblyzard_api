@@ -182,7 +182,7 @@ if __name__ == '__main__':
     for s in sentences:
         print s.sentence
         print s.pos_tags
-        print list(s.token)
+        print list(s.tokens)
 
     exit()
     main()
