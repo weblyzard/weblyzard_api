@@ -46,6 +46,13 @@ class Sentence(object):
             .tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
             .pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
+    # 'value' is used for the @XMLValue field
+    ATTRIBUTE_TO_DICT_MAPPING = { 'sentence'      : 'value', 
+                                  'md5sum'        : 'id',
+                                  'token_indices' : 'token',
+                                  'pos_tag_string': 'pos',
+                                  'sem_orient'    : 'sem_orient',
+                                  'significance'  : 'significance' }.items()
 
     def __init__(self, md5sum, pos_tag_string=None, token_indices=None, 
                  sem_orient=None, sentence=None, significance=None):
@@ -68,13 +75,8 @@ class Sentence(object):
         @return: a dictionary representation of the given sentence object
               that can be used for REST services.
         '''
-        return {'value'         : self.sentence, # used for the @XMLValue field
-                'id'            : self.md5sum,
-                'token'         : self.token_indices,
-                'pos'           : self.pos_tag_string,
-                'sem_orient'    : self.sem_orient,
-                'significance'  : self.significance,
-                }
+        return { dictattr: getattr(self, key) for key, dictattr in 
+                     self.ATTRIBUTE_TO_DICT_MAPPING if getattr(self, key) }
 
     def get_pos_tags(self):
         '''
@@ -124,7 +126,7 @@ class XMLContent(object):
                 'title'       : self.title,
                 'sentence'    : [ s.as_dict() for s in self.sentences ],
                 'format'      : self.content_type,
-                'lang'        : self.lang,
+                'xml:lang'    : self.lang,
                 'nilsimsa'    : self.nilsimsa }
 
     def _set_root(self, xml_content):
@@ -204,26 +206,27 @@ class XMLContent(object):
         if not len(self.sentences):
             return ''
         return '\n'.join([sent.sentence for sent in self.sentences])
+
+    def get_attribute(self, namespace, attr):
+        wl_page = self.root.find(".")
+        return wl_page.attrib['{%s}%s' % (DOCUMENT_NAMESPACE[namespace], attr)]
+        
  
     def get_content_id(self):
-        wl_page = self.root.find(".")
-        return wl_page.attrib['id']
+        return self.get_attribute('wl', 'id')
 
     def get_nilsimsa(self):
-        wl_page = self.root.find(".")
-        return wl_page.get('wl:nilsimsa', None)
+        return self.get_attribute('wl', 'nilsimsa')
 
     def get_title(self):
-        wl_page = self.root.find(".")
-        return wl_page.get('dc:title', None)
+        return self.get_attribute('dc', 'title')
 
     def get_lang(self):
         wl_page = self.root.find(".")
         return wl_page.get('xml:lang', None)
 
     def get_content_type(self):
-        wl_page = self.root.find(".")
-        return wl_page.get('dc:format', None)
+        return self.get_attribute('dc', 'format')
 
     @staticmethod
     def get_text(text):
@@ -359,18 +362,9 @@ class TestXMLContent(unittest.TestCase):
         assert '' == xml.get_plain_text()
         assert [] == xml.get_sentences()
 
-    def test_pickling(self):
-        from cPickle import dumps
-        xml = XMLContent(self.xml_content)
-        for base in self.__class__.__mro__:
-            print base.__flags__, base.__flags__ & 1<<9, "a"
-        print type(xml), xml.__class__.__mro__
-
-        s = xml.sentences
-        assert len(dumps(s)) > 0
-
-        # assert len(dumps(xml)) > 0
-
+    def test_dictionary_export(self):
+        xml = XMLContent( self.xml_content )
+        assert len(xml.as_dict()) > 0
 
         
 if __name__ == '__main__':
