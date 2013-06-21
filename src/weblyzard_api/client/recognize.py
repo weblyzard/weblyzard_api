@@ -30,7 +30,7 @@ class Recognize(RESTClient):
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie')    
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        url += '/entityLyzard/rest/recognize'
+        url += '/recognize/rest/recognize'
         RESTClient.__init__(self, url, usr, pwd)
 
     def list_profiles(self):
