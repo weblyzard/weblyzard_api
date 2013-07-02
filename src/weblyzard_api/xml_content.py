@@ -366,6 +366,12 @@ class TestXMLContent(unittest.TestCase):
         xml = XMLContent( self.xml_content )
         assert len(xml.as_dict()) > 0
 
+    def test_missing_sentence_content(self):
+        from os.path import join, dirname
+        xml_content  = open( join(dirname(__file__), 'test/test-quotes.xml') ).read()
+        xml = XMLContent( xml_content )
+        for sentence in xml.sentences:
+            assert "\"" in sentence.pos_tag_string
         
 if __name__ == '__main__':
     unittest.main()
