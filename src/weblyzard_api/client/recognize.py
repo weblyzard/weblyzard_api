@@ -124,7 +124,7 @@ class Recognize(RESTClient):
         elif 'id' not in doc_list[0]:
             raise ValueError("Unsupported input format.")
 
-        profile_name = '?profiles=' + '&profiles'.join(profile_names)
+        profile_name = '?profiles=' + '&profiles='.join(profile_names)
         return self.execute('focus', profile_name, doc_list)
 
     def status(self):
@@ -135,9 +135,20 @@ class EntityLyzardTest(TestCase):
 
     DOCS = [
             XMLContent(
-            """<?xml version="1.0" encoding="UTF-8"?> <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="www.awp.ch/msg/20100831000483" dc:format="text/html" xml:lang="de" wl:nilsimsa="73bc3a300602edc022682a717af9b9e015af88d1411373e59c334b9aca36d26d" dc:title="" date="201008310900" teledata_id="18180">\n  <wl:sentence wl:pos="( NN ADV VVFIN APPR NN APPR ART ADJA NN KON APPR ADJA NN APPRART NN ) NE $( ART NN NE VMFIN ART ADJA NN APPRART ADJA NN CARD APPR ADV APPR NN VVINF $." wl:token="0,1 1,8 9,21 22,29 30,32 33,40 41,43 44,47 48,57 58,67 68,71 72,74 75,82 83,91 93,96 97,105 105,106 107,112 114,115 116,119 120,127 128,134 135,141 142,145 146,159 160,166 167,169 170,176 177,185 186,190 191,193 195,199 200,203 204,219 220,226 226,227" wl:id="6fbbd8032f0d722b0cbcbb5490e77fcc"><![CDATA[(Meldung insbesondere erg\xc3\xa4nzt um Angaben zu den laufenden Projekten und um weitere Aussagen  zum Ausblick) Basel  - Die Warteck Invest und deren Chef Müller konnten den betrieblichen Ertrag im ersten Halbjahr 2010 in  etwa auf Vorjahresniveau halten.]]></wl:sentence>\n  <wl:sentence wl:pos="APPR ART ADJA $, APPR NN APPR NN ADJA NN VVFIN ADV ART ADJA NN $." wl:token="0,8 9,14 15,22 22,23 24,27 28,36 37,40 41,63 65,74 75,95 96,107 108,118 119,122 123,129 130,144 144,145" wl:id="60b7482cdb8dfc0d4f943859cff84be9"><![CDATA[Aufgrund eines starken, von Gewinnen aus Liegenschaftsverk\xc3\xa4ufen  gepr\xc3\xa4gten Vorjahresergebnisses resultierte allerdings ein klarer Gewinnr\xc3\xbcckgang von 5% (10 Mio CHF).]]></wl:sentence>\n</wl:page>""").as_dict(),
+            """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" dc:title="" wl:id="99933" dc:format="text/html" xml:lang="de" wl:nilsimsa="030472f84612acc42c7206e07814e69888267530636221300baf8bc2da66b476" dc:related="http://www.heise.de http://www.kurier.at">
+               <wl:sentence wl:id="50612085a00cf052d66db97ff2252544" wl:pos="NE NE VAFIN CARD NE NE VVPP $." wl:token="0,5 6,12 13,16 17,19 20,23 24,27 28,36 36,37" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Georg Müller hat 10 Mio CHF gewonnen.]]></wl:sentence>
+               <wl:sentence wl:id="a3b05957957e01060fd58af587427362" wl:pos="NN NE VMFIN APPR ART NN APPR CARD NE NE $, PRELS PPER NE NE VVFIN $, PIS VVINF $." wl:token="0,4 5,12 13,19 20,23 24,27 28,35 36,39 40,42 43,46 47,50 50,51 52,55 56,59 60,65 66,72 73,84 84,85 86,92 93,101 101,102" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Herr Schwarz konnte mit dem Angebot von 10 Mio CHF, das ihm Georg Müller hinterlegte, nichts anfangen.]]></wl:sentence>
+            </wl:page>
+            """).as_dict(),
             XMLContent(
-            """<?xml version="1.0" encoding="UTF-8"?> <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="www.awp.ch/msg/20100831000483" dc:format="text/html" xml:lang="de" wl:nilsimsa="73bc3a300602edc022682a717af9b9e015af88d1411373e59c334b9aca36d26d" dc:title="" date="201008310900" teledata_id="18180">\n  <wl:sentence wl:pos="( NN ADV VVFIN APPR NN APPR ART ADJA NN KON APPR ADJA NN APPRART NN ) NE $( ART NN NE VMFIN ART ADJA NN APPRART ADJA NN CARD APPR ADV APPR NN VVINF $." wl:token="0,1 1,8 9,21 22,29 30,32 33,40 41,43 44,47 48,57 58,67 68,71 72,74 75,82 83,91 93,96 97,105 105,106 107,112 114,115 116,119 120,127 128,134 135,141 142,145 146,159 160,166 167,169 170,176 177,185 186,190 191,193 195,199 200,203 204,219 220,226 226,227" wl:id="6fbbd8032f0d722b0cbcbb5490e77fcc"><![CDATA[(Meldung insbesondere erg\xc3\xa4nzt um Angaben zu den laufenden Projekten und um weitere Aussagen  zum Ausblick) Basel  - Die Warteck Invest und deren Chef Müller konnten den betrieblichen Ertrag im ersten Halbjahr 2010 in  etwa auf Vorjahresniveau halten.]]></wl:sentence>\n  <wl:sentence wl:pos="APPR ART ADJA $, APPR NN APPR NN ADJA NN VVFIN ADV ART ADJA NN $." wl:token="0,8 9,14 15,22 22,23 24,27 28,36 37,40 41,63 65,74 75,95 96,107 108,118 119,122 123,129 130,144 144,145" wl:id="60b7482cdb8dfc0d4f943859cff84be9"><![CDATA[Aufgrund eines starken, von Gewinnen aus Liegenschaftsverk\xc3\xa4ufen  gepr\xc3\xa4gten Vorjahresergebnisses resultierte allerdings ein klarer Gewinnr\xc3\xbcckgang von 5% (10 Mio CHF).]]></wl:sentence>\n</wl:page>""").as_dict()
+            """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" dc:title="" wl:id="99933" dc:format="text/html" xml:lang="de" wl:nilsimsa="020ee211a20084bb0d2208038548c02405bb0110d2183061db9400d74c15553a" dc:related="http://www.heise.de http://www.kurier.at">
+               <wl:sentence wl:id="f98a0c4d2ddffd60b64b9b25f1f5657a" wl:pos="NN NE VVFIN $, KOUS ART NN ADV CARD ADJD VAINF VAFIN $." wl:token="0,6 7,14 15,23 23,24 25,29 30,33 34,37 38,42 43,47 48,59 60,64 65,69 69,70" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Rektor Kessler erklärte, dass die HTW auch 2014 erfolgreich sein wird.]]></wl:sentence>
+            </wl:page>
+            """).as_dict(),
                ]
      
     def test_entity_lyzard(self):
