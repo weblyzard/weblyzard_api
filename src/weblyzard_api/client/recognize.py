@@ -109,12 +109,13 @@ class Recognize(RESTClient):
                             query_parameters=query_parameters, 
                             content_type=content_type)
     
-    def get_focus(self, profile_names, doc_list):
+    def get_focus(self, profile_names, doc_list, max_results=1):
         ''' 
         Returns the focus and annotations of the given document 
 
         :param profile_names: a list of profile names
         :param doc_list: a list of documents to analyze based on the weblyzardXML format
+        :param max_results: maximum number of results to include 
 
         query: recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
         '''
@@ -125,7 +126,8 @@ class Recognize(RESTClient):
             raise ValueError("Unsupported input format.")
 
         profile_name = '?profiles=' + '&profiles='.join(profile_names)
-        return self.execute('focus', profile_name, doc_list)
+        query_parameters = { 'rescore': max_results, 'buckets': max_results, 'limit': max_results, }
+        return self.execute('focus', profile_name, doc_list, query_parameters=query_parameters)
 
     def status(self):
         return self.execute('status')
@@ -170,8 +172,9 @@ class EntityLyzardTest(TestCase):
     def test_focus_search(self):
         e = Recognize()
         e.add_profile('People.DACH.de', )
-        result =  e.get_focus(['People.DACH.de', 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'], self.DOCS)
-        print 'xmlfocus:::', result
+        result =  e.get_focus(['People.DACH.de', 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'], self.DOCS, max_results=3)
+        for res in result:
+            print ':::', res
         aha
         assert u'focus' in result[0]
         assert u'annotations' in result[0]
