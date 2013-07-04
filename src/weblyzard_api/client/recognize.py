@@ -125,9 +125,9 @@ class Recognize(RESTClient):
         elif 'id' not in doc_list[0]:
             raise ValueError("Unsupported input format.")
 
-        profile_name = '?profiles=' + '&profiles='.join(profile_names)
-        query_parameters = { 'rescore': max_results, 'buckets': max_results, 'limit': max_results, }
-        return self.execute('focus', profile_name, doc_list, query_parameters=query_parameters)
+        query_parameters = { 'profiles': profile_names, 'rescore': max_results, 
+                             'buckets': max_results, 'limit': max_results, }
+        return self.execute('focus', "", doc_list, query_parameters=query_parameters)
 
     def status(self):
         return self.execute('status')
