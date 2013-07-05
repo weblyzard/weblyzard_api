@@ -21,6 +21,8 @@ WEBLYZARD_API_URL  = getenv("WEBLYZARD_API_URL") or "http://localhost:8080"
 WEBLYZARD_API_USER = getenv("WEBLYZARD_API_USER")
 WEBLYZARD_API_PASS = getenv("WEBLYZARD_API_PASS")
 
+INTERNAL_PROFILE_PREFIX = 'extras.'
+
 class Recognize(RESTClient):
     '''
     class:: Recognize 
@@ -45,8 +47,10 @@ class Recognize(RESTClient):
 
     def add_profile(self, profile_name, force=False):
         ''' pre-loads the given profile '''
-        if profile_name in self.list_profiles() and not force:
+        if profile_name.startswith( INTERNAL_PROFILE_PREFIX ) or (
+           profile_name in self.list_profiles() and not force):
             return
+
         return self.execute("add_profile", profile_name)
 
     def remove_profile(self, profile_name):
@@ -68,7 +72,7 @@ class Recognize(RESTClient):
         assert output_format in self.OUTPUT_FORMATS
         if not profile_name in self.list_profiles():
             self.add_profile(profile_name)
-        query_parameters =  {'rescore': max_entities, 'buckets': buckets, 'limit': limit, 'wt': output_format }
+        query_parameters =  {'rescore': max_entities, 'buckets': buckets, 'limit': limit, 'wt': output_format, 'debug': debug }
         return self.execute("search", profile_name, text, query_parameters=query_parameters)
 
     def search_documents(self, profile_name, doc_list, debug=False, max_entities=1, buckets=1, limit=1, output_format='minimal'):
@@ -93,6 +97,9 @@ class Recognize(RESTClient):
         if not doc_list:
             return 
 
+        if not profile_name in self.list_profiles():
+            self.add_profile(profile_name)
+
         if 'content_id' in doc_list[0]:
             search_command = 'searchDocuments'
             content_type = 'application/json'
@@ -104,7 +111,8 @@ class Recognize(RESTClient):
 
         if not profile_name in self.list_profiles():
             self.add_profile(profile_name)
-        query_parameters = { 'rescore': max_entities, 'buckets': buckets, 'limit': limit, 'wt':output_format }
+        query_parameters = { 'rescore': max_entities, 'buckets': buckets, 
+                             'limit': limit, 'wt':output_format, 'debug': debug}
         return self.execute(search_command, profile_name, doc_list, 
                             query_parameters=query_parameters, 
                             content_type=content_type)
@@ -124,6 +132,12 @@ class Recognize(RESTClient):
             return
         elif 'id' not in doc_list[0]:
             raise ValueError("Unsupported input format.")
+
+        # add missing profiles
+        for profile_name in profile_names:
+            if not profile_name in self.list_profiles()  \
+                and not profile_name.startswith("extras."):
+                self.add_profile(profile_name)
 
         query_parameters = { 'profiles': profile_names, 'rescore': max_results, 
                              'buckets': max_results, 'limit': max_results, }
@@ -167,15 +181,15 @@ class EntityLyzardTest(TestCase):
     def test_search_xml(self):
         e = Recognize()
         e.add_profile('People.DACH.de')
-        print 'xmlsearch::::',e.search_documents('People.DACH.de', self.DOCS)
+        print 'xmlsearch::::', e.search_documents('People.DACH.de', self.DOCS)
 
     def test_focus_search(self):
         e = Recognize()
-        e.add_profile('People.DACH.de', )
         result =  e.get_focus(['People.DACH.de', 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'], self.DOCS, max_results=3)
+
+        #result =  e.get_focus(['ofwi.people', 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'], self.DOCS, max_results=3)
         for res in result:
             print ':::', res
-        aha
         assert u'focus' in result[0]
         assert u'annotations' in result[0]
         
