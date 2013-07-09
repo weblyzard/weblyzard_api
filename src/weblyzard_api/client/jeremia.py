@@ -53,7 +53,7 @@ class Jeremia(RESTClient):
         @param text: the text to process
         @param content_id: optional content id
         """
-        batch = [{'id': content_id, 'content': text, 'format': 'html/text'}]
+        batch = [{'id': content_id, 'body': text, 'format': 'html/text'}]
         num = str(int(time.time()))
         self.submit_documents(num, batch)
         results = list(self.commit(num))
@@ -112,7 +112,7 @@ class JeremiaClient2(MultiRESTClient):
 class JeremiaTest(TestCase):
 
     DOCS = [ {'id': content_id,
-              'content': 'Good day Mr. President! Hello "world" ' + str(content_id),
+              'body': 'Good day Mr. President! Hello "world" ' + str(content_id),
               'title': 'Hello "world" more ',
               'format': 'html/text',
               'header': {}}  for content_id in xrange(1000,1020)]
@@ -140,12 +140,14 @@ class JeremiaTest(TestCase):
             # extract sentences
             sentences = [ s.sentence 
                           for s in XMLContent(doc['xml_content']).sentences ]
+            print doc['xml_content']
+            assert 'wl:is_title' in doc['xml_content']
             print sentences
-            self.assertEqual( len(sentences), 2 )
+            self.assertEqual( len(sentences), 3 )
 
     def test_illegal_xml_format_filtering(self):
         DOCS = [ {'id': "alpha",
-                  'content': 'This is an illegal XML Sequence: J\x1amica',
+                  'body': 'This is an illegal XML Sequence: J\x1amica',
                   'title': 'Hello "world" more ',
                   'format': 'html/text',
                   'header': {}}  ]
@@ -168,7 +170,7 @@ if __name__ == '__main__':
     j = Jeremia()
     from sys import argv
     d = [ {'title': '',
-           'content': argv[1].strip(), 
+           'body': argv[1].strip(), 
            'id': 99933,
            'format': 'text/html',
            'header': {'dc:related': 'http://www.heise.de http://www.kurier.at'},
