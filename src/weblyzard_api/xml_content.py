@@ -48,6 +48,7 @@ class Sentence(object):
     '''
     # 'value' is used for the @XMLValue field
     ATTRIBUTE_TO_DICT_MAPPING = { 'sentence'      : 'value', 
+                                  'is_title'      : 'is_title',
                                   'md5sum'        : 'id',
                                   'token_indices' : 'token',
                                   'pos_tag_string': 'pos',
@@ -55,7 +56,7 @@ class Sentence(object):
                                   'significance'  : 'significance' }.items()
 
     def __init__(self, md5sum, pos_tag_string=None, token_indices=None, 
-                 sem_orient=None, sentence=None, significance=None):
+                 sem_orient=None, sentence=None, significance=None, is_title=False):
         '''
         @param pos_tag_string: a string containing the sentences pos
                                tags (e.g. 'NN VB NN')
@@ -69,6 +70,7 @@ class Sentence(object):
         self.sentence = sentence
         self.significance = significance
         self.token_indices = token_indices
+        self.is_title = is_title
         
     def as_dict(self):
         '''
@@ -123,7 +125,6 @@ class XMLContent(object):
                  XMLDocument that can be used for REST services
         '''
         return {'id'          : self.content_id,
-                'title'       : self.title,
                 'sentence'    : [ s.as_dict() for s in self.sentences ],
                 'format'      : self.content_type,
                 'xml:lang'    : self.lang,
@@ -219,7 +220,7 @@ class XMLContent(object):
         return self.get_attribute('wl', 'nilsimsa')
 
     def get_title(self):
-        return self.get_attribute('dc', 'title')
+        return [ s for s in self.sentences if s.is_title ] 
 
     def get_lang(self):
         wl_page = self.root.find(".")
@@ -267,21 +268,26 @@ class TestXMLContent(unittest.TestCase):
     def setUp(self):
         self.xml_content = '''
         <?xml version="1.0" encoding="UTF-8"?>
-          <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="http://www.youtube.com/watch?v=nmywf7a9OlI" dc:format="text/html" xml:lang="en" wl:nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" dc:title="Global Dimming">
-             <wl:sentence wl:id="7f3251087b6552159846493558742f18" wl:pos="( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP : PRP VBD PRP JJ NN ." wl:token="0,1 1,2 2,6 7,18 18,19 20,25 26,38 39,44 45,47 48,51 52,57 57,58 59,69 70,74 75,85 86,90 91,96 97,100 101,105 106,107 108,115 116,118 119,127 128,136 137,140 141,146 146,147 148,152 153,159 160,162 163,169 170,177 177,178"><![CDATA[(*FULL DOCUMENTARY) Since measurements began in the 1950s, scientists have discovered that there has been a decline of sunlight reaching the Earth; they called it global dimming.]]></wl:sentence>\n   
-             <wl:sentence wl:id="93f56b9d196787d1cf662a06ab5f866b" wl:pos="CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG ." wl:token="0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183"><![CDATA[But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.]]></wl:sentence>
-        </wl:page>
+        <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="99933" dc:format="text/html" xml:lang="en" wl:nilsimsa="c3f00c9bae798a55a013209ceba9012f4d2349f7c1b2486529674a05ef7be8fb" dc:related="http://www.heise.de http://www.kurier.at">
+           <wl:sentence wl:id="27cd03a5aaac20ae0dba60038f17fdad" wl:is_title="True" wl:pos="JJ NN ." wl:token="0,6 7,14 14,15" wl:sem_orient="0.0" wl:significance="1.5"><![CDATA[Global Dimming.]]></wl:sentence>
+           <wl:sentence wl:id="7f3251087b6552159846493558742f18" wl:pos="( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP : PRP VBD PRP JJ NN ." wl:token="0,1 1,2 2,6 7,18 18,19 20,25 26,38 39,44 45,47 48,51 52,57 57,58 59,69 70,74 75,85 86,90 91,96 97,100 101,105 106,107 108,115 116,118 119,127 128,136 137,140 141,146 146,147 148,152 153,159 160,162 163,169 170,177 177,178" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[(*FULL DOCUMENTARY) Since measurements began in the 1950s, scientists have discovered that there has been a decline of sunlight reaching the Earth; they called it global dimming.]]></wl:sentence>
+           <wl:sentence wl:id="93f56b9d196787d1cf662a06ab5f866b" wl:pos="CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG ." wl:token="0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.]]></wl:sentence>
+         </wl:page>
          '''
         # reference data sets
-        self.sentence_pos_tags = {'7f3251087b6552159846493558742f18': 
-                                   ' ( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP'
-                                   ' VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP :'
-                                   ' PRP VBD PRP JJ NN .'.split(),
-                                   '93f56b9d196787d1cf662a06ab5f866b':
-                                   ' CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN'
-                                   ' VBD RB VB IN DT CD CC RB IN DT CD NNS VBP'
-                                   ' VBN DT JJ VBG .'.split() }
-        self.sentence_tokens = {'7f3251087b6552159846493558742f18':
+        self.sentence_pos_tags = {'27cd03a5aaac20ae0dba60038f17fdad':
+                                  'JJ NN',
+                                  '7f3251087b6552159846493558742f18': 
+                                  ' ( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP'
+                                  ' VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP :'
+                                  ' PRP VBD PRP JJ NN .'.split(),
+                                  '93f56b9d196787d1cf662a06ab5f866b':
+                                  ' CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN'
+                                  ' VBD RB VB IN DT CD CC RB IN DT CD NNS VBP'
+                                  ' VBN DT JJ VBG .'.split() }
+        self.sentence_tokens = {'27cd03a5aaac20ae0dba60038f17fdad':
+                                 ['Global', 'Dimming'],
+                                '7f3251087b6552159846493558742f18':
                                  ['(', '*', 'FULL', 'DOCUMENTARY', ')',
                                   'Since', 'measurements', 'began', 'in',
                                   'the', '1950s', ',', 'scientists', 'have',
@@ -290,7 +296,7 @@ class TestXMLContent(unittest.TestCase):
                                   'the', 'Earth', ';', 'they', 'called', 'it',
                                   'global', 'dimming', '.'
                                  ],
-                                 '93f56b9d196787d1cf662a06ab5f866b':
+                                '93f56b9d196787d1cf662a06ab5f866b':
                                  ['But', 'according', 'to', 'a', 'paper',
                                   'published', 'in', 'the', 'journal', 'of',
                                   'Science', ',', 'the', 'dimming', 'did',
@@ -319,41 +325,30 @@ class TestXMLContent(unittest.TestCase):
                               len( list(sentences.tokens)) )
 
     def test_update_sentences(self):
-        xml_content = self.xml_content
-        sentences = (Sentence('7f3251087b6552159846493558742f18'),
-                     Sentence('93f56b9d196787d1cf662a06ab5f866b'))
-        
-        for s in sentences: 
+       
+        xml = XMLContent(self.xml_content)
+        for s in xml.sentences: 
             s.pos_tag_string = 'nn nn'
             s.significance = 3
             s.sem_orient = 1
-        
-        xml = XMLContent(xml_content)
-
-        print xml.get_xml_document()
-    
-        for sentence in xml.sentences:
-            print sentence.md5sum, sentence.sentence, sentence.significance
-            
-        xml.sentences = sentences
-        
-        xml_out = xml.get_xml_document()
-        
+ 
         for sentence in xml.sentences:
             assert sentence.significance == 3
             assert sentence.sem_orient == 1
             
+        xml_out = xml.get_xml_document()
         assert 'CDATA' in xml_out
 
     def test_double_sentences(self):
         xml_content = ''' 
-         <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="http://www.youtube.com/watch?v=nmywf7a9OlI" dc:format="text/html" xml:lang="en" wl:nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" dc:title="Global Dimming">
+         <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="http://www.youtube.com/watch?v=nmywf7a9OlI" dc:format="text/html" xml:lang="en" wl:nilsimsa="4b780db90e79090d000001b4eb8d01bd446b79ff51b26e252d5d2a45eb3be0cb" >
+            <wl:sentence wl:id="27cd03a5aaac20ae0dba60038f17fdad" wl:is_title="True" wl:pos="JJ NN ." wl:token="0,6 7,14 14,15" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Global Dimming.]]></wl:sentence>
             <wl:sentence wl:id="7e985ffb692bb6f617f25619ecca39a9" wl:token="0,3 5,10" wl:pos="DET NN NN"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
             <wl:sentence wl:id="7e985ffb692bb6f617f25619ecca39a9" wl:token="0,3 5,10" wl:pos="DET NN NN"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
          <wl:page> '''
     
         xml = XMLContent(xml_content)
-        assert len(xml.sentences) == 1
+        assert len(xml.sentences) == 2
         xml_out = xml.get_xml_document()
         assert 'CDATA' in xml_out
 
