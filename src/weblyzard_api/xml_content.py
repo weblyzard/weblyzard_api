@@ -220,6 +220,9 @@ class XMLContent(object):
         return self.get_attribute('wl', 'nilsimsa')
 
     def get_title(self):
+        ''' @returns: all sentences that have a set is_title flag
+                      (i.e. are part of the title).
+        '''
         return [ s for s in self.sentences if s.is_title ] 
 
     def get_lang(self):
