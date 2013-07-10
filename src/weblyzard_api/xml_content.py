@@ -370,6 +370,18 @@ class TestXMLContent(unittest.TestCase):
         xml = XMLContent( xml_content )
         for sentence in xml.sentences:
             assert "\"" in sentence.pos_tag_string
+    
+    def test_sentence_tokens(self):
+        ''' heinz: for me this test fails '''
+        sent = Sentence('md5sum',
+                        pos_tag_string='NN VVFIN ADV ADV ADJA NN $, KON ADV NN $.',
+                        sentence='Horuck-Aktionen bringen da wenig ökonomischen Anreiz, aber vielleicht Wählerstimmen.', 
+                        token_indices='0,15 16,23 24,26 27,32 33,45 46,52 52,53 54,58 59,69 70,83 83,84')
+        result = list(sent.get_token())
+        print result
+        assert result == ['Horuck-Aktionen', 'bringen', 'da', 'wenig', 
+                          'ökonomischen', 'Anreiz', 'aber', 'vielleicht', 
+                          'Wählerstimmen']
         
 if __name__ == '__main__':
     unittest.main()
