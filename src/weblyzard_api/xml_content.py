@@ -65,6 +65,7 @@ class Sentence(object):
 
         '''
         self.md5sum = md5sum
+        self._sentence = None # access via property 
         self.pos_tag_string = pos_tag_string
         self.sem_orient = sem_orient
         self.sentence = sentence
@@ -101,12 +102,19 @@ class Sentence(object):
             start, end = map(int, token_pos.split(","))
             yield self.sentence[start:end]
 
+    def get_sentence(self):
+        return self._sentence
+    
+    def set_sentence(self, sentence):
+        if isinstance(sentence, str):
+            sentence = sentence.decode('utf-8')
+        self._sentence = sentence
 
     # convenient functions for directly accessing 
     # pos tags and tokens
     pos_tags = property(get_pos_tags)
     tokens   = property(get_token)
-
+    sentence = property(get_sentence, set_sentence)
 
 class XMLContent(object):
     SENTENCE_XPATH = './/wl:sentence'
@@ -372,16 +380,15 @@ class TestXMLContent(unittest.TestCase):
             assert "\"" in sentence.pos_tag_string
     
     def test_sentence_tokens(self):
-        ''' heinz: for me this test fails '''
         sent = Sentence('md5sum',
                         pos_tag_string='NN VVFIN ADV ADV ADJA NN $, KON ADV NN $.',
                         sentence='Horuck-Aktionen bringen da wenig ökonomischen Anreiz, aber vielleicht Wählerstimmen.', 
                         token_indices='0,15 16,23 24,26 27,32 33,45 46,52 52,53 54,58 59,69 70,83 83,84')
+        
         result = list(sent.get_token())
-        print result
-        assert result == ['Horuck-Aktionen', 'bringen', 'da', 'wenig', 
-                          'ökonomischen', 'Anreiz', 'aber', 'vielleicht', 
-                          'Wählerstimmen']
+        assert result == [u'Horuck-Aktionen', u'bringen', u'da', u'wenig', 
+                          u'ökonomischen', u'Anreiz', u',', u'aber', u'vielleicht', 
+                          u'Wählerstimmen', u'.']
         
 if __name__ == '__main__':
     unittest.main()
