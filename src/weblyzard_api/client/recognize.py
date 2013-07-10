@@ -141,7 +141,7 @@ class Recognize(RESTClient):
 
         query_parameters = { 'profiles': profile_names, 'rescore': max_results, 
                              'buckets': max_results, 'limit': max_results, }
-        return self.execute('focus', "", doc_list, query_parameters=query_parameters)
+        return self.execute('focusDocuments', "", doc_list, query_parameters=query_parameters)
 
     def status(self):
         return self.execute('status')
