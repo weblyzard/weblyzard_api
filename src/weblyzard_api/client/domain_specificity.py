@@ -4,48 +4,50 @@ Created on Jan 16, 2013
 @author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 
-from eWRT.ws.rest import RESTClient
 from unittest import main, TestCase
 
-DS_URL = "http://localhost:8080/domainSpecificity/rest/domain_specificity"
+from eWRT.ws.rest import RESTClient
+from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
+
 
 class DomainSpecificity(RESTClient):
     '''
     Domain Specificity Web Service
     '''
     
-    def __init__(self, url=DS_URL, usr=None, pwd=None):
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+        url += '/rest/domain_specificity'
         RESTClient.__init__(self, url, usr, pwd)
 
     def add_profile(self, profile_name, profile_mapping):
-        """
+        '''
         Adds a domain-specificity profile to the Web service.
         @param profile_name: the name of the domain specificity profile
         @param profile_mapping: a dictionary of keywords and their
                                respective domain specificity values.
-        """
+        '''
         return self.execute("add_or_refresh_profile", 
                              profile_name, profile_mapping )
 
     
     def get_domain_specificity( self, profile_name, documents, 
                                 is_case_sensitive=True ):
-        """ 
+        ''' 
         @param profile_name: the name of the domain specificity profile to
                             use.
         @param documents: a list of dictionaries containing the document
         @param is_case_sensitive: whether to consider case or not (default: True) 
-        """
+        '''
         return self.execute( "parse_documents", 
                              "%s/%s" % (profile_name, is_case_sensitive),
                              documents) 
 
     def has_profile(self, profile_name):
-        """
+        '''
         Returns whether the given profile exists on the server.
         @param profile_name: the name of the domain specificity profile to
                              check. 
-        """
+        '''
         profiles = self.execute("list_profiles")
         return profile_name in profiles
     

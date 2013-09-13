@@ -12,8 +12,8 @@ from os.path import join as os_join, dirname
 
 from eWRT.ws.rest import RESTClient
 from weblyzard_api.xml_content import XMLContent
+from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
-JESAJA_URL = "http://localhost:8080/jesaja/rest"
 
 class Jesaja(RESTClient):
     ''' 
@@ -23,7 +23,8 @@ class Jesaja(RESTClient):
 
     VALID_CORPUS_FORMATS = ('xml', 'csv')
 
-    def __init__(self, url=JESAJA_URL, usr=None, pwd=None):
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+        url += '/jesaja/rest'
         RESTClient.__init__(self, url, usr, pwd)
 
     @staticmethod

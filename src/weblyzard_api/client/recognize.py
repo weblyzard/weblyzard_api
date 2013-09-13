@@ -13,13 +13,10 @@ New supported calls:
 
 from eWRT.ws.rest import RESTClient
 from unittest import main, TestCase
-from os import getenv
 
 from weblyzard_api.xml_content import XMLContent
+from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
-WEBLYZARD_API_URL  = getenv("WEBLYZARD_API_URL") or "http://localhost:8080"
-WEBLYZARD_API_USER = getenv("WEBLYZARD_API_USER")
-WEBLYZARD_API_PASS = getenv("WEBLYZARD_API_PASS")
 
 INTERNAL_PROFILE_PREFIX = 'extras.'
 

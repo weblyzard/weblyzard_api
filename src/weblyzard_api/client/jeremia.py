@@ -4,30 +4,27 @@ Created on Jan 4, 2013
 @author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 from unittest import main, TestCase
+import time
 
 from eWRT.ws.rest import RESTClient, MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
-from os import getenv
-import time
+from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
-JEREMIA_API_URL  = getenv("WEBLYZARD_API_URL") or "http://localhost:8080"
-JEREMIA_API_USER = getenv("WEBLYZARD_API_USER")
-JEREMIA_API_PASS = getenv("WEBLYZARD_API_PASS")
 
 class Jeremia(RESTClient):
     '''
     Jeremia Web Service
     '''
     
-    def __init__(self, url=JEREMIA_API_URL, usr=JEREMIA_API_USER, pwd=JEREMIA_API_PASS):
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
         url += '/jeremia/rest'
         RESTClient.__init__(self, url, usr, pwd)
 
     def commit(self, batch_id):
-        """ @param batch_id: the batch_id to retrieve 
+        ''' @param batch_id: the batch_id to retrieve 
             @return: a generator yielding all the documents of that
                      particular patch 
-        """
+        '''
         while True:
             docs = self.execute('commit', batch_id)
             if not docs:
@@ -36,10 +33,10 @@ class Jeremia(RESTClient):
                 yield doc
 
     def submit_documents( self, batch_id, documents ):
-        """ 
+        ''' 
         @param batch_id: batch_id to use for the given submission
         @param documents: a list of dictionaries containing the document 
-        """
+        '''
         if not documents:
             raise ValueError("Cannot process an empty document list")
         return self.execute('submit_documents', batch_id, documents)
@@ -48,11 +45,11 @@ class Jeremia(RESTClient):
         return self.execute('status')
     
     def get_xml_doc(self, text, content_id = "1"):
-        """
+        '''
         Processes text and returns a XMLContent object.
         @param text: the text to process
         @param content_id: optional content id
-        """
+        '''
         batch = [{'id': content_id, 'body': text, 'format': 'html/text'}]
         num = str(int(time.time()))
         self.submit_documents(num, batch)
