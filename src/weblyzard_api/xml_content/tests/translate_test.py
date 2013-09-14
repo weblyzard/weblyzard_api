@@ -11,7 +11,6 @@ class TestXMLContent(TestCase):
 
     def test_weblyzard_xml_2005(self):
         xml_content = WeblyzardXML2005.translate(self.XML_2005)
-        print xml_content
         content = XMLContent(xml_content)
 
         assert len(content) == 1

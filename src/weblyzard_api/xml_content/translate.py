@@ -4,13 +4,11 @@
 Created on Sep, 14 2013
 
 .. module:: weblyzard_api.xml_content.translate
-   :synopsis: translates deprecated versions of the weblyzardXml Format to the current version.
+   :synopsis: translates deprecated versions of the weblyzardXml 
+              Format to the current version.
 
 .. moduleauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-
-import logging
-from lxml import etree
 
 DOCUMENT_NAMESPACE  = {'wl': 'http://www.weblyzard.com/wl/2013#',
                        'dc': 'http://purl.org/dc/elements/1.1/',
@@ -24,8 +22,6 @@ SENTENCE_ATTRIBUTES = {
     'sem_orient'    : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'sem_orient'),
     'md5sum'        : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'id'),
 }.items()
-
-logger = logging.getLogger('wl_core.xml_content')
 
 
 class WeblyzardXML2005(object):
@@ -68,11 +64,17 @@ class WeblyzardXML2005(object):
         for line in xml_content.split(">\n"):
             line = line.strip()
             if line.startswith('<page '):
-                result.append(cls.translate_line(line, cls.PAGE_START_TRANSLATION_TABLE))
+                line = cls.translate_line(line, cls.PAGE_START_TRANSLATION_TABLE)
+                if not 'dc:format' in line:
+                    line = line.replace(' dc:title="', ' dc:format="text/html" dc:title="')
+                result.append(line)
             elif line.startswith('</page'):
                 result.append(cls.translate_line(line, cls.PAGE_END_TRANSLATION_TABLE))
             elif line.startswith('<wl:sentence '):
-                result.append(cls.translate_line(line, cls.SENTENCE_TRANSLATION_TABLE))
+                line = cls.translate_line(line, cls.SENTENCE_TRANSLATION_TABLE)
+                line = line.replace(' wl:significance="None"', '')
+                line = line.replace(' wl:sem_orient="None"', '')
+                result.append(line)
             elif line.startswith('</wl:sentence'):
                 continue
             elif not line:
@@ -81,7 +83,6 @@ class WeblyzardXML2005(object):
                 raise ValueError(line)
 
         return '>\n'.join(result)
-
 
     @classmethod
     def translate_line(cls, line, translation_table):
