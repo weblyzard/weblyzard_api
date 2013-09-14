@@ -65,19 +65,22 @@ class WeblyzardXML2005(object):
         ... :param xml_content: the XML data to translate
         '''
         result = []
-        for line in xml_content.split("\n"):
+        for line in xml_content.split(">\n"):
+            line = line.strip()
             if line.startswith('<page '):
                 result.append(cls.translate_line(line, cls.PAGE_START_TRANSLATION_TABLE))
-            elif line.startswith('</page>'):
+            elif line.startswith('</page'):
                 result.append(cls.translate_line(line, cls.PAGE_END_TRANSLATION_TABLE))
             elif line.startswith('<wl:sentence '):
                 result.append(cls.translate_line(line, cls.SENTENCE_TRANSLATION_TABLE))
-            elif line.startswith('</wl:sentence>'):
+            elif line.startswith('</wl:sentence'):
+                continue
+            elif not line:
                 continue
             else:
                 raise ValueError(line)
 
-        return '\n'.join(result)
+        return '>\n'.join(result)
 
 
     @classmethod
