@@ -4,7 +4,7 @@ Created on Jan 4, 2013
 @author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 from unittest import main, TestCase
-import time
+from time import time
 
 from eWRT.ws.rest import RESTClient, MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
@@ -15,7 +15,7 @@ class Jeremia(RESTClient):
     '''
     Jeremia Web Service
     '''
-    
+
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
         url += '/jeremia/rest'
         RESTClient.__init__(self, url, usr, pwd)
@@ -50,8 +50,11 @@ class Jeremia(RESTClient):
         @param text: the text to process
         @param content_id: optional content id
         '''
-        batch = [{'id': content_id, 'body': text, 'format': 'html/text'}]
-        num = str(int(time.time()))
+        batch = [{'id': content_id, 
+                  'title': '', 
+                  'body': text, 
+                  'format': 'text/plain'}]
+        num = str(time())
         self.submit_documents(num, batch)
         results = list(self.commit(num))
         result = results[0]
