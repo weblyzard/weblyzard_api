@@ -13,6 +13,7 @@ from weblyzard_api.xml_content import XMLContent, Sentence, DOCUMENT_NAMESPACE
 
 class TranslateXML(object):
     
+    # mapping: xml sentence --> xml_content.Sentence 
     SENTENCE_TRANSLATION_TABLE = { 
         'pos': 'pos_tag_string',
         'id': 'md5sum',
@@ -33,7 +34,14 @@ class TranslateXML(object):
     
     @classmethod
     def translate(cls, xml_content, skip_none_values=False):
-        
+        '''
+        translates wl:xml 2005 to wl:xml 2013
+        :param xml_content: XML as text
+        :type xml_content: str or unicode
+        :param skip_none_values: should the function remove None values
+        :type skip_none_values: bool
+        :rtype: str
+        '''
         xml_obj_old = XMLContentOld(xml_content)
         
         new_attributes = cls.translate_object(xml_obj_old.attributes, 
@@ -73,11 +81,8 @@ class TranslateXML(object):
 
 class TestTranslateXML(unittest.TestCase):
     
-    def test_translate(self):
-        ''' '''
-        from weblyzard_api.xml_content.tests import get_test_data
-        
-        xml_content_old = get_test_data('xml_content_old.xml')
+    def check_document(self, xml_content_old):
+
         xml_obj_old = XMLContentOld(xml_content_old)
         plain_text_old = xml_obj_old.plain_text
         
@@ -95,8 +100,19 @@ class TestTranslateXML(unittest.TestCase):
         for sentence in xml_obj_new.sentences: 
             sentence_attributes = sentence.get_xml_attributes().keys()
             assert all('wl/2013' in attr for attr in sentence_attributes)
-
-        print xml_content_new
-
+    
+        return xml_obj_new
+    
+    def test_translate(self):
+        ''' '''
+        from weblyzard_api.xml_content.tests import get_test_data
+        
+        test_files = ('xml_content_old.xml', 'xml_content_old2.xml')
+        
+        for test_file in test_files: 
+            print 'testing file %s' % test_file
+            xml_content_old = get_test_data(test_file)
+            xml_obj = self.check_document(xml_content_old)
+            
 if __name__ == '__main__':
     unittest.main()

@@ -51,7 +51,7 @@ class XMLContent(object):
         self.root, self.attributes = self._set_root(xml_content)
         self.sentence_objects = []
         self.sentence_objects = self.get_sentences()
-        
+
     def as_dict(self):
         '''
         @return: a dictionary representation of the given
@@ -252,8 +252,8 @@ class TestXMLContent(unittest.TestCase):
         '''
         self.xml_content = '''
             <wl:page xmlns:wl="http://www.weblyzard.com/" content_id="228557824" content_type="text/html" lang="DE" title="Der ganze Wortlaut: Offener Brief an Niko Pelinka  | Heute.at   ">
-                <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Ich hasse scheiß encodings .... ]]></wl:sentence>
-                <wl:sentence id="7e985ffb692bb6f617f25619ecca3910"><![CDATA[Pöses ärbeiten am Wochenende ... scheiß encodings ]]></wl:sentence>
+                <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Ich hasse schei�� encodings .... ]]></wl:sentence>
+                <wl:sentence id="7e985ffb692bb6f617f25619ecca3910"><![CDATA[P��ses ��rbeiten am Wochenende ... schei�� encodings ]]></wl:sentence>
             </wl:page> '''
     
     def test_update_sentences(self):
