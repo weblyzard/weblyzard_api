@@ -54,6 +54,13 @@ class Sentence(object):
                                   'sem_orient'    : 'sem_orient',
                                   'significance'  : 'significance' }.items()
 
+    XML_MAPPING = {'is_title': '{%s}is_title'  % DOCUMENT_NAMESPACE['wl'], 
+                   'md5sum': '{%s}id' % DOCUMENT_NAMESPACE['wl'], 
+                   'token_indices': '{%s}token' % DOCUMENT_NAMESPACE['wl'],
+                   'pos_tag_string': '{%s}pos' % DOCUMENT_NAMESPACE['wl'], 
+                   'sem_orient': '{%s}sem_orient' % DOCUMENT_NAMESPACE['wl'], 
+                   'significance': '{%s}significance' % DOCUMENT_NAMESPACE['wl']}
+
     def __init__(self, md5sum, pos_tag_string=None, token_indices=None, 
                  sem_orient=None, sentence=None, significance=None, is_title=False):
         '''
@@ -71,7 +78,7 @@ class Sentence(object):
         self.significance = significance
         self.token_indices = token_indices
         self.is_title = is_title
-        
+    
     def as_dict(self):
         '''
         @return: a dictionary representation of the given sentence object
@@ -79,6 +86,17 @@ class Sentence(object):
         '''
         return { dictattr: getattr(self, key) for key, dictattr in 
                      self.ATTRIBUTE_TO_DICT_MAPPING if getattr(self, key) }
+
+    def get_xml_attributes(self, skip_none_values=False):
+        xml_dict = {}
+        
+        for obj_attr, xml_attr in self.XML_MAPPING.iteritems():
+            value = getattr(self, obj_attr)
+            if skip_none_values and not value:
+                continue    
+            xml_dict[xml_attr] = str(value)
+            
+        return xml_dict
 
     def get_pos_tags(self):
         '''
@@ -114,10 +132,10 @@ class Sentence(object):
     pos_tags = property(get_pos_tags)
     tokens   = property(get_token)
     sentence = property(get_sentence, set_sentence)
-
-class XMLContent(object):
-    SENTENCE_XPATH = './/wl:sentence'
     
+class XMLContent(object):
+    SENTENCE_XPATH = './/{%s}sentence' % DOCUMENT_NAMESPACE['wl']
+
     def __init__(self, xml_content):
         ''' '''
         if xml_content and xml_content.find(DOCUMENT_NAMESPACE['wl']) == -1:
@@ -125,6 +143,23 @@ class XMLContent(object):
         self.root, self.attributes = self._set_root(xml_content)
         self.sentence_objects = []
         self.sentence_objects = self.get_sentences()
+        
+    @classmethod
+    def get_xml_from_dict(cls, attributes, sentences):
+        ''' '''
+        root = etree.Element('{%s}page' % DOCUMENT_NAMESPACE['wl'], attrib=attributes, 
+                             nsmap=DOCUMENT_NAMESPACE)
+        
+        for sentence in sentences: 
+            sent_obj = etree.SubElement(root, 
+                                        '{%s}sentence' % DOCUMENT_NAMESPACE['wl'], 
+                                        attrib=sentence.get_xml_attributes(), 
+                                        nsmap=DOCUMENT_NAMESPACE)
+            sent_obj.text = etree.CDATA(sentence.sentence)
+        
+        xml_content = etree.tostring(root, encoding='UTF-8', pretty_print=True)
+        
+        return XMLContent(xml_content)
 
     def as_dict(self):
         '''
