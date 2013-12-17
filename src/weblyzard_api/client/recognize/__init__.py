@@ -10,13 +10,12 @@ New supported calls:
 - recognize/searchXml/ofwi.people
 
 '''
+import unittest
 
 from eWRT.ws.rest import RESTClient
-from unittest import main, TestCase
 
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
-
 
 INTERNAL_PROFILE_PREFIX = 'extras.'
 
@@ -144,7 +143,7 @@ class Recognize(RESTClient):
         return self.execute('status')
 
 
-class EntityLyzardTest(TestCase):
+class EntityLyzardTest(unittest.TestCase):
 
     DOCS = [
             XMLContent(
@@ -192,5 +191,5 @@ class EntityLyzardTest(TestCase):
         
 
 if __name__ == '__main__':
-    main()
+    unittest.main()
 
