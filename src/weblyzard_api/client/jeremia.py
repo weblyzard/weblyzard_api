@@ -10,6 +10,7 @@ from eWRT.ws.rest import RESTClient, MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
+JEREMIA_URL = "http://localhost:8080/jeremia/rest"
 
 class Jeremia(RESTClient):
     '''
@@ -60,7 +61,7 @@ class Jeremia(RESTClient):
 
 class JeremiaClient2(MultiRESTClient):
     
-    def __init__(self, service_urls):
+    def __init__(self, service_urls=JEREMIA_URL):
         MultiRESTClient.__init__(self, service_urls)
     
     def commit(self, batch_id):

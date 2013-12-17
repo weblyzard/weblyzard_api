@@ -113,6 +113,7 @@ class TestTranslateXML(unittest.TestCase):
             print 'testing file %s' % test_file
             xml_content_old = get_test_data(test_file)
             xml_obj = self.check_document(xml_content_old)
+            print xml_obj.attributes
             
 if __name__ == '__main__':
     unittest.main()

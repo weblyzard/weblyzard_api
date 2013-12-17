@@ -102,10 +102,7 @@ class Sentence(object):
         '''
         @return: a list of the sentence's POS tags
         '''
-        if not self.pos_tag_string:
-            return []
-        else:
-            return self.pos_tag_string.split(" ")
+        return [] if not self.pos_tag_string else self.pos_tag_string.split(' ')
 
     def get_token(self):
         '''
@@ -235,7 +232,7 @@ class XMLContent(object):
             sentences.append(sentence)
 
         return sentences
-    
+    # TODO: check if function used and remove it ...  
     def update_sentences(self, sentences):
         ''' updates the values of the existing sentences. if the list of 
         sentence object is empty, sentence_objects will be set to the new
@@ -313,6 +310,7 @@ class XMLContent(object):
 
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
+    # TODO: check if update_sentences still required
     sentences    = property(get_sentences, update_sentences)    
     content_id   = property(get_content_id)
     nilsimsa     = property(get_nilsimsa)
