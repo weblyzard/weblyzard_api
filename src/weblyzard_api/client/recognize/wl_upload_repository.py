@@ -4,6 +4,12 @@
 Created on 17.12.2013
 
 @author: heinz-peterlang
+
+Before uploading a new repository, visit the web-interface and create the 
+repository (type: Java Native store). 
+
+ATTENTION: uploading the same dataset multiple times will lead to redundant data.
+
 '''
 
 import urllib
@@ -21,11 +27,11 @@ class UploadRecognizeRepository(object):
         if not repo_base_url.endswith('/'):
             repo_base_url = '%s/' % repo_base_url
 
-        self.end_point_url = ''.join(repo_base_url, 
-                                     'sopenrdf-sesame/repositories/',
-                                     repository,
-                                     '/statements?',
-                                     urllib.urlencode({'context': '<%s>' % graph_name}))
+        self.end_point_url = ''.join([repo_base_url, 
+                                      'openrdf-sesame/repositories/',
+                                      repository,
+                                      '/statements?',
+                                      urllib.urlencode({'context': '<%s>' % graph_name})])
     
     def run(self, src_directory):
         for fn in self.get_files(src_directory):
@@ -33,14 +39,12 @@ class UploadRecognizeRepository(object):
         
     @classmethod
     def upload_file(cls, end_point_url, fn, headers=DEFAULT_HEADERS):
-
-        with open(fn, 'w') as f: 
-            content = f.read()
-
-            (response, msg) = httplib2.Http().request(end_point_url, 
-                                                      'POST', 
-                                                      body=content, 
-                                                      headers=headers)
+        ''' uploads the file to the repository ''' 
+        with open(fn, 'r') as f: 
+            response, msg = httplib2.Http().request(end_point_url, 
+                                                    'POST', 
+                                                    body=f.read(), 
+                                                    headers=headers)
 
             print "Response %s: %s" % (response.status, msg)
 
@@ -54,7 +58,10 @@ class UploadRecognizeRepository(object):
 if __name__ == '__main__':
     from argparse import ArgumentParser
     
-    parser = ArgumentParser()
+    parser = ArgumentParser(description='Uploads triples to an existing '
+                            'Sesame repository. The script will not create '
+                            'the repository, therefore create the repository '
+                            'in the web-interface (type: java native type)')
     parser.add_argument('--source-dir', dest='source_directory', required=True, 
                         help='source directory containing nt files')
     parser.add_argument('--repo-base-url', dest='repo_base_url', 
@@ -71,4 +78,4 @@ if __name__ == '__main__':
     upload = UploadRecognizeRepository(repository=args.repository, 
                                        graph_name=args.graph_name, 
                                        repo_base_url=args.repo_base_url)
-    upload.run(args.src_directory)
+    upload.run(src_directory=args.source_directory)
