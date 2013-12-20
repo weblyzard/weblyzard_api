@@ -3,7 +3,7 @@ Created on Jan 4, 2013
 
 @author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-from unittest import main, TestCase
+import unittest
 from time import time
 
 from eWRT.ws.rest import MultiRESTClient
@@ -61,7 +61,7 @@ class Jeremia(MultiRESTClient):
         results = list(self.commit(num))
         result = results[0]
         return XMLContent(result['xml_content'])
-  
+    
     def submit_documents_blacklist(self, batch_id, documents, source_id):
         ''' submits the documents and removes blacklist sentences 
         :param batch_id: batch_id to use for the given submission
@@ -100,7 +100,7 @@ class Jeremia(MultiRESTClient):
         
         return self.commit(batch_id) 
 
-class JeremiaTest(TestCase):
+class JeremiaTest(unittest.TestCase):
 
     DOCS = [ {'id': content_id,
               'body': 'Good day Mr. President! Hello "world" ' + str(content_id),
@@ -158,24 +158,4 @@ class JeremiaTest(TestCase):
             j.submit_documents("1223", [] )
         
 if __name__ == '__main__':
-    j = Jeremia()
-    from sys import argv
-    d = [ {'title': '',
-           'body': argv[1].strip(), 
-           'id': 99933,
-           'format': 'text/html',
-           'header': {'dc:related': 'http://www.heise.de http://www.kurier.at'},
-          } 
-        ]
-    print d
-    j.submit_documents( "1239", d )
-    doc = list( j.commit("1239") )[0]
-    print doc['xml_content']
-    sentences = XMLContent(doc['xml_content']).sentences
-    for s in sentences:
-        print s.sentence
-        print s.pos_tags
-        print list(s.tokens)
-
-    exit()
-    main()
+    unittest.main()

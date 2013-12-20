@@ -54,6 +54,13 @@ class Sentence(object):
                                   'sem_orient'    : 'sem_orient',
                                   'significance'  : 'significance' }.items()
 
+    XML_MAPPING = {'is_title': '{%s}is_title'  % DOCUMENT_NAMESPACE['wl'], 
+                   'md5sum': '{%s}id' % DOCUMENT_NAMESPACE['wl'], 
+                   'token_indices': '{%s}token' % DOCUMENT_NAMESPACE['wl'],
+                   'pos_tag_string': '{%s}pos' % DOCUMENT_NAMESPACE['wl'], 
+                   'sem_orient': '{%s}sem_orient' % DOCUMENT_NAMESPACE['wl'], 
+                   'significance': '{%s}significance' % DOCUMENT_NAMESPACE['wl']}
+
     def __init__(self, md5sum, pos_tag_string=None, token_indices=None, 
                  sem_orient=None, sentence=None, significance=None, is_title=False):
         '''
@@ -71,7 +78,7 @@ class Sentence(object):
         self.significance = significance
         self.token_indices = token_indices
         self.is_title = is_title
-        
+    
     def as_dict(self):
         '''
         @return: a dictionary representation of the given sentence object
@@ -80,14 +87,22 @@ class Sentence(object):
         return { dictattr: getattr(self, key) for key, dictattr in 
                      self.ATTRIBUTE_TO_DICT_MAPPING if getattr(self, key) }
 
+    def get_xml_attributes(self, skip_none_values=False):
+        xml_dict = {}
+        
+        for obj_attr, xml_attr in self.XML_MAPPING.iteritems():
+            value = getattr(self, obj_attr)
+            if skip_none_values and not value:
+                continue    
+            xml_dict[xml_attr] = str(value)
+            
+        return xml_dict
+
     def get_pos_tags(self):
         '''
         @return: a list of the sentence's POS tags
         '''
-        if not self.pos_tag_string:
-            return []
-        else:
-            return self.pos_tag_string.split(" ")
+        return [] if not self.pos_tag_string else self.pos_tag_string.split(' ')
 
     def get_token(self):
         '''
@@ -114,10 +129,10 @@ class Sentence(object):
     pos_tags = property(get_pos_tags)
     tokens   = property(get_token)
     sentence = property(get_sentence, set_sentence)
-
-class XMLContent(object):
-    SENTENCE_XPATH = './/wl:sentence'
     
+class XMLContent(object):
+    SENTENCE_XPATH = './/{%s}sentence' % DOCUMENT_NAMESPACE['wl']
+
     def __init__(self, xml_content):
         ''' '''
         if xml_content and xml_content.find(DOCUMENT_NAMESPACE['wl']) == -1:
@@ -125,6 +140,26 @@ class XMLContent(object):
         self.root, self.attributes = self._set_root(xml_content)
         self.sentence_objects = []
         self.sentence_objects = self.get_sentences()
+    
+    def __len__(self):
+        return len(self.sentences)
+    
+    @classmethod
+    def get_xml_from_dict(cls, attributes, sentences):
+        ''' '''
+        root = etree.Element('{%s}page' % DOCUMENT_NAMESPACE['wl'], attrib=attributes, 
+                             nsmap=DOCUMENT_NAMESPACE)
+        
+        for sentence in sentences: 
+            sent_obj = etree.SubElement(root, 
+                                        '{%s}sentence' % DOCUMENT_NAMESPACE['wl'], 
+                                        attrib=sentence.get_xml_attributes(), 
+                                        nsmap=DOCUMENT_NAMESPACE)
+            sent_obj.text = etree.CDATA(sentence.sentence)
+        
+        xml_content = etree.tostring(root, encoding='UTF-8', pretty_print=True)
+        
+        return XMLContent(xml_content)
 
     def as_dict(self):
         '''
@@ -157,7 +192,16 @@ class XMLContent(object):
             attributes = root.attrib
        
         return root, attributes
-          
+
+    @staticmethod
+    def get_text(text):
+        ''' encodes the text ''' 
+        if isinstance(text, str):
+            text = text.decode('utf-8')
+        return text
+
+# property functions
+      
     def get_sentences(self):
         ''' 'extracts the sentences of the root objects
         @return: list of Sentence objects '''
@@ -188,7 +232,7 @@ class XMLContent(object):
             sentences.append(sentence)
 
         return sentences
-    
+    # TODO: check if function used and remove it ...  
     def update_sentences(self, sentences):
         ''' updates the values of the existing sentences. if the list of 
         sentence object is empty, sentence_objects will be set to the new
@@ -208,6 +252,18 @@ class XMLContent(object):
                         new_value = getattr(new_sentence, obj_attr_name)
                         if new_value:
                             setattr(sentence, obj_attr_name, new_value)
+                            
+                            
+    def update_attributes(self, new_attributes):
+        ''' updates the existing attributes with new ones '''
+        
+        # not using dict.update to allow advanced processing
+        
+        for k, v in self.attributes.iteritems():    
+            if k in new_attributes and new_attributes[k] <> v:
+                self.attributes[str(k)] = str(new_attributes[k])
+
+# property functions
 
     def get_plain_text(self):
         ''' returns the plain text of the XML content '''
@@ -216,10 +272,8 @@ class XMLContent(object):
         return '\n'.join([sent.sentence for sent in self.sentences])
 
     def get_attribute(self, namespace, attr):
-        wl_page = self.root.find(".")
-        return wl_page.attrib['{%s}%s' % (DOCUMENT_NAMESPACE[namespace], attr)]
+        return self.get_attribute(namespace, attr)
         
- 
     def get_content_id(self):
         return self.get_attribute('wl', 'id')
 
@@ -230,23 +284,14 @@ class XMLContent(object):
         ''' @returns: all sentences that have a set is_title flag
                       (i.e. are part of the title).
         '''
-        return [ s for s in self.sentences if s.is_title ] 
+        return [s for s in self.sentences if s.is_title] 
 
     def get_lang(self):
-        wl_page = self.root.find(".")
-        return wl_page.get('xml:lang', None)
+        return self.get_attribute('xml', 'lang')
 
     def get_content_type(self):
         return self.get_attribute('dc', 'format')
 
-    @staticmethod
-    def get_text(text):
-        ''' encodes the text ''' 
-        if isinstance(text, str):
-            text = text.decode('utf-8')
-        return text
- 
-   
     def get_xml_document(self):
         ''' returns the string representation of the xml content '''
         ns = '{%s}' % DOCUMENT_NAMESPACE['wl']
@@ -265,9 +310,7 @@ class XMLContent(object):
 
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
-    def __len__(self):
-        return len(self.sentences)
-
+    # TODO: check if update_sentences still required
     sentences    = property(get_sentences, update_sentences)    
     content_id   = property(get_content_id)
     nilsimsa     = property(get_nilsimsa)
@@ -275,4 +318,5 @@ class XMLContent(object):
     plain_text   = property(get_plain_text)
     title        = property(get_title)
     lang         = property(get_lang)
+    xml_document = property(get_xml_document)
     

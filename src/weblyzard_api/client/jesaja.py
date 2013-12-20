@@ -11,7 +11,6 @@ from cPickle import load
 from os.path import join as os_join, dirname
 
 from eWRT.ws.rest import MultiRESTClient 
-
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
