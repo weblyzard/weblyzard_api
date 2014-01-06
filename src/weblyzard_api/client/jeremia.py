@@ -3,71 +3,28 @@ Created on Jan 4, 2013
 
 @author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-from unittest import main, TestCase
+import unittest
 from time import time
 
-from eWRT.ws.rest import RESTClient, MultiRESTClient
+from eWRT.ws.rest import MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
-
-class Jeremia(RESTClient):
+class Jeremia(MultiRESTClient):
     '''
     Jeremia Web Service
     '''
-
+    URL_PATH = 'jeremia/rest'
+    
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
         url += '/jeremia/rest'
-        RESTClient.__init__(self, url, usr, pwd)
+        MultiRESTClient.__init__(service_urls=url, user=usr, password=pwd)
 
     def commit(self, batch_id):
-        ''' @param batch_id: the batch_id to retrieve 
-            @return: a generator yielding all the documents of that
-                     particular patch 
-        '''
-        while True:
-            docs = self.execute('commit', batch_id)
-            if not docs:
-                return
-            for doc in docs:
-                yield doc
-
-    def submit_documents( self, batch_id, documents ):
         ''' 
-        @param batch_id: batch_id to use for the given submission
-        @param documents: a list of dictionaries containing the document 
+        :param batch_id: the batch_id to retrieve 
+        :return: a generator yielding all the documents of that particular batch 
         '''
-        if not documents:
-            raise ValueError("Cannot process an empty document list")
-        return self.execute('submit_documents', batch_id, documents)
-        
-    def status(self):
-        return self.execute('status')
-    
-    def get_xml_doc(self, text, content_id = "1"):
-        '''
-        Processes text and returns a XMLContent object.
-        @param text: the text to process
-        @param content_id: optional content id
-        '''
-        batch = [{'id': content_id, 
-                  'title': '', 
-                  'body': text, 
-                  'format': 'text/plain'}]
-        num = str(time())
-        self.submit_documents(num, batch)
-        results = list(self.commit(num))
-        result = results[0]
-        return XMLContent(result['xml_content'])
-
-
-class JeremiaClient2(MultiRESTClient):
-    
-    def __init__(self, service_urls):
-        MultiRESTClient.__init__(self, service_urls)
-    
-    def commit(self, batch_id):
-        ''' returns a generator ''' 
         while True:
             result = self.request('commit/%s' % batch_id)
             if not result:
@@ -75,11 +32,42 @@ class JeremiaClient2(MultiRESTClient):
             else:
                 for doc in result:
                     yield doc
-    
-    def submit_documents(self, batch_id, documents):
-        return self.request('submit_documents/%s' % batch_id, documents)
 
+    def submit_documents(self, batch_id, documents):
+        ''' 
+        :param batch_id: batch_id to use for the given submission
+        :param documents: a list of dictionaries containing the document 
+        '''
+        if not documents:
+            raise ValueError('Cannot process an empty document list')
+        return self.request('submit_documents/%s' % batch_id, documents)
+    
+    def status(self):
+        return self.request('status')
+    
+    def get_xml_doc(self, text, content_id = "1"):
+        '''
+        Processes text and returns a XMLContent object.
+        :param text: the text to process
+        :param content_id: optional content id
+        '''
+        batch = [{'id': content_id, 
+                  'title': '', 
+                  'body': text, 
+                  'format': 'text/plain'}]
+        
+        num = str(time())
+        self.submit_documents(num, batch)
+        results = list(self.commit(num))
+        result = results[0]
+        return XMLContent(result['xml_content'])
+    
     def submit_documents_blacklist(self, batch_id, documents, source_id):
+        ''' submits the documents and removes blacklist sentences 
+        :param batch_id: batch_id to use for the given submission
+        :param documents: a list of dictionaries containing the document 
+        :param source_id: source_id for the documents, determines the blacklist
+        '''
         url = 'submit_documents_blacklist/%s/%s' % (batch_id, source_id)
         return self.request(url, documents)
     
@@ -89,14 +77,17 @@ class JeremiaClient2(MultiRESTClient):
         return self.request(url, blacklist)
         
     def clear_blacklist(self, source_id):
-        ''' empties existing blacklist cache ''' 
+        ''' empties existing blacklist cache 
+        :param source_id: source_id for the documents, determines the blacklist
+        ''' 
         return self.request('cache/clearBlacklist/%s' % source_id)
         
     def get_blacklist(self, source_id):
+        ''' returns the blacklist for a source_id ''' 
         return self.request('cache/getBlacklist/%s' % source_id)
 
     def submit(self, batch_id, documents, source_id=None, use_blacklist=False):
-         
+        ''' submit documents '''
         if use_blacklist: 
             if not source_id:
                 raise Exception('Blacklist requires a source_id')
@@ -109,7 +100,7 @@ class JeremiaClient2(MultiRESTClient):
         
         return self.commit(batch_id) 
 
-class JeremiaTest(TestCase):
+class JeremiaTest(unittest.TestCase):
 
     DOCS = [ {'id': content_id,
               'body': 'Good day Mr. President! Hello "world" ' + str(content_id),
@@ -167,24 +158,4 @@ class JeremiaTest(TestCase):
             j.submit_documents("1223", [] )
         
 if __name__ == '__main__':
-    j = Jeremia()
-    from sys import argv
-    d = [ {'title': '',
-           'body': argv[1].strip(), 
-           'id': 99933,
-           'format': 'text/html',
-           'header': {'dc:related': 'http://www.heise.de http://www.kurier.at'},
-          } 
-        ]
-    print d
-    j.submit_documents( "1239", d )
-    doc = list( j.commit("1239") )[0]
-    print doc['xml_content']
-    sentences = XMLContent(doc['xml_content']).sentences
-    for s in sentences:
-        print s.sentence
-        print s.pos_tags
-        print list(s.tokens)
-
-    exit()
-    main()
+    unittest.main()
