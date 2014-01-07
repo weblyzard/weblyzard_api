@@ -272,7 +272,8 @@ class XMLContent(object):
         return '\n'.join([sent.sentence for sent in self.sentences])
 
     def get_attribute(self, namespace, attr):
-        return self.get_attribute(namespace, attr)
+        wl_page = self.root.find('.')
+        return wl_page.attrib['{%s}%s' % (DOCUMENT_NAMESPACE[namespace], attr)]
         
     def get_content_id(self):
         return self.get_attribute('wl', 'id')
