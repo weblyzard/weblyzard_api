@@ -28,7 +28,7 @@ def get_test_data_dir():
     
     Usage:
     >>> get_test_data_dir() # doctest: +ELLIPSIS
-    '.../wl_mirroring/test/data'
+    '.../weblyzard_api/xml_content/tests/data'
     '''
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'data')) 
 
