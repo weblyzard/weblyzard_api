@@ -15,7 +15,7 @@ class DomainSpecificity( MultiRESTClient):
     URL_PATH = 'rest/domain_specificity' 
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        MultiRESTClient.__init__(service_urls=url, user=usr, password=pwd)
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
     def add_profile(self, profile_name, profile_mapping):
         '''

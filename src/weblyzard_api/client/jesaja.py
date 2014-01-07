@@ -24,7 +24,7 @@ class Jesaja(MultiRESTClient):
     URL_PATH = 'jesaja/rest'
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        MultiRESTClient.__init__(service_urls=url, user=usr, password=pwd)
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
     @staticmethod
     def get_documents(xml_content_dict):
