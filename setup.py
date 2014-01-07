@@ -9,6 +9,6 @@ setup (
     author_email = 'lang@weblyzard.com',
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = ['eWRT', ],
+    install_requires = ['eWRT>=0.7.10', ],
     scripts = ['src/weblyzard_api/client/recognize/wl_upload_repository.py',]
 )
