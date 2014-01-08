@@ -8,11 +8,12 @@ from unittest import main, TestCase
 from eWRT.ws.rest import  MultiRESTClient
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
-class DomainSpecificity( MultiRESTClient):
+class DomainSpecificity(MultiRESTClient):
     '''
     Domain Specificity Web Service
     '''
     URL_PATH = 'rest/domain_specificity' 
+    
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
