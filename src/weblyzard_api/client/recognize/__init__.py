@@ -19,7 +19,6 @@ from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER, 
                                   WEBLYZARD_API_PASS)
 
-WEBLYZARD_API_URL = 'http://voyager.srv.weblyzard.net:8080'
 INTERNAL_PROFILE_PREFIX = 'extras.'
 
 class Recognize(MultiRESTClient):
@@ -32,7 +31,7 @@ class Recognize(MultiRESTClient):
     
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        MultiRESTClient.__init__(service_urls=url, user=usr, password=pwd)
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
     
     def list_profiles(self):
         ''' pre-loaded profiles
@@ -172,60 +171,62 @@ class EntityLyzardTest(unittest.TestCase):
             XMLContent(
             '''
             <?xml version="1.0" encoding="UTF-8"?>
-            <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" dc:title="" wl:id="99933" dc:format="text/html" xml:lang="de" wl:nilsimsa="020ee211a20084bb0d2208038548c02405bb0110d2183061db9400d74c15553a" dc:related="http://www.heise.de http://www.kurier.at">
+            <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" dc:title="" wl:id="99934" dc:format="text/html" xml:lang="de" wl:nilsimsa="020ee211a20084bb0d2208038548c02405bb0110d2183061db9400d74c15553a" dc:related="http://www.heise.de http://www.kurier.at">
                <wl:sentence wl:id="f98a0c4d2ddffd60b64b9b25f1f5657a" wl:pos="NN NE VVFIN $, KOUS ART NN ADV CARD ADJD VAINF VAFIN $." wl:token="0,6 7,14 15,23 23,24 25,29 30,33 34,37 38,42 43,47 48,59 60,64 65,69 69,70" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Rektor Kessler erklärte, dass die HTW auch 2014 erfolgreich sein wird.]]></wl:sentence>
             </wl:page>
             ''').as_dict(),
                ]
      
-#    def test_entity_lyzard(self):
-#        docs = [ 
-#                 {'content_id': '12', 'content': u'Franz Klammer fährt Ski'}, 
-#                 {'content_id': '13', 'content' :u'Peter Müller macht Politik',} 
-#               ]
-#
-#        e = Recognize()
-#        print e.list_profiles()
-#        e.add_profile('People.DACH.de')
-#        print e.search_documents('People.DACH.de', docs)
-#
-#    def test_search_xml(self):
-#        e = Recognize()
-#        e.add_profile('People.DACH.de')
-#        print 'xmlsearch::::', e.search_documents('People.DACH.de', self.DOCS)
-#
-#    def test_focus_search(self):
-#        e = Recognize()
-#        result =  e.get_focus(['People.DACH.de', 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'], self.DOCS, max_results=3)
-#
-#        #result =  e.get_focus(['ofwi.people', 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'], self.DOCS, max_results=3)
-#        for res in result:
-#            print ':::', res
-#        assert u'focus' in result[0]
-#        assert u'annotations' in result[0]
-#    
-#    def test_geo(self):
-#        geodocs = [{'content_id': '11', 
-#                    'content': u'Frank goes to Los Angeles. Los Angeles is a nice city'},
-#               ]
-#        e = Recognize()
-#        profile_name = 'Cities.10000.en'
+    def test_entity_lyzard(self):
+        docs = [ 
+                 {'content_id': '12', 'content': u'Franz Klammer fährt Ski'}, 
+                 {'content_id': '13', 'content' :u'Peter Müller macht Politik',} 
+               ]
+
+        e = Recognize()
+        print e.list_profiles()
+        e.add_profile('People.DACH.de')
+        print e.search_documents('People.DACH.de', docs)
+
+    def test_search_xml(self):
+        e = Recognize()
+        e.add_profile('People.DACH.de')
+        print 'xmlsearch::::', e.search_documents('People.DACH.de', self.DOCS)
+
+    def test_focus_search(self):
+        e = Recognize()
+        result =  e.get_focus(['People.DACH.de', 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'], self.DOCS, max_results=3)
+
+        # annotated two documents
+        assert len(result) == len(self.DOCS)
+
+        for content_id, res in result.items():
+            print ':::', res
+            assert u'focus' in res
+            assert u'annotations' in res
+    
+    def test_geo(self):
+        geodocs = [{'content_id': '11', 
+                    'content': u'Frank goes to Los Angeles. Los Angeles is a nice city'},
+               ]
+        e = Recognize()
+        profile_name = 'Cities.10000.en'
+        
+#        print e.list_configured_profiles()
+#        print e.add_profile(profile_name, force=True)
 #        
-##        print e.list_configured_profiles()
-##        print e.add_profile(profile_name, force=True)
-##        
-##        print 'list_configured_profiles', e.list_configured_profiles()
-##        e.add_profile('Cities.10000.en')
-##        
-##        e.search_documents(profile_name=profile_name, 
-##                           doc_list=geodocs, debug=True, 
-##                           output_format='standard')
-##        print 'list_profiles', e.list_profiles()
-##        e.add_profile('Cities.10000.en', geodocs)
-##        e.add_profile('Cities.10000.en')
-#        result = e.search('Cities.10000.en', geodocs, output_format='standard')
-#        print 'result', len(result), result[0]['name']
-#       
+#        print 'list_configured_profiles', e.list_configured_profiles()
+#        e.add_profile('Cities.10000.en')
+#        
+#        e.search_documents(profile_name=profile_name, 
+#                           doc_list=geodocs, debug=True, 
+#                           output_format='standard')
+#        print 'list_profiles', e.list_profiles()
+#        e.add_profile('Cities.10000.en', geodocs)
+#        e.add_profile('Cities.10000.en')
+        result = e.search('Cities.10000.en', geodocs, output_format='standard')
+        print 'result', len(result), result[0]['name']
+       
 #    def test_geo_vs_geo(self):
 #        docs = pickle.load(open('test_data_climate2_media.pickle'))
 #        
