@@ -17,7 +17,6 @@ class Jeremia(MultiRESTClient):
     URL_PATH = 'jeremia/rest'
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        url += '/jeremia/rest'
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
     def commit(self, batch_id):
