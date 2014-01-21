@@ -1,0 +1,103 @@
+'''
+Created on 20.01.2014
+
+@author: heinz-peterlang
+'''
+import os
+import urlparse
+from datetime import datetime, timedelta
+    
+from eWRT.access.http import Retrieve
+
+LOCALE_DIR = '/opt/weblyzard/dictionaries/'
+SERVER_URL = 'https://services.weblyzard.com/repo/resources/'
+MAX_AGE_HOURS = 24
+
+class WeblyzardDictionaries(object):
+        
+    def __init__(self, user, password, 
+                 locale_dir=LOCALE_DIR, 
+                 server_url=SERVER_URL, 
+                 max_age_hours=MAX_AGE_HOURS):
+        
+        if not os.path.exists(locale_dir):
+            os.makedirs(locale_dir)
+        self.max_file_age = datetime.now() - timedelta(hours=max_age_hours)
+        self.locale_dir = locale_dir 
+        self.server_url = server_url
+        self.retrieve = Retrieve(__file__)
+        self.user = user
+        self.password = password
+        
+    def get_dictionary(self, dictionary_uri):
+        ''' tries to load the dictionary from the file-system. If the function
+        cannot find the file or if the file is too old (see MAX_AGE_HOURS), 
+        the function will load the dictionary from the server.
+        :param dictionary_uri: URI for the dictionary, e.g. people/de/titles/all.txt
+        :returns: full file name of the dictionary
+        '''
+        full_path = os.path.join(self.locale_dir, dictionary_uri)
+
+        fetch_file = True
+
+        if os.path.isfile(full_path):
+            last_mod = datetime.fromtimestamp(os.path.getmtime(full_path))
+        
+            if last_mod < self.max_file_age:
+                last_mod_server = self.get_last_mod_date(dictionary_uri)
+                
+                if last_mod_server < last_mod: 
+                    fetch_file = False
+            else: 
+                fetch_file = False
+                
+        if fetch_file: 
+            self.get_from_server(dictionary_uri, full_path)
+            
+        return full_path
+
+    def get_last_mod_date(self, dictionary_uri):
+        ''' Requests the URL with a HEAD request to retrieve the last_modified 
+        date of the file
+        :param dictionary_uri: URI for the dictionary, e.g. people/de/titles/all.txt
+        ''' 
+        
+        full_url = urlparse.urljoin(self.server_url, dictionary_uri)
+        response = self.retrieve.open(full_url, 
+                                      user=self.user, 
+                                      pwd=self.password,
+                                      accept_gzip=False,
+                                      head_only=True)
+        last_modified = response.headers.get('Last-Modified')
+        
+        if last_modified:
+            return datetime.strptime(last_modified, '%a, %d %b %Y %H:%M:%S %Z')
+        
+    def get_from_server(self, dictionary_uri, target_path):
+        ''' Fetches a dictionary from the server and stores it on the local FS.
+        :param dictionary_uri: URI for the dictionary, e.g. people/de/titles/all.txt
+        :param target_path: destination on local FS to store the file
+        :returns: target_path if the file was saved
+        '''
+        
+        full_url = urlparse.urljoin(self.server_url, dictionary_uri)
+
+        response = self.retrieve.open(full_url, 
+                                      user=self.user, 
+                                      pwd=self.password)
+        
+        if response:
+            print 'got a response' 
+            
+            target_directory =  os.path.dirname(target_path)
+            
+            if not os.path.exists(target_directory):
+                    os.makedirs(target_directory)
+                
+            with open(target_path, 'w') as f: 
+                f.write(response.read())
+                
+            return target_path
+
+
+
