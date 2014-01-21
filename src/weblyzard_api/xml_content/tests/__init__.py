@@ -5,7 +5,9 @@ Created on 19.09.2013
 '''
 import os
 import pickle
+from nose.tools import nottest
 
+@nottest
 def get_test_data(fn, data_dir=None, return_file=False):
     with open(get_full_path(fn, data_dir), 'rb') as f: 
         
@@ -19,10 +21,12 @@ def get_test_data(fn, data_dir=None, return_file=False):
 
         return content 
 
+@nottest
 def get_full_path(fn, data_dir=None):
     data_dir = data_dir if data_dir else get_test_data_dir()
     return os.path.join(data_dir, fn)
 
+@nottest
 def get_test_data_dir():
     ''' returns the test_data_directory 
     
