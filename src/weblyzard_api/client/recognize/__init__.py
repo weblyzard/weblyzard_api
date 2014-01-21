@@ -32,7 +32,7 @@ class Recognize(MultiRESTClient):
     
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        MultiRESTClient.__init__(service_urls=url, user=usr, password=pwd)
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
     
     def list_profiles(self):
         ''' pre-loaded profiles
