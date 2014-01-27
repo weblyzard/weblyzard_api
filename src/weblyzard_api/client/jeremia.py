@@ -5,6 +5,7 @@ Created on Jan 4, 2013
 '''
 import unittest
 from time import time
+from sys import argv
 
 from eWRT.ws.rest import MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
@@ -157,4 +158,11 @@ class JeremiaTest(unittest.TestCase):
             j.submit_documents("1223", [] )
         
 if __name__ == '__main__':
-    unittest.main()
+    if len(argv) > 1:
+        txt = argv[1]
+        docs = [{'id': "192292", 'body': txt, 'title': '', 'format': 'html/text', 'header': {} }]
+        j = Jeremia()
+        j.submit_documents( "1222", docs )
+        print list(j.commit("1222"))
+    else:
+        unittest.main()
