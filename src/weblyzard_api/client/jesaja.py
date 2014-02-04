@@ -153,6 +153,10 @@ class Jesaja(MultiRESTClient):
     def get_corpus_size(self, profile_name):
         return self.request('get_corpus_size', profile_name) 
 
+    def add_or_update_stoplist(self, name, stoplist):
+        ''' for backward compability ''' 
+        return self.add_stoplist(name, stoplist) 
+
     def add_stoplist(self, name, stoplist):
         return self.request('add_or_update_stoplist/%s' % name, stoplist) 
 
