@@ -62,10 +62,11 @@ class Jesaja(MultiRESTClient):
         if not corpus_name: 
             corpus_name = profile_name
             
-        return self.add_or_update_corpus(corpus_name=corpus_name, 
-                                         corpus_format=corpus_format, 
-                                         corpus=corpus, 
-                                         profile_name=profile_name)
+        assert corpus_format == 'dict', 'dict only --> prevent using XML V2'
+        
+        path = 'add_or_refresh_corpus/doc/%s/%s' % (corpus_name, 
+                                                    profile_name) 
+        return self.request(path, corpus)
 
     def add_or_update_corpus(self, corpus_name, corpus_format, corpus, 
                              profile_name=None):
