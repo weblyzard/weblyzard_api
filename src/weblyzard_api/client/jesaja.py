@@ -149,10 +149,10 @@ class Jesaja(MultiRESTClient):
         return self.request('get_cache_stats', return_plain=True)
 
     def get_cached_corpora(self):
-        return self.request("get_cached_corpora")
+        return self.request('get_cached_corpora')
 
     def get_corpus_size(self, profile_name):
-        return self.request('get_corpus_size', profile_name) 
+        return self.request('get_corpus_size/%s' % profile_name) 
 
     def add_or_update_stoplist(self, name, stoplist):
         ''' for backward compability ''' 
