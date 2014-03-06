@@ -15,7 +15,7 @@ import os
 
 from weblyzard_api.client import WEBLYZARD_API_URL
 
-DEFAULT_HEADERS = {'content-type': }
+# DEFAULT_HEADERS = {'content-type': }
 
 from weblyzard_api.client.openrdf import OpenRdfClient
 
