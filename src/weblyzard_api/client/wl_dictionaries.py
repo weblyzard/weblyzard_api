@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 '''
 Created on 20.01.2014
 
@@ -5,25 +7,26 @@ Created on 20.01.2014
 '''
 import os
 import urlparse
+import unittest
 from datetime import datetime, timedelta
     
 from eWRT.access.http import Retrieve
 
-LOCALE_DIR = '/opt/weblyzard/dictionaries/'
+LOCAL_DIR = '/opt/weblyzard/dictionaries/'
 SERVER_URL = 'https://services.weblyzard.com/repo/resources/'
 MAX_AGE_HOURS = 24
 
 class WeblyzardDictionaries(object):
         
     def __init__(self, user, password, 
-                 locale_dir=LOCALE_DIR, 
+                 local_dir=LOCAL_DIR, 
                  server_url=SERVER_URL, 
                  max_age_hours=MAX_AGE_HOURS):
         
-        if not os.path.exists(locale_dir):
-            os.makedirs(locale_dir)
+        if not os.path.exists(local_dir):
+            os.makedirs(local_dir)
         self.max_file_age = datetime.now() - timedelta(hours=max_age_hours)
-        self.locale_dir = locale_dir 
+        self.local_dir = local_dir 
         self.server_url = server_url
         self.retrieve = Retrieve(__file__)
         self.user = user
@@ -36,7 +39,11 @@ class WeblyzardDictionaries(object):
         :param dictionary_uri: URI for the dictionary, e.g. people/de/titles/all.txt
         :returns: full file name of the dictionary
         '''
-        full_path = os.path.join(self.locale_dir, dictionary_uri)
+        
+        if dictionary_uri.startswith('/'):
+            dictionary_uri = dictionary_uri[1:]
+        
+        full_path = os.path.join(self.local_dir, dictionary_uri)
 
         fetch_file = True
 
@@ -98,6 +105,5 @@ class WeblyzardDictionaries(object):
                 f.write(response.read())
                 
             return target_path
-
-
-
+    
+    
