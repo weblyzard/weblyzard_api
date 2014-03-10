@@ -11,5 +11,5 @@ setup (
     package_dir = {'': 'src'},
     install_requires = ['eWRT>=0.7.11', 
                         'requests'],
-    scripts = ['src/weblyzard_api/client/recognize/wl_upload_repository.py',]
+    scripts = ['src/weblyzard_api/client/openrdf/wl_upload_repository.py',]
 )
