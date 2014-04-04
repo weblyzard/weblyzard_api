@@ -7,7 +7,6 @@ Created on 20.01.2014
 '''
 import os
 import urlparse
-import unittest
 from datetime import datetime, timedelta
     
 from eWRT.access.http import Retrieve

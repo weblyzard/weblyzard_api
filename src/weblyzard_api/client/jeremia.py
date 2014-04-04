@@ -163,6 +163,9 @@ if __name__ == '__main__':
         docs = [{'id': "192292", 'body': txt, 'title': '', 'format': 'html/text', 'header': {} }]
         j = Jeremia()
         j.submit_documents( "1222", docs )
-        print list(j.commit("1222"))
+        l = list(j.commit("1222"))
+        print l
+        print XMLContent(l[0]['xml_content']).sentences[0].dependencies
+
     else:
         unittest.main()

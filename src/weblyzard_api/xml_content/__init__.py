@@ -28,6 +28,7 @@ DOCUMENT_NAMESPACE  = {'wl': 'http://www.weblyzard.com/wl/2013#',
 SENTENCE_ATTRIBUTES = {
     'pos_tag_string': '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'pos'), 
     'token_indices' : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'token'),
+    'dependencies'  : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'dependencies'),
     'significance'  : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'significance'),
     'sem_orient'    : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'sem_orient'),
     'md5sum'        : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'id'),
@@ -50,6 +51,7 @@ class Sentence(object):
                                   'is_title'      : 'is_title',
                                   'md5sum'        : 'id',
                                   'token_indices' : 'token',
+                                  'dependencies'  : 'dependencies',
                                   'pos_tag_string': 'pos',
                                   'sem_orient'    : 'sem_orient',
                                   'significance'  : 'significance' }.items()
@@ -58,17 +60,21 @@ class Sentence(object):
                    'md5sum': '{%s}id' % DOCUMENT_NAMESPACE['wl'], 
                    'token_indices': '{%s}token' % DOCUMENT_NAMESPACE['wl'],
                    'pos_tag_string': '{%s}pos' % DOCUMENT_NAMESPACE['wl'], 
+                   'dependencies': '{%s}dependencies' % DOCUMENT_NAMESPACE['wl'],
                    'sem_orient': '{%s}sem_orient' % DOCUMENT_NAMESPACE['wl'], 
                    'significance': '{%s}significance' % DOCUMENT_NAMESPACE['wl']}
 
     def __init__(self, md5sum, pos_tag_string=None, token_indices=None, 
-                 sem_orient=None, sentence=None, significance=None, is_title=False):
+                 sem_orient=None, sentence=None, significance=None, is_title=False, dependencies=None):
         '''
         @param pos_tag_string: a string containing the sentences pos
                                tags (e.g. 'NN VB NN')
-        @param token_indices: a string containing the token indices
+        @param token_indices: a string containing the token indices.
                               (e.g. '0:1 3:12')
-
+        @param dependencies: the dependency structure of the sentence as
+                             head_index:dependency_type. An index of -1 is
+                             used to indicate that no head is present.
+                             (e.g. 1:NMOD 3:NMOD 1:SUFFIX 4:SBJ)
         '''
         self.md5sum = md5sum
         self._sentence = None # access via property 
@@ -77,6 +83,7 @@ class Sentence(object):
         self.sentence = sentence
         self.significance = significance
         self.token_indices = token_indices
+        self.dependencies = dependencies
         self.is_title = is_title
     
     def as_dict(self):
