@@ -79,20 +79,28 @@ class Recognize(MultiRESTClient):
         '''
         assert output_format in self.OUTPUT_FORMATS
         
+        updated_profiles = []
         for profile_name in profile_names:
-            self.add_profile(profile_name)
-      
+            try:
+                self.add_profile(profile_name)
+                updated_profiles.append(profile_name)
+            except Exception, e: 
+                print 'could not update %s: %s' % (profile_name, e)
+        
+        if not updated_profiles: 
+            print 'could not update any profiles - return'
+            return
+                
         return self.request(path='multisearch',
                             parameters=text, 
-                            query_parameters={
-                                            'list' : profile_names,
-                                            'limit': limit,
-                                            'rescore': max_entities, 
-                                            'buckets': buckets, 
-                                            'limit': limit, 
-                                            'wt': output_format, 
-                                            'lang': lang,
-                                            'debug': debug })
+                            query_parameters={'list' : updated_profiles,
+                                              'limit': limit,
+                                              'rescore': max_entities, 
+                                              'buckets': buckets, 
+                                              'limit': limit, 
+                                              'wt': output_format, 
+                                              'lang': lang,
+                                              'debug': debug })
     
     def search(self, profile_name, text, debug=False, max_entities=1, buckets=1, 
                limit=1, output_format='minimal'):
