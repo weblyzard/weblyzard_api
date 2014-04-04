@@ -26,13 +26,14 @@ class Recognize(MultiRESTClient):
     class:: Recognize 
     EntityLyzard/Recognize Web Service
     '''
-    OUTPUT_FORMATS = ('standard', 'minimal', 'annie')    
+    OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')    
     URL_PATH = 'recognize/rest/recognize'
     
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
-    
+        self.profile_cache = []
+        
     def list_profiles(self):
         ''' pre-loaded profiles
             e.g. [u'Cities.DACH.10000.de_en', u'People.DACH.de']
@@ -46,18 +47,57 @@ class Recognize(MultiRESTClient):
     def add_profile(self, profile_name, force=False):
         ''' pre-loads the given profile '''
         is_internal_profile = profile_name.startswith(INTERNAL_PROFILE_PREFIX)
-        profile_exists = profile_name in self.list_profiles() and not force
+        profile_exists = profile_name in self.profile_cache and not force
+        if not profile_exists:
+            profile_exists = profile_name in self.list_profiles() and not force
         
+        if profile_exists and not profile_name in self.profile_cache:
+            self.profile_cache.append(profile_name)
+            
         if not is_internal_profile and not profile_exists:
             return self.request('add_profile/%s' % profile_name)
+        
 
     def remove_profile(self, profile_name):
         ''' removes a profile from the list of pre-loaded profiles '''
         return self.request('remove_profile/%s' % profile_name)
 
+    def multisearch(self, profile_names, text, debug=False, max_entities=1, buckets=1, 
+               limit=1, lang='de', output_format='minimal'):
+        '''
+        Search across multiple profiles
+        :param profileName: the profiles to search in
+        :param text: the text to search in
+        :param debug: compute and return an explanation
+        :param buckets: only return n buckets of hits with the same score
+        :param max_entities: number of results to return (removes the top hit's
+                             tokens and rescores the result list subsequently
+        :param limit: only return that many results
+        :param output_format: the output format to use ('standard', 'minimal'*, 'annie')
+        :param lang: the document language, 'de' is default
+        :rtype: the tagged text
+        '''
+        assert output_format in self.OUTPUT_FORMATS
+        
+        for profile_name in profile_names:
+            self.add_profile(profile_name)
+      
+        return self.request(path='multisearch',
+                            parameters=text, 
+                            query_parameters={
+                                            'list' : profile_names,
+                                            'limit': limit,
+                                            'rescore': max_entities, 
+                                            'buckets': buckets, 
+                                            'limit': limit, 
+                                            'wt': output_format, 
+                                            'lang': lang,
+                                            'debug': debug })
+    
     def search(self, profile_name, text, debug=False, max_entities=1, buckets=1, 
                limit=1, output_format='minimal'):
         '''
+        Search within a single profile
         :param profileName: the profile to search in
         :param text: the text to search in
         :param debug: compute and return an explanation
