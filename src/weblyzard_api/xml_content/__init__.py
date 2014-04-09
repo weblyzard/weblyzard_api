@@ -32,6 +32,7 @@ SENTENCE_ATTRIBUTES = {
     'significance'  : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'significance'),
     'sem_orient'    : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'sem_orient'),
     'md5sum'        : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'id'),
+    'is_title'        : '{%s}%s' % (DOCUMENT_NAMESPACE['wl'], 'is_title'),
 }.items()
 
 logger = logging.getLogger('wl_core.xml_content')
@@ -157,7 +158,8 @@ class XMLContent(object):
     @classmethod
     def get_xml_from_dict(cls, attributes, sentences):
         ''' '''
-        root = etree.Element('{%s}page' % DOCUMENT_NAMESPACE['wl'], attrib=attributes, 
+        root = etree.Element('{%s}page' % DOCUMENT_NAMESPACE['wl'], 
+                             attrib=attributes, 
                              nsmap=DOCUMENT_NAMESPACE)
         
         for sentence in sentences: 
