@@ -20,6 +20,8 @@ Remove functions:
 import logging
 from lxml import etree
 
+# TODO: replace the content of this file with weblyzard_api.xml_content.xml_content_latest
+
 DOCUMENT_NAMESPACE  = {'wl': 'http://www.weblyzard.com/wl/2013#',
                        'dc': 'http://purl.org/dc/elements/1.1/',
                        'xml': 'http://www.w3.org/XML/1998/namespace',
