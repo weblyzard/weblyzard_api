@@ -27,7 +27,7 @@ class Recognize(MultiRESTClient):
     EntityLyzard/Recognize Web Service
     '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')    
-    URL_PATH = 'recognize/rest/recognize'
+    URL_PATH = 'Recognize/rest/recognize'
     
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
@@ -55,6 +55,7 @@ class Recognize(MultiRESTClient):
             self.profile_cache.append(profile_name)
             
         if not is_internal_profile and not profile_exists:
+            self.profile_cache.append(profile_name) #only try to add once
             return self.request('add_profile/%s' % profile_name)
         
 
@@ -79,8 +80,14 @@ class Recognize(MultiRESTClient):
         '''
         assert output_format in self.OUTPUT_FORMATS
         
-        for profile_name in profile_names:
-            self.add_profile(profile_name)
+        if isinstance(profile_names, dict):
+            if lang in profile_names:
+                for profile_name in profile_names[lang]:
+                    self.add_profile(profile_name)
+                            
+        else :
+            for profile_name in profile_names:
+                self.add_profile(profile_name)
       
         return self.request(path='multisearch',
                             parameters=text, 
