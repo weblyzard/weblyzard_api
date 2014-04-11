@@ -12,7 +12,8 @@ class XML2005(XMLParser):
     
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2005'
     DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE}
-    SENTENCE_MAPPING = {'id': 'md5sum'} 
+    SENTENCE_MAPPING = {'id': 'md5sum',
+                        'pos_tags': 'pos'} 
     VERSION = 2005
 
     @classmethod
