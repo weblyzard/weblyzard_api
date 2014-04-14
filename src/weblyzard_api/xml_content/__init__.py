@@ -19,6 +19,7 @@ Remove functions:
 
 import logging
 from lxml import etree
+from pprint import pprint
 
 import unittest
 import hashlib
@@ -154,10 +155,37 @@ class XMLContent(object):
         for k, v in new_attributes.iteritems():
             self.attributes[str(k)] = v
 
-    def as_dict(self):
-        d = self.attributes
-        d.udpate({'sentences': [sent.as_dict for sent in self.sentences]})
-        return d
+    def as_dict(self, mapping=None):
+  
+        try:
+            assert mapping, 'got no mapping'
+            result = self.apply_dict_mapping(self.attributes, mapping)
+            result['sentences'] = []
+            sent_mapping = mapping['sentences']
+            
+            for sent in self.sentences: 
+                sent_attributes = sent.as_dict()
+                
+                result['sentences'].append(self.apply_dict_mapping(sent_attributes, 
+                                                                   sent_mapping))
+        except:
+        
+            result = self.attributes
+            result.update({'sentences': [sent.as_dict() for sent in self.sentences]})
+        
+        return result
+
+    @classmethod
+    def apply_dict_mapping(cls, attributes, mapping=None):
+        result = attributes
+        
+        if mapping:
+            result = {} 
+            for attr, value in attributes.iteritems():
+                if attr in mapping:
+                    result[mapping[attr]] = value
+            
+        return result
 
     def _get_attribute(self, attr_name):
         ''' @return: the attribute for the given name '''
@@ -220,51 +248,51 @@ class TestXMLContent(unittest.TestCase):
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Ich hasse scheiß encodings .... ]]></wl:sentence>
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca3910"><![CDATA[Pöses ärbeiten am Wochenende ... scheiß encodings ]]></wl:sentence>
             </wl:page> '''
-    
+     
     def test_update_sentences(self):
         xml_content = self.xml_content
         sentences = [Sentence('7e985ffb692bb6f617f25619ecca39a9'),
                      Sentence('7e985ffb692bb6f617f25619ecca3910')]
-         
+          
         for s in sentences: 
             s.pos_tags = 'nn nn'
             s.significance = 3
             s.sem_orient = 1
-         
+          
         xml = XMLContent(xml_content)
- 
+  
         print xml.get_xml_document()
-     
+      
         for sentence in xml.sentences:
             print sentence.md5sum, sentence.value, sentence.significance
-             
+              
         xml.sentences = sentences
-         
+          
         xml_out = xml.get_xml_document()
-         
+          
         for sentence in xml.sentences:
             assert sentence.significance == 3
             assert sentence.sem_orient == 1
-             
+              
         assert 'CDATA' in xml_out
-
+ 
     def test_double_sentences(self):
         xml_content = ''' 
             <wl:page xmlns:wl="http://www.weblyzard.com/" content_id="228557824" content_type="text/html" lang="DE" title="Der ganze Wortlaut: Offener Brief an Niko Pelinka  | Heute.at   ">
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
             </wl:page> '''
-    
+     
         xml = XMLContent(xml_content)
         assert len(xml.sentences) == 1, 'got %s sentences' % len(xml.sentences)
         xml_out = xml.get_xml_document()
         assert 'CDATA' in xml_out
-
+ 
     def test_empty_content(self):
         xml = XMLContent(None)
         assert '' == xml.get_plain_text()
         assert [] == xml.get_sentences()
- 
+  
 #     def test_pos_tags(self):
 #         xml = XMLContent(self.xml_content)
 #         for sentence in xml.sentences:
@@ -272,20 +300,20 @@ class TestXMLContent(unittest.TestCase):
 # 
 #         rdf = xml.get_pos_tags()
 #         assert '<rdf:RDF xmlns' in rdf
-         
+          
     def test_attributes(self):
         ''' '''  
         xml = XMLContent(self.xml_content)
-     
+      
         assert 'Der ganze Wortlaut' in xml.title
         assert xml.lang == 'DE'
         assert xml.content_type == 'text/html'
         assert xml.nilsimsa == None
         assert xml.content_id == 228557824
- 
- 
+  
+  
     def test_supported_version(self):
- 
+  
         new_xml = '''
     <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" 
              xmlns:dc="http://purl.org/dc/elements/1.1/" 
@@ -394,35 +422,73 @@ class TestXMLContent(unittest.TestCase):
                 <![CDATA[US-Verhandlungsf??hrer Dan Mullaney sagte zum Abschluss der vierten Verhandlungsrunde in Br??ssel: ???Im Moment kommen wir wirklich gut voran.??? Die n??chsten Gespr??che sollen noch vor dem Sommer in Washington stattfinden, ein genauer Termin steht nach EU-Angaben noch nicht fest.]]>
         </wl:sentence>
     </wl:page>'''
-         
+          
         old_xml_obj = XMLContent(xml_content=old_xml)
         old_xml_str = old_xml_obj.get_xml_document(xml_version=2005) 
         assert old_xml_obj.xml_version == 2005
         assert 'content_id="578351358"' in old_xml_str
         assert len(old_xml_obj.titles) == 1
-         
+          
         new_xml_obj = XMLContent(xml_content=new_xml)
         new_xml_str = new_xml_obj.get_xml_document()
         assert new_xml_obj.xml_version == 2013
         assert len(new_xml_obj.titles) == 1
-         
+          
         assert 'wl:id="578351358"' in new_xml_str
-         
+          
         assert len(old_xml_obj.sentences) == len(new_xml_obj.sentences)
-
+ 
         xml_test_obj = XMLContent(xml_content=new_xml_obj.get_xml_document())
         assert xml_test_obj.xml_version == 2013
-         
+          
         print new_xml_obj.get_xml_document()
         print new_xml_obj.get_xml_document(xml_version=2005)
-         
+          
         xml_converted = xml_test_obj.get_xml_document(xml_version=2005)
-         
+          
         old_xml_obj2 =  XMLContent(xml_content=xml_converted)
-         
+          
         assert old_xml_obj2.xml_version == 2005
         assert len(old_xml_obj2.sentences) == 5
         assert len(old_xml_obj2.titles) == 1
+    
+    def test_as_dict(self):
+        ''' tests exporting the document as dict ''' 
+        
+        xml_content = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2005" content_id="495692737" lang="en" nilsimsa="5bb001c8a610a105b1120bb9c4889d33c62b19e1493245cc2f252a83e270646b" title="Keystone report leaves environmental, energy, safety debates far from settled" source_id="12830" jonas_type="http" description="WASHINGTON &amp;mdash; The State Department minimized the climate change impact of building the Keystone XL pipeline in its final environmental review issued on Friday, a key finding as President Barack Obama decides whether to approve the controversial project. Olivier Douliery | Abaca Press/MCT Activists engage in civil disobedience Wednesday, February 13, 2013 at the White House in Washington, D.C., in hopes of pressuring President Barack Obama to reject the Keystone XL oil sands pipeline. http://media.mcclatchydc.com/smedia/2014/01/31/17/06/SoIRM.La.91.jpg &quot; style=&quot;border-left:2px solid #dddddd; padding-left:5px;max-width:100%;&quot;&gt; More News Read more Politics However, the review leaves the..." feed_url="http://rss.wn.com/english/keyword/" original_request_url="http://article.wn.com/view/2014/02/01/Keystone_report_leaves_environmental_energy_safety_debates_f_1/" content_type="text/html">
+   <wl:sentence pos_tags="None" sem_orient="0.0" significance="12951.7567942" md5sum="0c8cb136073a20a932f2d6748204ce9b" pos="NNP CD ( NN ) : DT NNP NNP POS JJ JJ NN IN DT NN NN IN DT JJ NN NNS TO DT NNP NNP NNP VBZ VBN PRP VBP IN DT JJ CC JJ NN IN NNP NNP VBZ DT NN IN DT NN ." token="0,4 5,7 8,9 9,18 18,19 20,22 23,26 27,32 33,43 43,45 46,51 52,65 66,76 77,79 80,83 84,92 93,101 102,106 107,110 111,119 120,123 124,129 130,132 133,136 137,141 142,146 147,152 153,155 156,158 159,161 162,166 167,169 170,173 174,187 188,191 192,201 202,208 209,211 212,221 222,227 228,239 240,243 244,256 257,259 260,263 264,272 272,273"><![CDATA[Dec. 23 (Bloomberg) -- The State Department's final environmental assessment of the Keystone pipeline from the Canadian tar sands to the U.S. Gulf Coast is c. We look at the environmental and political impact if President Obama greenlights the construction of the pipeline.]]></wl:sentence>
+   <wl:sentence pos_tags="None" sem_orient="0.0" significance="0.0" md5sum="cdc2b1edeec27081819ca4f50e067240" pos="NNP NNP VBZ VBN IN NNS : NNS ." token="0,6 7,15 16,18 19,25 26,28 29,35 35,36 37,42 42,43"><![CDATA[Shihab Rattansi is joined by guests: clima.]]></wl:sentence>
+   </wl:page>''' 
+        
+        expected_result = {'id': 495692737, 'lang': 'en', 
+                           'sentences': [{'id': '0c8cb136073a20a932f2d6748204ce9b',
+                                          'token': '0,4 5,7 8,9 9,18 18,19 20,22 23,26 27,32 33,43 43,45 46,51 52,65 66,76 77,79 80,83 84,92 93,101 102,106 107,110 111,119 120,123 124,129 130,132 133,136 137,141 142,146 147,152 153,155 156,158 159,161 162,166 167,169 170,173 174,187 188,191 192,201 202,208 209,211 212,221 222,227 228,239 240,243 244,256 257,259 260,263 264,272 272,273',
+                                          'value': '''Dec. 23 (Bloomberg) -- The State Department's final environmental assessment of the Keystone pipeline from the Canadian tar sands to the U.S. Gulf Coast is c. We look at the environmental and political impact if President Obama greenlights the construction of the pipeline.''', 
+                                          'pos': 'NNP CD ( NN ) : DT NNP NNP POS JJ JJ NN IN DT NN NN IN DT JJ NN NNS TO DT NNP NNP NNP VBZ VBN PRP VBP IN DT JJ CC JJ NN IN NNP NNP VBZ DT NN IN DT NN .'},
+                                         {'id': 'cdc2b1edeec27081819ca4f50e067240',
+                                          'token': '0,6 7,15 16,18 19,25 26,28 29,35 35,36 37,42 42,43',
+                                          'value': 'Shihab Rattansi is joined by guests: clima.',
+                                          'pos': 'NNP NNP VBZ VBN IN NNS : NNS .'}]}
+        
+        xml_obj = XMLContent(xml_content)
+        
+        attr_mapping = {'content_id': 'id', 
+                        'lang': 'lang',
+                        'sentences': {'pos': 'pos',
+                                      'token': 'token',
+                                      'md5sum': 'id',
+                                      'value': 'value'}}
+
+        result = xml_obj.as_dict(mapping=attr_mapping)
+
+        print 'result: '
+        pprint(result)
+
+        print 'expected result'
+        pprint(expected_result)
+        
+        
+        assert result == expected_result
         
 if __name__ == '__main__':
     unittest.main()
