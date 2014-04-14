@@ -105,67 +105,68 @@ class JeremiaTest(unittest.TestCase):
     DOCS = [ {'id': content_id,
               'body': 'Good day Mr. President! Hello "world" ' + str(content_id),
               'title': 'Hello "world" more ',
-              'format': 'html/text',
+              'format': 'text/html',
               'header': {}}  for content_id in xrange(1000,1020)]
 
     def test_batch_processing(self):
         j = Jeremia()
-        print "Submitting documents..."
-        j.submit_documents( "1234", self.DOCS[:10] )
-        j.submit_documents( "1234", self.DOCS[10:] )
+        print 'Submitting documents...'
+        j.submit_documents('1234', self.DOCS[:10])
+        j.submit_documents('1234', self.DOCS[10:])
         
         # retrieve initial patch 
-        print "Retrieving results..."
-        docs = list(j.commit( "1234" ) )
-        self.assertEqual( len(docs), 20 )
+        print 'Retrieving results...'
+        docs = list(j.commit('1234'))
+        self.assertEqual(len(docs), 20)
         
         # no more results are available
-        self.assertEqual( len(list(j.commit("1234"))), 0 )
-
+        self.assertEqual(len(list(j.commit('1234'))), 0)
 
     def test_sentence_splitting(self):
         j = Jeremia()
-        j.submit_documents( "1222", self.DOCS[:1] )
+        j.submit_documents( '1222', self.DOCS[:1] )
 
-        for doc in j.commit("1222"):
+        for doc in j.commit('1222'):
             # extract sentences
-            sentences = [ s.sentence 
-                          for s in XMLContent(doc['xml_content']).sentences ]
+            xml_obj = XMLContent(doc['xml_content'])
+            sentences = [s.sentence for s in xml_obj.sentences]
             print doc['xml_content']
             assert 'wl:is_title' in doc['xml_content']
             print sentences
-            self.assertEqual( len(sentences), 3 )
+            self.assertEqual(len(sentences), 3)
 
     def test_illegal_xml_format_filtering(self):
-        DOCS = [ {'id': "alpha",
+        DOCS = [ {'id': 'alpha',
                   'body': 'This is an illegal XML Sequence: J\x1amica',
                   'title': 'Hello "world" more ',
-                  'format': 'html/text',
-                  'header': {}}  ]
+                  'format': 'text/html',
+                  'header': {}} ]
 
         j = Jeremia()
-        j.submit_documents( "12234", DOCS )
-        for doc in list(j.commit("12234")):
+        j.submit_documents( '12234', DOCS )
+        for doc in list(j.commit('12234')):
             xml = XMLContent(doc['xml_content'])
             print doc['xml_content']
             assert xml.sentences[0].sentence != None
        
-
     def test_illegal_input_args(self):
         j = Jeremia()
 
         with self.assertRaises(ValueError):
-            j.submit_documents("1223", [] )
+            j.submit_documents('1223', [])
         
 if __name__ == '__main__':
     if len(argv) > 1:
         txt = argv[1]
-        docs = [{'id': "192292", 'body': txt, 'title': '', 'format': 'html/text', 'header': {} }]
+        docs = [{'id': '192292', 
+                 'body': txt, 
+                 'title': '', 
+                 'format': 'text/html', 
+                 'header': {}}]
         j = Jeremia()
-        j.submit_documents( "1222", docs )
-        l = list(j.commit("1222"))
+        j.submit_documents( '1222', docs )
+        l = list(j.commit('1222'))
         print l
         print XMLContent(l[0]['xml_content']).sentences[0].dependencies
-
     else:
         unittest.main()

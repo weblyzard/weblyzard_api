@@ -18,6 +18,7 @@ from eWRT.ws.rest import MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER, 
                                   WEBLYZARD_API_PASS)
+from pprint import pprint
 
 INTERNAL_PROFILE_PREFIX = 'extras.'
 
@@ -92,7 +93,7 @@ class Recognize(MultiRESTClient):
         return self.request(path='multisearch',
                             parameters=text, 
                             query_parameters={
-                                            'list' : profile_names,
+                                            'profileNames' : profile_names,
                                             'limit': limit,
                                             'rescore': max_entities, 
                                             'buckets': buckets, 
@@ -126,12 +127,12 @@ class Recognize(MultiRESTClient):
                                               'limit': limit, 
                                               'wt': output_format, 
                                               'debug': debug })
-
-    def search_documents(self, profile_name, doc_list, debug=False, 
+        
+    def search_documents(self, profile_names, doc_list, debug=False, 
                          max_entities=1, buckets=1, limit=1, 
-                         output_format='minimal'):
+                         output_format='annie'):
         '''
-        :param profileName: the profile to search in
+        :param profileNames: the profiles to search in
         :param doc_list: a list of documents to analyze in one of the 
                          following formats:
                          (a) dict: ( {'content_id': 12, 
@@ -148,30 +149,94 @@ class Recognize(MultiRESTClient):
         :rtype: the tagged dictionary
         '''
         assert output_format in self.OUTPUT_FORMATS
-        if not doc_list:
+        if not doc_list or len(doc_list)==0:
             return 
 
-        self.add_profile(profile_name)
+        lang_list = set([document['lang'] for document in doc_list])
+        
+        #add required profiles
+        profiles_to_add = []
+        if isinstance(profile_names, dict):
+            for lang in lang_list:
+                if lang in profile_names:
+                    for profile_name in profile_names[lang]:
+                        profiles_to_add.append(profile_name)           
+        else :
+            for profile_name in profile_names:
+                profiles_to_add.append(profile_name)
 
+        for profile_name in set(profiles_to_add):                
+            self.add_profile(profile_name)
+            
         content_type = 'application/json'
         
         if 'content_id' in doc_list[0]:
-            search_command = 'searchDocuments'
+            search_command = 'searchXmlDocuments'#'searchDocuments'
         elif 'id' in doc_list[0]:
             search_command = 'searchXmlDocuments'
         else:
             raise ValueError("Unsupported input format.")
 
-        self.add_profile(profile_name)
+#         self.add_profile(profile_name)
 
-        return self.request(path='%s/%s' % (search_command, profile_name), 
+        print doc_list[0]
+        
+        return self.request(path=search_command, 
                             parameters=doc_list, 
                             content_type=content_type,
-                            query_parameters={'rescore': max_entities, 
+                            query_parameters={
+                                              'profileNames' : profile_names,
+                                              'rescore': max_entities, 
                                               'buckets': buckets, 
                                               'limit': limit, 
                                               'wt': output_format, 
                                               'debug': debug})
+        
+#     def search_documents(self, profile_name, doc_list, debug=False, 
+#                          max_entities=1, buckets=1, limit=1, 
+#                          output_format='minimal'):
+#         '''
+#         :param profileName: the profile to search in
+#         :param doc_list: a list of documents to analyze in one of the 
+#                          following formats:
+#                          (a) dict: ( {'content_id': 12, 
+#                                       'content': u'the text to analyze'})
+#                          (b) weblyzardXML: ( XMLContent('<?xml version="1.0"...').as_list(),
+#                                              XMLContent('<?xml version="1.0"...').as_list(), )
+# 
+#         :param debug: compute and return an explanation
+#         :param buckets: only return n buckets of hits with the same score
+#         :param max_entities: number of results to return (removes the top hit's
+#                              tokens and rescores the result list subsequently
+#         :param limit: only return that many results
+#         :param output_format: the output format to use ('standard', 'minimal'*, 'annie')
+#         :rtype: the tagged dictionary
+#         '''
+#         assert output_format in self.OUTPUT_FORMATS
+#         if not doc_list:
+#             return 
+# 
+#         self.add_profile(profile_name)
+# 
+#         content_type = 'application/json'
+#         
+#         if 'content_id' in doc_list[0]:
+#             search_command = 'searchDocuments'
+#         elif 'id' in doc_list[0]:
+#             search_command = 'searchXmlDocuments'
+#         else:
+#             raise ValueError("Unsupported input format.")
+# 
+#         self.add_profile(profile_name)
+# 
+#         return self.request(path='%s/%s' % (search_command, profile_name), 
+#                             parameters=doc_list, 
+#                             content_type=content_type,
+#                             query_parameters={'rescore': max_entities, 
+#                                               'buckets': buckets, 
+#                                               'limit': limit, 
+#                                               'wt': output_format, 
+#                                               'debug': debug})
     
     def get_focus(self, profile_names, doc_list, max_results=1):
         ''' 
