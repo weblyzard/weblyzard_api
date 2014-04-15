@@ -46,10 +46,13 @@ class Sentence(object):
                  token=None, value=None, is_title=False, dependencies=None):
         
         if not md5sum and value: 
-            m = hashlib.md5()
-            m.update(value)
-            md5sum = m.hexdigest()
-        
+            try:
+                m = hashlib.md5()
+                m.update(value.encode('utf-8') if isinstance(value, unicode) else value)
+                md5sum = m.hexdigest()
+            except Exception, e: 
+                print e
+                
         self.md5sum = md5sum
         self.pos = pos
         self.sem_orient = sem_orient
@@ -160,14 +163,17 @@ class XMLContent(object):
         try:
             assert mapping, 'got no mapping'
             result = self.apply_dict_mapping(self.attributes, mapping)
-            result['sentences'] = []
-            sent_mapping = mapping['sentences']
             
-            for sent in self.sentences: 
-                sent_attributes = sent.as_dict()
+            if 'sentences' in mapping:
                 
-                result['sentences'].append(self.apply_dict_mapping(sent_attributes, 
-                                                                   sent_mapping))
+                result['sentences'] = []
+                sent_mapping = mapping['sentences']
+                
+                for sent in self.sentences: 
+                    sent_attributes = self.apply_dict_mapping(sent.as_dict(), 
+                                                              sent_mapping)
+                    
+                    result['sentences'].append(sent_attributes)
         except:
         
             result = self.attributes
@@ -248,51 +254,51 @@ class TestXMLContent(unittest.TestCase):
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Ich hasse scheiß encodings .... ]]></wl:sentence>
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca3910"><![CDATA[Pöses ärbeiten am Wochenende ... scheiß encodings ]]></wl:sentence>
             </wl:page> '''
-     
+      
     def test_update_sentences(self):
         xml_content = self.xml_content
         sentences = [Sentence('7e985ffb692bb6f617f25619ecca39a9'),
                      Sentence('7e985ffb692bb6f617f25619ecca3910')]
-          
+           
         for s in sentences: 
             s.pos_tags = 'nn nn'
             s.significance = 3
             s.sem_orient = 1
-          
+           
         xml = XMLContent(xml_content)
-  
+   
         print xml.get_xml_document()
-      
+       
         for sentence in xml.sentences:
             print sentence.md5sum, sentence.value, sentence.significance
-              
+               
         xml.sentences = sentences
-          
+           
         xml_out = xml.get_xml_document()
-          
+           
         for sentence in xml.sentences:
             assert sentence.significance == 3
             assert sentence.sem_orient == 1
-              
+               
         assert 'CDATA' in xml_out
- 
+  
     def test_double_sentences(self):
         xml_content = ''' 
             <wl:page xmlns:wl="http://www.weblyzard.com/" content_id="228557824" content_type="text/html" lang="DE" title="Der ganze Wortlaut: Offener Brief an Niko Pelinka  | Heute.at   ">
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
             </wl:page> '''
-     
+      
         xml = XMLContent(xml_content)
         assert len(xml.sentences) == 1, 'got %s sentences' % len(xml.sentences)
         xml_out = xml.get_xml_document()
         assert 'CDATA' in xml_out
- 
+  
     def test_empty_content(self):
         xml = XMLContent(None)
         assert '' == xml.get_plain_text()
         assert [] == xml.get_sentences()
-  
+   
 #     def test_pos_tags(self):
 #         xml = XMLContent(self.xml_content)
 #         for sentence in xml.sentences:
@@ -300,20 +306,20 @@ class TestXMLContent(unittest.TestCase):
 # 
 #         rdf = xml.get_pos_tags()
 #         assert '<rdf:RDF xmlns' in rdf
-          
+           
     def test_attributes(self):
         ''' '''  
         xml = XMLContent(self.xml_content)
-      
+       
         assert 'Der ganze Wortlaut' in xml.title
         assert xml.lang == 'DE'
         assert xml.content_type == 'text/html'
         assert xml.nilsimsa == None
         assert xml.content_id == 228557824
-  
-  
+   
+   
     def test_supported_version(self):
-  
+   
         new_xml = '''
     <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" 
              xmlns:dc="http://purl.org/dc/elements/1.1/" 
@@ -422,32 +428,32 @@ class TestXMLContent(unittest.TestCase):
                 <![CDATA[US-Verhandlungsf??hrer Dan Mullaney sagte zum Abschluss der vierten Verhandlungsrunde in Br??ssel: ???Im Moment kommen wir wirklich gut voran.??? Die n??chsten Gespr??che sollen noch vor dem Sommer in Washington stattfinden, ein genauer Termin steht nach EU-Angaben noch nicht fest.]]>
         </wl:sentence>
     </wl:page>'''
-          
+           
         old_xml_obj = XMLContent(xml_content=old_xml)
         old_xml_str = old_xml_obj.get_xml_document(xml_version=2005) 
         assert old_xml_obj.xml_version == 2005
         assert 'content_id="578351358"' in old_xml_str
         assert len(old_xml_obj.titles) == 1
-          
+           
         new_xml_obj = XMLContent(xml_content=new_xml)
         new_xml_str = new_xml_obj.get_xml_document()
         assert new_xml_obj.xml_version == 2013
         assert len(new_xml_obj.titles) == 1
-          
+           
         assert 'wl:id="578351358"' in new_xml_str
-          
+           
         assert len(old_xml_obj.sentences) == len(new_xml_obj.sentences)
- 
+  
         xml_test_obj = XMLContent(xml_content=new_xml_obj.get_xml_document())
         assert xml_test_obj.xml_version == 2013
-          
+           
         print new_xml_obj.get_xml_document()
         print new_xml_obj.get_xml_document(xml_version=2005)
-          
+           
         xml_converted = xml_test_obj.get_xml_document(xml_version=2005)
-          
+           
         old_xml_obj2 =  XMLContent(xml_content=xml_converted)
-          
+           
         assert old_xml_obj2.xml_version == 2005
         assert len(old_xml_obj2.sentences) == 5
         assert len(old_xml_obj2.titles) == 1
