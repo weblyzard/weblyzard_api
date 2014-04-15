@@ -158,7 +158,8 @@ class XMLContent(object):
         for k, v in new_attributes.iteritems():
             self.attributes[str(k)] = v
 
-    def as_dict(self, mapping=None, ignore_non_sentence=False):
+    def as_dict(self, mapping=None, 
+                ignore_non_sentence=False, add_titles_to_sentences=False):
         ''' convert the XML content to a dictionary.
         :param mapping, an optional mapping by which to restrict/rename
             the returned dictionary
@@ -174,8 +175,13 @@ class XMLContent(object):
             if 'sentences_map' in mapping:
                 result[sentence_attr_name] = []
                 sent_mapping = mapping['sentences_map']
+                
+                if add_titles_to_sentences and len(self.titles): 
+                    sentences = self.titles + self.sentences
+                else: 
+                    sentences = self.sentences
             
-                for sent in self.sentences: 
+                for sent in sentences: 
                     
                     if ignore_non_sentence and not sent.pos: 
                             continue
@@ -502,8 +508,18 @@ class TestXMLContent(unittest.TestCase):
 
         print 'expected result'
         pprint(expected_result)
-        
         assert result == expected_result
+        
+        # add the titles 
+        result2 = xml_obj.as_dict(mapping=attr_mapping, 
+                                  add_titles_to_sentences=True)
+        assert len(result2['sentence']) == 3
+        
+        # ignore non-sentences (without pos tags)
+        result3 = xml_obj.as_dict(mapping=attr_mapping, 
+                                  ignore_non_sentence=True,
+                                  add_titles_to_sentences=True)
+        assert len(result3['sentence']) == 2
         
 if __name__ == '__main__':
     unittest.main()
