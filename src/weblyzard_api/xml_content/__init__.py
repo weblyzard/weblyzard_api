@@ -159,21 +159,22 @@ class XMLContent(object):
             self.attributes[str(k)] = v
 
     def as_dict(self, mapping=None):
-  
+        ''' convert the XML content to a dictionary.
+        :param mapping, an optional mapping by which to restrict/rename
+            the returned dictionary
+        '''
         try:
             assert mapping, 'got no mapping'
             result = self.apply_dict_mapping(self.attributes, mapping)
+            sentence_name = mapping['sentences'] if 'sentences' in mapping else 'sentences' 
+            result[sentence_name] = []
+            sent_mapping = mapping['sentences_map']
             
-            if 'sentences' in mapping:
+            for sent in self.sentences: 
+                sent_attributes = sent.as_dict()
                 
-                result['sentences'] = []
-                sent_mapping = mapping['sentences']
-                
-                for sent in self.sentences: 
-                    sent_attributes = self.apply_dict_mapping(sent.as_dict(), 
-                                                              sent_mapping)
-                    
-                    result['sentences'].append(sent_attributes)
+                result[sentence_name].append(self.apply_dict_mapping(sent_attributes, 
+                                                                   sent_mapping))
         except:
         
             result = self.attributes
