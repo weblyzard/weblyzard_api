@@ -3,9 +3,8 @@ Created on Jan 4, 2013
 
 @author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-
+import unittest
 from eWRT.ws.rest import RESTClient
-from unittest import main, TestCase
 
 POS_URL = "http://voyager.srv.weblyzard.net/ws"
 
@@ -24,7 +23,7 @@ class POS(RESTClient):
         return self.execute("pos-tagging", None, { 'text': text, 'lang': lang })
 
 
-class POSTest(TestCase):
+class POSTest(unittest.TestCase):
     
     def test_POS(self):
         p = POS()
@@ -32,4 +31,4 @@ class POSTest(TestCase):
         
 
 if __name__ == '__main__':
-    main()
+    unittest.main()

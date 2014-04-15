@@ -3,7 +3,7 @@ Created on Jan 16, 2013
 
 @author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-from unittest import main, TestCase
+import unittest 
 
 from eWRT.ws.rest import  MultiRESTClient
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
@@ -77,9 +77,18 @@ class DomainSpecificity(MultiRESTClient):
     def meminfo(self):
         return self.request('meminfo')    
 
-class TestDomainSpecificity(TestCase):        
+class TestDomainSpecificity(unittest.TestCase):        
     
-    def test_domain_specificity(self):            
+    def setUp(self):
+        self.client = DomainSpecificity()
+        self.service_is_online = self.jesaja.is_online()
+        if not self.service_is_online: 
+            print 'WARNING: Webservice is offline --> not executing all tests!!'
+            
+    def test_domain_specificity(self):
+        if not self.service_is_online: 
+            return 
+                    
         PROFILE_NAME1 = 'test1'
         PROFILE_MAPPING1 = {'ana': 0.8, 'daniela': 0.7, 'markus': 0.2}
     
@@ -87,16 +96,17 @@ class TestDomainSpecificity(TestCase):
         PROFILE_MAPPING2 = {'jasna': 1.0, 'pool': 0.1, 'ana': -0.2}
         
       
-        d = DomainSpecificity()
-        d.add_profile(PROFILE_NAME1, PROFILE_MAPPING1)
-        d.add_profile(PROFILE_NAME2, PROFILE_MAPPING2)
+        self.client.add_profile(PROFILE_NAME1, PROFILE_MAPPING1)
+        self.client.add_profile(PROFILE_NAME2, PROFILE_MAPPING2)
         
-        assert d.has_profile(PROFILE_NAME1)
-        assert not d.has_profile('unknown')
+        assert self.client.has_profile(PROFILE_NAME1)
+        assert not self.client.has_profile('unknown')
         
         self._test_domain_specifcity(PROFILE_NAME1)
 
     def _test_domain_specifcity(self, domain_specificity_profile):
+        if not self.service_is_online: 
+            return 
         TEST_DOCUMENT_LIST = [{'content_id': '1', 
                                'title': 'Ana loves Daniel.', 
                                'content': 'ana knowns daniela and gerhard.'},
@@ -104,17 +114,16 @@ class TestDomainSpecificity(TestCase):
                                'title': 'Jasna knows Ana.', 
                                'content': 'I have met jasna at the pool.'}]
         
-        d = DomainSpecificity( )
-        print d.get_domain_specificity(domain_specificity_profile, 
+        print self.client.get_domain_specificity(domain_specificity_profile, 
                                        TEST_DOCUMENT_LIST)
-        print d.get_domain_specificity(domain_specificity_profile, 
-                                       TEST_DOCUMENT_LIST, 
-                                       is_case_sensitive=False)
+        print self.client.get_domain_specificity(domain_specificity_profile, 
+                                                 TEST_DOCUMENT_LIST, 
+                                                 is_case_sensitive=False)
    
     def test_meminfo(self):
-        d = DomainSpecificity()
-        print d.meminfo()
-
+        if not self.service_is_online: 
+            return 
+        print self.client.meminfo()
 
 if __name__ == '__main__':
-    main()
+    unittest.main()

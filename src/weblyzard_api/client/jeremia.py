@@ -16,6 +16,14 @@ class Jeremia(MultiRESTClient):
     Jeremia Web Service
     '''
     URL_PATH = 'jeremia/rest'
+    ATTRIBUTE_MAPPING = {'content_id': 'id', 
+                         'title': 'title', 
+                         'sentences': 'sentence',
+                         'lang': 'lang',
+                         'sentences_map': {'pos': 'pos',
+                                           'token': 'token', 
+                                           'value': 'value',
+                                           'md5sum': 'id'}}
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
@@ -45,7 +53,7 @@ class Jeremia(MultiRESTClient):
     def status(self):
         return self.request('status')
     
-    def get_xml_doc(self, text, content_id = "1"):
+    def get_xml_doc(self, text, content_id='1'):
         '''
         Processes text and returns a XMLContent object.
         :param text: the text to process
@@ -56,9 +64,9 @@ class Jeremia(MultiRESTClient):
                   'body': text, 
                   'format': 'text/plain'}]
         
-        num = str(time())
-        self.submit_documents(num, batch)
-        results = list(self.commit(num))
+        batch_id = str(time())
+        self.submit_documents(batch_id, batch)
+        results = list(self.commit(batch_id))
         result = results[0]
         return XMLContent(result['xml_content'])
     
