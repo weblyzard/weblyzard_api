@@ -48,7 +48,7 @@ class Sentence(object):
         if not md5sum and value: 
             try:
                 m = hashlib.md5()
-                m.update(value.encode('utf-8') if isinstance(value, unicode) else value)
+                m.update(value.encode('utf-8') if isinstance(value, unicode) else str(value))
                 md5sum = m.hexdigest()
             except Exception, e: 
                 print e
@@ -158,8 +158,12 @@ class XMLContent(object):
         for k, v in new_attributes.iteritems():
             self.attributes[str(k)] = v
 
-    def as_dict(self, mapping=None):
-  
+    def as_dict(self, mapping=None, ignore_non_sentence=False):
+        ''' 
+        :param mapping: 
+        :param ignore_non_sentence: if true: sentences without without POS tags 
+                                    are omitted from the result
+        '''
         try:
             assert mapping, 'got no mapping'
             result = self.apply_dict_mapping(self.attributes, mapping)
@@ -170,9 +174,10 @@ class XMLContent(object):
                 sent_mapping = mapping['sentences']
                 
                 for sent in self.sentences: 
+                    if ignore_non_sentence and not sent.pos: 
+                        continue
                     sent_attributes = self.apply_dict_mapping(sent.as_dict(), 
                                                               sent_mapping)
-                    
                     result['sentences'].append(sent_attributes)
         except:
         
