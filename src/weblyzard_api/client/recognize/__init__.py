@@ -59,7 +59,18 @@ class Recognize(MultiRESTClient):
             self.profile_cache.append(profile_name) #only try to add once
             return self.request('add_profile/%s' % profile_name)
         
+    def get_xml_document(self, document):
+        ''' returns the correct XML representation required by the Recognize service'''
+        attr_mapping = {'content_id': 'id', 
+                        'lang': 'xml:lang',
+                        'sentences' : 'sentence',
+                        'sentences_map': {'pos': 'pos',
+                                          'token': 'token',
+                                          'md5sum': 'id',
+                                          'value': 'value'}}
 
+        return document.xml_content.as_dict(attr_mapping)
+    
     def remove_profile(self, profile_name):
         ''' removes a profile from the list of pre-loaded profiles '''
         return self.request('remove_profile/%s' % profile_name)
@@ -68,7 +79,7 @@ class Recognize(MultiRESTClient):
                limit=1, lang='de', output_format='minimal'):
         '''
         Search across multiple profiles
-        :param profileName: the profiles to search in
+        :param profile_names: a list of profile names
         :param text: the text to search in
         :param debug: compute and return an explanation
         :param buckets: only return n buckets of hits with the same score
@@ -102,7 +113,7 @@ class Recognize(MultiRESTClient):
                                             'lang': lang,
                                             'debug': debug })
     
-    def search(self, profile_name, text, debug=False, max_entities=1, buckets=1, 
+    def search_text(self, profile_names, text, debug=False, max_entities=1, buckets=1, 
                limit=1, output_format='minimal'):
         '''
         Search within a single profile
@@ -118,21 +129,69 @@ class Recognize(MultiRESTClient):
         '''
         assert output_format in self.OUTPUT_FORMATS
         
-        self.add_profile(profile_name)
+        for profile_name in profile_names:
+            self.add_profile(profile_name)
 
-        return self.request(path='search/%s' % profile_name, 
+        return self.request(path='search', 
                             parameters=text, 
-                            query_parameters={'rescore': max_entities, 
+                            query_parameters={'profileNames' : profile_names,
+                                              'rescore': max_entities, 
                                               'buckets': buckets, 
                                               'limit': limit, 
                                               'wt': output_format, 
                                               'debug': debug })
+
         
+    def search_document(self, profile_names, document, debug=False, 
+                         max_entities=1, buckets=1, limit=1, 
+                         output_format='minimal'):
+        '''
+        :param profile_names: a list of profile names
+        :param document: a single documents to analyze in the following formats:
+                         (a) dict: ( {'content_id': 12, 
+                                      'content': u'the text to analyze'})
+                         (b) weblyzardXML: ( XMLContent('<?xml version="1.0"...').as_list(),
+                                             XMLContent('<?xml version="1.0"...').as_list(), )
+
+        :param debug: compute and return an explanation
+        :param buckets: only return n buckets of hits with the same score
+        :param max_entities: number of results to return (removes the top hit's
+                             tokens and rescores the result list subsequently
+        :param limit: only return that many results
+        :param output_format: the output format to use ('standard', 'minimal'*, 'annie')
+        :rtype: the tagged dictionary
+        '''
+        assert output_format in self.OUTPUT_FORMATS
+        if not document:
+            return 
+
+        for profile_name in profile_names:
+            self.add_profile(profile_name)
+
+        content_type = 'application/json'
+        
+        if 'content_id' in document:
+            search_command = 'searchXml'
+        elif 'id' in document:
+            search_command = 'searchXml'
+        else:
+            raise ValueError("Unsupported input format.")
+
+        return self.request(path=search_command, 
+                            parameters=document, 
+                            content_type=content_type,
+                            query_parameters={'profileNames' : profile_names,
+                                              'rescore': max_entities, 
+                                              'buckets': buckets, 
+                                              'limit': limit, 
+                                              'wt': output_format, 
+                                              'debug': debug})
+    
     def search_documents(self, profile_names, doc_list, debug=False, 
                          max_entities=1, buckets=1, limit=1, 
                          output_format='annie'):
         '''
-        :param profileNames: the profiles to search in
+        :param profile_names: a list of profile names
         :param doc_list: a list of documents to analyze in one of the 
                          following formats:
                          (a) dict: ( {'content_id': 12, 
