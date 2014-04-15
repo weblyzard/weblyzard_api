@@ -29,6 +29,13 @@ class Recognize(MultiRESTClient):
     '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')    
     URL_PATH = 'Recognize/rest/recognize'
+    ATTRIBUTE_MAPPING = {'content_id': 'id', 
+                         'lang': 'xml:lang',
+                         'sentences' : 'sentence',
+                         'sentences_map': {'pos': 'pos',
+                                           'token': 'token',
+                                           'md5sum': 'id',
+                                           'value': 'value'}}
     
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
@@ -61,15 +68,7 @@ class Recognize(MultiRESTClient):
         
     def get_xml_document(self, document):
         ''' returns the correct XML representation required by the Recognize service'''
-        attr_mapping = {'content_id': 'id', 
-                        'lang': 'xml:lang',
-                        'sentences' : 'sentence',
-                        'sentences_map': {'pos': 'pos',
-                                          'token': 'token',
-                                          'md5sum': 'id',
-                                          'value': 'value'}}
-
-        return document.xml_content.as_dict(attr_mapping)
+        return document.xml_content.as_dict(self.ATTRIBUTE_MAPPING)
     
     def remove_profile(self, profile_name):
         ''' removes a profile from the list of pre-loaded profiles '''
