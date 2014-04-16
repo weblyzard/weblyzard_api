@@ -113,6 +113,9 @@ class Jesaja(MultiRESTClient):
         assert corpus_format in self.VALID_CORPUS_FORMATS
         path = None
         
+        if not profile_name: 
+            profile_name = corpus_name
+        
         # convert the wlxml format to doc, if required
         if corpus_format == 'xml':
             if profile_name is None:
