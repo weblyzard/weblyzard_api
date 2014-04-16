@@ -83,6 +83,11 @@ class XMLContent(object):
             self.xml_version, self.attributes, self.sentence_objects, self.titles = result
 
     @classmethod
+    def convert(cls, xml_content, target_version):
+        xml = XMLContent(xml_content)
+        return xml.get_xml_document(xml_version=target_version)
+
+    @classmethod
     def parse_xml_content(cls, xml_content):
         xml_version = cls.get_xml_version(xml_content)
         
