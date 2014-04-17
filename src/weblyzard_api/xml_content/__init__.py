@@ -65,6 +65,21 @@ class Sentence(object):
     def as_dict(self):
         return dict((k, v) for k, v in self.__dict__.iteritems() if not k.startswith('_'))
         
+    def get_sentence(self):
+        return self.value
+
+    def set_sentence(self, new_sentence):
+        self.value = new_sentence
+
+    def get_pos_tags(self):
+        return self.value
+
+    def set_pos_tags(self, new_pos_tags):
+        self.value = new_pos_tags
+    
+    sentence = property(get_sentence, set_sentence)
+    pos_tags = property(get_pos_tags, set_pos_tags)
+    
 class XMLContent(object):
     
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005, 
