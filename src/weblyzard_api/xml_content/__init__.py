@@ -29,7 +29,7 @@ from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
 from weblyzard_api.xml_content.parsers.xml_deprecated import XMLDeprecated
 
 SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
-                       'pos', 'token')
+                       'pos', 'token', 'dependencies')
 
 class Sentence(object):
     '''
