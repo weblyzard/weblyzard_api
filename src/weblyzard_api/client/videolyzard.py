@@ -14,9 +14,6 @@ required tasks - see the API documentation
     * support for iterating the pages, see variable pager in response
     * https://ccc.modul.ac.at/videolyzard/get-data?type=json&page=1&portal=portal_climate_new&since=1391172002&filter=completed
 
-username: weblyzard 
-password: VID30lyz4rd
-
 non-targets: 
 * update the database -> just return the result
 * get the youtube urls -> just use anything from youtube
@@ -36,14 +33,25 @@ from datetime import datetime, timedelta
 
 
 class VideolyzardClient(object):
-
-    UPLOAD_URL = 'http://ccc.modul.ac.at/videolyzard/add-json?username=%(username)s&password=%(password)s'
-    VIDEO_DATA_URL = 'http://ccc.modul.ac.at/videolyzard/get-data?username=%(username)s&password=%(password)s&type=json'
+    SERVER_URL = 'http://ccc.modul.ac.at/videolyzard/'
+    UPLOAD_URL = '%(server_url)s/add-json?username=%(username)s&password=%(password)s'
+    VIDEO_DATA_URL = '%(server_url)s/get-data?username=%(username)s&password=%(password)s&type=json'
 
     POSSIBLE_FILTER_CONFIGS = ('processing', 'failed', 'completed')
     FILTER_PROCESSING = 'processing'
     FILTER_FAILED = 'failed'
     FILTER_COMPLETED = 'completed'
+
+    def __init__(self, username, password, server_url=None):
+        '''
+        The Videolyzard client requires a password and a username.
+        '''
+        assert username, 'No username was provided!'
+        assert password, 'No password was provided!'
+
+        self.username = username
+        self.password = password
+        self.server_url = server_url if server_url else self.SERVER_URL
 
     @classmethod
     def convert_datetime_to_timestamp(cls, datetime_obj):
@@ -55,7 +63,6 @@ class VideolyzardClient(object):
         '''
         converted_time = time.mktime(datetime_obj.timetuple()) + datetime_obj.microsecond / 1E6
         return int(converted_time)
-
 
     @classmethod
     def convert_videos_csv_to_dict(cls, file_obj):
@@ -88,15 +95,6 @@ class VideolyzardClient(object):
 
         return videos
 
-    def __init__(self, username, password):
-        '''
-        The Videolyzard client requires a password and a username.
-        '''
-        assert username, 'No username was provided!'
-        assert password, 'No password was provided!'
-
-        self.username = username
-        self.password = password
 
 
     def post_dict_videos_to_queue(self, videos):
@@ -139,8 +137,9 @@ class VideolyzardClient(object):
 
 
     def _prepare_url_with_user_credentials(self, url):
-        user = {'username':self.username, 'password':self.password,}
-        return url % user
+        return url % {'username':self.username, 
+                      'password':self.password,
+                      'server_url': self.server_url}
 
 
     def _send_to_queue(self, videos):
@@ -173,6 +172,9 @@ class VideolyzardClient(object):
             converted_timeobj = self.convert_datetime_to_timestamp(since)
             since_str = '&since=%s' % converted_timeobj
             parameters.append(since_str)
+            
+        # TODO: use parse_qs
+        # TODO: download json data
 
         if filter:
             error_msg = '%s is not a valid filter configuration!' % filter
@@ -211,9 +213,7 @@ class VideolyzardClient(object):
         return
 
 
-
 class TestVideolyzard(unittest.TestCase):
-
 
     def test_submit_video(self):
         videos = [{'portal_name': 'portal_climate_new',
@@ -232,22 +232,13 @@ class TestVideolyzard(unittest.TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTrue('success' in response.content)
 
-
-    def test_import_from_csv(self):
-
-        csv_file_obj = open('videolyzard.csv')
-        client = VideolyzardClient(username='weblyzard', password='VID30lyz4rd')
-        response = client.post_csv_to_queue(csv_file_obj)
-
-        self.assertTrue('success' in response.content)
-        self.assertEquals(response.status_code, 200)
-
-
     def test_retrieve_videos(self):
 
         client = VideolyzardClient(username='weblyzard', password='VID30lyz4rd')
         since = datetime.now() - timedelta(days=90)
-        videos_query = client.get_video_data('portal_climate_new', filter='completed', since=since)
+        videos_query = client.get_video_data('portal_climate_new', 
+                                             filter='completed', 
+                                             since=since)
 
         num_checked_videos = 0
         for video in videos_query:
@@ -258,10 +249,10 @@ class TestVideolyzard(unittest.TestCase):
             self.assertTrue('video_url' in video)
 
             num_checked_videos = num_checked_videos + 1
-
+            from pprint import pprint
+            pprint(video)
             if num_checked_videos > 10:
                 break
-
 
 if __name__ == '__main__':
     unittest.main()
