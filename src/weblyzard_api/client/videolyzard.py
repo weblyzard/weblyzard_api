@@ -2,28 +2,14 @@
 # -*- coding: utf-8 -*-
 '''
 Created on 16.04.2014
-
-@author: heinz-peterlang
-'''
-
-'''
-required tasks - see the API documentation
-* add new youtube urls to videoLyzard's analyzing queue
-    * support for adding a single video and multiple videos 
-* get analyzed videos (annotations, new xml) since timestamp x
-    * support for iterating the pages, see variable pager in response
-    * https://ccc.modul.ac.at/videolyzard/get-data?type=json&page=1&portal=portal_climate_new&since=1391172002&filter=completed
-
-non-targets: 
-* update the database -> just return the result
-* get the youtube urls -> just use anything from youtube
-
-.. seealso:: 
+.. seealso::
 
     `API Documentation <https://gitlab.semanticlab.net/matthiasb/weblyzard-youtube-tab/wikis/api-documentation>`_
 
     :mod::`wl_data_scripts.projects.videolyzard.import_data`
+@author: heinz-peterlang
 '''
+
 import csv
 import unittest
 import json
@@ -31,8 +17,16 @@ import requests
 import time
 from datetime import datetime, timedelta
 
-
 class VideolyzardClient(object):
+    '''
+    A Python client for the Weblyzard API.
+
+    .. seealso::
+
+    `API Documentation <https://gitlab.semanticlab.net/matthiasb/weblyzard-youtube-tab/wikis/api-documentation>`_
+
+    :mod::`wl_data_scripts.projects.videolyzard.import_data`
+    '''
     SERVER_URL = 'http://ccc.modul.ac.at/videolyzard/'
     UPLOAD_URL = '%(server_url)s/add-json?username=%(username)s&password=%(password)s'
     VIDEO_DATA_URL = '%(server_url)s/get-data?username=%(username)s&password=%(password)s&type=json'
@@ -152,13 +146,13 @@ class VideolyzardClient(object):
         return response
 
 
-    def get_video_data(self, portal, since=None, page=1, filter=None):
+    def get_video_data(self, portal, since=None, page=1, status=None):
         '''
         Query video data from the Videolyzard API.
 
         :param portal: Reduces results to WebLyzard portal (e.g. portal_climate_new);
                        shows all if not specified
-        :param filter: Filters results by their state (processing, failed, completed); shows all if not specified
+        :param status: Filters results by their state (processing, failed, completed); shows all if not specified
         :param since: Shows results only from the specified timestamp (e.g. 1396310400); shows all if not specified
         :param page: Current selected page (e.g. 5); shows page 1 if not specified
         '''
@@ -176,11 +170,11 @@ class VideolyzardClient(object):
         # TODO: use parse_qs
         # TODO: download json data
 
-        if filter:
-            error_msg = '%s is not a valid filter configuration!' % filter
-            assert filter in self.POSSIBLE_FILTER_CONFIGS, error_msg
-            filter_str = '&filter=%s' % filter
-            parameters.append(filter_str)
+        if status:
+            error_msg = '%s is not a valid status configuration!' % status
+            assert status in self.POSSIBLE_FILTER_CONFIGS, error_msg
+            status_str = '&filter=%s' % status
+            parameters.append(status_str)
 
         url = self._prepare_url_with_user_credentials(self.VIDEO_DATA_URL)
         url = url + ''.join(parameters)
@@ -237,7 +231,7 @@ class TestVideolyzard(unittest.TestCase):
         client = VideolyzardClient(username='weblyzard', password='VID30lyz4rd')
         since = datetime.now() - timedelta(days=90)
         videos_query = client.get_video_data('portal_climate_new', 
-                                             filter='completed', 
+                                             status='completed',
                                              since=since)
 
         num_checked_videos = 0
