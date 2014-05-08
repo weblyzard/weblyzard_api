@@ -164,9 +164,6 @@ class VideolyzardClient(object):
         if since:
             converted_timeobj = self.convert_datetime_to_timestamp(since)
             parameters['since'] = converted_timeobj
-            
-        # TODO: use parse_qs
-        # TODO: download json data
 
         if status:
             error_msg = '%s is not a valid status configuration!' % status
@@ -193,6 +190,19 @@ class VideolyzardClient(object):
                 videos = response_dict['videos']
 
                 for video in videos:
+
+                    output_url = video.get('output')
+                    no_transcript_was_found = not output_url
+
+                    if no_transcript_was_found:
+                        continue
+
+                    output_response = requests.get(output_url)
+                    output = output_response.json()
+
+                    video['xml'] = output.get('xml')
+                    video['annotations'] = output.get('annotations')
+
                     yield video
 
             except ValueError:
@@ -242,8 +252,6 @@ class TestVideolyzard(unittest.TestCase):
             self.assertEquals(video['state'], 'completed')
 
             num_checked_videos = num_checked_videos + 1
-            from pprint import pprint
-            pprint(video)
 
             if num_checked_videos > 10:
                 break
