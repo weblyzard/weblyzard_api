@@ -88,9 +88,16 @@ class XMLParser(object):
                                                   mapping=cls.SENTENCE_MAPPING)
             sent_attributes['value'] = sent_element.text.strip()
             
-            if not sent_attributes['md5sum'] in seen_sentences:
+            if 'md5sum' in sent_attributes: 
+                sent_id = sent_attributes['md5sum']
+            else: 
+                sent_id = sent_attributes['id']
+                sent_attributes['md5sum'] = sent_id
+                del sent_attributes['id']
+                
+            if not sent_id in seen_sentences:
                 sentences.append(sent_attributes)
-                seen_sentences.append(sent_attributes['md5sum'])
+                seen_sentences.append(sent_id)
         
         return sentences
     
