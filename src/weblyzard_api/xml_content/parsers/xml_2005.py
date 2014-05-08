@@ -12,7 +12,8 @@ class XML2005(XMLParser):
     
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2005'
     DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE}
-    SENTENCE_MAPPING = {'pos_tags': 'pos'} 
+    SENTENCE_MAPPING = {'id': 'md5sum',
+                        'pos_tags': 'pos'} 
     VERSION = 2005
 
     @classmethod
@@ -50,6 +51,6 @@ class TestXML2005(unittest.TestCase):
         for sent in sentences: 
             assert 'id' not in sent
             assert 'md5sum' in sent
-    
+        
 if __name__ == '__main__':
     unittest.main()
