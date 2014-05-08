@@ -151,6 +151,11 @@ class VideolyzardClient(object):
         '''
         Query video data from the Videolyzard API.
 
+        .. note :: The returned video_urls are modified!
+                   '&videolyzard=annotated' is appended in order to
+                   indicated that the video_url was processed. For example:
+                   www.youtube.com/watch?v=m10pGZx1s0s => www.youtube.com/watch?v=m10pGZx1s0s&videolyzard=annotated
+
         :param portal: Reduces results to WebLyzard portal (e.g. portal_climate_new);
                        shows all if not specified
         :param status: Filters results by their state (processing, failed, completed); shows all if not specified
@@ -203,6 +208,10 @@ class VideolyzardClient(object):
                     video['xml'] = output.get('xml')
                     video['annotations'] = output.get('annotations')
 
+                    video_url = video.get('video_url')
+                    if video_url:
+                        video['video_url'] = video_url + '&videolyzard=annotated'
+
                     yield video
 
             except ValueError:
@@ -253,6 +262,8 @@ class TestVideolyzard(unittest.TestCase):
 
             num_checked_videos = num_checked_videos + 1
 
+            # without this additional break up condition
+            # the test would run for ages!
             if num_checked_videos > 10:
                 break
 
