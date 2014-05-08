@@ -15,6 +15,7 @@ import unittest
 import json
 import requests
 import time
+import urllib
 from datetime import datetime, timedelta
 
 class VideolyzardClient(object):
@@ -27,9 +28,9 @@ class VideolyzardClient(object):
 
     :mod::`wl_data_scripts.projects.videolyzard.import_data`
     '''
-    SERVER_URL = 'http://ccc.modul.ac.at/videolyzard/'
+    SERVER_URL = 'http://ccc.modul.ac.at/videolyzard'
     UPLOAD_URL = '%(server_url)s/add-json?username=%(username)s&password=%(password)s'
-    VIDEO_DATA_URL = '%(server_url)s/get-data?username=%(username)s&password=%(password)s&type=json'
+    VIDEO_DATA_URL = '%(server_url)s/get-data?username=%(username)s&password=%(password)s&type=json&'
 
     POSSIBLE_FILTER_CONFIGS = ('processing', 'failed', 'completed')
     FILTER_PROCESSING = 'processing'
@@ -131,9 +132,9 @@ class VideolyzardClient(object):
 
 
     def _prepare_url_with_user_credentials(self, url):
-        return url % {'username':self.username, 
-                      'password':self.password,
-                      'server_url': self.server_url}
+        return url % {'server_url' : self.server_url,
+                      'username' : self.username,
+                      'password' : self.password}
 
 
     def _send_to_queue(self, videos):
@@ -157,15 +158,12 @@ class VideolyzardClient(object):
         :param page: Current selected page (e.g. 5); shows page 1 if not specified
         '''
         assert isinstance(page, int), page
-
-        portal_str = '&portal=%s' % portal
-        parameters = [portal_str,]
+        parameters = {'portal' : portal}
 
         # prepare the request URL
         if since:
             converted_timeobj = self.convert_datetime_to_timestamp(since)
-            since_str = '&since=%s' % converted_timeobj
-            parameters.append(since_str)
+            parameters['since'] = converted_timeobj
             
         # TODO: use parse_qs
         # TODO: download json data
@@ -173,12 +171,11 @@ class VideolyzardClient(object):
         if status:
             error_msg = '%s is not a valid status configuration!' % status
             assert status in self.POSSIBLE_FILTER_CONFIGS, error_msg
-            status_str = '&filter=%s' % status
-            parameters.append(status_str)
+            parameters['filter'] = status
 
         url = self._prepare_url_with_user_credentials(self.VIDEO_DATA_URL)
-        url = url + ''.join(parameters)
-
+        parameters_str = urllib.urlencode(parameters)
+        url = url + parameters_str
         further_videos_exist = 200
 
         # query video data from API.
@@ -242,9 +239,12 @@ class TestVideolyzard(unittest.TestCase):
             self.assertTrue('portal_url' in video)
             self.assertTrue('video_url' in video)
 
+            self.assertEquals(video['state'], 'completed')
+
             num_checked_videos = num_checked_videos + 1
             from pprint import pprint
             pprint(video)
+
             if num_checked_videos > 10:
                 break
 
