@@ -37,8 +37,8 @@ from datetime import datetime, timedelta
 
 class VideolyzardClient(object):
 
-    UPLOAD_URL = 'https://ccc.modul.ac.at/videolyzard/add-json?username=%(username)s&password=%(password)s'
-    VIDEO_DATA_URL = 'https://ccc.modul.ac.at/videolyzard/get-data?username=%(username)s&password=%(password)s&type=json'
+    UPLOAD_URL = 'http://ccc.modul.ac.at/videolyzard/add-json?username=%(username)s&password=%(password)s'
+    VIDEO_DATA_URL = 'http://ccc.modul.ac.at/videolyzard/get-data?username=%(username)s&password=%(password)s&type=json'
 
     POSSIBLE_FILTER_CONFIGS = ('processing', 'failed', 'completed')
     FILTER_PROCESSING = 'processing'
