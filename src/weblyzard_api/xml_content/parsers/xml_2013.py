@@ -51,7 +51,7 @@ class TestXML2013(unittest.TestCase):
         </wl:sentence></wl:page>'''
         
         attributes, sentences = XML2013.parse(xml)
-        print attributes
+
         assert len(attributes) == 4
         assert len(sentences) == 1
         assert all(attr in attributes for attr in ('content_id', 'content_type',
