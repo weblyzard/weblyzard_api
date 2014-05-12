@@ -20,13 +20,13 @@ class XML2013(XMLParser):
                     '{%s}lang' % DOCUMENT_NAMESPACES['xml']: 'lang',
                     '{%s}id' % DOCUMENT_NAMESPACES['wl']: 'content_id',
                     '{%s}source' % DOCUMENT_NAMESPACES['dc']: 'source',}
-
     SENTENCE_MAPPING = {'{%s}token' % DOCUMENT_NAMESPACES['wl']: 'token',
                         '{%s}sem_orient' % DOCUMENT_NAMESPACES['wl']: 'sem_orient',
                         '{%s}significance' % DOCUMENT_NAMESPACES['wl']: 'significance',
                         '{%s}id' % DOCUMENT_NAMESPACES['wl']: 'md5sum',
                         '{%s}pos' % DOCUMENT_NAMESPACES['wl']: 'pos',
-                        '{%s}is_title' % DOCUMENT_NAMESPACES['wl']: 'is_title'}
+                        '{%s}is_title' % DOCUMENT_NAMESPACES['wl']: 'is_title',
+                        '{%s}dependencies' % DOCUMENT_NAMESPACES['wl']: 'dependencies'}
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
