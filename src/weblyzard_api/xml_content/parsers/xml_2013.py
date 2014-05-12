@@ -18,7 +18,9 @@ class XML2013(XMLParser):
     ATTR_MAPPING = {'{%s}nilsimsa' % DOCUMENT_NAMESPACES['wl']: 'nilsimsa',
                     '{%s}format' % DOCUMENT_NAMESPACES['dc']: 'content_type',
                     '{%s}lang' % DOCUMENT_NAMESPACES['xml']: 'lang',
-                    '{%s}id' % DOCUMENT_NAMESPACES['wl']: 'content_id'}
+                    '{%s}id' % DOCUMENT_NAMESPACES['wl']: 'content_id',
+                    '{%s}source' % DOCUMENT_NAMESPACES['dc']: 'source',}
+
     SENTENCE_MAPPING = {'{%s}token' % DOCUMENT_NAMESPACES['wl']: 'token',
                         '{%s}sem_orient' % DOCUMENT_NAMESPACES['wl']: 'sem_orient',
                         '{%s}significance' % DOCUMENT_NAMESPACES['wl']: 'significance',
@@ -49,6 +51,7 @@ class TestXML2013(unittest.TestCase):
         </wl:sentence></wl:page>'''
         
         attributes, sentences = XML2013.parse(xml)
+        print attributes
         assert len(attributes) == 4
         assert len(sentences) == 1
         assert all(attr in attributes for attr in ('content_id', 'content_type',
