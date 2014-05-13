@@ -35,7 +35,7 @@ class Jesaja(MultiRESTClient):
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
                  pwd=WEBLYZARD_API_PASS):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
-
+        
     @classmethod
     def get_documents(cls, xml_content_dict):
         ''' 
@@ -52,9 +52,12 @@ class Jesaja(MultiRESTClient):
         :returns: converted document
         :rtype: dict
         '''
+        if isinstance(xml, dict):
+            return xml
+        
         if not isinstance(xml, XMLContent):
             xml = XMLContent(xml)
-            
+        
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
                            ignore_non_sentence=True, 
                            add_titles_to_sentences=True)
@@ -81,7 +84,7 @@ class Jesaja(MultiRESTClient):
                             keyword_calculation_profile)
 
     def add_or_update_corpus(self, corpus_name, corpus_format, corpus, 
-                             profile_name=None):
+                             profile_name=None, skip_profile_check=False):
         ''' 
         Adds/updates a corpus at Jesaja.
         :param corpus_name: the name of the corpus
@@ -107,7 +110,7 @@ class Jesaja(MultiRESTClient):
         if corpus_format == 'xml':
             if profile_name is None:
                 raise ValueError, 'Corpus_format "xml" requires spezifying a profile for tokenization'
-            elif not self.has_profile( profile_name ):
+            elif not skip_profile_check and not self.has_profile(profile_name):
                 raise ValueError, 'profile "%s" missing!' % (profile_name)
 
             corpus = self.get_documents(corpus)    
