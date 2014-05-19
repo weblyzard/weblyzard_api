@@ -10,6 +10,7 @@ New supported calls:
 - recognize/searchXml/ofwi.people
 
 '''
+import logging
 import unittest
 from pprint import pprint
 
@@ -21,6 +22,7 @@ from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
 INTERNAL_PROFILE_PREFIX = 'extras.'
+logger = logging.getLogger('weblyzard_api.client.recognize')
 
 class Recognize(MultiRESTClient):
     '''
@@ -180,7 +182,12 @@ class Recognize(MultiRESTClient):
             return 
 
         for profile_name in profile_names:
-            self.add_profile(profile_name)
+            try:
+                self.add_profile(profile_name)
+            except Exception:
+                profile_names.remove(profile_name)
+                msg = 'could not load profile %s, skipping' % profile_name
+                logger.warn(msg)
 
         content_type = 'application/json'
         

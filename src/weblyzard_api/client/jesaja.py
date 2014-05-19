@@ -26,7 +26,7 @@ class Jesaja(MultiRESTClient):
     ATTRIBUTE_MAPPING = {'content_id': 'id', 
                          'title': 'title', 
                          'sentences': 'sentence',
-                         'lang': 'lang',
+                         'lang': 'xml:lang',
                          'sentences_map': {'pos': 'pos',
                                            'token': 'token', 
                                            'value': 'value',
@@ -35,7 +35,7 @@ class Jesaja(MultiRESTClient):
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
                  pwd=WEBLYZARD_API_PASS):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
-
+        
     @classmethod
     def get_documents(cls, xml_content_dict):
         ''' 
@@ -52,17 +52,20 @@ class Jesaja(MultiRESTClient):
         :returns: converted document
         :rtype: dict
         '''
+        if isinstance(xml, dict):
+            return xml
+        
         if not isinstance(xml, XMLContent):
             xml = XMLContent(xml)
-            
+        
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
                            ignore_non_sentence=True, 
                            add_titles_to_sentences=True)
     
     def add_profile(self, profile_name, keyword_calculation_profile):
         ''' Add a keyword profile to the server
-        @param profile_name: the name of the keyword profile
-        @param keyword_calculation_profile: the full keyword calculation
+        :param profile_name: the name of the keyword profile
+        :param keyword_calculation_profile: the full keyword calculation
                                             profile (example see below).
         <code>
         { 
@@ -80,27 +83,14 @@ class Jesaja(MultiRESTClient):
         return self.request('add_or_refresh_profile/%s' % profile_name,
                             keyword_calculation_profile)
 
-    def add_or_refresh_corpus(self,profile_name, corpus, corpus_format, 
-                              corpus_name=None):
-        ''' for compability reasons ''' 
-        
-        if not corpus_name: 
-            corpus_name = profile_name
-            
-        assert corpus_format == 'dict', 'dict only --> prevent using XML V2'
-        
-        path = 'add_or_refresh_corpus/doc/%s/%s' % (corpus_name, 
-                                                    profile_name) 
-        return self.request(path, corpus)
-
     def add_or_update_corpus(self, corpus_name, corpus_format, corpus, 
-                             profile_name=None):
+                             profile_name=None, skip_profile_check=False):
         ''' 
         Adds/updates a corpus at Jesaja.
-        @param corpus_name: the name of the corpus
-        @param corpus_format: either 'csv', or 'xml'
-        @param corpus: the corpus in the given format.
-        @param profile_name: the name of the profile used for tokenization 
+        :param corpus_name: the name of the corpus
+        :param corpus_format: either 'csv', or 'xml'
+        :param corpus: the corpus in the given format.
+        :param profile_name: the name of the profile used for tokenization 
                            (only used in conjunction with corpus_format 'doc').
 
         Supported formats:
@@ -119,8 +109,8 @@ class Jesaja(MultiRESTClient):
         # convert the wlxml format to doc, if required
         if corpus_format == 'xml':
             if profile_name is None:
-                raise ValueError, 'Corpus_format "doc" requires spezifying a profile for tokenization'
-            elif not self.has_profile( profile_name ):
+                raise ValueError, 'Corpus_format "xml" requires spezifying a profile for tokenization'
+            elif not skip_profile_check and not self.has_profile(profile_name):
                 raise ValueError, 'profile "%s" missing!' % (profile_name)
 
             corpus = self.get_documents(corpus)    
@@ -136,35 +126,40 @@ class Jesaja(MultiRESTClient):
         
         return self.request(path, corpus)
 
-    def get_keywords( self, profile_name, documents ):
+    def get_keywords_xml(self, profile_name, documents):
+        ''' converts each document to a dictionary and calculates the keywords''' 
+        documents = self.get_documents(documents)
+        return self.get_keywords(profile_name, documents)
+
+    def get_keywords(self, profile_name, documents):
         ''' 
-        @param profile_name: keyword profile to use 
-        @param documents: a list of webLyzard xml documents to annotate
+        :param profile_name: keyword profile to use 
+        :param documents: a list of webLyzard xml documents to annotate
 
         documents = [
           {
-             "title": "Test document",
-             "sentence": [
+             'title': 'Test document',
+             'sentence': [
                  {
-                   "id": "27150b5fae553ebab63332fe7b94d518",
-                   "pos": "NNP VBZ VBN IN VBZ NNP . NNP VBZ NNP .",
-                   "token": "0,5 6,8 9,16 17,19 20,27 28,43 43,44 45,48 49,54 55,61 61,62",
-                   "value": "CDATA is wrapped as follows <![CDATA[aha]]>. Ana loves Martin."
+                   'id': '27150b5fae553ebab63332fe7b94d518',
+                   'pos': 'NNP VBZ VBN IN VBZ NNP . NNP VBZ NNP .',
+                   'token': '0,5 6,8 9,16 17,19 20,27 28,43 43,44 45,48 49,54 55,61 61,62',
+                   'value': 'CDATA is wrapped as follows <![CDATA[aha]]>. Ana loves Martin.'
                  },
                  {
-                   "id": "f8ddd9b3c8cf4c7764a3348d14e84e79",
-                   "pos": "NN IN CD \" IN JJR JJR JJR JJR CC CC CC : : JJ NN .",
-                   "token": "0,4 5,7 8,9 10,11 12,16 17,18 18,19 19,20 20,21 22,23 23,24 25,28 29,30 30,31 32,39 40,45 45,46",
-                   "value": "10µm in € ” with <><> && and // related stuff."
+                   'id': 'f8ddd9b3c8cf4c7764a3348d14e84e79',
+                   'pos': 'NN IN CD \' IN JJR JJR JJR JJR CC CC CC : : JJ NN .',
+                   'token': '0,4 5,7 8,9 10,11 12,16 17,18 18,19 19,20 20,21 22,23 23,24 25,28 29,30 30,31 32,39 40,45 45,46',
+                   'value': '10µm in € ” with <><> && and // related stuff.'
                  }
              ],
-             "content_id": '123k233',
-             "lang": "en",
+             'content_id': '123k233',
+             'lang': 'en',
              }
         ]
         '''
         if not self.has_profile(profile_name):
-            raise Exception('Cannot compute keywords - unknown profile %s.' % profile_name)
+            raise Exception('Cannot compute keywords - unknown profile %s' % profile_name)
         return self.request('get_keywords/%s' % profile_name, documents)
 
     def has_profile(self, profile_name):
@@ -208,7 +203,6 @@ class Jesaja(MultiRESTClient):
 
     def meminfo(self):
         return self.request('meminfo')
-
 
 class JesajaTest(unittest.TestCase):
 
