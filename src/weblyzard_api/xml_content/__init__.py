@@ -81,12 +81,11 @@ class Sentence(object):
         '''
         :returns: an iterator providing the sentence's tokens 
         '''
-        if not self.token_indices:
+        if not self.token:
             raise StopIteration
 
-        tokens = self.token_indices.split(" ")
-        for token_pos in tokens:
-            start, end = map(int, token_pos.split(","))
+        for token_pos in self.token.split(' '):
+            start, end = map(int, token_pos.split(','))
             yield self.sentence[start:end]
             
     sentence = property(get_sentence, set_sentence)
