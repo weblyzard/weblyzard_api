@@ -77,8 +77,21 @@ class Sentence(object):
     def set_pos_tags(self, new_pos_tags):
         self.value = new_pos_tags
     
+    def get_tokens(self):
+        '''
+        :returns: an iterator providing the sentence's tokens 
+        '''
+        if not self.token_indices:
+            raise StopIteration
+
+        tokens = self.token_indices.split(" ")
+        for token_pos in tokens:
+            start, end = map(int, token_pos.split(","))
+            yield self.sentence[start:end]
+            
     sentence = property(get_sentence, set_sentence)
     pos_tags = property(get_pos_tags, set_pos_tags)
+    tokens   = property(get_tokens)
     
 class XMLContent(object):
     
