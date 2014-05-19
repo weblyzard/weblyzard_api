@@ -208,10 +208,6 @@ class VideolyzardClient(object):
                     video['xml'] = output.get('xml')
                     video['annotations'] = output.get('annotations')
 
-                    video_url = video.get('video_url')
-                    if video_url:
-                        video['video_url'] = video_url + '&videolyzard=annotated'
-
                     yield video
 
             except ValueError:
