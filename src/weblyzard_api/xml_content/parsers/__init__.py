@@ -160,7 +160,8 @@ class XMLParser(object):
                                          '{%s}sentence' % cls.get_default_ns(), 
                                          attrib=sent_attributes, 
                                          nsmap=cls.DOCUMENT_NAMESPACES)
-            
+            if isinstance(value, int):
+                value = str(value)
             sent_elem.text = etree.CDATA(value)
         
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
