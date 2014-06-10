@@ -201,6 +201,10 @@ class Jesaja(MultiRESTClient):
         '''
         return self.request('finalize_corpora', return_plain=True)
 
+    def finalize_profile(self, profile_name):
+        return self.request('finalize_profile/%s' % profile_name, 
+                            return_plain=True)
+
     def meminfo(self):
         return self.request('meminfo')
 
