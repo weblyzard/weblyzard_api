@@ -4,6 +4,11 @@
 Created on 20.01.2014
 
 @author: heinz-peterlang
+
+The source files for the dictionaries (of format *.csv and *.txt) are being
+copied by Jenkins from src/sentiment_detection/config in the repository
+core.sentiment / sentiment-detection to https://services.weblyzard.com/repo/
+resources/sentiment/
 '''
 import os
 import urlparse
