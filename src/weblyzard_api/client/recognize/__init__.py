@@ -91,48 +91,48 @@ class Recognize(MultiRESTClient):
         ''' removes a profile from the list of pre-loaded profiles '''
         return self.request('remove_profile/%s' % profile_name)
 
-    def multisearch(self, profile_names, text, debug=False, max_entities=1, buckets=1, 
-               limit=1, lang='de', output_format='minimal'):
-        '''
-        Search across multiple profiles
-        :param profile_names: a list of profile names
-        :param text: the text to search in
-        :param debug: compute and return an explanation
-        :param buckets: only return n buckets of hits with the same score
-        :param max_entities: number of results to return (removes the top hit's
-                             tokens and rescores the result list subsequently
-        :param limit: only return that many results
-        :param output_format: the output format to use ('standard', 'minimal'*, 'annie')
-        :param lang: the document language, 'de' is default
-        :rtype: the tagged text
-        '''
-        assert output_format in self.OUTPUT_FORMATS
-        
-        if isinstance(profile_names, dict):
-            if lang in profile_names:
-                for profile_name in profile_names[lang]:
-                    self.add_profile(profile_name)
-                            
-        else :
-            for profile_name in profile_names:
-                self.add_profile(profile_name)
-      
-        return self.request(path='multisearch',
-                            parameters=text, 
-                            query_parameters={
-                                            'profileNames' : profile_names,
-                                            'limit': limit,
-                                            'rescore': max_entities, 
-                                            'buckets': buckets, 
-                                            'limit': limit, 
-                                            'wt': output_format, 
-                                            'lang': lang,
-                                            'debug': debug })
-    
+#     def search_text_lang(self, profile_names, text, debug=False, max_entities=1, buckets=1, 
+#                limit=1, lang='de', output_format='minimal'):
+#         '''
+#         Search text with given profile types, by language.
+#         Supports multi-language profiles
+#         :param profile_names: a list of profile names
+#         :param text: the text to search in
+#         :param debug: compute and return an explanation
+#         :param buckets: only return n buckets of hits with the same score
+#         :param max_entities: number of results to return (removes the top hit's
+#                              tokens and rescores the result list subsequently
+#         :param limit: only return that many results
+#         :param output_format: the output format to use ('standard', 'minimal'*, 'annie')
+#         :param lang: the document language, 'de' is default
+#         :rtype: the tagged text
+#         '''
+#         assert output_format in self.OUTPUT_FORMATS
+#         
+#         if isinstance(profile_names, dict):
+#             if lang in profile_names:
+#                 for profile_name in profile_names[lang]:
+#                     self.add_profile(profile_name)
+#                             
+#         else :
+#             for profile_name in profile_names:
+#                 self.add_profile(profile_name)
+#       
+#         return self.request(path='multisearch',
+#                             parameters=text, 
+#                             query_parameters={
+#                                             'profileNames' : profile_names,
+#                                             'rescore': max_entities, 
+#                                             'buckets': buckets, 
+#                                             'limit': limit, 
+#                                             'wt': output_format, 
+#                                             'lang': lang,
+#                                             'debug': debug })
+#     
     def search_text(self, profile_names, text, debug=False, max_entities=1, buckets=1, 
                limit=1, output_format='minimal'):
         '''
-        Search within a single profile
+        Search text with given profiles
         :param profileName: the profile to search in
         :param text: the text to search in
         :param debug: compute and return an explanation
@@ -192,7 +192,7 @@ class Recognize(MultiRESTClient):
         content_type = 'application/json'
         
         if 'content_id' in document:
-            search_command = 'searchXml'
+            search_command = 'search'
         elif 'id' in document:
             search_command = 'searchXml'
         else:
@@ -232,34 +232,44 @@ class Recognize(MultiRESTClient):
         if not doc_list or len(doc_list)==0:
             return 
 
-        lang_list = set([document['lang'] for document in doc_list])
-        
-        #add required profiles
         profiles_to_add = []
-        if isinstance(profile_names, dict):
-            for lang in lang_list:
-                if lang in profile_names:
-                    for profile_name in profile_names[lang]:
-                        profiles_to_add.append(profile_name)           
-        else :
-            for profile_name in profile_names:
-                profiles_to_add.append(profile_name)
-
+        SUPPORTED_LANGS = ['en', 'fr', 'de']
+        for profile_name in profile_names:
+            for lang in SUPPORTED_LANGS:
+                if profile_name.startswith(lang):
+                    profiles_to_add.append(profile_name)
+                    
+        remaining = set(profile_names).difference(set(profiles_to_add))
+        if len(remaining):
+            #get all required languages from documents
+            lang_list = []
+            for document in doc_list:
+                if 'lang' in document:
+                    lang_list.append(document['lang'])
+            lang_list = set(lang_list)
+            
+            #add required profiles
+            if isinstance(profile_names, dict):
+                for lang in lang_list:
+                    if lang in profile_names:
+                        for profile_name in profile_names[lang]:
+                            profiles_to_add.append(profile_name)           
+            else :
+                for profile_name in profile_names:
+                    profiles_to_add.append(profile_name)
+    
+        #add required profiles
         for profile_name in set(profiles_to_add):                
             self.add_profile(profile_name)
             
         content_type = 'application/json'
         
         if 'content_id' in doc_list[0]:
-            search_command = 'searchXmlDocuments'#'searchDocuments'
+            search_command = 'searchDocuments'
         elif 'id' in doc_list[0]:
             search_command = 'searchXmlDocuments'
         else:
             raise ValueError("Unsupported input format.")
-
-#         self.add_profile(profile_name)
-
-        print doc_list[0]
         
         return self.request(path=search_command, 
                             parameters=doc_list, 
@@ -271,53 +281,7 @@ class Recognize(MultiRESTClient):
                                               'limit': limit, 
                                               'wt': output_format, 
                                               'debug': debug})
-        
-#     def search_documents(self, profile_name, doc_list, debug=False, 
-#                          max_entities=1, buckets=1, limit=1, 
-#                          output_format='minimal'):
-#         '''
-#         :param profileName: the profile to search in
-#         :param doc_list: a list of documents to analyze in one of the 
-#                          following formats:
-#                          (a) dict: ( {'content_id': 12, 
-#                                       'content': u'the text to analyze'})
-#                          (b) weblyzardXML: ( XMLContent('<?xml version="1.0"...').as_list(),
-#                                              XMLContent('<?xml version="1.0"...').as_list(), )
-# 
-#         :param debug: compute and return an explanation
-#         :param buckets: only return n buckets of hits with the same score
-#         :param max_entities: number of results to return (removes the top hit's
-#                              tokens and rescores the result list subsequently
-#         :param limit: only return that many results
-#         :param output_format: the output format to use ('standard', 'minimal'*, 'annie')
-#         :rtype: the tagged dictionary
-#         '''
-#         assert output_format in self.OUTPUT_FORMATS
-#         if not doc_list:
-#             return 
-# 
-#         self.add_profile(profile_name)
-# 
-#         content_type = 'application/json'
-#         
-#         if 'content_id' in doc_list[0]:
-#             search_command = 'searchDocuments'
-#         elif 'id' in doc_list[0]:
-#             search_command = 'searchXmlDocuments'
-#         else:
-#             raise ValueError("Unsupported input format.")
-# 
-#         self.add_profile(profile_name)
-# 
-#         return self.request(path='%s/%s' % (search_command, profile_name), 
-#                             parameters=doc_list, 
-#                             content_type=content_type,
-#                             query_parameters={'rescore': max_entities, 
-#                                               'buckets': buckets, 
-#                                               'limit': limit, 
-#                                               'wt': output_format, 
-#                                               'debug': debug})
-    
+
     def get_focus(self, profile_names, doc_list, max_results=1):
         ''' 
         Returns the focus and annotations of the given document 
@@ -380,19 +344,19 @@ class EntityLyzardTest(unittest.TestCase):
 
         if self.service_is_online: 
             print self.client.list_profiles()
-            self.client.add_profile('People.DACH.de')
-            print self.client.search_documents('People.DACH.de', docs)
+            self.client.add_profile('de.people.ng')
+            print self.client.search_documents('de.people.ng', docs)
 
     def test_search_xml(self):
         if self.service_is_online: 
-            self.client.add_profile('People.DACH.de')
-            result = self.client.search_documents('People.DACH.de', self.DOCS)
+            self.client.add_profile('de.people.ng')
+            result = self.client.search_documents('de.people.ng', self.DOCS)
             print 'xmlsearch::::', result 
 
     def test_focus_search(self):
         if self.service_is_online: 
             pn = 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'
-            result = self.client.get_focus(['People.DACH.de', pn], 
+            result = self.client.get_focus(['de.people.ng', pn], 
                                            self.DOCS, max_results=3)
 
             # annotated two documents
@@ -425,7 +389,7 @@ class EntityLyzardTest(unittest.TestCase):
 #        print 'list_profiles', self.client.list_profiles()
 #        self.client.add_profile('Cities.10000.en', geodocs)
 #        self.client.add_profile('Cities.10000.en')
-        result = self.client.search('Cities.10000.en', geodocs, output_format='standard')
+        result = self.client.search(profile_name, geodocs, output_format='standard')
         print 'result', len(result), result[0]['name']
        
 #    def test_geo_vs_geo(self):
