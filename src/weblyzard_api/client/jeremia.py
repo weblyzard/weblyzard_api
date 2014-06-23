@@ -127,10 +127,10 @@ class JeremiaTest(unittest.TestCase):
               'header': {}}  for content_id in xrange(1000,1020)]
     
     def test_single_document_processing(self):
-         j = Jeremia()
-         print 'submitting document...'
-         document_annotated = j.submit_document(self.DOCS[1])
-         self.assertTrue(document_annotated != "")
+        j = Jeremia()
+        print 'submitting document...'
+        document_annotated = j.submit_document(self.DOCS[1])
+        self.assertTrue(document_annotated != "")
 
     def test_batch_processing(self):
         j = Jeremia()
