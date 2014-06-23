@@ -105,7 +105,14 @@ class Jeremia(MultiRESTClient):
         return self.request('cache/getBlacklist/%s' % source_id)
 
     def submit(self, batch_id, documents, source_id=None, use_blacklist=False):
-        ''' submit documents '''
+        ''' Convenience function to submit documents. The function will submit
+        the list of documents and finally call commit to retrieve the result
+        :param batch_id: ID of the batch
+        :param documents: list of documents (dict)
+        :param source_id: 
+        :param use_blacklist: use the blacklist or not 
+        :returns: result as a list with dicts
+        '''
         if use_blacklist: 
             if not source_id:
                 raise Exception('Blacklist requires a source_id')
@@ -180,6 +187,13 @@ class JeremiaTest(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             j.submit_documents('1223', [])
+    
+    def test_submit(self):
+        j = Jeremia()
+        result = j.submit(batch_id='meh1234', 
+                          documents=self.DOCS, 
+                          use_blacklist=False)
+        assert len(list(result)), 'result is empty'
         
 if __name__ == '__main__':
     if len(argv) > 1:
