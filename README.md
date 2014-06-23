@@ -22,6 +22,8 @@ export WEBLYZARD_API_USER="user"
 export WEBLYZARD_API_PASS="pass"
 ```
 
+Do not set `WEBLYZARD_API_USER` and `WEBLYZARD_API_PASS` if your Web service does not require authentication.
+
 ### Available interfaces:
 
 The following interfaces are currently available for `weblyzard_api`:
@@ -33,3 +35,11 @@ The following interfaces are currently available for `weblyzard_api`:
 + POS (part of speech tagging)
 + Recognize (named entity recognition)
 + Sentiment Analysis
+
+### Programming Guidelines
+
++ Required documentation for public methods
+  + docstring explaining what the method does
+  + a unit test demonstrating the method's usage in the wild.
++ commits must pass all unit tests
+
