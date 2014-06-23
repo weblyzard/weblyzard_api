@@ -263,6 +263,10 @@ class JesajaTest(unittest.TestCase):
         else: 
             print 'WARNING: Webservice is offline --> not executing all tests!!'
             
+    def test_server_is_online(self):
+        ''' tests if the server is online ''' 
+        assert self.jesaja.is_online(), 'server not online!!!'
+            
     def test_get_keywords(self):
         ''' tests the keywords computation '''
         if self.service_is_online:
