@@ -25,14 +25,48 @@ class Classifier(MultiRESTClient):
         '''
         return self.request('seasonalclassifier/rest/helloworld') #hardcoded at the moment
     
+    def classify(self, classifyRequest):
+        return self.request('seasonalclassifier/rest/classify', classifyRequest)
+    
     
 
-class TestClassifier(unittest.TestCase):        
+class TestClassifier(unittest.TestCase):
+    
+    TEST_JSON_CLASSIFY_DATA = {
+        'searchAgents': [1, 2, 3],
+        'numOfResults': 3, 
+        'document': 
+            {
+                'title': 'id', 
+                'body': 'Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.', 
+                'sentence': [
+                        {    
+                        'id' : 'b78a3223503896721cca1303f776159b',
+                        'token' : '0,5',
+                        'is_title' : 'false',
+                        'text' : 'Title',
+                        'sem_orient' : '0.0',
+                        'significance' : '0.0'
+                        }, 
+                        {
+                        'id': '7082ae05193c64ba5defe5e54ed15b98',
+                        'token' : '0,3 4,6 7,12 13,17 18,22 23,28 29,32 33,38 39,41 42,50 50,51',
+                        'is_title' : 'true',
+                        'text' : 'Get in touch with Fast Track via email or Facebook.',
+                        'sem_orient' : '0.0',
+                        'significance' : '0.0',
+                        'pos' : '-1:VB 0:IN 1:NN 2:IN 5:JJ 3:NNP 0:IN 6:NN 7:CC 8:NNP 0:. '
+                        }, 
+                              
+                    ]
+                }
+             }
             
-    def test_hello_world(self):
+    def test_submit_classify(self):
         classifier = Classifier()
-        result = classifier.hello_world()
-        assert result['helloWorld'] == 'hello world'
+        result = classifier.classify(self.TEST_JSON_CLASSIFY_DATA)
+        self.assertTrue(result is not None)
+        
         
 
 if __name__ == '__main__':
