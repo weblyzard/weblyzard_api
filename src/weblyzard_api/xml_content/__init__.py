@@ -72,7 +72,15 @@ class Sentence(object):
         self.value = new_sentence
 
     def get_pos_tags(self):
-        return self.pos
+        if self.pos and ':' in self.pos.strip().split()[0]:
+            result = [p.split(':')[1] for p in self.pos.split()]
+            if len(result) == len(self.pos.split()):
+                return result
+        else:
+            if self.pos:
+                return self.pos.strip().split()
+            else:
+                return None
 
     def set_pos_tags(self, new_pos_tags):
         if not isinstance(new_pos_tags, list):
@@ -83,13 +91,13 @@ class Sentence(object):
         '''
         :returns: list of the sentence's POS tags
         '''
-        return [] if not self.pos_tag_string else self.pos_tag_string.split(' ')
+        return [] if not self.pos_tag_string else self.get_pos_tags()
     
     def set_pos_tags_list(self, pos_tags_list):
         self.set_pos_tags(pos_tags_list)
     
     def get_pos_tags_string(self):
-        return self.pos
+        return ' '.join(self.get_pos_tags())
     
     def set_pos_tags_string(self, new_value):
         self.pos = new_value
@@ -103,13 +111,43 @@ class Sentence(object):
 
         for token_pos in self.token.split(' '):
             start, end = map(int, token_pos.split(','))
+            #yield self.sentence.decode('utf8')[start:end]
             yield unicode(self.sentence)[start:end]
+
+    def get_dependencies_list(self):
+        '''
+        Return the dependencies of the sentence as list of lists of length 2.
+
+        >>> s = Sentence(pos = '-1:RB 2:PRP 0:MD')
+        >>> s.dependencies_list
+        [['-1', 'RB'], ['2', 'PRP'], ['0', 'MD']]
+        '''
+        if ':' in self.pos.strip().split()[0]:
+            return [p.split(':') for p in self.pos.strip().split()]
+        else:
+            return None
+
+    def set_dependencies_list(self, dependencies):
+        '''
+        Takes a list of lists of length 2 of dependencies, e.g.
+        >>> s = Sentence(pos = '-1:RB 2:PRP 0:MD')
+        >>> s.dependencies_list
+        [['-1', 'RB'], ['2', 'PRP'], ['0', 'MD']]
+        >>> s.dependencies_list = [['0', 'MD']]
+        >>> s.dependencies_list
+        [['0', 'MD']]
+        '''
+        deps = []
+        for dependency in dependencies:
+            deps.append (':'.join(dependency))
+        self.pos = ' '.join(deps)
             
     sentence = property(get_sentence, set_sentence)
     pos_tags = property(get_pos_tags, set_pos_tags)
     tokens = property(get_tokens)
     pos_tags_list = property(get_pos_tags_list, set_pos_tags_list)
     pos_tag_string = property(get_pos_tags_string, set_pos_tags_string)
+    dependencies_list = property(get_dependencies_list, set_dependencies_list)
     
 class XMLContent(object):
     
@@ -324,6 +362,11 @@ class TestXMLContent(unittest.TestCase):
            <wl:sentence wl:id="93f56b9d196787d1cf662a06ab5f866b" wl:pos="CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG ." wl:token="0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.]]></wl:sentence>
          </wl:page>
     '''
+
+    xml_content3 = '''<?xml version="1.0" encoding="UTF-8"?>\n
+    <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:nilsimsa="15d10438875d418899a17909c2ca05591252b24450b259006242105024d43de4">\n
+       <wl:sentence wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="-1:RB 2:PRP 0:MD 2:VB 3:IN" wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Therefore we could show that "x>y" and "y<z.".]]></wl:sentence>\n
+       </wl:page>\n'''
     
     # reference data sets
     sentence_pos_tags = {'27cd03a5aaac20ae0dba60038f17fdad':
@@ -646,7 +689,7 @@ class TestXMLContent(unittest.TestCase):
     def test_sentence_tokens(self):
         sent = Sentence('md5sum',
                         pos='NN VVFIN ADV ADV ADJA NN $, KON ADV NN $.',
-                        value='Horuck-Aktionen bringen da wenig ökonomischen Anreiz, aber vielleicht Wählerstimmen.', 
+                        value=u'Horuck-Aktionen bringen da wenig ökonomischen Anreiz, aber vielleicht Wählerstimmen.', 
                         token='0,15 16,23 24,26 27,32 33,45 46,52 52,53 54,58 59,69 70,83 83,84')
          
         result = list(sent.tokens)
@@ -661,7 +704,22 @@ class TestXMLContent(unittest.TestCase):
         xml = XMLContent(xml_content)
         for sentence in xml.sentences:
             assert "\"" in sentence.pos_tag_string
-            
+
+    def test_pos_with_dependencies(self):
+        '''
+        Test that if an XML's wl:pos tags contain dependencies, the pos and
+        dependencies are handled correctly.
+        '''
+        xml_content = XMLContent(self.xml_content3)
+        sentence = xml_content.sentences[0]
+        assert sentence.pos_tags_list == ['RB', 'PRP', 'MD', 'VB', 'IN']
+        assert sentence.pos_tag_string == 'RB PRP MD VB IN'
+        assert sentence.dependencies_list == [['-1','RB'], ['2','PRP'], ['0','MD'], ['2','VB'], ['3','IN']]
+        tmp_dependencies = sentence.dependencies_list
+        sentence.dependencies_list = tmp_dependencies
+        assert sentence.dependencies_list == tmp_dependencies
+
+
 if __name__ == '__main__':
     unittest.main()
     
