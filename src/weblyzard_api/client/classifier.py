@@ -6,6 +6,7 @@ Created on Jan 16, 2013
 import unittest 
 
 from eWRT.ws.rest import  MultiRESTClient
+from weblyzard_api.client.jeremia import Jeremia
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
 class Classifier(MultiRESTClient):
@@ -32,42 +33,37 @@ class Classifier(MultiRESTClient):
 
 class TestClassifier(unittest.TestCase):
     
-    TEST_JSON_CLASSIFY_DATA = {
-        'searchAgents': [1, 2, 3],
-        'numOfResults': 3, 
-        'document': 
-            {
-                'title': 'id', 
-                'body': 'Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.', 
-                'sentence': [
-                        {    
-                        'id' : 'b78a3223503896721cca1303f776159b',
-                        'token' : '0,5',
-                        'is_title' : 'false',
-                        'text' : 'Title',
-                        'sem_orient' : '0.0',
-                        'significance' : '0.0'
-                        }, 
-                        {
-                        'id': '7082ae05193c64ba5defe5e54ed15b98',
-                        'token' : '0,3 4,6 7,12 13,17 18,22 23,28 29,32 33,38 39,41 42,50 50,51',
-                        'is_title' : 'true',
-                        'text' : 'Get in touch with Fast Track via email or Facebook.',
-                        'sem_orient' : '0.0',
-                        'significance' : '0.0',
-                        'pos' : '-1:VB 0:IN 1:NN 2:IN 5:JJ 3:NNP 0:IN 6:NN 7:CC 8:NNP 0:. '
-                        }, 
-                              
-                    ]
-                }
-             }
+    DOCS = [ {'id': content_id,
+              'body': 'Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.' + str(content_id),
+              'title': 'Hello "world" more ',
+              'format': 'text/html',
+              'header': {}}  for content_id in xrange(1000,1020)]
+    
             
     def test_submit_classify(self):
+        
+        
+        # 1. step: send document to jeremia and retrieve the weblyzard document
+        j = Jeremia()
+        print 'submitting document...'
+        document_annotated = j.submit_document(self.DOCS[1])
+        self.assertTrue(document_annotated != "")
+        
+        type(document_annotated['xml_content'])
+        #print document_annotated['xml_content']
+        
+        json_classify_data= {
+                'searchAgents': [1, 2, 3],
+                'numOfResults': 3, 
+                'xml_document': document_annotated['xml_content']
+        }
+        
+        
+        # 2. step: send processed document to the classifier
         classifier = Classifier()
-        result = classifier.classify(self.TEST_JSON_CLASSIFY_DATA)
+        result = classifier.classify(json_classify_data)
+        print result         
         self.assertTrue(result is not None)
-        
-        
 
 if __name__ == '__main__':
     unittest.main()
