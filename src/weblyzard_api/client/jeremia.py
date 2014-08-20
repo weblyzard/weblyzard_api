@@ -27,9 +27,7 @@ class Jeremia(MultiRESTClient):
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
-        
-        # use if testing with deployed jeremia in local tomcat
-        # MultiRESTClient.__init__(self, "http://localhost:8080/jeremia/rest")
+
 
     def commit(self, batch_id):
         ''' 
