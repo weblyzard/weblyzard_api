@@ -178,7 +178,6 @@ class XMLContent(object):
                               XMLDeprecated.VERSION: XMLDeprecated}
     
     def __init__(self, xml_content):
-        print xml_content
         self.xml_version = None
         self.attributes = {}
         self.sentence_objects = []
