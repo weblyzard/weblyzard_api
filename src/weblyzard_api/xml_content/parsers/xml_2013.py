@@ -26,7 +26,7 @@ class XML2013(XMLParser):
                         '{%s}id' % DOCUMENT_NAMESPACES['wl']: 'md5sum',
                         '{%s}pos' % DOCUMENT_NAMESPACES['wl']: 'pos',
                         '{%s}is_title' % DOCUMENT_NAMESPACES['wl']: 'is_title',
-                        '{%s}dependencies' % DOCUMENT_NAMESPACES['wl']: 'dependencies'}
+                        '{%s}dependency' % DOCUMENT_NAMESPACES['wl']: 'dependency'}
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
