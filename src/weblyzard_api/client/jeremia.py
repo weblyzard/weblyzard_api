@@ -205,6 +205,10 @@ if __name__ == '__main__':
         j.submit_documents( '1222', docs )
         l = list(j.commit('1222'))
         print l
-        print XMLContent(l[0]['xml_content']).sentences[0].dependencies
+        print XMLContent(l[0]['xml_content']).sentences[0].dependency
+
+        docs[0]['annotations'] = [{'start':0, 'end': 4, 'key': 'test annotation'}]
+        l = j.submit_document(docs[0])
+        print l
     else:
         unittest.main()
