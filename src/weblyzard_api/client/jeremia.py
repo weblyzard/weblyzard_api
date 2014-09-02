@@ -48,6 +48,19 @@ class Jeremia(MultiRESTClient):
         :param document: the document to be processed
         '''
         return self.request('submit_document', document)
+    
+    def submit_document_with_annotations(self, document, annotations):
+        '''
+        processes a single document with jeremia (annotates a single document)
+        also processes the annotations (for named entities) 
+        :param document: the document to be processed
+        :param annotations: the document to be processed
+        '''
+        
+        request_data = {'document':document, 
+                        'annotations':annotations}
+        
+        return self.request('submit_document_with_annotations', request_data)
 
     def submit_documents(self, batch_id, documents):
         ''' 
@@ -131,11 +144,25 @@ class JeremiaTest(unittest.TestCase):
               'format': 'text/html',
               'header': {}}  for content_id in xrange(1000,1020)]
     
+    ANNOTATIONS =   [
+                     {'start': 5, 'end':7,}, 
+                     {'start': 5, 'end':7 }
+                    ] 
+                       
     def test_single_document_processing(self):
         j = Jeremia()
         print 'submitting document...'
         document_annotated = j.submit_document(self.DOCS[1])
         self.assertTrue(document_annotated != "")
+    
+    def test_single_document_with_annotations(self):
+        j = Jeremia()
+        print 'submitting document with annotations...'
+        document_annotated = j.submit_document_with_annotations(self.DOCS[1], self.ANNOTATIONS)
+        # self.assertTrue(document_annotated != "")
+        
+        
+        
 
     def test_batch_processing(self):
         j = Jeremia()
