@@ -49,19 +49,6 @@ class Jeremia(MultiRESTClient):
         '''
         return self.request('submit_document', document)
     
-    def submit_document_with_annotations(self, document, annotations):
-        '''
-        processes a single document with jeremia (annotates a single document)
-        also processes the annotations (for named entities) 
-        :param document: the document to be processed
-        :param annotations: the document to be processed
-        '''
-        
-        request_data = {'document':document, 
-                        'annotations':annotations}
-        
-        return self.request('submit_document_with_annotations', request_data)
-
     def submit_documents(self, batch_id, documents):
         ''' 
         :param batch_id: batch_id to use for the given submission
@@ -72,7 +59,13 @@ class Jeremia(MultiRESTClient):
         return self.request('submit_documents/%s' % batch_id, documents)
     
     def status(self):
-        return self.request('status')
+        return self.request('status', return_plain=True)
+
+    def version(self):
+        '''
+        ::return the current version of the jeremia deployed on the server
+        '''
+        return self.request('version', return_plain=True)
     
     def get_xml_doc(self, text, content_id='1'):
         '''
@@ -144,11 +137,7 @@ class JeremiaTest(unittest.TestCase):
               'format': 'text/html',
               'header': {}}  for content_id in xrange(1000,1020)]
     
-    ANNOTATIONS =   [
-                     {'start': 5, 'end':7,}, 
-                     {'start': 5, 'end':7 }
-                    ] 
-                       
+                      
     def test_single_document_processing(self):
         j = Jeremia()
         print 'submitting document...'
@@ -156,13 +145,49 @@ class JeremiaTest(unittest.TestCase):
         self.assertTrue(document_annotated != "")
     
     def test_single_document_with_annotations(self):
+        '''
+        Tests the handling of single document annotations.
+        '''
+        DOC = {'id'    : 12,
+               'body'  : 'UBS has finally succeeded. They obtained a 10% share of CS.',
+               'title' : 'UBS versus Credit Suisse.',
+               'format': 'text/html',
+               'title_annotation': [{'start': 0, 'end': 3, 'surfaceForm': 'UBS', 'key': 'http://dbpedia.org/UBS'},
+                                    {'start':11, 'end':24, 'surfaceForm': 'Credit Suisse', 'key': 'http://dbpedia.org/Credit Suisse'}],
+               'body_annotation' : [{'start': 0, 'end': 3, 'surfaceForm': 'UBS', 'key': 'http://dbpedia.org/UBS'},
+                                    {'start':56, 'end':58, 'surfaceForm': 'CS', 'key': 'http://dbpedia.org/Credit Suisse'}],
+               'header': {},
+              }
+
+
         j = Jeremia()
+
+        # this test requires Jeremia version 0.0.4+ 
+        if j.version() < "0.0.4":
+            return
+
+
         print 'submitting document with annotations...'
-        document_annotated = j.submit_document_with_annotations(self.DOCS[1], self.ANNOTATIONS)
-        # self.assertTrue(document_annotated != "")
-        
-        
-        
+        result = j.submit_document(DOC)
+
+        # check: all annotations have been preserved
+        print result
+        assert len(result['annotation']) == 4
+
+        # check: annotations
+        for annotation in result['annotation']:
+            # title
+            if annotation['md5sum'] == '8e3f3deac5e6c01dab521c07e3a60d7b':
+                assert annotation['start'] == 0 or annotation['start'] == 11
+                assert annotation['end'] == 3 or annotation['end'] == 24
+            # first body sentence
+            elif annotation['md5sum'] == 'ffafdc744dcda3d58ab6eafc86ad99b1':
+                assert annotation['start'] == 0
+                assert annotation['end'] == 3
+            # second body sentence with adjusted indices
+            elif annotation['md5sum'] == '25faaf0960a68ae741125ca436b330ee':
+                assert annotation['start'] == 29
+                assert annotation['end'] == 31
 
     def test_batch_processing(self):
         j = Jeremia()
@@ -223,19 +248,14 @@ class JeremiaTest(unittest.TestCase):
 if __name__ == '__main__':
     if len(argv) > 1:
         txt = argv[1]
-        docs = [{'id': '192292', 
-                 'body': txt, 
-                 'title': '', 
-                 'format': 'text/html', 
-                 'header': {}}]
+        docs = {'id': '192292', 
+                'body': txt, 
+                'title': '', 
+                'format': 'text/html', 
+                'header': {}}
         j = Jeremia()
-        j.submit_documents( '1222', docs )
-        l = list(j.commit('1222'))
-        print l
-        print XMLContent(l[0]['xml_content']).sentences[0].dependency
-
-        docs[0]['annotations'] = [{'start':0, 'end': 4, 'key': 'test annotation'}]
-        l = j.submit_document(docs[0])
+        docs['body_annotation'] = [{'start':0, 'end': 3, 'key': 'test annotation'}]
+        l = j.submit_document(docs)
         print l
     else:
         unittest.main()
