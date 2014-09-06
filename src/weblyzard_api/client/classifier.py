@@ -14,7 +14,7 @@ class Classifier(MultiRESTClient):
     '''
     base bath to the deployed seasonal classifier web project
     '''
-    CLASSIFIER_WS_BASE_PATH = 'seasonalclassifier/rest/'
+    CLASSIFIER_WS_BASE_PATH = '/joseph/rest/'
     
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
@@ -24,10 +24,11 @@ class Classifier(MultiRESTClient):
         '''
         tests the simple hello world service
         '''
-        return self.request('seasonalclassifier/rest/helloworld') #hardcoded at the moment
+        return self.request(self.CLASSIFIER_WS_BASE_PATH + 'helloworld') #hardcoded at the moment
     
     def classify(self, classifyRequest):
-        return self.request('seasonalclassifier/rest/classify', classifyRequest)
+        classification_list = self.request(self.CLASSIFIER_WS_BASE_PATH + 'classify', classifyRequest)
+        return {entry['searchagent']: entry['classification'] for entry in classification_list}
     
     
 
