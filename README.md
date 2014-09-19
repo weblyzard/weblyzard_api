@@ -1,4 +1,3 @@
-..
 ## The webLyzard API
 
 Provides access to all webLyzard Web services.
