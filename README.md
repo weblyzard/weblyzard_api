@@ -2,6 +2,8 @@
 
 Provides access to all webLyzard Web services.
 
+Full Documentation in http://weblyzard-api.readthedocs.org/en/latest/
+
 ### Configuration
 
 The API needs to know the URL, user and password used for the Web service. These data may be 
