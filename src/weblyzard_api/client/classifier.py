@@ -26,8 +26,8 @@ class Classifier(MultiRESTClient):
         '''
         return self.request(self.CLASSIFIER_WS_BASE_PATH + 'helloworld') #hardcoded at the moment
     
-    def classify(self, classifyRequest):
-        classification_list = self.request(self.CLASSIFIER_WS_BASE_PATH + 'classify', classifyRequest)
+    def classify(self, classifier_profile, classifier_request):
+        classification_list = self.request(self.CLASSIFIER_WS_BASE_PATH + 'classify', classifier_request)
         return {entry['searchagent']: entry['classification'] for entry in classification_list}
     
     
@@ -63,7 +63,7 @@ class TestClassifier(unittest.TestCase):
         
         # 2. step: send processed document to the classifier
         classifier = Classifier()
-        result = classifier.classify(json_classify_data)
+        result = classifier.classify('COMET', json_classify_data)
         print result         
         self.assertTrue(result is not None)
 
