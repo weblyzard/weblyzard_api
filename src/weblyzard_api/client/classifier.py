@@ -27,7 +27,20 @@ class Classifier(MultiRESTClient):
         return self.request(self.CLASSIFIER_WS_BASE_PATH + 'helloworld') #hardcoded at the moment
     
     def classify(self, classifier_profile, classifier_request):
-        classification_list = self.request(self.CLASSIFIER_WS_BASE_PATH + 'classify', classifier_request)
+        '''
+        ::param classifier_profile: the profile to use for classification (e.g. 'COMET', 'MK')
+        ::param classifier_request: 
+                {
+                   'searchAgents': [1, 2, 3],
+                   'numOfResults': 3, 
+                   'xml_document': weblyzard_xml 
+                }
+        ::return the classification result
+
+        Example classifier requests:
+        ...
+        '''
+        classification_list = self.request(self.CLASSIFIER_WS_BASE_PATH + 'classify/' + classifier_profile, classifier_request)
         return {entry['searchagent']: entry['classification'] for entry in classification_list}
     
     
@@ -43,7 +56,7 @@ class TestClassifier(unittest.TestCase):
             
     def test_submit_classify(self):
         
-        jeremia_xml_document = """<?xml version="1.0" encoding="UTF-8"?>
+        weblyzard_xml = """<?xml version="1.0" encoding="UTF-8"?>
                 <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1001" dc:format="text/html" xml:lang="en">
                    <wl:title>Hello "world" more </wl:title>
                    <wl:body>Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.1001</wl:body>
@@ -57,9 +70,8 @@ class TestClassifier(unittest.TestCase):
         json_classify_data= {
                 'searchAgents': [1, 2, 3],
                 'numOfResults': 3, 
-                'xml_document': jeremia_xml_document
+                'xml_document': weblyzard_xml
         }
-        
         
         # 2. step: send processed document to the classifier
         classifier = Classifier()
