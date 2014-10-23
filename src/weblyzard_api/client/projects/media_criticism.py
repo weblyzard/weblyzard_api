@@ -8,6 +8,8 @@ import unittest
 from eWRT.ws.rest import  MultiRESTClient
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
+MEDIA_CRITICISM_THRESHOLD = 0.4
+
 class MediaCriticism(MultiRESTClient):
 
     '''
@@ -32,7 +34,7 @@ class MediaCriticism(MultiRESTClient):
         '''
         result = self.request(self.CLASSIFIER_WS_BASE_PATH 
             + 'checkDocumentRelevance', {'xml_document': weblyzard_xml})
-        return result['relevantDocument'], result['mediacriticism'], result['recognizeEntities']
+        return result['relevantDocument'], result['mediacriticism'] > MEDIA_CRITICISM_THRESHOLD, result['recognizeEntities']
 
 
 
