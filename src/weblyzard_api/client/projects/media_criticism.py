@@ -37,16 +37,7 @@ class MediaCriticism(MultiRESTClient):
 
 
 class TestClassifier(unittest.TestCase):
-
-    DOCS = [{'id': content_id,
-             'body': 'Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.' + str(content_id),
-             'title': 'Hello "world" more ',
-             'format': 'text/html',
-             'header': {}}  for content_id in xrange(1000, 1020)]
-
-
-    def test_submit_classify(self):
-        jeremia_xml_document = """<?xml version="1.0" encoding="UTF-8"?>
+    jeremia_xml_document = """<?xml version="1.0" encoding="UTF-8"?>
                 <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1001" dc:format="text/html" xml:lang="en">
                    <wl:title>Hello "world" more </wl:title>
                    <wl:body>Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.1001</wl:body>
@@ -56,10 +47,20 @@ class TestClassifier(unittest.TestCase):
                    <wl:content>Hello "world" more
                 Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.1001</wl:content>
                 </wl:page>"""
+                
+    DOCS = [{'id': content_id,
+             'body': 'Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.' + str(content_id),
+             'title': 'Hello "world" more ',
+             'format': 'text/html',
+             'header': {}}  for content_id in xrange(1000, 1020)]
+
+
+    def test_submit_classify(self):
+        
 
         # 2. step: send processed document to the classifier
         media_criticism = MediaCriticism()
-        result = media_criticism.check_domain_relevance(jeremia_xml_document)
+        result = media_criticism.check_domain_relevance(self.jeremia_xml_document)
         print result
         self.assertTrue(result is not None)
 
