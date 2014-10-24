@@ -48,15 +48,8 @@ class Classifier(MultiRESTClient):
 
 class TestClassifier(unittest.TestCase):
 
-    DOCS = [{'id': content_id,
-             'body': 'Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.' + str(content_id),
-             'title': 'Hello "world" more ',
-             'format': 'text/html',
-             'header': {}}  for content_id in xrange(1000, 1020)]
-
 
     def test_submit_classify(self):
-
         weblyzard_xml = """<?xml version="1.0" encoding="UTF-8"?>
                 <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1001" dc:format="text/html" xml:lang="en">
                    <wl:title>Hello "world" more </wl:title>
@@ -67,7 +60,6 @@ class TestClassifier(unittest.TestCase):
                    <wl:content>Hello "world" more
                 Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.1001</wl:content>
                 </wl:page>"""
-
         json_classify_data = {
                 'searchAgents': [1, 2, 3],
                 'numOfResults': 3,
