@@ -328,13 +328,14 @@ class EntityLyzardTest(unittest.TestCase):
             print 'WARNING: Webservice is offline --> not executing all tests!!'
 
     def test_missing_profiles(self):
+        self.missing_profiles = []
         if len(self.AVAILABLE_PROFILES) == len(self.USED_TEST_PROFILES):
             print "All profiles are available on the current server"
         else:
-            for profile in USED_TEST_PROFILES:
-                if profile not in AVAILABLE_PROFILES:
-                    missing_profiles.append(profile)
-            print "Missing profiles: ", missing_profiles
+            for profile in self.USED_TEST_PROFILES:
+                if profile not in self.AVAILABLE_PROFILES:
+                    self.missing_profiles.append(profile)
+            print "Missing profiles: ", self.missing_profiles
 
 
     @unittest.skipIf('de.people.ng' not in AVAILABLE_PROFILES, "Profile not available!")
