@@ -311,6 +311,7 @@ class EntityLyzardTest(unittest.TestCase):
             ''']
 
     DOCS = [Recognize.convert_document(xml) for xml in DOCS_XML]
+    #we need to get the recognize client twice (once here and once in setUp)
     recognize_client = Recognize()
     test_profiles = recognize_client.list_profiles()
     print "test_profiles", test_profiles
@@ -322,6 +323,8 @@ class EntityLyzardTest(unittest.TestCase):
             print 'WARNING: Webservice is offline --> not executing all tests!!'
 
     #this test adds a profile so there is no need for a skip decorator
+    #perhaps this test should always add a dummy profile that is not already loaded
+    #another test should delete the dummy profile
     def test_entity_lyzard(self):
         docs = [{'content_id': '12', 'content': u'Franz Klammer fährt Ski'},
                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
@@ -390,7 +393,7 @@ class EntityLyzardTest(unittest.TestCase):
 #            #result = e.search('Cities.10000.en', geocon, max_entities=1, buckets=1, limit=1, output_format='standard')
 #            print 'recognizeGeo:::', e.search('Cities.10000.en', geocon, max_entities=1, buckets=1, limit=1, output_format='standard')
 
-#not entirely sure what decorator to use for this test
+    #there is no need for a decorator for this test
     def test_password(self):
         test_cases = (
             ('http://test.net', 'test', 'password'),
