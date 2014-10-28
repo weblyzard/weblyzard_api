@@ -313,6 +313,13 @@ class EntityLyzardTest(unittest.TestCase):
     DOCS = [Recognize.convert_document(xml) for xml in DOCS_XML]
     #we need to get the recognize client twice (once here and once in setUp)
     USED_TEST_PROFILES = ['de.people.ng']
+    AVAILABLE_PROFILES = []
+    recognize_client = Recognize()
+    test_profiles = recognize_client.list_profiles()
+    for profile in test_profiles:
+        if profile in USED_TEST_PROFILES:
+            AVAILABLE_PROFILES.append(profile)
+
 
     def setUp(self):
         self.client = Recognize()
@@ -320,6 +327,17 @@ class EntityLyzardTest(unittest.TestCase):
         if not self.service_is_online:
             print 'WARNING: Webservice is offline --> not executing all tests!!'
 
+    def test_missing_profiles(self):
+        if len(self.AVAILABLE_PROFILES) == len(self.USED_TEST_PROFILES):
+            print "All profiles are available on the current server"
+        else:
+            for profile in USED_TEST_PROFILES:
+                if profile not in AVAILABLE_PROFILES:
+                    missing_profiles.append(profile)
+            print "Missing profiles: ", missing_profiles
+
+
+    @unittest.skipIf('de.people.ng' not in AVAILABLE_PROFILES, "Profile not available!")
     def test_entity_lyzard(self):
         docs = [{'content_id': '12', 'content': u'Franz Klammer fährt Ski'},
                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
@@ -329,14 +347,14 @@ class EntityLyzardTest(unittest.TestCase):
             self.client.add_profile('de.people.ng')
             print self.client.search_documents('de.people.ng', docs)
 
-    @unittest.skipIf('de.people.ng' not in USED_TEST_PROFILES, "Profile not available!")
+    @unittest.skipIf('de.people.ng' not in AVAILABLE_PROFILES, "Profile not available!")
     def test_search_xml(self):
         if self.service_is_online:
             self.client.add_profile('de.people.ng')
             result = self.client.search_documents('de.people.ng', self.DOCS)
             print 'xmlsearch::::', result
 
-    @unittest.skipIf('de.people.ng' not in USED_TEST_PROFILES, "Profile not available!")
+    @unittest.skipIf('de.people.ng' not in AVAILABLE_PROFILES, "Profile not available!")
     def test_focus_search(self):
         if self.service_is_online:
             pn = 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'
@@ -351,7 +369,7 @@ class EntityLyzardTest(unittest.TestCase):
                 assert u'focus' in res
                 assert u'annotations' in res
 
-    @unittest.skipIf('Cities.10000.en' not in USED_TEST_PROFILES, "Profile not available!")
+    @unittest.skipIf('Cities.10000.en' not in AVAILABLE_PROFILES, "Profile not available!")
     def test_geo(self):
         geodocs = [{'content_id': '11',
                     'content': u'Frank goes to Los Angeles. Los Angeles is a nice city'},
