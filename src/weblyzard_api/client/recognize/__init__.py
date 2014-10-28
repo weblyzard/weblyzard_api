@@ -312,9 +312,7 @@ class EntityLyzardTest(unittest.TestCase):
 
     DOCS = [Recognize.convert_document(xml) for xml in DOCS_XML]
     #we need to get the recognize client twice (once here and once in setUp)
-    recognize_client = Recognize()
-    test_profiles = recognize_client.list_profiles()
-    print "test_profiles", test_profiles
+    USED_TEST_PROFILES = ['de.people.ng']
 
     def setUp(self):
         self.client = Recognize()
@@ -322,9 +320,6 @@ class EntityLyzardTest(unittest.TestCase):
         if not self.service_is_online:
             print 'WARNING: Webservice is offline --> not executing all tests!!'
 
-    #this test adds a profile so there is no need for a skip decorator
-    #perhaps this test should always add a dummy profile that is not already loaded
-    #another test should delete the dummy profile
     def test_entity_lyzard(self):
         docs = [{'content_id': '12', 'content': u'Franz Klammer fährt Ski'},
                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
@@ -334,14 +329,14 @@ class EntityLyzardTest(unittest.TestCase):
             self.client.add_profile('de.people.ng')
             print self.client.search_documents('de.people.ng', docs)
 
-    @unittest.skipIf('de.people.ng' not in test_profiles, "Profile not available!")
+    @unittest.skipIf('de.people.ng' not in USED_TEST_PROFILES, "Profile not available!")
     def test_search_xml(self):
         if self.service_is_online:
             self.client.add_profile('de.people.ng')
             result = self.client.search_documents('de.people.ng', self.DOCS)
             print 'xmlsearch::::', result
 
-    @unittest.skipIf('de.people.ng' not in test_profiles, "Profile not available!")
+    @unittest.skipIf('de.people.ng' not in USED_TEST_PROFILES, "Profile not available!")
     def test_focus_search(self):
         if self.service_is_online:
             pn = 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'
@@ -356,7 +351,7 @@ class EntityLyzardTest(unittest.TestCase):
                 assert u'focus' in res
                 assert u'annotations' in res
 
-    @unittest.skipIf('Cities.10000.en' not in test_profiles, "Profile not available!")
+    @unittest.skipIf('Cities.10000.en' not in USED_TEST_PROFILES, "Profile not available!")
     def test_geo(self):
         geodocs = [{'content_id': '11',
                     'content': u'Frank goes to Los Angeles. Los Angeles is a nice city'},
@@ -393,7 +388,6 @@ class EntityLyzardTest(unittest.TestCase):
 #            #result = e.search('Cities.10000.en', geocon, max_entities=1, buckets=1, limit=1, output_format='standard')
 #            print 'recognizeGeo:::', e.search('Cities.10000.en', geocon, max_entities=1, buckets=1, limit=1, output_format='standard')
 
-    #there is no need for a decorator for this test
     def test_password(self):
         test_cases = (
             ('http://test.net', 'test', 'password'),
