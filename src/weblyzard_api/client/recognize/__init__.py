@@ -313,9 +313,7 @@ class EntityLyzardTest(unittest.TestCase):
     DOCS = [Recognize.convert_document(xml) for xml in DOCS_XML]
     #we need to get the recognize client twice (once here and once in setUp)
 
-
-
-    TESTED_PROFILES = ['de.people.ng', 'Cities.1000.en', 'en.organization.ng']
+    TESTED_PROFILES = ['de.people.ng', 'Cities.1000.en', 'en.organization.ng', 'en.people.ng']
 
     available_profiles = []
     recognize_client = Recognize()
@@ -331,8 +329,6 @@ class EntityLyzardTest(unittest.TestCase):
             print 'WARNING: Webservice is offline --> not executing all tests!!'
 
         self.all_profiles = self.client.list_profiles()
-
-
 
     def test_missing_profiles(self):
         self.missing_profiles = []
@@ -414,6 +410,16 @@ class EntityLyzardTest(unittest.TestCase):
             print self.client.list_profiles()
             self.client.add_profile('en.organization.ng')
             print self.client.search_documents('en.organization.ng', docs)
+
+    @unittest.skipIf('en.people.ng' not in available_profiles, "Profile not available!")
+    def test_people(self):
+        docs = [{'content_id': '16', 'content': u'George W. Bush is a former Presidents.'},
+                {'content_id': '17', 'content' :u'Mark Zuckerberg speaks Chinese.'}]
+
+        if self.service_is_online:
+            print self.client.list_profiles()
+            self.client.add_profile('en.people.ng')
+            print self.client.search_documents('en.people.ng', docs)
 
     def test_password(self):
         test_cases = (
