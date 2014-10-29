@@ -26,6 +26,12 @@ export WEBLYZARD_API_PASS="pass"
 
 Do not set `WEBLYZARD_API_USER` and `WEBLYZARD_API_PASS` if your Web service does not require authentication.
 
+If you have already set the variables using `.bash_profile`, when you run a script from the command line is also recommended to use:
+
+```sh
+source ~/.bash_profile
+```
+
 ### Available interfaces:
 
 The following interfaces are currently available for `weblyzard_api`:
