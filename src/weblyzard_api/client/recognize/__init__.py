@@ -348,6 +348,7 @@ class EntityLyzardTest(unittest.TestCase):
         docs = [{'content_id': '12', 'content': u'Franz Klammer fährt Ski'},
                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
 
+        #we test if we can add profiles and if a German profile works
         if self.service_is_online:
             print self.client.list_profiles()
             self.client.add_profile('de.people.ng')
@@ -413,7 +414,7 @@ class EntityLyzardTest(unittest.TestCase):
 
     @unittest.skipIf('en.people.ng' not in available_profiles, "Profile not available!")
     def test_people(self):
-        docs = [{'content_id': '16', 'content': u'George W. Bush is a former Presidents.'},
+        docs = [{'content_id': '16', 'content': u'George W. Bush is a former President.'},
                 {'content_id': '17', 'content' :u'Mark Zuckerberg speaks Chinese.'}]
 
         if self.service_is_online:
