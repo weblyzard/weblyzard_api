@@ -315,7 +315,7 @@ class EntityLyzardTest(unittest.TestCase):
 
 
 
-    TESTED_PROFILES = ['de.people.ng', 'Cities.1000.en']
+    TESTED_PROFILES = ['de.people.ng', 'Cities.1000.en', 'en.organization.ng']
 
     available_profiles = []
     recognize_client = Recognize()
@@ -336,13 +336,15 @@ class EntityLyzardTest(unittest.TestCase):
 
     def test_missing_profiles(self):
         self.missing_profiles = []
-        if len(self.available_profiles) == len(self.TESTED_PROFILES):
-            print "All profiles are available on the current server"
-        else:
-            for profile in self.TESTED_PROFILES:
-                if profile not in self.available_profiles:
-                    self.missing_profiles.append(profile)
-            print "Missing profiles: ", self.missing_profiles
+
+        if self.service_is_online:
+            if len(self.available_profiles) == len(self.TESTED_PROFILES):
+                print "All profiles are available on the current server"
+            else:
+                for profile in self.TESTED_PROFILES:
+                    if profile not in self.available_profiles:
+                        self.missing_profiles.append(profile)
+                print "Missing profiles: ", self.missing_profiles
 
 
     @unittest.skipIf('de.people.ng' not in available_profiles, "Profile not available!")
@@ -403,16 +405,15 @@ class EntityLyzardTest(unittest.TestCase):
         result = self.client.search_documents(profile_name, geodocs, output_format='standard')
         print 'result', len(result), result[0]['name']
 
-#    def test_geo_vs_geo(self):
-#        docs = pickle.load(open('test_data_climate2_media.pickle'))
-#
-#        for doc in docs['documents']:
-#            print doc.get('geo_uri')
-#            geocon = doc.get('content')
-#            e = Recognize()
-#            e.add_profile('Cities.10000.en', geocon)
-#            #result = e.search('Cities.10000.en', geocon, max_entities=1, buckets=1, limit=1, output_format='standard')
-#            print 'recognizeGeo:::', e.search('Cities.10000.en', geocon, max_entities=1, buckets=1, limit=1, output_format='standard')
+    @unittest.skipIf('en.organization.ng' not in available_profiles, "Profile not available!")
+    def test_organization(self):
+        docs = [{'content_id': '14', 'content': u'Bill Gates was the CEO of Microsoft.'},
+                {'content_id': '15', 'content' :u'Facebook is largest social networks.'}]
+
+        if self.service_is_online:
+            print self.client.list_profiles()
+            self.client.add_profile('en.organization.ng')
+            print self.client.search_documents('en.organization.ng', docs)
 
     def test_password(self):
         test_cases = (
