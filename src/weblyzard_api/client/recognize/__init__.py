@@ -13,7 +13,6 @@ New supported calls:
 import logging
 import unittest
 from pprint import pprint
-from types import StringTypes
 
 from eWRT.access.http import Retrieve
 from eWRT.ws.rest import MultiRESTClient
@@ -110,7 +109,7 @@ class Recognize(MultiRESTClient):
         :rtype: the tagged text
         '''
         assert output_format in self.OUTPUT_FORMATS
-        if isinstance(profile_names, StringTypes):
+        if isinstance(profile_names, basestring):
             profile_names = (profile_names, )
 
         for profile_name in profile_names:
@@ -150,7 +149,7 @@ class Recognize(MultiRESTClient):
         assert output_format in self.OUTPUT_FORMATS
         if not document:
             return
-        if isinstance(profile_names, StringTypes):
+        if isinstance(profile_names, basestring):
             profile_names = [profile_names, ]
 
 
@@ -206,7 +205,7 @@ class Recognize(MultiRESTClient):
         assert output_format in self.OUTPUT_FORMATS
         if not doc_list or len(doc_list) == 0:
             return
-        if isinstance(profile_names, StringTypes):
+        if isinstance(profile_names, basestring):
             profile_names = (profile_names, )
 
 
@@ -271,7 +270,7 @@ class Recognize(MultiRESTClient):
         query:
         recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
         '''
-        if isinstance(profile_names, StringTypes):
+        if isinstance(profile_names, basestring):
             profile_names = (profile_names, )
 
         if not doc_list:
