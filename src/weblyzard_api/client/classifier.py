@@ -8,6 +8,7 @@ import unittest
 
 from eWRT.ws.rest import  MultiRESTClient
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
+from sys import argv
 
 class Classifier(MultiRESTClient):
 
@@ -127,4 +128,14 @@ class TestClassifier(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    if len(argv) == 1:
+        unittest.main()
+    else:
+        from json import load
+        fname = argv[1]
+        with open(fname) as f:
+            j = load(f)
+
+        print Classifier().classify('COMET', weblyzard_xml=j['xml_document'],
+            search_agents=j['searchAgents'], num_results=j['numOfResults'])
+
