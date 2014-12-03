@@ -32,7 +32,7 @@ class MediaCriticism(MultiRESTClient):
             the weblyzard xml to check
         ::returns
              a tuple which is composed as follows
-               (is_relevant, is_mediacriticism, num_recognized_entities)
+               (is_relevant, mediacriticism_score, num_recognized_entities)
         '''
         result = self.request(self.CLASSIFIER_WS_BASE_PATH 
             + 'checkDocumentRelevance', {'xml_document': weblyzard_xml})
@@ -56,14 +56,12 @@ class TestClassifier(unittest.TestCase):
         media_criticism = MediaCriticism()
         for num, document in enumerate(self.EXAMPLE_DOCUMENTS):
             print "Testing the %d document" % (num+1)
-            is_relevant, mediacriticism, num_entities = media_criticism.check_domain_relevance(document['doc'])
+            is_relevant, mediacriticism_score, num_entities = media_criticism.check_domain_relevance(document['doc'])
             assert is_relevant == document['is_relevant']
             if document['is_mediacriticism']:
-                print mediacriticism
-                assert mediacriticism >= 0.4
+                assert mediacriticism_score >= 0.4
             else:
-                print mediacriticism
-                assert mediacriticism < 0.4
+                assert mediacriticism_score < 0.4
             assert (num_entities > 0) == document['has_entities']
 
 if __name__ == '__main__':
