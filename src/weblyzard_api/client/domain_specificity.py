@@ -40,6 +40,9 @@ class DomainSpecificity(MultiRESTClient):
                                                        is_case_sensitive),
                              documents) 
 
+    def bucketize(self, l, n):
+        return (l[i:i+n] for i in xrange(0, len(l), n))
+
     def parse_documents(self, matview_name, documents, is_case_sensitive=False):
         ''' 
         @param matview_name: a comma separated list of matview_names to check 
@@ -50,11 +53,12 @@ class DomainSpecificity(MultiRESTClient):
         '''
         found_tags = {}
         for document_batch in self.get_document_batch(documents):
-            result = self.request('parse_documents/%s/%s' % 
-                                  (matview_name, is_case_sensitive), 
-                                  document_batch)
-            if result:
-                found_tags.update(result[matview_name])
+            for batch in self.bucketize(document_batch, 1):
+                result = self.request('parse_documents/%s/%s' % 
+                                      (matview_name, is_case_sensitive), 
+                                      batch)
+                if result:
+                    found_tags.update(result[matview_name])
                 
         return found_tags
 

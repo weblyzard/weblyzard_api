@@ -9,7 +9,7 @@ import unittest
 from eWRT.ws.rest import  MultiRESTClient
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
-MEDIA_CRITICISM_THRESHOLD = 0.4
+MEDIA_CRITICISM_THRESHOLD = 0.8
 
 class MediaCriticism(MultiRESTClient):
 

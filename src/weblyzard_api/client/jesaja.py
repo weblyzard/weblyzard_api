@@ -42,6 +42,8 @@ class Jesaja(MultiRESTClient):
         converts a list of weblyzard xml files to the 
         json format required by the jesaja web service.
         '''
+        if not isinstance(xml_content_dict, list):
+            xml_content_dict = [xml_content_dict]
         return [cls.convert_document(xml) for xml in xml_content_dict]
 
     @classmethod

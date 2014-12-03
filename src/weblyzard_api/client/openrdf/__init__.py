@@ -188,6 +188,8 @@ class OpenRdfClient(object):
         
 if __name__ == '__main__':
     
+    openrdf_url = 'http://voyager.srv.weblyzard.net:8080' #old sesame server
+    openrdf_url = ''
     client = OpenRdfClient('http://voyager.srv.weblyzard.net:8080')
     pprint(client.get_repositories())
     
