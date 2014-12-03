@@ -43,7 +43,8 @@ class Recognize(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL,
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
+                                 use_random_server=True)
         self.profile_cache = []
 
     @classmethod
@@ -313,14 +314,14 @@ class EntityLyzardTest(unittest.TestCase):
     DOCS = [Recognize.convert_document(xml) for xml in DOCS_XML]
     #we need to get the recognize client twice (once here and once in setUp)
 
-    TESTED_PROFILES = ['de.people.ng', 'Cities.1000.en', 'en.organization.ng', 'en.people.ng']
-
+#     TESTED_PROFILES = ['de.people.ng', 'Cities.1000.en', 'en.organization.ng', 'en.people.ng']
+# 
     available_profiles = []
-    recognize_client = Recognize()
-    recognize_profiles = recognize_client.list_profiles()
-    for profile in recognize_profiles:
-            if profile in TESTED_PROFILES:
-                available_profiles.append(profile)
+#     recognize_client = Recognize()
+#     recognize_profiles = recognize_client.list_profiles()
+#     for profile in recognize_profiles:
+#             if profile in TESTED_PROFILES:
+#                 available_profiles.append(profile)
 
     def setUp(self):
         self.client = Recognize()
