@@ -26,11 +26,12 @@ class OpinionClient(MultiRESTClient):
         :param content_format str: The format of the content. Must be 'xml' or
             'plaintext'
         :returns: The content (modified, if xml) and the content's overall
-            polarity in a dict with content and polarity as keys.
+            polarity in a dict with content and polarity as keys. If an error
+            ocurred, it is also contained in the dict with the 'error' key.
         :rtype: dict
         '''
         params = {'format': content_format,
                   'content': content}
         result = self.request('document', parameters=params,
                               return_plain=False)
-        return result['polarity'], result['content']
+        return result
