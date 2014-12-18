@@ -30,8 +30,7 @@ class OpinionClient(MultiRESTClient):
             ocurred, it is also contained in the dict with the 'error' key.
         :rtype: dict
         '''
-        params = {'format': content_format,
-                  'content': content}
-        result = self.request('document', parameters=params,
-                              return_plain=False)
-        return result
+        return self.request('document', 
+                            parameters={'format': content_format,
+                                        'content': content},
+                            return_plain=False)
