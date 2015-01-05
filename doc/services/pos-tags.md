@@ -1,3 +1,5 @@
+This file contains the used pos-tagsets for english, french and german. All used tags can also be found in [usedPosTags.csv](https://github.com/weblyzard/weblyzard_api/blob/master/doc/services/usedPosTags.csv).
+
 ### English
 
 The English tagger uses the Penn Treebank POS tag set.
@@ -66,26 +68,26 @@ PONCT (punctuation mark)
 
 ### German
 
-We use the Stuttgart-Tübingen-Tagset (STTS) that is used for the NEGRA Corpus.
+We use the Stuttgart-TÃ¼bingen-Tagset (STTS) that is used for the NEGRA Corpus.
 ```
-ADJA    attributives Adjektiv                   [das] große [Haus]
-ADJD    adverbiales oder                        [er fährt] schnell
-        prädikatives Adjektiv                   [er ist] schnell
+ADJA    attributives Adjektiv                   [das] groÃŸe [Haus]
+ADJD    adverbiales oder                        [er fÃ¤hrt] schnell
+        prÃ¤dikatives Adjektiv                   [er ist] schnell
  
 ADV     Adverb                                  schon, bald, doch
  
-APPR    Präposition; Zirkumposition links       in [der Stadt], ohne [mich]
-APPRART Präposition mit Artikel                 im [Haus], zur [Sache]
+APPR    PrÃ¤position; Zirkumposition links       in [der Stadt], ohne [mich]
+APPRART PrÃ¤position mit Artikel                 im [Haus], zur [Sache]
 APPO    Postposition                            [ihm] zufolge, [der Sache] wegen
 APZR    Zirkumposition rechts                   [von jetzt] an
  
 ART     bestimmter oder                         der, die, das,
         unbestimmter Artikel                    ein, eine, ...
  
-CARD    Kardinalzahl                            zwei [Männer], [im Jahre] 1994
+CARD    Kardinalzahl                            zwei [MÃ¤nner], [im Jahre] 1994
  
 FM      Fremdsprachliches Material              [Er hat das mit ``]
-                                                A big fish ['' übersetzt]
+                                                A big fish ['' Ã¼bersetzt]
  
 ITJ     Interjektion                            mhm, ach, tja
  
@@ -93,7 +95,7 @@ ORD     Ordinalzahl                             [der] neunte [August]
  
 KOUI    unterordnende Konjunktion               um [zu leben],
         mit ``zu'' und Infinitiv                anstatt [zu fragen]
-KOUS    unterordnende Konjunktion               weil, daß, damit,
+KOUS    unterordnende Konjunktion               weil, daÃŸ, damit,
         mit Satz                                wenn, ob
 KON     nebenordnende Konjunktion               und, oder, aber
 KOKOM   Vergleichskonjunktion                   als, wie
@@ -111,7 +113,7 @@ PIS     substituierendes Indefinit-             keiner, viele, man, niemand
 PIAT    attribuierendes Indefinit-              kein [Mensch],
         pronomen ohne Determiner                irgendein [Glas]
 PIDAT   attribuierendes Indefinit-              [ein] wenig [Wasser],
-        pronomen mit Determiner                 [die] beiden [Brüder]
+        pronomen mit Determiner                 [die] beiden [BrÃ¼der]
  
 PPER    irreflexives Personalpronomen           ich, er, ihm, mich, dir
  
@@ -129,15 +131,15 @@ PWS     substituierendes                        wer, was
 PWAT    attribuierendes                         welche [Farbe],
         Interrogativpronomen                    wessen [Hut]
 PWAV    adverbiales Interrogativ-               warum, wo, wann,
-        oder Relativpronomen                    worüber, wobei
+        oder Relativpronomen                    worÃ¼ber, wobei
  
-PAV     Pronominaladverb                        dafür, dabei, deswegen, trotzdem
+PAV     Pronominaladverb                        dafÃ¼r, dabei, deswegen, trotzdem
  
 PTKZU   ``zu'' vor Infinitiv                    zu [gehen]
 PTKNEG  Negationspartikel                       nicht
-PTKVZ   abgetrennter Verbzusatz                 [er kommt] an, [er fährt] rad
+PTKVZ   abgetrennter Verbzusatz                 [er kommt] an, [er fÃ¤hrt] rad
 PTKANT  Antwortpartikel                         ja, nein, danke, bitte
-PTKA    Partikel bei Adjektiv                   am [schönsten],
+PTKA    Partikel bei Adjektiv                   am [schÃ¶nsten],
         oder Adverb                             zu [schnell]
  
 SGML    SGML Markup
@@ -155,9 +157,9 @@ VAFIN   finites Verb, aux                       [du] bist, [wir] werden
 VAIMP   Imperativ, aux                          sei [ruhig !]
 VAINF   Infinitiv, aux                          werden, sein
 VAPP    Partizip Perfekt, aux                   gewesen
-VMFIN   finites Verb, modal                     dürfen
+VMFIN   finites Verb, modal                     dÃ¼rfen
 VMINF   Infinitiv, modal                        wollen
-VMPP    Partizip Perfekt, modal                 gekonnt, [er hat gehen] können
+VMPP    Partizip Perfekt, modal                 gekonnt, [er hat gehen] kÃ¶nnen
  
 XY      Nichtwort, Sonderzeichen                3:7, H2O,
         enthaltend                              D2XW3
