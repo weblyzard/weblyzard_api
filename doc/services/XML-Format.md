@@ -14,7 +14,7 @@ Example webLyzard XML file:
               http://de.dbpedia.org/page/Gerda_Schaffelhofer 
               http://de.dbpedia.org/page/Styria_Media_Group"
  dc:creator="http://www.nachrichten.at/KA"
- dc:related="http://www.kurier.at/article/Die-Kirche.html http://www.diepresse.com/kirche/Katholische_Aktion_Österreich"
+ dc:related="http://www.kurier.at/article/Die-Kirche.html http://www.diepresse.com/kirche/Katholische_Aktion_Ã–sterreich"
  xml:lang="de" 
  wl:nilsimsa="77799a10d691a16416300ae1fad0bbe24c3f0991c17533649db7cbe1e23d5241">
  
@@ -26,7 +26,7 @@ Example webLyzard XML file:
      wl:is_title = "True"
      wl:sem_orient="0.764719112902" 
      wl:significance="None">
-     <![CDATA[Katholische Aktion: Präsidentin rügt Pfarrer-Initiative | Nachrichten.at.]]>
+     <![CDATA[Katholische Aktion: PrÃ¤sidentin rÃ¼gt Pfarrer-Initiative | Nachrichten.at.]]>
 
 <!-- The content (wl:is_title = "False" or not set) -->
    <wl:sentence wl:id="61e8b085944f173e36637e8daf7d77c0" 
@@ -35,10 +35,10 @@ Example webLyzard XML file:
      wl:token = "0,3 4,12 13,19 20,22 23,26 27,45 46,48 49,55 56,64 65,76 77,79 80,88 89,92 93,97 98,109 110,113 114,126 127,133 134,144 145,146 146,148 148,149 149,150 151,156 157,170 170,171"
      wl:sem_orient="0.764719112902" 
      wl:significance="None">
-        <![CDATA[Mit scharfer Kritik an der Pfarrer-Initiative um Helmut Schüller überraschte am Dienstag die neue Präsidentin der Katholischen Aktion Österreich (KA), Gerda Schaffelhofer.]]>
+        <![CDATA[Mit scharfer Kritik an der Pfarrer-Initiative um Helmut SchÃ¼ller Ã¼berraschte am Dienstag die neue PrÃ¤sidentin der Katholischen Aktion Ã–sterreich (KA), Gerda Schaffelhofer.]]>
    </wl:sentence>
-   <wl:sentence wl:id="a3cba1f907f41160e690ad072dd2fc08" wl:pos="NN ADJD APPR ART NN PPOSAT NN APPR ART NN NN PRF ART NN ART ADJA ADJA NN APPR ART ADJA NN NN ART NN APPR PPER NN APPR ART NN PIS VMFIN PTKNEG APPR NN ADJA NN VVFIN NN VVFIN NN ART NN APPRART NN NN NN" wl:sem_orient="-0.901669634667" wl:significance="None"><![CDATA[Werbung Knapp nach der Bestätigung ihrer Wahl durch die Bischöfe „wehrt“ sich die Präsidentin der offiziellen katholischen Laienvertretung in einem offenen Brief „gegen die Vereinnahmung von uns Laien durch die Pfarrer-Initiative“. Man wolle nicht von „irgendwelchen kirchlichen Kreisen“ instrumentalisiert werden, schreibt Schaffelhofer, die Managerin im kirchennahen Styria-Konzern ist.]]></wl:sentence>
-   <wl:sentence wl:id="3f49d4fe7e9fc31b74a8748e21002e23" wl:pos="NN NN KOUS ART NN PPOSAT NN APPR ART NN VVFIN KON PPER APPR NN NN" wl:sem_orient="0.0" wl:significance="None"><![CDATA[Hintergrund ist, dass die Pfarrer-Initiative ihr Augenmerk auf die Laien richtet und sie als „Kirchenbürger“ bezeichnet.]]></wl:sentence>
+   <wl:sentence wl:id="a3cba1f907f41160e690ad072dd2fc08" wl:pos="NN ADJD APPR ART NN PPOSAT NN APPR ART NN NN PRF ART NN ART ADJA ADJA NN APPR ART ADJA NN NN ART NN APPR PPER NN APPR ART NN PIS VMFIN PTKNEG APPR NN ADJA NN VVFIN NN VVFIN NN ART NN APPRART NN NN NN" wl:sem_orient="-0.901669634667" wl:significance="None"><![CDATA[Werbung Knapp nach der BestÃ¤tigung ihrer Wahl durch die BischÃ¶fe â€žwehrtâ€œ sich die PrÃ¤sidentin der offiziellen katholischen Laienvertretung in einem offenen Brief â€žgegen die Vereinnahmung von uns Laien durch die Pfarrer-Initiativeâ€œ. Man wolle nicht von â€žirgendwelchen kirchlichen Kreisenâ€œ instrumentalisiert werden, schreibt Schaffelhofer, die Managerin im kirchennahen Styria-Konzern ist.]]></wl:sentence>
+   <wl:sentence wl:id="3f49d4fe7e9fc31b74a8748e21002e23" wl:pos="NN NN KOUS ART NN PPOSAT NN APPR ART NN VVFIN KON PPER APPR NN NN" wl:sem_orient="0.0" wl:significance="None"><![CDATA[Hintergrund ist, dass die Pfarrer-Initiative ihr Augenmerk auf die Laien richtet und sie als â€žKirchenbÃ¼rgerâ€œ bezeichnet.]]></wl:sentence>
 </wl:page>
 ```
 
@@ -90,7 +90,7 @@ The webLyzard/WISDOM annotation format is based on the data structures used by t
 Running example:
 
 ```
-Andreas Wieland, CEO, Hamilton Bonaduz AG said: «We are very excited ...
+Andreas Wieland, CEO, Hamilton Bonaduz AG said: Â«We are very excited ...
 012345678901234567890123456789012345678901234567890123456789012345678901
 0.........1.........2.........3.........4.........5.........6.........7.
 ```
