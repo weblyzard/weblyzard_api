@@ -23,4 +23,3 @@ Subpackages
 .. toctree::
 
     weblyzard_api.client
-

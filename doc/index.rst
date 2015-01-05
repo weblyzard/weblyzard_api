@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    weblyzard_api.rst
+   weblyzard_api.data_format.rst
 
 
 Indices and tables

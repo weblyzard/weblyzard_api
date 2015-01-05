@@ -1,3 +1,6 @@
+recognize
+=========
+
 ### Overview
 
 The result of a call to recognize with multiple profiles (e.g. geoname, organizations, ...) returns a dictionary with keys being the respective entity names (GeoEntity, OrganizationEntity, PersonEntity).

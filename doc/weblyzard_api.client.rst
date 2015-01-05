@@ -20,6 +20,10 @@ client Package
 :mod:`recognize` Module
 --------------------------
 
+.. toctree::
+	weblyzard_api.client.recognize_output
+	weblyzard_api.client.recognize_service
+
 .. automodule:: weblyzard_api.client.recognize
     :members:
     :undoc-members:
