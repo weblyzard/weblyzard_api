@@ -1,109 +1,109 @@
-Tag ;Language;TagSet;Description
-CC;EN;Penn Treebank;Coordinating conjunction
-CD;EN;Penn Treebank;Cardinal number
-DT;EN;Penn Treebank;Determiner
-EX;EN;Penn Treebank;Existential there
-FW;EN;Penn Treebank;Foreign word
-IN;EN;Penn Treebank;Preposition or subordinating conjunction
-JJ;EN;Penn Treebank;Adjective
-JJR;EN;Penn Treebank; Adjective, comparative
-JJS;EN;Penn Treebank; Adjective, superlative
-LS;EN;Penn Treebank;List item marker
-MD;EN;Penn Treebank;Modal
-NN;EN;Penn Treebank;Noun, singular or mass
-NNS;EN;Penn Treebank; Noun, plural
-NNP;EN;Penn Treebank; Proper noun, singular
-NNPS;EN;Penn Treebank;Proper noun, plural
-PDT;EN;Penn Treebank; Predeterminer
-POS;EN;Penn Treebank; Possessive ending
-PRP;EN;Penn Treebank; Personal pronoun
-PRP$;EN;Penn Treebank;Possessive pronoun
-RB;EN;Penn Treebank;Adverb
-RBR;EN;Penn Treebank; Adverb, comparative
-RBS;EN;Penn Treebank; Adverb, superlative
-RP;EN;Penn Treebank;Particle
-SYM;EN;Penn Treebank; Symbol
-TO;EN;Penn Treebank;to
-UH;EN;Penn Treebank;Interjection
-VB;EN;Penn Treebank;Verb, base form
-VBD;EN;Penn Treebank; Verb, past tense
-VBG;EN;Penn Treebank; Verb, gerund or present participle
-VBN;EN;Penn Treebank; Verb, past participle
-VBP;EN;Penn Treebank; Verb, non-3rd person singular present
-VBZ;EN;Penn Treebank; Verb, 3rd person singular present
-WDT;EN;Penn Treebank; Wh-determiner
-WP;EN;Penn Treebank;Wh-pronoun
-WP$;EN;Penn Treebank; Possessive wh-pronoun
-WRB;EN;Penn Treebank; Wh-adverb
-A;FR;French Treebank corpus;adjective
-Adv;FR;French Treebank corpus;adverb
-CC;FR;French Treebank corpus;coordinating conjunction
-Cl;FR;French Treebank corpus;weak clitic pronoun
-CS;FR;French Treebank corpus;subordinating conjunction
-D;FR;French Treebank corpus;determiner
-ET;FR;French Treebank corpus;foreign word
-I;FR;French Treebank corpus;interjection
-NC;FR;French Treebank corpus;common noun
-NP;FR;French Treebank corpus;proper noun
-P;FR;French Treebank corpus;preposition
-PREF;FR;French Treebank corpus;prefix
-PRO;FR;French Treebank corpus;strong pronoun
-V;FR;French Treebank corpus;verb
-PONCT;FR;French Treebank corpus;punctuation mark
-\$(;DE;Stuttgart-Tübingen-Tagset (STTS);sonstige Satzzeichen
-\$,;DE;Stuttgart-Tübingen-Tagset (STTS);Komma
-\$.;DE;Stuttgart-Tübingen-Tagset (STTS);Satzbeendende Interpunktion
-ADJA;DE;Stuttgart-Tübingen-Tagset (STTS);attributives Adjektiv
-ADJD;DE;Stuttgart-Tübingen-Tagset (STTS);adverbiales oder prÃ¤dikatives Adjektiv
-ADV;DE;Stuttgart-Tübingen-Tagset (STTS);Adverb
-APPO;DE;Stuttgart-Tübingen-Tagset (STTS);Postposition
-APPR;DE;Stuttgart-Tübingen-Tagset (STTS);Präposition
-APPRART;DE;Stuttgart-Tübingen-Tagset (STTS);Präposition mit Artikel
-APZR;DE;Stuttgart-Tübingen-Tagset (STTS);Zirkumposition rechts
-ART;DE;Stuttgart-Tübingen-Tagset (STTS);bestimmter oder unbestimmter Artikel
-CARD;DE;Stuttgart-Tübingen-Tagset (STTS);Kardinalzahl
-FM;DE;Stuttgart-Tübingen-Tagset (STTS);Fremdsprachliches Material
-ITJ;DE;Stuttgart-Tübingen-Tagset (STTS);Interjektion
-KOKOM;DE;Stuttgart-Tübingen-Tagset (STTS);Vergleichskonjunktion
-KON;DE;Stuttgart-Tübingen-Tagset (STTS);nebenordnende Konjunktion
-KOUI;DE;Stuttgart-Tübingen-Tagset (STTS);unterordnende Konjunktion mit ``zu'' und Infinitiv
-KOUS;DE;Stuttgart-Tübingen-Tagset (STTS);unterordnende Konjunktion mit Satz
-NE;DE;Stuttgart-Tübingen-Tagset (STTS);Eigennamen
-NN;DE;Stuttgart-Tübingen-Tagset (STTS);normales Nomen
-ORD;DE;Stuttgart-Tübingen-Tagset (STTS);Ordinalzahl
-PAV;DE;Stuttgart-Tübingen-Tagset (STTS);Pronominaladverb
-PDAT;DE;Stuttgart-Tübingen-Tagset (STTS);attribuierendes Demonstrativpronomen
-PDS;DE;Stuttgart-Tübingen-Tagset (STTS);substituierendes Demonstrativpronomen
-PIAT;DE;Stuttgart-Tübingen-Tagset (STTS);attribuierendes Indefinitpronomen ohne Determiner
-PIDAT;DE;Stuttgart-Tübingen-Tagset (STTS);attribuierendes Indefinitpronomen mit Determiner
-PIS;DE;Stuttgart-Tübingen-Tagset (STTS);substituierendes Indefinitpronomen
-PPER;DE;Stuttgart-Tübingen-Tagset (STTS);irreflexives Personalpronomen
-PPOSAT;DE;Stuttgart-Tübingen-Tagset (STTS);attribuierendes Possessivpronomen
-PPOSS;DE;Stuttgart-Tübingen-Tagset (STTS);substituierendes Possessivpronomen
-PRELAT;DE;Stuttgart-Tübingen-Tagset (STTS);attribuierendes Relativpronomen
-PRELS;DE;Stuttgart-Tübingen-Tagset (STTS);substituierendes Relativpronomen
-PRF;DE;Stuttgart-Tübingen-Tagset (STTS);reflexives Personalpronomen
-PTKA;DE;Stuttgart-Tübingen-Tagset (STTS);Partikel bei Adjektiv oder Adverb
-PTKANT;DE;Stuttgart-Tübingen-Tagset (STTS);Antwortpartikel
-PTKNEG;DE;Stuttgart-Tübingen-Tagset (STTS);Negationspartikel
-PTKVZ;DE;Stuttgart-Tübingen-Tagset (STTS);abgetrennter Verbzusatz
-PTKZU;DE;Stuttgart-Tübingen-Tagset (STTS);``zu'' vor Infinitiv
-PWAT;DE;Stuttgart-Tübingen-Tagset (STTS);attribuierendes Interrogativpronomen
-PWAV;DE;Stuttgart-Tübingen-Tagset (STTS);adverbiales Interrogativoder Relativpronomen
-PWS;DE;Stuttgart-Tübingen-Tagset (STTS);substituierendes Interrogativpronomen
-SGML;DE;Stuttgart-Tübingen-Tagset (STTS);SGML Markup
-SPELL;DE;Stuttgart-Tübingen-Tagset (STTS);Buchstabierfolge
-TRUNC;DE;Stuttgart-Tübingen-Tagset (STTS);Kompositions-Erstglied
-VAFIN;DE;Stuttgart-Tübingen-Tagset (STTS);finites Verb, aux
-VAIMP;DE;Stuttgart-Tübingen-Tagset (STTS);Imperativ, aux
-VAINF;DE;Stuttgart-Tübingen-Tagset (STTS);Infinitiv, aux
-VAPP;DE;Stuttgart-Tübingen-Tagset (STTS);Partizip Perfekt, aux
-VMFIN;DE;Stuttgart-Tübingen-Tagset (STTS);finites Verb, modal
-VMINF;DE;Stuttgart-Tübingen-Tagset (STTS);Infinitiv, modal
-VMPP;DE;Stuttgart-Tübingen-Tagset (STTS);Partizip Perfekt, modal
-VVFIN;DE;Stuttgart-Tübingen-Tagset (STTS);finites Verb, voll
-VVIMP;DE;Stuttgart-Tübingen-Tagset (STTS);Imperativ, voll
-VVINF;DE;Stuttgart-Tübingen-Tagset (STTS);Infinitiv, voll
-VVIZU;DE;Stuttgart-Tübingen-Tagset (STTS);Infinitiv mit ``zu'', voll
-VVPP;DE;Stuttgart-Tübingen-Tagset (STTS);Partizip Perfekt, voll
-XY;DE;Stuttgart-Tübingen-Tagset (STTS);Nichtwort, Sonderzeichen enthaltend
+Tag	Language	TagSet	Description
+CC	EN	Penn Treebank	Coordinating conjunction
+CD	EN	Penn Treebank	Cardinal number
+DT	EN	Penn Treebank	Determiner
+EX	EN	Penn Treebank	Existential there
+FW	EN	Penn Treebank	Foreign word
+IN	EN	Penn Treebank	Preposition or subordinating conjunction
+JJ	EN	Penn Treebank	Adjective
+JJR	EN	Penn Treebank	Adjective, comparative
+JJS	EN	Penn Treebank	Adjective, superlative
+LS	EN	Penn Treebank	List item marker
+MD	EN	Penn Treebank	Modal
+NN	EN	Penn Treebank	Noun, singular or mass
+NNS	EN	Penn Treebank	Noun, plural
+NNP	EN	Penn Treebank	Proper noun, singular
+NNPS	EN	Penn Treebank	Proper noun, plural
+PDT	EN	Penn Treebank	Predeterminer
+POS	EN	Penn Treebank	Possessive ending
+PRP	EN	Penn Treebank	Personal pronoun
+PRP$	EN	Penn Treebank	Possessive pronoun
+RB	EN	Penn Treebank	Adverb
+RBR	EN	Penn Treebank	Adverb, comparative
+RBS	EN	Penn Treebank	Adverb, superlative
+RP	EN	Penn Treebank	Particle
+SYM	EN	Penn Treebank	Symbol
+TO	EN	Penn Treebank	to
+UH	EN	Penn Treebank	Interjection
+VB	EN	Penn Treebank	Verb, base form
+VBD	EN	Penn Treebank	Verb, past tense
+VBG	EN	Penn Treebank	Verb, gerund or present participle
+VBN	EN	Penn Treebank	Verb, past participle
+VBP	EN	Penn Treebank	Verb, non-3rd person singular present
+VBZ	EN	Penn Treebank	Verb, 3rd person singular present
+WDT	EN	Penn Treebank	Wh-determiner
+WP	EN	Penn Treebank	Wh-pronoun
+WP$	EN	Penn Treebank	Possessive wh-pronoun
+WRB	EN	Penn Treebank	Wh-adverb
+A	FR	French Treebank corpus	adjective
+Adv	FR	French Treebank corpus	adverb
+CC	FR	French Treebank corpus	coordinating conjunction
+Cl	FR	French Treebank corpus	weak clitic pronoun
+CS	FR	French Treebank corpus	subordinating conjunction
+D	FR	French Treebank corpus	determiner
+ET	FR	French Treebank corpus	foreign word
+I	FR	French Treebank corpus	interjection
+NC	FR	French Treebank corpus	common noun
+NP	FR	French Treebank corpus	proper noun
+P	FR	French Treebank corpus	preposition
+PREF	FR	French Treebank corpus	prefix
+PRO	FR	French Treebank corpus	strong pronoun
+V	FR	French Treebank corpus	verb
+PONCT	FR	French Treebank corpus	punctuation mark
+\$(	DE	Stuttgart-Tübingen-Tagset (STTS)	sonstige Satzzeichen
+\$,	DE	Stuttgart-Tübingen-Tagset (STTS)	Komma
+\$.	DE	Stuttgart-Tübingen-Tagset (STTS)	Satzbeendende Interpunktion
+ADJA	DE	Stuttgart-Tübingen-Tagset (STTS)	attributives Adjektiv
+ADJD	DE	Stuttgart-Tübingen-Tagset (STTS)	adverbiales oder prÃ¤dikatives Adjektiv
+ADV	DE	Stuttgart-Tübingen-Tagset (STTS)	Adverb
+APPO	DE	Stuttgart-Tübingen-Tagset (STTS)	Postposition
+APPR	DE	Stuttgart-Tübingen-Tagset (STTS)	Präposition
+APPRART	DE	Stuttgart-Tübingen-Tagset (STTS)	Präposition mit Artikel
+APZR	DE	Stuttgart-Tübingen-Tagset (STTS)	Zirkumposition rechts
+ART	DE	Stuttgart-Tübingen-Tagset (STTS)	bestimmter oder unbestimmter Artikel
+CARD	DE	Stuttgart-Tübingen-Tagset (STTS)	Kardinalzahl
+FM	DE	Stuttgart-Tübingen-Tagset (STTS)	Fremdsprachliches Material
+ITJ	DE	Stuttgart-Tübingen-Tagset (STTS)	Interjektion
+KOKOM	DE	Stuttgart-Tübingen-Tagset (STTS)	Vergleichskonjunktion
+KON	DE	Stuttgart-Tübingen-Tagset (STTS)	nebenordnende Konjunktion
+KOUI	DE	Stuttgart-Tübingen-Tagset (STTS)	unterordnende Konjunktion mit ``zu'' und Infinitiv
+KOUS	DE	Stuttgart-Tübingen-Tagset (STTS)	unterordnende Konjunktion mit Satz
+NE	DE	Stuttgart-Tübingen-Tagset (STTS)	Eigennamen
+NN	DE	Stuttgart-Tübingen-Tagset (STTS)	normales Nomen
+ORD	DE	Stuttgart-Tübingen-Tagset (STTS)	Ordinalzahl
+PAV	DE	Stuttgart-Tübingen-Tagset (STTS)	Pronominaladverb
+PDAT	DE	Stuttgart-Tübingen-Tagset (STTS)	attribuierendes Demonstrativpronomen
+PDS	DE	Stuttgart-Tübingen-Tagset (STTS)	substituierendes Demonstrativpronomen
+PIAT	DE	Stuttgart-Tübingen-Tagset (STTS)	attribuierendes Indefinitpronomen ohne Determiner
+PIDAT	DE	Stuttgart-Tübingen-Tagset (STTS)	attribuierendes Indefinitpronomen mit Determiner
+PIS	DE	Stuttgart-Tübingen-Tagset (STTS)	substituierendes Indefinitpronomen
+PPER	DE	Stuttgart-Tübingen-Tagset (STTS)	irreflexives Personalpronomen
+PPOSAT	DE	Stuttgart-Tübingen-Tagset (STTS)	attribuierendes Possessivpronomen
+PPOSS	DE	Stuttgart-Tübingen-Tagset (STTS)	substituierendes Possessivpronomen
+PRELAT	DE	Stuttgart-Tübingen-Tagset (STTS)	attribuierendes Relativpronomen
+PRELS	DE	Stuttgart-Tübingen-Tagset (STTS)	substituierendes Relativpronomen
+PRF	DE	Stuttgart-Tübingen-Tagset (STTS)	reflexives Personalpronomen
+PTKA	DE	Stuttgart-Tübingen-Tagset (STTS)	Partikel bei Adjektiv oder Adverb
+PTKANT	DE	Stuttgart-Tübingen-Tagset (STTS)	Antwortpartikel
+PTKNEG	DE	Stuttgart-Tübingen-Tagset (STTS)	Negationspartikel
+PTKVZ	DE	Stuttgart-Tübingen-Tagset (STTS)	abgetrennter Verbzusatz
+PTKZU	DE	Stuttgart-Tübingen-Tagset (STTS)	``zu'' vor Infinitiv
+PWAT	DE	Stuttgart-Tübingen-Tagset (STTS)	attribuierendes Interrogativpronomen
+PWAV	DE	Stuttgart-Tübingen-Tagset (STTS)	adverbiales Interrogativoder Relativpronomen
+PWS	DE	Stuttgart-Tübingen-Tagset (STTS)	substituierendes Interrogativpronomen
+SGML	DE	Stuttgart-Tübingen-Tagset (STTS)	SGML Markup
+SPELL	DE	Stuttgart-Tübingen-Tagset (STTS)	Buchstabierfolge
+TRUNC	DE	Stuttgart-Tübingen-Tagset (STTS)	Kompositions-Erstglied
+VAFIN	DE	Stuttgart-Tübingen-Tagset (STTS)	finites Verb, aux
+VAIMP	DE	Stuttgart-Tübingen-Tagset (STTS)	Imperativ, aux
+VAINF	DE	Stuttgart-Tübingen-Tagset (STTS)	Infinitiv, aux
+VAPP	DE	Stuttgart-Tübingen-Tagset (STTS)	Partizip Perfekt, aux
+VMFIN	DE	Stuttgart-Tübingen-Tagset (STTS)	finites Verb, modal
+VMINF	DE	Stuttgart-Tübingen-Tagset (STTS)	Infinitiv, modal
+VMPP	DE	Stuttgart-Tübingen-Tagset (STTS)	Partizip Perfekt, modal
+VVFIN	DE	Stuttgart-Tübingen-Tagset (STTS)	finites Verb, voll
+VVIMP	DE	Stuttgart-Tübingen-Tagset (STTS)	Imperativ, voll
+VVINF	DE	Stuttgart-Tübingen-Tagset (STTS)	Infinitiv, voll
+VVIZU	DE	Stuttgart-Tübingen-Tagset (STTS)	Infinitiv mit ``zu'', voll
+VVPP	DE	Stuttgart-Tübingen-Tagset (STTS)	Partizip Perfekt, voll
+XY	DE	Stuttgart-Tübingen-Tagset (STTS)	Nichtwort, Sonderzeichen enthaltend
