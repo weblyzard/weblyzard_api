@@ -18,7 +18,7 @@ PDT	EN	Penn Treebank	Predeterminer
 POS	EN	Penn Treebank	Possessive ending
 PRP	EN	Penn Treebank	Personal pronoun
 PRP$	EN	Penn Treebank	Possessive pronoun
-RB	EN	Penn Treebank	Adverb
+RB	EN	Penn Treebank	Adverb 
 RBR	EN	Penn Treebank	Adverb, comparative
 RBS	EN	Penn Treebank	Adverb, superlative
 RP	EN	Penn Treebank	Particle
