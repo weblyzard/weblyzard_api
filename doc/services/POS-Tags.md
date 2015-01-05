@@ -1,5 +1,4 @@
-This file contains the used pos-tagsets for english, french and german. All used tags can also be found in [usedPosTags.csv](https://github.com/weblyzard/weblyzard_api/blob/master/doc/services/usedPosTags.csv).
-
+This file contains the used pos-tagsets for english, french and german. All used tags can also be found in [usedPosTags.csv](usedPosTags.csv).
 ### English
 
 The English tagger uses the Penn Treebank POS tag set.
