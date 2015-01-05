@@ -182,7 +182,7 @@ Andreas Wieland, CEO, Hamilton Bonaduz AG said: «We are very excited ...
 
 #### Part-of-speech Tags
 
-Please refer to [used part-of-speech (POS) tags](POS-Tags) for a list of the POS-Tags used within webLyzard.
+Please refer to [used part-of-speech (POS) tags](POS-Tags.md) for a list of the POS-Tags used within webLyzard.
 
 
 ```
