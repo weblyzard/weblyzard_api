@@ -22,7 +22,7 @@ class DomainSpecificity(MultiRESTClient):
         '''
         Adds a domain-specificity profile to the Web service.
         @param profile_name: the name of the domain specificity profile
-        @param profile_mapping: a dictionary of keywords and their
+        @param profile_mapping: a dictionary of keywords and their \
                                respective domain specificity values.
         '''
         return self.request('add_or_refresh_profile/%s' % profile_name,
@@ -31,7 +31,7 @@ class DomainSpecificity(MultiRESTClient):
     def get_domain_specificity(self, profile_name, documents, 
                                is_case_sensitive=True):
         ''' 
-        @param profile_name: the name of the domain specificity profile to
+        @param profile_name: the name of the domain specificity profile to \
                             use.
         @param documents: a list of dictionaries containing the document
         @param is_case_sensitive: whether to consider case or not (default: True) 
@@ -45,7 +45,7 @@ class DomainSpecificity(MultiRESTClient):
 
     def parse_documents(self, matview_name, documents, is_case_sensitive=False):
         ''' 
-        @param matview_name: a comma separated list of matview_names to check 
+        @param matview_name: a comma separated list of matview_names to check \
                              for domain specificity.
         @param documents: a list of dictionaries containing the document
         @param is_case_sensitive: case sensitive or not
@@ -73,7 +73,7 @@ class DomainSpecificity(MultiRESTClient):
     def has_profile(self, profile_name):
         '''
         Returns whether the given profile exists on the server.
-        @param profile_name: the name of the domain specificity profile to
+        @param profile_name: the name of the domain specificity profile to \
                              check. 
         '''
         return profile_name in self.list_profiles()

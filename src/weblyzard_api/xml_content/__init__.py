@@ -3,8 +3,8 @@
 '''
 Created on Feb, 27 2013
 
-@author: heinz-peterlang
-         albert weichselbraun
+.. codeauthor: Heinz-Peter Lang <lang@weblyzard.com>
+.. codeauthor: Albert Weichselbraun <Weichselbraun@weblyzard.com>
 
 Handles the new (http://www.weblyzard.com/wl/2013#) weblyzard
 XML format.
@@ -35,11 +35,13 @@ class Sentence(object):
     '''
     The sentence class used for accessing single sentences.
 
-    Note: the class provides convenient properties for accessing pos tags 
-          and tokens:
-            .sentence: sentence text
-            .tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
-            .pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
+    .. note::
+
+        the class provides convenient properties for accessing pos tags and tokens:
+    
+        * s.sentence: sentence text
+        * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
+        * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
     
     def __init__(self, md5sum=None, pos=None, sem_orient=None, significance=None, 
@@ -63,6 +65,9 @@ class Sentence(object):
         self.dependency = dependency
 
     def as_dict(self):
+        '''
+        :returns: a dictionary representation of the sentence object.
+        '''
         return dict((k, v) for k, v in self.__dict__.iteritems() if not k.startswith('_'))
         
     def get_sentence(self):
@@ -129,8 +134,8 @@ class Sentence(object):
 
     def get_dependency_list(self):
         '''
-        Return the dependency of the sentence as list of lists of length 2.
-_list
+        :returns: the dependency of the sentence as a list of lists of length 2.
+
         >>> s = Sentence(pos = 'RB PRP MD', dependency = '-1 2 0')
         >>> s.dependency_list
         [['-1', 'RB'], ['2', 'PRP'], ['0', 'MD']]
@@ -147,6 +152,7 @@ _list
     def set_dependency_list(self, dependency):
         '''
         Takes a list of lists of length 2 of dependency, e.g.
+
         >>> s = Sentence(pos = 'RB PRP MD', dependency = '-1 2 0')
         >>> s.dependency_list
         [['-1', 'RB'], ['2', 'PRP'], ['0', 'MD']]
@@ -232,6 +238,13 @@ class XMLContent(object):
     def get_xml_document(self, header_fields='all', 
                          sentence_attributes=SENTENCE_ATTRIBUTES, 
                          xml_version=XML2013.VERSION):
+
+        '''
+        :param header_fields: the header_fields to include
+        :param sentence_attributes: sentence attributes to include
+        :param xml_version: version of the webLyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
+        :returns: the XML representation of the webLyzard XML object
+        '''
         
         if not xml_version: 
             xml_version = self.xml_version
@@ -241,14 +254,14 @@ class XMLContent(object):
                                                                  sentences=self.sentences)
 
     def get_plain_text(self):
-        ''' returns the plain text of the XML content '''
+        ''' :returns: the plain text of the XML content '''
         if not len(self.sentences):
             return ''
         return '\n'.join([s.value for s in self.sentences if not s.is_title])
     
     @classmethod
     def get_text(cls, text):
-        ''' encodes the text ''' 
+        ''' :returns: the utf-8 encoded text ''' 
         if isinstance(text, str):
             text = text.decode('utf-8')
         return text
@@ -272,10 +285,11 @@ class XMLContent(object):
     def as_dict(self, mapping=None, 
                 ignore_non_sentence=False, add_titles_to_sentences=False):
         ''' convert the XML content to a dictionary.
-        :param mapping, an optional mapping by which to restrict/rename
+
+        :param mapping: an optional mapping by which to restrict/rename \
             the returned dictionary
-        :param ignore_non_sentence: if true: sentences without without POS tags 
-                                    are omitted from the result
+        :param ignore_non_sentence: if true, sentences without without POS tags \
+            are omitted from the result
         '''
         try:
             assert mapping, 'got no mapping'
@@ -319,7 +333,7 @@ class XMLContent(object):
         return result
 
     def _get_attribute(self, attr_name):
-        ''' @return: the attribute for the given name '''
+        ''' ::returns: the attribute for the given name '''
         return self.attributes.get(attr_name, None)
     
     def get_nilsimsa(self):
@@ -342,10 +356,14 @@ class XMLContent(object):
         return self.sentence_objects
     
     def update_sentences(self, sentences):
-        ''' updates the values of the existing sentences. if the list of 
+        ''' 
+        updates the values of the existing sentences. if the list of 
         sentence object is empty, sentence_objects will be set to the new
-        sentences. WARNING: this function will not add new sentences
+        sentences. 
+
         :param sentences: list of Sentence objects 
+
+        .. warning:: this function will not add new sentences
         '''
         if not self.sentence_objects:
             self.sentence_objects = sentences 

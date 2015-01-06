@@ -67,8 +67,8 @@ class Jesaja(MultiRESTClient):
     def add_profile(self, profile_name, keyword_calculation_profile):
         ''' Add a keyword profile to the server
         :param profile_name: the name of the keyword profile
-        :param keyword_calculation_profile: the full keyword calculation
-                                            profile (example see below).
+        :param keyword_calculation_profile: the full keyword calculation \
+            profile (example see below).
         <code>
         { 
             'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
@@ -92,15 +92,15 @@ class Jesaja(MultiRESTClient):
         :param corpus_name: the name of the corpus
         :param corpus_format: either 'csv', or 'xml'
         :param corpus: the corpus in the given format.
-        :param profile_name: the name of the profile used for tokenization 
-                           (only used in conjunction with corpus_format 'doc').
+        :param profile_name: the name of the profile used for tokenization \
+            (only used in conjunction with corpus_format 'doc').
 
         Supported formats:
         wlxml: [ xml_content, ... ]
                 xml_content: the content in the weblyzard xml format
                  
-        @attention: uploading documents (corpus_format = doc, wlxml) requires
-                    a call to finalize_corpora to trigger the corpus generation!         
+        .. attention:: uploading documents (corpus_format = doc, wlxml) \
+            requires a call to finalize_corpora to trigger the corpus generation!         
         '''
         assert corpus_format in self.VALID_CORPUS_FORMATS
         path = None
@@ -129,7 +129,8 @@ class Jesaja(MultiRESTClient):
         return self.request(path, corpus)
 
     def get_keywords_xml(self, profile_name, documents):
-        ''' converts each document to a dictionary and calculates the keywords''' 
+        ''' converts each document to a dictionary and calculates the \
+            keywords''' 
         documents = self.get_documents(documents)
         return self.get_keywords(profile_name, documents)
 
@@ -137,6 +138,8 @@ class Jesaja(MultiRESTClient):
         ''' 
         :param profile_name: keyword profile to use 
         :param documents: a list of webLyzard xml documents to annotate
+
+        :Examples:
 
         documents = [
           {

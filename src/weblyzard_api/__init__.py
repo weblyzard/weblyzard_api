@@ -1,5 +1,6 @@
 '''
-Created on 07.03.2013
+The webLyzard API package.
 
-@author: heinz-peterlang
+.. codeauthor:: Albert Weichselbraun <weichselbraun@weblyzard.com>
+.. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''

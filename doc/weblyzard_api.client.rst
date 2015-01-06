@@ -14,6 +14,7 @@ client Package
 
 .. automodule:: weblyzard_api.client.domain_specificity
     :members:
+    :exclude-members: TestDomainSpecificity
     :undoc-members:
     :show-inheritance:
 
@@ -34,6 +35,7 @@ client Package
 
 .. automodule:: weblyzard_api.client.jeremia
     :members:
+    :exclude-members: JeremiaTest
     :undoc-members:
     :show-inheritance:
 
@@ -42,6 +44,7 @@ client Package
 
 .. automodule:: weblyzard_api.client.jesaja
     :members:
+    :exclude-members: JesajaTest
     :undoc-members:
     :show-inheritance:
 
@@ -50,6 +53,7 @@ client Package
 
 .. automodule:: weblyzard_api.client.pos
     :members:
+    :exclude-members: POSTest
     :undoc-members:
     :show-inheritance:
 
@@ -58,6 +62,7 @@ client Package
 
 .. automodule:: weblyzard_api.client.sentiment_analysis
     :members:
+    :exclude-members: SentimentAnalysisTest
     :undoc-members:
     :show-inheritance:
 

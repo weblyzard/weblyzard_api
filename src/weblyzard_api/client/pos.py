@@ -1,7 +1,7 @@
 '''
-Created on Jan 4, 2013
+Part-of-speech (POS) tagging service
 
-@author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 import unittest
 from eWRT.ws.rest import RESTClient
@@ -18,7 +18,8 @@ class POS(RESTClient):
 
     def pos_tagging(self, text, lang):
         """ tags the following text using the given language dictionary 
-        @return: the corresponding ANNIE compatible annotations
+
+        :returns: the corresponding ANNIE compatible annotations
         """
         return self.execute("pos-tagging", None, { 'text': text, 'lang': lang })
 
