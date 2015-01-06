@@ -1,7 +1,5 @@
 '''
-Created on Jan 14, 2013
-
-@author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 
 from eWRT.ws.rest import RESTClient
@@ -21,9 +19,9 @@ class SentimentAnalysis(RESTClient):
         ''' Returns the sentiment of the given text for the given
             language.
             
-            @param text: the input text
-            @param lang: the text's language
-            @returns:
+            :param text: the input text
+            :param lang: the text's language
+            :returns:
                 sv; n_pos_terms; n_neg_terms; list of tuples, where each
                 tuple contains two dicts:
                     tuple[0]: ambiguous terms and its sentiment value after
@@ -39,9 +37,9 @@ class SentimentAnalysis(RESTClient):
         ''' Returns the sentiment of the given text for the given
             language.
             
-            @param document_list: the input text
-            @param lang: the text's language
-            @returns:
+            :param document_list: the input text
+            :param lang: the text's language
+            :returns:
                 sv; n_pos_terms; n_neg_terms; list of tuples, where each
                 tuple contains two dicts:
                     tuple[0]: ambiguous terms and its sentiment value after
@@ -56,9 +54,9 @@ class SentimentAnalysis(RESTClient):
     def update_context(self, context_dict, lang):
         ''' Uploads the given context dictionary to the Web service.
                     
-            @param context_dict: a dictionary containing the context
+            :param context_dict: a dictionary containing the context \
                                  information
-            @param lang: the used language
+            :param lang: the used language
         '''
         return self.execute('sentiment_update_context', None,
                             {'context_dict': context_dict, 'lang': lang} )
@@ -67,8 +65,8 @@ class SentimentAnalysis(RESTClient):
     def update_lexicon(self, corpus_dict, lang):
         ''' Uploads the given corpus dictionary to the Web service.
                     
-            @param corpus_dict: a dictionary containing the corpus information
-            @param lang: the used language
+            :param corpus_dict: a dictionary containing the corpus information
+            :param lang: the used language
         '''
         return self.execute('sentiment_update_lexicon', None,
                             {'corpus_dict': corpus_dict, 'lang': lang })
@@ -77,10 +75,10 @@ class SentimentAnalysis(RESTClient):
     def update_negation(self, negation_trigger_dict, lang):
         ''' Uploads the given negation triggers to the Web service.
                     
-            @param negation_trigger_list: a list of negation triggers to
+            :param negation_trigger_list: a list of negation triggers to
                     use with the given language
-                    example: {'doesn't': 'doesnt', ....}
-            @param lang: the used language
+                    example: ``{'doesn't': 'doesnt', ....}``
+            :param lang: the used language
         '''
         return self.execute('sentiment_update_negation', None,
                             {'negation_trigger_dict': negation_trigger_dict, 
@@ -90,11 +88,13 @@ class SentimentAnalysis(RESTClient):
         ''' Restores the default data files for the given language
             (if available).
 
-            Currently this operation is only supported for German and
-            English.
-                    
-            @param lang: the used language
-        '''
+                   
+            :param lang: the used language
+
+            .. note::
+                Currently this operation is only supported for German and
+                English.
+         '''
         return self.execute('sentiment_reset', None,
                             {'lang': lang} )
 

@@ -1,8 +1,6 @@
 # -*- coding: utf8 -*
 '''
-Created on Jan 23, 2013
-
-@author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+::moduleauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 
 import unittest
@@ -17,8 +15,9 @@ from weblyzard_api.test import get_full_path
 
 class Jesaja(MultiRESTClient):
     ''' 
-    @class Jesaja
     Provides access to the Jesaja keyword service. 
+
+    Jesaja extracts associations (i.e. keywords) from text documents.
     '''
     
     VALID_CORPUS_FORMATS = ('xml', 'csv')
@@ -50,6 +49,7 @@ class Jesaja(MultiRESTClient):
     def convert_document(cls, xml):
         ''' converts an XML String to a dictionary with the correct parameters
         (ignoring non-sentences and adding the titles 
+
         :param xml: str representing the document
         :returns: converted document
         :rtype: dict
@@ -66,21 +66,31 @@ class Jesaja(MultiRESTClient):
     
     def add_profile(self, profile_name, keyword_calculation_profile):
         ''' Add a keyword profile to the server
+
         :param profile_name: the name of the keyword profile
-        :param keyword_calculation_profile: the full keyword calculation
-                                            profile (example see below).
-        <code>
-        { 
-            'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
-            'corpus_name'                    : reference_corpus_name,
-            'min_phrase_significance'        : 2.0,
-            'num_keywords'                   : 5,
-            'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', # com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm
-            'min_token_count'                : 5,
-            'skip_underrepresented_keywords' : True,
-            'stoplists'                      : [],
-        }
-        </code>
+        :param keyword_calculation_profile: the full keyword calculation \
+            profile (see below).
+
+        .. note:: Example keyword calculation profile
+
+            ::
+
+                { 
+                    'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
+                    'corpus_name'                    : reference_corpus_name,
+                    'min_phrase_significance'        : 2.0,
+                    'num_keywords'                   : 5,
+                    'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', 
+                    'min_token_count'                : 5,
+                    'skip_underrepresented_keywords' : True,
+                    'stoplists'                      : [],
+                }
+
+        .. note:: ``Available keyword_algorithms``
+
+            * ``com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm``
+            * ``com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm``
+            
         '''
         return self.request('add_or_refresh_profile/%s' % profile_name,
                             keyword_calculation_profile)
@@ -89,18 +99,24 @@ class Jesaja(MultiRESTClient):
                              profile_name=None, skip_profile_check=False):
         ''' 
         Adds/updates a corpus at Jesaja.
-        :param corpus_name: the name of the corpus
-        :param corpus_format: either 'csv', or 'xml'
-        :param corpus: the corpus in the given format.
-        :param profile_name: the name of the profile used for tokenization 
-                           (only used in conjunction with corpus_format 'doc').
 
-        Supported formats:
-        wlxml: [ xml_content, ... ]
-                xml_content: the content in the weblyzard xml format
+        :param corpus_name: the name of the corpus
+        :param corpus_format: either 'csv', 'xml', or wlxml
+        :param corpus: the corpus in the given format.
+        :param profile_name: the name of the profile used for tokenization \
+            (only used in conjunction with corpus_format 'doc').
+
+        .. note:: Supported ``corpus_format``
+
+            * csv
+            * xml
+            * wlxml::
+
+                # xml_content: the content in the weblyzard xml format
+                corpus = [ xml_content, ... ]  
                  
-        @attention: uploading documents (corpus_format = doc, wlxml) requires
-                    a call to finalize_corpora to trigger the corpus generation!         
+        .. attention:: uploading documents (corpus_format = doc, wlxml) \
+            requires a call to finalize_corpora to trigger the corpus generation!         
         '''
         assert corpus_format in self.VALID_CORPUS_FORMATS
         path = None
@@ -129,7 +145,8 @@ class Jesaja(MultiRESTClient):
         return self.request(path, corpus)
 
     def get_keywords_xml(self, profile_name, documents):
-        ''' converts each document to a dictionary and calculates the keywords''' 
+        ''' converts each document to a dictionary and calculates the \
+            keywords''' 
         documents = self.get_documents(documents)
         return self.get_keywords(profile_name, documents)
 
@@ -138,27 +155,31 @@ class Jesaja(MultiRESTClient):
         :param profile_name: keyword profile to use 
         :param documents: a list of webLyzard xml documents to annotate
 
-        documents = [
-          {
-             'title': 'Test document',
-             'sentence': [
-                 {
-                   'id': '27150b5fae553ebab63332fe7b94d518',
-                   'pos': 'NNP VBZ VBN IN VBZ NNP . NNP VBZ NNP .',
-                   'token': '0,5 6,8 9,16 17,19 20,27 28,43 43,44 45,48 49,54 55,61 61,62',
-                   'value': 'CDATA is wrapped as follows <![CDATA[aha]]>. Ana loves Martin.'
-                 },
-                 {
-                   'id': 'f8ddd9b3c8cf4c7764a3348d14e84e79',
-                   'pos': 'NN IN CD \' IN JJR JJR JJR JJR CC CC CC : : JJ NN .',
-                   'token': '0,4 5,7 8,9 10,11 12,16 17,18 18,19 19,20 20,21 22,23 23,24 25,28 29,30 30,31 32,39 40,45 45,46',
-                   'value': '10µm in € ” with <><> && and // related stuff.'
-                 }
-             ],
-             'content_id': '123k233',
-             'lang': 'en',
-             }
-        ]
+        .. note:: example documents list
+
+            ::
+
+                documents = [
+                  {
+                     'title': 'Test document',
+                     'sentence': [
+                         {
+                           'id': '27150b5fae553ebab63332fe7b94d518',
+                           'pos': 'NNP VBZ VBN IN VBZ NNP . NNP VBZ NNP .',
+                           'token': '0,5 6,8 9,16 17,19 20,27 28,43 43,44 45,48 49,54 55,61 61,62',
+                           'value': 'CDATA is wrapped as follows <![CDATA[aha]]>. Ana loves Martin.'
+                         },
+                         {
+                           'id': 'f8ddd9b3c8cf4c7764a3348d14e84e79',
+                           'pos': 'NN IN CD \' IN JJR JJR JJR JJR CC CC CC : : JJ NN .',
+                           'token': '0,4 5,7 8,9 10,11 12,16 17,18 18,19 19,20 20,21 22,23 23,24 25,28 29,30 30,31 32,39 40,45 45,46',
+                           'value': '10µm in € ” with <><> && and // related stuff.'
+                         }
+                     ],
+                     'content_id': '123k233',
+                     'lang': 'en',
+                     }
+                ]
         '''
         if not self.has_profile(profile_name):
             raise Exception('Cannot compute keywords - unknown profile %s' % profile_name)
@@ -180,26 +201,40 @@ class Jesaja(MultiRESTClient):
         return self.request('get_corpus_size/%s' % profile_name) 
 
     def add_or_update_stoplist(self, name, stoplist):
-        ''' for backward compability ''' 
+        '''
+        .. deprecated:: 0.1
+           Use: :func:`add_stoplist` instead.
+        '''
         return self.add_stoplist(name, stoplist) 
 
     def add_stoplist(self, name, stoplist):
+        '''
+        :param name: name of the stopword list
+        :param stoplist: a list of stopwords for the keyword computation
+        '''
         return self.request('add_or_update_stoplist/%s' % name, stoplist) 
 
     def list_stoplists(self):
+        '''
+        :returns: a list of all available stopword lists.
+        '''
         return self.request('list_stoplists')
     
     def change_log_level(self, level):
         '''
         Changes the log level of the keyword service
+
+        :param level: the new log level to use.
         '''
         return self.request('set_log_level/%s' % level, return_plain=True)
 
     def finalize_corpora(self):
         '''
-        This function needs to be called after uploading 'doc' or 'wlxml'
-        corpora, since it triggers the computations of the token counts
-        based on the 'valid_pos_tags' parameter.
+        .. note::
+
+           This function needs to be called after uploading 'doc' or 'wlxml'
+           corpora, since it triggers the computations of the token counts
+           based on the 'valid_pos_tags' parameter.
         '''
         return self.request('finalize_corpora', return_plain=True)
 

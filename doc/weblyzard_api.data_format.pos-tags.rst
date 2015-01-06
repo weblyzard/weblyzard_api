@@ -1,6 +1,6 @@
-pos tags
+POS tags
 ========
-This file contains the used pos-tagsets for english, french and german. All used tags can also be found in `usedPosTags.csv <https://github.com/weblyzard/weblyzard_api/tree/master/doc/usedPosTags.csv>`_ .
+This file contains the used part-of-speech (POS)-tagsets for English, French and German. All used tags can also be found in `usedPosTags.csv <https://github.com/weblyzard/weblyzard_api/tree/master/doc/usedPosTags.csv>`_ .
 
 English
 -------

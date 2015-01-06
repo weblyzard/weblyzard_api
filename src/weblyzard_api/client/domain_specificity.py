@@ -1,7 +1,5 @@
 '''
-Created on Jan 16, 2013
-
-@author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 import unittest 
 
@@ -10,7 +8,17 @@ from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZAR
 
 class DomainSpecificity(MultiRESTClient):
     '''
-    Domain Specificity Web Service
+    **Domain Specificity Web Service**
+
+    Determines whether documents are relevant for a given domain by searching for
+    domain relevant terms in these documents.
+
+    **Workflow**
+
+     1. submit a domain-specificity profile with :func:`add_profile`
+     2. obtain the domain-speificity of text documents with 
+        :func:`get_domain_specificity`, :func:`parse_documents` or 
+        :func:`search_documents`.
     '''
     URL_PATH = 'rest/domain_specificity' 
     
@@ -21,8 +29,9 @@ class DomainSpecificity(MultiRESTClient):
     def add_profile(self, profile_name, profile_mapping):
         '''
         Adds a domain-specificity profile to the Web service.
-        @param profile_name: the name of the domain specificity profile
-        @param profile_mapping: a dictionary of keywords and their
+
+        :param profile_name: the name of the domain specificity profile
+        :param profile_mapping: a dictionary of keywords and their \
                                respective domain specificity values.
         '''
         return self.request('add_or_refresh_profile/%s' % profile_name,
@@ -31,29 +40,29 @@ class DomainSpecificity(MultiRESTClient):
     def get_domain_specificity(self, profile_name, documents, 
                                is_case_sensitive=True):
         ''' 
-        @param profile_name: the name of the domain specificity profile to
+        :param profile_name: the name of the domain specificity profile to \
                             use.
-        @param documents: a list of dictionaries containing the document
-        @param is_case_sensitive: whether to consider case or not (default: True) 
+        :param documents: a list of dictionaries containing the document
+        :param is_case_sensitive: whether to consider case or not (default: True) 
         '''
         return self.request('parse_documents/%s/%s' % (profile_name, 
                                                        is_case_sensitive),
                              documents) 
 
-    def bucketize(self, l, n):
+    def _bucketize(self, l, n):
         return (l[i:i+n] for i in xrange(0, len(l), n))
 
     def parse_documents(self, matview_name, documents, is_case_sensitive=False):
         ''' 
-        @param matview_name: a comma separated list of matview_names to check 
+        :param matview_name: a comma separated list of matview_names to check \
                              for domain specificity.
-        @param documents: a list of dictionaries containing the document
-        @param is_case_sensitive: case sensitive or not
-        @return: dict (profilename: (content_id, dom_spec))  
+        :param documents: a list of dictionaries containing the document
+        :param is_case_sensitive: case sensitive or not
+        :returns: dict (profilename: (content_id, dom_spec))  
         '''
         found_tags = {}
         for document_batch in self.get_document_batch(documents):
-            for batch in self.bucketize(document_batch, 1):
+            for batch in self._bucketize(document_batch, 1):
                 result = self.request('parse_documents/%s/%s' % 
                                       (matview_name, is_case_sensitive), 
                                       batch)
@@ -68,17 +77,25 @@ class DomainSpecificity(MultiRESTClient):
                             documents)
 
     def list_profiles(self):
+        '''
+        :returns: a list of all available domain specificity profiles.
+        '''
         return self.request('list_profiles')
 
     def has_profile(self, profile_name):
         '''
         Returns whether the given profile exists on the server.
-        @param profile_name: the name of the domain specificity profile to
+
+        :param profile_name: the name of the domain specificity profile to \
                              check. 
+        :returns: ``True`` if the given profile exists on the server.
         '''
         return profile_name in self.list_profiles()
     
     def meminfo(self):
+        '''
+        :returns: Information on the web service's memory consumption
+        '''
         return self.request('meminfo')    
 
 class TestDomainSpecificity(unittest.TestCase):        

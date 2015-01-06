@@ -14,6 +14,7 @@ weblyzard_api Package
 
 .. automodule:: weblyzard_api.xml_content
     :members:
+    :exclude-members: TestXMLContent 
     :undoc-members:
     :show-inheritance:
 
