@@ -1,5 +1,5 @@
 '''
-.. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 import unittest 
 

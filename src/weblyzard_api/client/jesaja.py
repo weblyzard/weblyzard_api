@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*
 '''
-::moduleauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
 
 import unittest

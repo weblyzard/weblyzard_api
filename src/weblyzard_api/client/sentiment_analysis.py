@@ -1,5 +1,5 @@
 '''
-.. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 
 from eWRT.ws.rest import RESTClient
@@ -24,9 +24,10 @@ class SentimentAnalysis(RESTClient):
             :returns:
                 sv; n_pos_terms; n_neg_terms; list of tuples, where each
                 tuple contains two dicts:
-                    tuple[0]: ambiguous terms and its sentiment value after
-                        disambiguation
-                    tuple[1]: the context terms with their number of 
+
+                 * tuple[0]: ambiguous terms and its sentiment value after \
+                         disambiguation
+                 * tuple[1]: the context terms with their number of \
                         occurrences in the document.
         '''
         return self.execute("sentiment_parse_document", 
@@ -42,9 +43,10 @@ class SentimentAnalysis(RESTClient):
             :returns:
                 sv; n_pos_terms; n_neg_terms; list of tuples, where each
                 tuple contains two dicts:
-                    tuple[0]: ambiguous terms and its sentiment value after
+
+                  * tuple[0]: ambiguous terms and its sentiment value after \
                         disambiguation
-                    tuple[1]: the context terms with their number of 
+                  * tuple[1]: the context terms with their number of \
                         occurrences in the document.
         '''
         return self.execute("sentiment_parse_document_list", 
