@@ -11,6 +11,6 @@ setup (
     package_dir = {'': 'src'},
     install_requires = ['eWRT>=0.9.1.3', 
                         'requests'],
-    dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT'],
+    dependency_links = ['git+https://github.com/weblyzard/ewrt/archive/master.zip#egg=eWRT'],
     scripts = ['src/weblyzard_api/client/openrdf/wl_upload_repository.py',]
 )
