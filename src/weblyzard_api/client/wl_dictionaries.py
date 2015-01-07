@@ -98,8 +98,6 @@ class WeblyzardDictionaries(object):
                                       pwd=self.password)
         
         if response:
-            print 'got a response' 
-            
             target_directory =  os.path.dirname(target_path)
             
             if not os.path.exists(target_directory):

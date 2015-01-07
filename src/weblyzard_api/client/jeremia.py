@@ -1,7 +1,6 @@
 '''
-Created on Jan 4, 2013
-
-@author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
 import unittest
 from time import time
@@ -13,7 +12,43 @@ from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZAR
 
 class Jeremia(MultiRESTClient):
     '''
-    Jeremia Web Service
+    **Jeremia Web Service**
+
+    Pre-processes text documents and returns an annotated webLyzard XML document.
+
+    **Blacklisting**
+
+    Blacklisting is an optional service which removes sentences which occur
+    multiple times in different documents from these documents. Examples for such
+    sentences are document headers or footers.
+
+    The following functions handle sentence blacklisting:
+
+     * :func:`clear_blacklist`
+     * :func:`get_blacklist`
+     * :func:`submit_document_blacklist`
+     * :func:`update_blacklist`
+
+    Jeremia returns a 
+    :doc:`webLyzard XML document <weblyzard_api.data_format.xml_format>`.
+    The weblyzard_api provides the class :class:`.XMLContent` to process
+    and manipulate the weblyzard XML documents.:
+
+    .. note:: Example usage
+
+        .. code-block:: python
+
+            from weblyzard_api.client.recognize import Recognize
+            from pprint import pprint
+
+            docs = {'id': '192292', 
+                    'title': 'The document title.', 
+                    'body': 'This is the document text...', 
+                    'format': 'text/html', 
+                    'header': {}}
+            client = Jeremia()
+            result = client.submit_document(docs)
+            pprint(result)
     '''
     URL_PATH = 'jeremia/rest'
     ATTRIBUTE_MAPPING = {'content_id': 'id', 
@@ -26,6 +61,11 @@ class Jeremia(MultiRESTClient):
                                            'md5sum': 'id'}}
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
 
@@ -45,6 +85,7 @@ class Jeremia(MultiRESTClient):
     def submit_document(self, document):
         '''
         processes a single document with jeremia (annotates a single document)
+
         :param document: the document to be processed
         '''
         return self.request('submit_document', document)
@@ -59,17 +100,21 @@ class Jeremia(MultiRESTClient):
         return self.request('submit_documents/%s' % batch_id, documents)
     
     def status(self):
+        '''
+        :returns: the status of the Jeremia web service.
+        '''
         return self.request('status', return_plain=True)
 
     def version(self):
         '''
-        ::return the current version of the jeremia deployed on the server
+        :returns: the current version of the jeremia deployed on the server
         '''
         return self.request('version', return_plain=True)
     
     def get_xml_doc(self, text, content_id='1'):
         '''
         Processes text and returns a XMLContent object.
+
         :param text: the text to process
         :param content_id: optional content id
         '''
@@ -86,6 +131,7 @@ class Jeremia(MultiRESTClient):
     
     def submit_documents_blacklist(self, batch_id, documents, source_id):
         ''' submits the documents and removes blacklist sentences 
+
         :param batch_id: batch_id to use for the given submission
         :param documents: a list of dictionaries containing the document 
         :param source_id: source_id for the documents, determines the blacklist
@@ -94,23 +140,32 @@ class Jeremia(MultiRESTClient):
         return self.request(url, documents)
     
     def update_blacklist(self, source_id, blacklist):
-        ''' updates an existing blacklist cache '''
+        ''' 
+        updates an existing blacklist cache 
+
+        :param source_id: the blacklist's source id
+        '''
         url = 'cache/updateBlacklist/%s' % source_id
         return self.request(url, blacklist)
         
     def clear_blacklist(self, source_id):
-        ''' empties existing blacklist cache 
-        :param source_id: source_id for the documents, determines the blacklist
+        ''' 
+        :param source_id: the blacklist's source id
+
+        Empties the existing sentence blacklisting cache for the given source_id
         ''' 
         return self.request('cache/clearBlacklist/%s' % source_id)
         
     def get_blacklist(self, source_id):
-        ''' returns the blacklist for a source_id ''' 
+        ''' 
+        :param source_id: the blacklist's source id
+        :returns: the sentence blacklist for the given source_id''' 
         return self.request('cache/getBlacklist/%s' % source_id)
 
     def submit(self, batch_id, documents, source_id=None, use_blacklist=False):
         ''' Convenience function to submit documents. The function will submit
         the list of documents and finally call commit to retrieve the result
+
         :param batch_id: ID of the batch
         :param documents: list of documents (dict)
         :param source_id: 

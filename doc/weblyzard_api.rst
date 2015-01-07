@@ -9,18 +9,23 @@ weblyzard_api Package
     :undoc-members:
     :show-inheritance:
 
+Provides support for webLyzard web services. Please refer to :ref:`client` for
+a list of available web services.
+
+
 :mod:`xml_content` Module
 -------------------------
 
 .. automodule:: weblyzard_api.xml_content
     :members:
+    :exclude-members: TestXMLContent 
     :undoc-members:
     :show-inheritance:
 
-Subpackages
------------
+.. _client:
 
+:mod:`client` Module
+-------------------------
 .. toctree::
 
-    weblyzard_api.client
-
+	weblyzard_api.client

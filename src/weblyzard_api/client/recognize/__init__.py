@@ -1,14 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 '''
-Created on Jan 4, 2013
-
-moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
-
-New supported calls:
-- recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
-- recognize/searchXml/ofwi.people
-
+.. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch> 
 '''
 import logging
 import unittest
@@ -27,8 +20,39 @@ SUPPORTED_LANGS = ('en', 'fr', 'de')
 
 class Recognize(MultiRESTClient):
     '''
-    class:: Recognize
-    EntityLyzard/Recognize Web Service
+    Provides access to the Recognize Web Service.
+    
+    **Workflow:**
+     1. pre-load the recognize profiles you need using the :func:`add_profile` call.
+     2. submit the text or documents to analyze using one of the following calls:
+         
+        * :func:`search_document` or :func:`search_documents` for document dictionaries.
+        * :func:`search_text` for plain text.
+    
+    .. note:: Example usage
+    
+        .. code-block:: python
+    
+            from weblyzard_api.client.recognize import Recognize
+            from pprint import pprint
+            
+            url = 'http://triple-store.ai.wu.ac.at/recognize/rest/recognize'
+            profile_names = ['en.organization.ng', 'en.people.ng', 'en.geo.500000.ng']
+            text = 'Microsoft is an American multinational corporation 
+                    headquartered in Redmond, Washington, that develops, 
+                    manufactures, licenses, supports and sells computer 
+                    software, consumer electronics and personal computers 
+                    and services. It was was founded by Bill Gates and Paul
+                    Allen on April 4, 1975.'
+            
+            client = Recognize(url)
+            result = client.search_text(profile_names,
+                        text,
+                        output_format='compact',
+                        max_entities=40,
+                        buckets=40,
+                        limit=40)  
+            pprint(result)
     '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
     URL_PATH = 'recognize/rest/recognize'
@@ -42,17 +66,27 @@ class Recognize(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL,
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  use_random_server=True)
         self.profile_cache = []
 
     @classmethod
     def convert_document(cls, xml):
-        ''' converts an XML String to a dictionary with the correct parameters
-        (ignoring non-sentences and adding the titles
-        :param xml: str representing the document
-        :returns: converted document
+        ''' converts an XML String to a document dictionary necessary for \
+            transmitting the document to Recognize.
+
+        :param xml: weblyzard_xml representation of the document
+        :returns: the converted document
         :rtype: dict
+
+        .. note::
+            non-sentences are ignored and titles are added based on the
+            XmlContent's interpretation of the document.
         '''
         if not isinstance(xml, XMLContent):
             xml = XMLContent(xml)
@@ -62,17 +96,26 @@ class Recognize(MultiRESTClient):
                            add_titles_to_sentences=True)
 
     def list_profiles(self):
-        ''' pre-loaded profiles
-            e.g. [u'Cities.DACH.10000.de_en', u'People.DACH.de']
+        ''' :returns: a list of all pre-loaded profiles
+
+            .. code-block:: python
+
+            >>> r=Recognize()
+            >>> r.list_profiles()
+            [u'Cities.DACH.10000.de_en', u'People.DACH.de']
         '''
         return self.request('list_profiles')
 
     def list_configured_profiles(self):
-        ''' profiles supported in the current configuration '''
+        ''' :returns: a list of all profiles supported in the current \
+                configuration '''
         return self.request('list_configured_profiles')
 
     def add_profile(self, profile_name, force=False):
-        ''' pre-loads the given profile '''
+        ''' pre-loads the given profile 
+
+        ::param profile_name: name of the profile to load.
+        '''
         is_internal_profile = profile_name.startswith(INTERNAL_PROFILE_PREFIX)
         profile_exists = profile_name in self.profile_cache and not force
         if not profile_exists:
@@ -86,7 +129,7 @@ class Recognize(MultiRESTClient):
             return self.request('add_profile/%s' % profile_name)
 
     def get_xml_document(self, document):
-        ''' returns the correct XML representation required by the Recognize
+        ''' :returns: the correct XML representation required by the Recognize \
             service'''
         return document.xml_content.as_dict(self.ATTRIBUTE_MAPPING)
 
@@ -97,16 +140,17 @@ class Recognize(MultiRESTClient):
     def search_text(self, profile_names, text, debug=False, max_entities=1,
             buckets=1, limit=1, output_format='minimal'):
         '''
-        Search text with given profiles
-        :param profileName: the profile to search in
+        Search text for entities specified in the given profiles.
+
+        :param profile_names: the profile to search in
         :param text: the text to search in
         :param debug: compute and return an explanation
         :param buckets: only return n buckets of hits with the same score
-        :param max_entities: number of results to return (removes the top hit's
-                             tokens and rescores the result list subsequently
+        :param max_entities: number of results to return (removes the top \
+            hit's tokens and rescores the result list subsequently
         :param limit: only return that many results
-        :param output_format: the output format to use ('standard', 'minimal'*,
-                              'annie')
+        :param output_format: the output format to use ('standard', \
+            *'minimal'*, 'annie')
         :rtype: the tagged text
         '''
         assert output_format in self.OUTPUT_FORMATS
@@ -131,21 +175,31 @@ class Recognize(MultiRESTClient):
                          output_format='minimal'):
         '''
         :param profile_names: a list of profile names
-        :param document: a single documents to analyze in the following formats:
-                         (a) dict: ( {'content_id': 12,
-                                      'content': u'the text to analyze'})
-                         (b) weblyzardXML:
-                             (XMLContent('<?xml version="1.0"...').as_list(),
-                              XMLContent('<?xml version="1.0"...').as_list(),)
-
+        :param document: a single document to analyze (see example documents \
+            below)
         :param debug: compute and return an explanation
         :param buckets: only return n buckets of hits with the same score
-        :param max_entities: number of results to return (removes the top hit's
-                             tokens and rescores the result list subsequently
+        :param max_entities: number of results to return (removes the top hit's \
+            tokens and rescores the result list subsequently
         :param limit: only return that many results
-        :param output_format: the output format to use ('standard', 'minimal'*,
-                              'annie')
+        :param output_format: the output format to use ('standard', *'minimal'*, \
+            'annie')
         :rtype: the tagged dictionary
+
+        .. note:: Example document
+
+           .. code-block:: python
+   
+              # option 1: document dictionary
+              {'content_id': 12, 
+               'content': u'the text to analyze'}
+
+              # option 2: weblyzardXML
+              XMLContent('<?xml version="1.0"...').as_list()
+
+        .. note:: Corresponding web call
+
+            http://localhost:8080/recognize/searchXml/ofwi.people
         '''
         assert output_format in self.OUTPUT_FORMATS
         if not document:
@@ -186,23 +240,28 @@ class Recognize(MultiRESTClient):
                          output_format='annie'):
         '''
         :param profile_names: a list of profile names
-        :param doc_list: a list of documents to analyze in one of the
-                         following formats:
-                         (a) dict: ( {'content_id': 12,
-                                      'content': u'the text to analyze'})
-                         (b) weblyzardXML:
-                             (XMLContent('<?xml version="1.0"...').as_list(),
-                              XMLContent('<?xml version="1.0"...').as_list(),)
-
+        :param doc_list: a list of documents to analyze (see example below)         
         :param debug: compute and return an explanation
         :param buckets: only return n buckets of hits with the same score
-        :param max_entities: number of results to return (removes the top hit's
-                             tokens and rescores the result list subsequently
+        :param max_entities: number of results to return (removes the top \
+            hit's tokens and rescores the result list subsequently
         :param limit: only return that many results
-        :param output_format: the output format to use ('standard', 'minimal'*,
-                              'annie')
+        :param output_format: the output format to use ('standard', \
+            *'minimal'*, 'annie')
         :rtype: the tagged dictionary
-        '''
+
+        .. note:: Example document
+
+           .. code-block:: python
+   
+              # option 1: list of document dictionaries
+              ( {'content_id': 12,
+                 'content': u'the text to analyze'})
+
+              # option 2: list of weblyzardXML dictionary representations
+              (XMLContent('<?xml version="1.0"...').as_list(),
+               XMLContent('<?xml version="1.0"...').as_list(),)
+         '''
         assert output_format in self.OUTPUT_FORMATS
         if not doc_list or len(doc_list) == 0:
             return
@@ -261,15 +320,15 @@ class Recognize(MultiRESTClient):
 
     def get_focus(self, profile_names, doc_list, max_results=1):
         '''
-        Returns the focus and annotations of the given document
-
         :param profile_names: a list of profile names
-        :param doc_list: a list of documents to analyze based on the
+        :param doc_list: a list of documents to analyze based on the \
                          weblyzardXML format
         :param max_results: maximum number of results to include
+        :returns: the focus and annotation of the given document
 
-        query:
-        recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
+        .. note:: Corresponding web call
+
+           http://localhost:8080/recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
         '''
         if isinstance(profile_names, basestring):
             profile_names = (profile_names, )
@@ -291,6 +350,9 @@ class Recognize(MultiRESTClient):
                                               'limit': max_results})
 
     def status(self):
+        '''
+        :returns: the status of the Recognize web service.
+        '''
         return self.request(path='status')
 
 
