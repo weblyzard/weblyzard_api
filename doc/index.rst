@@ -9,7 +9,7 @@ Welcome to weblyzard_api 's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    weblyzard_api.rst
    weblyzard_api.data_format.rst

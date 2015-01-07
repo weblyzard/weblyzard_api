@@ -2,40 +2,6 @@
 # -*- coding: utf8 -*-
 '''
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch> 
-
-Provides access to the Recognize Web Service.
-
-**Workflow:**
- 1. pre-load the recognize profiles you need using the :func:`add_profile` call.
- 2. submit the text or documents to analyze using one of the following calls:
-     
-    * :func:`search_document` or :func:`search_documents` for document dictionaries.
-    * :func:`search_text` for plain text.
-
-.. note:: Example usage
-
-    .. code-block:: python
-
-        from weblyzard_api.client.recognize import Recognize
-        from pprint import pprint
-        
-        url = 'http://triple-store.ai.wu.ac.at/recognize/rest/recognize'
-        profile_names = ['en.organization.ng', 'en.people.ng', 'en.geo.500000.ng']
-        text = 'Microsoft is an American multinational corporation 
-                headquartered in Redmond, Washington, that develops, 
-                manufactures, licenses, supports and sells computer 
-                software, consumer electronics and personal computers 
-                and services. It was was founded by Bill Gates and Paul
-                Allen on April 4, 1975.'
-        
-        client = Recognize(url)
-        result = client.search_text(profile_names,
-                    text,
-                    output_format='compact',
-                    max_entities=40,
-                    buckets=40,
-                    limit=40)  
-        pprint(result)
 '''
 import logging
 import unittest
@@ -53,6 +19,41 @@ LOGGER = logging.getLogger('weblyzard_api.client.recognize')
 SUPPORTED_LANGS = ('en', 'fr', 'de')
 
 class Recognize(MultiRESTClient):
+    '''
+    Provides access to the Recognize Web Service.
+    
+    **Workflow:**
+     1. pre-load the recognize profiles you need using the :func:`add_profile` call.
+     2. submit the text or documents to analyze using one of the following calls:
+         
+        * :func:`search_document` or :func:`search_documents` for document dictionaries.
+        * :func:`search_text` for plain text.
+    
+    .. note:: Example usage
+    
+        .. code-block:: python
+    
+            from weblyzard_api.client.recognize import Recognize
+            from pprint import pprint
+            
+            url = 'http://triple-store.ai.wu.ac.at/recognize/rest/recognize'
+            profile_names = ['en.organization.ng', 'en.people.ng', 'en.geo.500000.ng']
+            text = 'Microsoft is an American multinational corporation 
+                    headquartered in Redmond, Washington, that develops, 
+                    manufactures, licenses, supports and sells computer 
+                    software, consumer electronics and personal computers 
+                    and services. It was was founded by Bill Gates and Paul
+                    Allen on April 4, 1975.'
+            
+            client = Recognize(url)
+            result = client.search_text(profile_names,
+                        text,
+                        output_format='compact',
+                        max_entities=40,
+                        buckets=40,
+                        limit=40)  
+            pprint(result)
+    '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
     URL_PATH = 'recognize/rest/recognize'
     ATTRIBUTE_MAPPING = {'content_id': 'id',

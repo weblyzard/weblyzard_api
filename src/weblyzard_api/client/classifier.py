@@ -1,8 +1,9 @@
 '''
 Created on Jan 16, 2013
 
-@author: Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
-@author: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor: Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
+.. codeauthor: Philipp Kuntschik <philipp.kuntschik@htwchur.ch>
 '''
 import unittest
 
@@ -11,20 +12,26 @@ from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZAR
 from sys import argv
 
 class Classifier(MultiRESTClient):
-
     '''
-    base bath to the deployed seasonal classifier web project
+    **Classifier**
+
+    Provides support for text classification.
     '''
     CLASSIFIER_WS_BASE_PATH = '/joseph/rest/'
 
     def __init__(self, url=WEBLYZARD_API_URL,
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
 
     def hello_world(self):
         '''
-        tests the simple hello world service
+        Simple hello world test.
         '''
         return self.request(self.CLASSIFIER_WS_BASE_PATH + 'helloworld')
 
@@ -32,18 +39,16 @@ class Classifier(MultiRESTClient):
     def classify(self, classifier_profile, weblyzard_xml, search_agents=None,
             num_results=1):
         '''
-        ::param classifier_profile:
-            the profile to use for classification (e.g. 'COMET', 'MK')
-        ::param weblyzard_xml
-            weblyzard_xml representation of the document to classify
-        ::param search_agents:
-            an optional list of search agents (e.g. [1,2,3])
-        ::param num_results:
-            number of classes to return
-        ::return the classification result
+        Classify weblyzard XML documents based on the given classifier profile.
 
-        Example classifier requests:
-        ...
+        :param classifier_profile: the profile to use for classification \
+            (e.g. 'COMET', 'MK')
+        :param weblyzard_xml: weblyzard_xml representation of the document to \
+            classify
+        :param search_agents: an optional list of search agents \
+            (e.g. ``[1,2,3]``)
+        :param num_results: number of classes to return
+        :returns: the classification result
         '''
         classifier_request = {'xml_document': weblyzard_xml,
                               'numOfResults': num_results, }
@@ -59,23 +64,19 @@ class Classifier(MultiRESTClient):
     def train(self, classifier_profile, weblyzard_xml, correct_category,
             incorrect_category=None, document_timestamp=None):
         '''
-        Trains (and corrects) the classifier.
+        Trains (and corrects) the classifier's knowledge base.
 
-        ::param classifier_profile:
-            the profile to use for classification (e.g. 'COMET', 'MK')
-        ::param weblyzard_xml:
-            weblyzard_xml representation of the document to learn
-        ::param correct_category:
-            the correct category for the document
-        ::param incorrect_category:
-            optional information on the incorrect category returned for this
-            document
-        ::param document_timestamp
-            an optional timestamp, specifying when the document has been
-            classified (used for retraining temporal knowledge bases)
-
-        ::returns:
-            a response object with a status code and message.
+        :param classifier_profile: the profile to use for classification \
+            (e.g. 'COMET', 'MK')
+        :param weblyzard_xml: weblyzard_xml representation of the document \
+            to learn
+        :param correct_category: the correct category for the document
+        :param incorrect_category: optional information on the incorrect \
+            category returned for this document
+        :param document_timestamp: an optional timestamp, specifying when \
+            the document has been classified (used for retraining temporal \
+            knowledge bases)
+        :returns: a response object with a status code and message.
         '''
         learn_request = {
             'xml_document': weblyzard_xml,
