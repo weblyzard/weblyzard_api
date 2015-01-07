@@ -11,6 +11,7 @@ setup (
     package_dir = {'': 'src'},
     install_requires = ['eWRT>=0.9.1.3', 
                         'nose',
+                        'lxml',
                         'requests'],
     dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.4'],
 zip_safe = False,
