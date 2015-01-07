@@ -79,7 +79,7 @@ exclude_patterns = ['_build']
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-show_authors = True
+show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -249,7 +249,7 @@ texinfo_documents = [
 epub_title = u'weblyzard_api '
 epub_author = u'Heinz-Peter Lang, Albert Weichselbraun '
 epub_publisher = u'Heinz-Peter Lang, Albert Weichselbraun '
-epub_copyright = u'2013, Heinz-Peter Lang, Albert Weichselbraun '
+epub_copyright = u'2013-2015, Heinz-Peter Lang, Albert Weichselbraun '
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
@@ -288,3 +288,6 @@ epub_copyright = u'2013, Heinz-Peter Lang, Albert Weichselbraun '
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
+
+# use __init__ docstrings to describe the class
+autoclass_content = 'both'

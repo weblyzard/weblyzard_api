@@ -1,9 +1,6 @@
 '''
-Created on Jan 4, 2013
-
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
-
 '''
 import unittest
 from time import time
@@ -26,11 +23,16 @@ class Jeremia(MultiRESTClient):
     sentences are document headers or footers.
 
     The following functions handle sentence blacklisting:
-    
+
      * :func:`clear_blacklist`
      * :func:`get_blacklist`
      * :func:`submit_document_blacklist`
      * :func:`update_blacklist`
+
+    Jeremia returns a 
+    :doc:`webLyzard XML document <weblyzard_api.data_format.xml_format>`.
+    The weblyzard_api provides the class :class:`.XMLContent` to process
+    and manipulate the weblyzard XML documents.:
 
     .. note:: Example usage
 
@@ -38,7 +40,7 @@ class Jeremia(MultiRESTClient):
 
             from weblyzard_api.client.recognize import Recognize
             from pprint import pprint
- 
+
             docs = {'id': '192292', 
                     'title': 'The document title.', 
                     'body': 'This is the document text...', 
@@ -47,7 +49,6 @@ class Jeremia(MultiRESTClient):
             client = Jeremia()
             result = client.submit_document(docs)
             pprint(result)
-
     '''
     URL_PATH = 'jeremia/rest'
     ATTRIBUTE_MAPPING = {'content_id': 'id', 
@@ -60,6 +61,11 @@ class Jeremia(MultiRESTClient):
                                            'md5sum': 'id'}}
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
 

@@ -15,15 +15,22 @@ class DomainSpecificity(MultiRESTClient):
 
     **Workflow**
 
-     1. submit a domain-specificity profile with :func:`add_profile`
+     1. submit a domain-specificity profile with 
+        :func:`add_profile`
      2. obtain the domain-speificity of text documents with 
-        :func:`get_domain_specificity`, :func:`parse_documents` or 
+        :func:`get_domain_specificity`, 
+        :func:`parse_documents` or 
         :func:`search_documents`.
     '''
     URL_PATH = 'rest/domain_specificity' 
     
     def __init__(self, url=WEBLYZARD_API_URL, 
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
     def add_profile(self, profile_name, profile_mapping):

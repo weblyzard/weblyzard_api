@@ -34,6 +34,11 @@ class Jesaja(MultiRESTClient):
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
                  pwd=WEBLYZARD_API_PASS):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
         
     @classmethod

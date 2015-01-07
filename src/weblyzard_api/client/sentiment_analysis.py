@@ -13,6 +13,11 @@ class SentimentAnalysis(RESTClient):
     Sentiment Analysis Web Service
     '''
     def __init__(self, url=SENTIMENT_ANALYSIS_URL, usr=None, pwd=None):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
         RESTClient.__init__(self, url, usr, pwd)
 
     def parse_document(self, text, lang):
