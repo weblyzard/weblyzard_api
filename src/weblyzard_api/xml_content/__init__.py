@@ -17,6 +17,7 @@ Remove functions:
  - support for the old POS tags mapping.
 '''
 
+from collections import namedtuple
 import logging
 from lxml import etree
 from pprint import pprint
@@ -30,6 +31,8 @@ from weblyzard_api.xml_content.parsers.xml_deprecated import XMLDeprecated
 
 SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
                        'pos', 'token', 'dependency')
+
+LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 
 class Sentence(object):
     '''
@@ -134,39 +137,44 @@ class Sentence(object):
 
     def get_dependency_list(self):
         '''
-        :returns: the dependency of the sentence as a list of lists of length 2.
+        :returns: the dependencies of the sentence as a list of \
+            LabeledDependency`s
+        :rtype: :py:class:`weblyzard_api.xml_content.LabeledDependency`
 
-        >>> s = Sentence(pos = 'RB PRP MD', dependency = '-1 2 0')
+        >>> s = Sentence(pos = 'RB PRP MD', dependency = '1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
-        [['-1', 'RB'], ['2', 'PRP'], ['0', 'MD']]
+        [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
         '''
         if self.dependency:
             result = []
             deps = self.dependency.strip().split(' ')
             for index in range(len(deps)):
-                result.append([deps[index], self.pos_tags_list[index]])
+                if ':' in deps[index]:
+                    result.append(LabeledDependency(deps[index].split(':')[0], 
+                                                    self.pos_tags_list[index],
+                                                    deps[index].split(':')[1]))
             return result
         else:
             return None
 
-    def set_dependency_list(self, dependency):
+    def set_dependency_list(self, dependencys):
         '''
         Takes a list of lists of length 2 of dependency, e.g.
 
-        >>> s = Sentence(pos = 'RB PRP MD', dependency = '-1 2 0')
+        >>> s = Sentence(pos = 'RB PRP MD', dependency = '1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
-        [['-1', 'RB'], ['2', 'PRP'], ['0', 'MD']]
-        >>> s.dependency_list = [['0', 'MD']]
+        [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
+        >>> s.dependency_list = [LabeledDependency(parent='-1', pos='MD', label='ROOT'), ]
         >>> s.dependency_list
-        [['0', 'MD']]
+        [LabeledDependency(parent='-1', pos='MD', label='ROOT')]
         '''
-        if not dependency:
+        if not dependencys:
             return
         deps = []
         new_pos = []
-        for dependency in dependency:
-            deps.append(dependency[0])
-            new_pos.append(dependency[1])
+        for dependency in dependencys:
+            deps.append(dependency.parent + ':' + dependency.label)
+            new_pos.append(dependency.pos)
         self.pos = ' '.join(new_pos)
         self.dependency = ' '.join(deps)
             
@@ -746,15 +754,31 @@ class TestXMLContent(unittest.TestCase):
         Test that if an XML's wl:pos tags contain dependency, the pos and
         dependency are handled correctly.
         '''
-        xml_content_string = '''<?xml version="1.0" encoding="UTF-8"?>\n
-        <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:nilsimsa="15d10438875d418899a17909c2ca05591252b24450b259006242105024d43de4">\n
-           <wl:sentence wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="RB PRP MD VB IN" wl:dependency="-1 2 0 2 3" wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Therefore we could show that "x>y" and "y<z.".]]></wl:sentence>\n
-           </wl:page>\n'''
+        xml_content_string = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" dc:format="html/text" xml:lang="en" wl:id="192292" wl:nilsimsa="15d10438875d418899a17909c2ca05591252b24450b259006242105024d43de4">
+          <wl:sentence wl:dependency="2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT" wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ." wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46"><![CDATA[Therefore we could show that "x>y" and "y<z.".]]></wl:sentence>
+          </wl:page>'''
         xml_content = XMLContent(xml_content_string)
         sentence = xml_content.sentences[0]
-        assert sentence.pos_tags_list == ['RB', 'PRP', 'MD', 'VB', 'IN']
-        assert sentence.pos_tag_string == 'RB PRP MD VB IN'
-        assert sentence.dependency_list == [['-1','RB'], ['2','PRP'], ['0','MD'], ['2','VB'], ['3','IN']]
+        assert sentence.pos_tags_list == ['RB', 'PRP', 'MD', 'VB', 'IN', "'", 'CC', 'JJR', 'JJ', "'", 'CC', "'", 'NN', 'JJR', 'CD', "'", '.']
+        assert sentence.pos_tag_string == "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ."
+        assert sentence.dependency_list == [
+            LabeledDependency(parent='2', pos='RB', label='ADV'),
+            LabeledDependency(parent='2', pos='PRP', label='SBJ'),
+            LabeledDependency(parent='16', pos='MD', label='DEP'),
+            LabeledDependency(parent='2', pos='VB', label='VC'),
+            LabeledDependency(parent='3', pos='IN', label='OBJ'),
+            LabeledDependency(parent='3', pos="'", label='P'),
+            LabeledDependency(parent='16', pos='CC', label='DEP'),
+            LabeledDependency(parent='8', pos='JJR', label='AMOD'),
+            LabeledDependency(parent='16', pos='JJ', label='DEP'),
+            LabeledDependency(parent='8', pos="'", label='P'),
+            LabeledDependency(parent='8', pos='CC', label='COORD'),
+            LabeledDependency(parent='10', pos="'", label='P'),
+            LabeledDependency(parent='10', pos='NN', label='CONJ'),
+            LabeledDependency(parent='14', pos='JJR', label='NMOD'),
+            LabeledDependency(parent='12', pos='CD', label='COORD'),
+            LabeledDependency(parent='14', pos="'", label='P'),
+            LabeledDependency(parent='-1', pos='.', label='ROOT')]
         tmp_dependency = sentence.dependency_list
         sentence.dependency_list = tmp_dependency
         assert sentence.dependency_list == tmp_dependency
