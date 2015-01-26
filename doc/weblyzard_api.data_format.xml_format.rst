@@ -26,15 +26,15 @@ Example webLyzard XML file:
 Dependency trees:
 -----------------
 
-* `wl:dependency` describes the sentences' dependency structure. The number refers to the current token's parent in the dependency tree.
+* ``wl:dependency`` describes the sentences' dependency structure. It consists of an integer and a string, concatenated by a column: ``int:str``. The number refers to the current token's parent in the dependency tree. The string is the label/type of the dependency relationship, e.g. ``nsubjpass``. 
 * Special values:
 
-  * `-1`: root node
-  * `-2`: no parent could be determined
+  * ``-1``: root node
+  * ``-2``: no parent could be determined
   
 * Example:
 
-  * Text: "Ana loves Tom.", wl:dependency: "1 -1 1" 
+  * Text: ``Ana loves Tom``, wl:dependency: ``1:SBJ -1:ROOT 1:OBJ``
   * Tree: "Anna -> loves <- Tom"
 
 Changelog
@@ -57,4 +57,4 @@ Changelog
     - Justification
       - wl:id is required, i.e. the use of a proper namespace; the use of xml:id is not possible, because the XML Schema specification requires its values to be from type NCName (which does not allows values to start with a number!).
       - dc:format is a standardized identifier for the content type
-
+- **26 January 2015**: Changed dependency format to include dependency labels.
