@@ -138,41 +138,48 @@ class Sentence(object):
     def get_dependency_list(self):
         '''
         :returns: the dependencies of the sentence as a list of \
-            LabeledDependency`s
-        :rtype: :py:class:`weblyzard_api.xml_content.LabeledDependency`
+            `LabeledDependency` objects
+        :rtype: :py:class:`list` of :py:class:\
+            `weblyzard_api.xml_content.LabeledDependency` objects
 
-        >>> s = Sentence(pos = 'RB PRP MD', dependency = '1:SUB -1:ROOT 1:OBJ')
+        >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
         [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
         '''
         if self.dependency:
             result = []
             deps = self.dependency.strip().split(' ')
-            for index in range(len(deps)):
-                if ':' in deps[index]:
-                    result.append(LabeledDependency(deps[index].split(':')[0], 
-                                                    self.pos_tags_list[index],
-                                                    deps[index].split(':')[1]))
+            for index, dep in enumerate(deps):
+                [parent, label] = dep.split(':') if ':' in dep else [dep, None]
+                result.append(LabeledDependency(parent, 
+                                                self.pos_tags_list[index],
+                                                label))
             return result
         else:
             return None
 
-    def set_dependency_list(self, dependencys):
+    def set_dependency_list(self, dependencies):
         '''
-        Takes a list of lists of length 2 of dependency, e.g.
+        Takes a list of :py:class:`weblyzard_api.xml_content.LabeledDependency`
 
-        >>> s = Sentence(pos = 'RB PRP MD', dependency = '1:SUB -1:ROOT 1:OBJ')
+        :param dependencies: The dependencies to set for this sentence.
+        :type dependencies: list
+
+        .. note:: The list must contain items of the type \
+            :py:class:`weblyzard_api.xml_content.LabeledDependency`
+
+        >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
         [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
         >>> s.dependency_list = [LabeledDependency(parent='-1', pos='MD', label='ROOT'), ]
         >>> s.dependency_list
         [LabeledDependency(parent='-1', pos='MD', label='ROOT')]
         '''
-        if not dependencys:
+        if not dependencies:
             return
         deps = []
         new_pos = []
-        for dependency in dependencys:
+        for dependency in dependencies:
             deps.append(dependency.parent + ':' + dependency.label)
             new_pos.append(dependency.pos)
         self.pos = ' '.join(new_pos)
