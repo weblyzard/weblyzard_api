@@ -13,6 +13,9 @@ resources/sentiment/
 import os
 import urlparse
 from datetime import datetime, timedelta
+from socket import gethostbyname, gaierror
+from urlparse import urlsplit
+from warnings import warn
     
 from eWRT.access.http import Retrieve
 
@@ -35,6 +38,25 @@ class WeblyzardDictionaries(object):
         self.retrieve = Retrieve(__file__)
         self.user = user
         self.password = password
+
+    @staticmethod
+    def is_online(server_url):
+        '''
+        Checks, whether the given url is online.
+
+        :param server_url: \
+            the url to check.
+
+        :returns:
+            True, if the dictionary server is online/reachable.
+        '''
+        hostname = urlparse.urlsplit(server_url).netloc
+        try:
+            gethostbyname(hostname)
+            return True
+        except gaierror:
+            return False
+
         
     def get_dictionary(self, dictionary_uri):
         ''' tries to load the dictionary from the file-system. If the function
@@ -48,6 +70,10 @@ class WeblyzardDictionaries(object):
             dictionary_uri = dictionary_uri[1:]
         
         full_path = os.path.join(self.local_dir, dictionary_uri)
+
+        # skip retrieval, if the server is not available
+        if not self.is_online(SERVER_URL):
+            return full_path
 
         fetch_file = True
 
@@ -92,7 +118,6 @@ class WeblyzardDictionaries(object):
         '''
         
         full_url = urlparse.urljoin(self.server_url, dictionary_uri)
-
         response = self.retrieve.open(full_url, 
                                       user=self.user, 
                                       pwd=self.password)
@@ -109,3 +134,8 @@ class WeblyzardDictionaries(object):
             return target_path
     
     
+
+def test_is_online():
+    url = "http://not-existinet-url-123.de/myservice"
+    assert WeblyzardDictionaries.is_online(url) == False
+
