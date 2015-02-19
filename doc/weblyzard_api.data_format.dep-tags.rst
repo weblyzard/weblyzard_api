@@ -6,8 +6,8 @@ Source: "Dependency Syntax in the CoNLL Shared Task 2008"  http://wacky.sslmit.u
 
 
 
-1   ADV Unclassified adverbial
-2   AMOD    Modifier of adjective or adverb
+    1.  ADV Unclassified adverbial
+    2.  AMOD    Modifier of adjective or adverb
 3   APPO    Apposition
 4   BNF Benefactor (the for phrase for verbs that undergo dative shift)
 5   CONJ    Between conjunction and second conjunct in a coordination
