@@ -48,7 +48,7 @@ class XMLParser(object):
 #             return any([ns in xml_content for ns in cls.get_supported_namespaces()])
     
     @classmethod
-    def parse(cls, xml_content):
+    def parse(cls, xml_content, remove_duplicates=True):
         ''' ''' 
         parser = etree.XMLParser(recover=True, strip_cdata=False)
         root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''), 
@@ -56,7 +56,8 @@ class XMLParser(object):
         attributes = cls.load_attributes(root.attrib,
                                           mapping=cls.ATTR_MAPPING)
         
-        sentences = cls.load_sentences(root, page_attributes=attributes)
+        sentences = cls.load_sentences(root, page_attributes=attributes,
+                                       remove_duplicates=remove_duplicates)
         
         return attributes, sentences
     
@@ -76,7 +77,7 @@ class XMLParser(object):
         return new_attributes
     
     @classmethod
-    def load_sentences(cls, root, page_attributes=None):
+    def load_sentences(cls, root, page_attributes=None, remove_duplicates=True):
         ''' '''
         sentences = []
         seen_sentences = []
@@ -97,7 +98,9 @@ class XMLParser(object):
                 
             if not sent_id in seen_sentences:
                 sentences.append(sent_attributes)
-                seen_sentences.append(sent_id)
+                
+                if remove_duplicates:
+                    seen_sentences.append(sent_id)
         
         return sentences
     
