@@ -1,15 +1,25 @@
+# -*- coding: utf8 -*-
 '''
 Created on Jan 16, 2013
 
 .. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor: Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
 .. codeauthor: Philipp Kuntschik <philipp.kuntschik@htwchur.ch>
+
+Classifier versions:
+  /joseph/rest/    - legacy interface
+  /joseph/rest/2   - new interface with support for submitting product lists
+
 '''
 import unittest
 
 from eWRT.ws.rest import  MultiRESTClient
+from eWRT.util.module_path import get_resource
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 from sys import argv
+
+get_search_agent_ids = lambda search_agents: [sa['id']
+                              for sa in search_agents]
 
 class Classifier(MultiRESTClient):
     '''
@@ -61,6 +71,42 @@ class Classifier(MultiRESTClient):
                 for entry in classification_list}
 
 
+    def classify_v2(self, classifier_profile, weblyzard_xml, search_agents=None,
+            num_results=1):
+        '''
+        Classify weblyzard XML documents based on the given classifier profile
+        using the new classifier interface
+
+        :param classifier_profile: the profile to use for classification \
+            (e.g. 'COMET', 'MK')
+        :param weblyzard_xml: weblyzard_xml representation of the document to \
+            classify
+        :param search_agents: a list of search agent dictionaries which are \
+            composed as follows
+           [ 
+            {"name":"Axa Winterthur",
+             "id":9,
+             "product_list":[
+                {"name":"AXA WINTERTHUR VERS. PRODUKTE RP","id":300682},
+                {"name":"AXA WINTERTHUR FINANZ PERSONEN RP","id":300803},
+                {"name":"AXA WINTERTHUR FINANZ PRODUKTE RP","id":300804},
+             ] 
+            }
+           ]
+        :param num_results: number of classes to return
+        :returns: the classification result
+        '''
+        classifier_request = {'xml_document': weblyzard_xml,
+                              'numOfResults': num_results, }
+        if search_agents is not None:
+            classifier_request['searchAgents'] = search_agents
+
+        classification_list = self.request(self.CLASSIFIER_WS_BASE_PATH
+            + '2/classify/' + classifier_profile, classifier_request)
+        return {entry['searchagent']: entry['classification']
+                for entry in classification_list}
+
+
     def train(self, classifier_profile, weblyzard_xml, correct_category,
             incorrect_category=None, document_timestamp=None):
         '''
@@ -97,35 +143,74 @@ class Classifier(MultiRESTClient):
 
 class TestClassifier(unittest.TestCase):
 
-    WEBLYZARD_XML = """<?xml version="1.0" encoding="UTF-8"?>
-                        <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1001" dc:format="text/html" xml:lang="en">
-                           <wl:title>Hello "world" more </wl:title>
-                           <wl:body>Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.1001</wl:body>
-                           <wl:sentence wl:id="26d2d0113429b0dc98352c2b5fd842a1" wl:pos="1:UH -1:' 3:NN 1:' 1:RBR " wl:token="0,5 6,7 7,12 12,13 14,18" wl:is_title="true" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Hello "world" more]]></wl:sentence>
-                           <wl:sentence wl:id="7082ae05193c64ba5defe5e54ed15b98" wl:pos="-1:VB 0:IN 1:NN 2:IN 5:JJ 3:NNP 0:IN 6:NN 7:CC 8:NNP 0:. " wl:token="0,3 4,6 7,12 13,17 18,22 23,28 29,32 33,38 39,41 42,50 50,51" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Get in touch with Fast Track via email or Facebook.]]></wl:sentence>
-                           <wl:sentence wl:id="e5adef7b4beb1fd4c8edd26ba1d2825c" wl:pos="1:CC -1:VB 1:PRP 1:IN 3:NNP 1:CD " wl:token="0,3 4,10 11,13 14,16 17,26 26,31" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[And follow us on Pinterest.1001]]></wl:sentence>
-                           <wl:content>Hello "world" more
-                        Get in touch with Fast Track via email or Facebook. And follow us on Pinterest.1001</wl:content>
-                        </wl:page>"""
-
     def test_submit_classify(self):
         ''' tests the basic submit routine '''
         classifier = Classifier()
-        search_agents = [1, 2, 3]
+
+        weblyzard_xml = open(get_resource(__file__, 'data/classifier_v1_testfile.xml')).read()
+
+        # call the web service
+        result = classifier.classify('MK', weblyzard_xml=weblyzard_xml)
+        print result
+
+
+
+    def test_submit_classify_v2(self):
+        ''' test the version 2 classifier '''
+
+        WEBLYZARD_XML = open(get_resource(__file__, 'data/classifier_v2_testfile.xml')).read()
+
+        classifier = Classifier()
+        search_agents = [{
+                "name":"Santésuisse","id":412,"product_list":[
+                                {"name":"SANTESUISSE FINANZ ENGAGEMENT RP","id":327432},
+                                {"name":"SANTESUISSE FINANZ ENTWICKLUNG RP","id":327435},
+                                {"name":"SANTESUISSE FINANZ PERSONEN RP","id":327442},
+                                {"name":"SANTESUISSE FINANZ PRODUKTE RP","id":327444},
+                                {"name":"SANTESUISSE FINANZ REGULATION RP","id":327446},
+                                {"name":"SANTESUISSE FINANZ RESEARCH RP","id":327452},
+                                {"name":"SANTESUISSE VERS. ALLGEMEIN RP","id":327562},
+                                {"name":"SANTESUISSE VERS. ENGAGEMENT RP","id":327564},
+                                {"name":"SANTESUISSE VERS. ENTWICKLUNG RP","id":327566},
+                                {"name":"SANTESUISSE VERS. PERSONEN RP","id":327568},
+                                {"name":"SANTESUISSE VERS. PRODUKTE RP","id":327570},
+                                {"name":"SANTESUISSE VERS. REGULATION RP","id":327572},
+                                {"name":"SANTESUISSE VERS. RESEARCH RP","id":327574},
+                                {"name":"SANTESUISSE FINANZ ALLGEMEIN RP","id":327428}
+                ]},
+                {"name":"Krankenkassen","id":460,"product_list":[
+                                {"name":"KRANKENKASSEN FINANZ ENGAGEMENT RP","id":342053},
+                                {"name":"KRANKENKASSEN FINANZ ENTWICKLUNG RP","id":342055},
+                                {"name":"KRANKENKASSEN FINANZ PERSONEN RP","id":342056},
+                                {"name":"KRANKENKASSEN FINANZ PRODUKTE RP","id":342057},
+                                {"name":"KRANKENKASSEN FINANZ REGULATION RP","id":342058},
+                                {"name":"KRANKENKASSEN FINANZ RESEARCH RP","id":342059},
+                                {"name":"KRANKENKASSEN VERS. ALLGEMEIN RP","id":342060},
+                                {"name":"KRANKENKASSEN VERS. ENGAGEMENT RP","id":342061},
+                                {"name":"KRANKENKASSEN VERS. ENTWICKLUNG RP","id":342062},
+                                {"name":"KRANKENKASSEN VERS. PERSONEN RP","id":342063},
+                                {"name":"KRANKENKASSEN VERS. PRODUKTE RP","id":342064},
+                                {"name":"KRANKENKASSEN VERS. REGULATION RP","id":342065},
+                                {"name":"KRANKENKASSEN VERS. RESEARCH RP","id":342066},
+                                {"name":"KRANKENKASSEN FINANZ ALLGEMEIN RP","id":342052}
+                ]}
+        ] 
         num_results = 3
 
         # call the web service
-        result = classifier.classify('COMET', weblyzard_xml=self.WEBLYZARD_XML,
+        result = classifier.classify_v2('COMET', weblyzard_xml=WEBLYZARD_XML,
                 search_agents=search_agents, num_results=num_results)
 
         # every search_agent should be covered in the result
-        assert result.keys() == search_agents
+        assert set(result.keys()) == set(get_search_agent_ids(search_agents))
 
         # for every search_agent are 'num_results' classes returned
         for _search_agent, classes in result.items():
             assert len(classes) == num_results
 
         print result
+
+
 
 
 if __name__ == '__main__':

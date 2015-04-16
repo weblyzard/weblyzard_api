@@ -479,6 +479,26 @@ class EntityLyzardTest(unittest.TestCase):
             result = self.client.search_documents(profile_name, geodocs, output_format='compact')
             first = result['11']
             print 'result', len(result), first[0]['preferredName']
+
+    def test_geo_swiss(self):
+        '''
+        Tests the geo annotation service for Swiss media samples.
+        
+        .. note::
+
+            ``de_CH.geo.5000.ng`` detects Swiss cities with more than 5000
+            and worldwide cities with more than 500,000 inhabitants.
+        '''
+        required_profile = 'de_CH.geo.5000.ng'
+        if required_profile not in self.available_profiles:
+            print("Profile %s not available!" % required_profile)
+            return
+
+        if 'noah.semanticlab.net' not in self.client.url:
+            print("This test is only run on noah...\n...skipping test.")
+ 
+        self.client.add_profile(required_profile)
+
   
     def test_organization(self):
         required_profile = 'en.organization.ng'
@@ -537,6 +557,19 @@ class EntityLyzardTest(unittest.TestCase):
                     assert user_password not in correct_url
  
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+
+    required_profile = 'de_CH.geo.5000.ng'
+    client = Recognize()
+    # client.remove_profile(required_profile)
+    client.add_profile(required_profile)
+    for text in 'Haldenstein liegt in der Nähe von Landquart.', 'Sargans hat einen wichtigen Bahnhof', 'Vinzenz arbeitet in Winterthur':
+        result = client.search_text(required_profile, text, output_format='compact' )
+        print(result)
+
+    required_profile = 'snf.media.criticism.project'
+    client.add_profile(required_profile)
+    print client.search_text(required_profile, "Die SRG und die SRF sind sehr kritisch was das Engagement der NZZ betrifft", output_format='compact')
+    print client.search_text(required_profile, "die srg und die srf sind sehr kritisch was das engagement der nzz betrifft", output_format='compact')
 
 
