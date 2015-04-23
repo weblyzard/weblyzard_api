@@ -6,10 +6,6 @@ Created on Jan 16, 2013
 .. codeauthor: Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
 .. codeauthor: Philipp Kuntschik <philipp.kuntschik@htwchur.ch>
 
-Classifier versions:
-  /joseph/rest/    - legacy interface
-  /joseph/rest/2   - new interface with support for submitting product lists
-
 '''
 import unittest
 
@@ -17,9 +13,6 @@ from eWRT.ws.rest import  MultiRESTClient
 from eWRT.util.module_path import get_resource
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 from sys import argv
-
-get_search_agent_ids = lambda search_agents: [sa['id']
-                              for sa in search_agents]
 
 class Classifier(MultiRESTClient):
     '''
@@ -45,32 +38,6 @@ class Classifier(MultiRESTClient):
         '''
         return self.request(self.CLASSIFIER_WS_BASE_PATH + 'helloworld')
 
-
-    def classify(self, classifier_profile, weblyzard_xml, search_agents=None,
-            num_results=1):
-        '''
-        Classify weblyzard XML documents based on the given classifier profile.
-
-        :param classifier_profile: the profile to use for classification \
-            (e.g. 'COMET', 'MK')
-        :param weblyzard_xml: weblyzard_xml representation of the document to \
-            classify
-        :param search_agents: an optional list of search agents \
-            (e.g. ``[1,2,3]``)
-        :param num_results: number of classes to return
-        :returns: the classification result
-        '''
-        classifier_request = {'xml_document': weblyzard_xml,
-                              'numOfResults': num_results, }
-        if search_agents is not None:
-            classifier_request['searchAgents'] = search_agents
-
-        classification_list = self.request(self.CLASSIFIER_WS_BASE_PATH
-            + 'classify/' + classifier_profile, classifier_request)
-        return {entry['searchagent']: entry['classification']
-                for entry in classification_list}
-
-
     def classify_v2(self, classifier_profile, weblyzard_xml, search_agents=None,
             num_results=1):
         '''
@@ -83,7 +50,7 @@ class Classifier(MultiRESTClient):
             classify
         :param search_agents: a list of search agent dictionaries which are \
             composed as follows
-           [ 
+           {
             {"name":"Axa Winterthur",
              "id":9,
              "product_list":[
@@ -143,66 +110,61 @@ class Classifier(MultiRESTClient):
 
 class TestClassifier(unittest.TestCase):
 
-    def test_submit_classify(self):
-        ''' tests the basic submit routine '''
-        classifier = Classifier()
-
-        weblyzard_xml = open(get_resource(__file__, 'data/classifier_v1_testfile.xml')).read()
-
-        # call the web service
-        result = classifier.classify('MK', weblyzard_xml=weblyzard_xml)
-        print result
-
-
+    get_search_agent_ids = staticmethod(lambda search_agents: [sa['id']
+                                                  for sa in search_agents])
 
     def test_submit_classify_v2(self):
         ''' test the version 2 classifier '''
 
-        WEBLYZARD_XML = open(get_resource(__file__, 'data/classifier_v2_testfile.xml')).read()
+        weblyzard_xml = open(get_resource(__file__, 'data/classifier_v2_testfile.xml')).read()
 
         classifier = Classifier()
-        search_agents = [{
-                "name":"Santésuisse","id":412,"product_list":[
-                                {"name":"SANTESUISSE FINANZ ENGAGEMENT RP","id":327432},
-                                {"name":"SANTESUISSE FINANZ ENTWICKLUNG RP","id":327435},
-                                {"name":"SANTESUISSE FINANZ PERSONEN RP","id":327442},
-                                {"name":"SANTESUISSE FINANZ PRODUKTE RP","id":327444},
-                                {"name":"SANTESUISSE FINANZ REGULATION RP","id":327446},
-                                {"name":"SANTESUISSE FINANZ RESEARCH RP","id":327452},
-                                {"name":"SANTESUISSE VERS. ALLGEMEIN RP","id":327562},
-                                {"name":"SANTESUISSE VERS. ENGAGEMENT RP","id":327564},
-                                {"name":"SANTESUISSE VERS. ENTWICKLUNG RP","id":327566},
-                                {"name":"SANTESUISSE VERS. PERSONEN RP","id":327568},
-                                {"name":"SANTESUISSE VERS. PRODUKTE RP","id":327570},
-                                {"name":"SANTESUISSE VERS. REGULATION RP","id":327572},
-                                {"name":"SANTESUISSE VERS. RESEARCH RP","id":327574},
-                                {"name":"SANTESUISSE FINANZ ALLGEMEIN RP","id":327428}
+        search_agents = [
+            {
+            "name": "Santésuisse", "id": 412,
+            "product_list":[
+                   {"name":"SANTESUISSE FINANZ ENGAGEMENT RP", "id": 327432},
+                   {"name":"SANTESUISSE FINANZ ENTWICKLUNG RP", "id": 327435},
+                   {"name":"SANTESUISSE FINANZ PERSONEN RP", "id": 327442},
+                   {"name":"SANTESUISSE FINANZ PRODUKTE RP", "id": 327444},
+                   {"name":"SANTESUISSE FINANZ REGULATION RP", "id": 327446},
+                   {"name":"SANTESUISSE FINANZ RESEARCH RP", "id": 327452},
+                   {"name":"SANTESUISSE VERS. ALLGEMEIN RP", "id": 327562},
+                   {"name":"SANTESUISSE VERS. ENGAGEMENT RP", "id": 327564},
+                   {"name":"SANTESUISSE VERS. ENTWICKLUNG RP", "id": 327566},
+                   {"name":"SANTESUISSE VERS. PERSONEN RP", "id": 327568},
+                   {"name":"SANTESUISSE VERS. PRODUKTE RP", "id": 327570},
+                   {"name":"SANTESUISSE VERS. REGULATION RP", "id": 327572},
+                   {"name":"SANTESUISSE VERS. RESEARCH RP", "id": 327574},
+                   {"name":"SANTESUISSE FINANZ ALLGEMEIN RP", "id": 327428}
                 ]},
-                {"name":"Krankenkassen","id":460,"product_list":[
-                                {"name":"KRANKENKASSEN FINANZ ENGAGEMENT RP","id":342053},
-                                {"name":"KRANKENKASSEN FINANZ ENTWICKLUNG RP","id":342055},
-                                {"name":"KRANKENKASSEN FINANZ PERSONEN RP","id":342056},
-                                {"name":"KRANKENKASSEN FINANZ PRODUKTE RP","id":342057},
-                                {"name":"KRANKENKASSEN FINANZ REGULATION RP","id":342058},
-                                {"name":"KRANKENKASSEN FINANZ RESEARCH RP","id":342059},
-                                {"name":"KRANKENKASSEN VERS. ALLGEMEIN RP","id":342060},
-                                {"name":"KRANKENKASSEN VERS. ENGAGEMENT RP","id":342061},
-                                {"name":"KRANKENKASSEN VERS. ENTWICKLUNG RP","id":342062},
-                                {"name":"KRANKENKASSEN VERS. PERSONEN RP","id":342063},
-                                {"name":"KRANKENKASSEN VERS. PRODUKTE RP","id":342064},
-                                {"name":"KRANKENKASSEN VERS. REGULATION RP","id":342065},
-                                {"name":"KRANKENKASSEN VERS. RESEARCH RP","id":342066},
-                                {"name":"KRANKENKASSEN FINANZ ALLGEMEIN RP","id":342052}
+                {
+                "name": "Krankenkassen", "id":460,
+                "product_list":[
+                   {"name":"KRANKENKASSEN FINANZ ENGAGEMENT RP", "id": 342053},
+                   {"name":"KRANKENKASSEN FINANZ ENTWICKLUNG RP", "id": 342055},
+                   {"name":"KRANKENKASSEN FINANZ PERSONEN RP", "id": 342056},
+                   {"name":"KRANKENKASSEN FINANZ PRODUKTE RP", "id": 342057},
+                   {"name":"KRANKENKASSEN FINANZ REGULATION RP", "id": 342058},
+                   {"name":"KRANKENKASSEN FINANZ RESEARCH RP", "id": 342059},
+                   {"name":"KRANKENKASSEN VERS. ALLGEMEIN RP", "id": 342060},
+                   {"name":"KRANKENKASSEN VERS. ENGAGEMENT RP", "id": 342061},
+                   {"name":"KRANKENKASSEN VERS. ENTWICKLUNG RP", "id": 342062},
+                   {"name":"KRANKENKASSEN VERS. PERSONEN RP", "id": 342063},
+                   {"name":"KRANKENKASSEN VERS. PRODUKTE RP", "id": 342064},
+                   {"name":"KRANKENKASSEN VERS. REGULATION RP", "id": 342065},
+                   {"name":"KRANKENKASSEN VERS. RESEARCH RP", "id": 342066},
+                   {"name":"KRANKENKASSEN FINANZ ALLGEMEIN RP", "id": 342052}
                 ]}
         ] 
         num_results = 3
 
         # call the web service
-        result = classifier.classify_v2('COMET', weblyzard_xml=WEBLYZARD_XML,
+        result = classifier.classify_v2('COMET', weblyzard_xml=weblyzard_xml,
                 search_agents=search_agents, num_results=num_results)
 
         # every search_agent should be covered in the result
-        assert set(result.keys()) == set(get_search_agent_ids(search_agents))
+        assert set(result.keys()) == set(self.get_search_agent_ids(search_agents))
 
         # for every search_agent are 'num_results' classes returned
         for _search_agent, classes in result.items():
@@ -222,6 +184,6 @@ if __name__ == '__main__':
         with open(fname) as f:
             j = load(f)
 
-        print Classifier().classify('COMET', weblyzard_xml=j['xml_document'],
+        print Classifier().classify_v2('COMET', weblyzard_xml=j['xml_document'],
             search_agents=j['searchAgents'], num_results=j['numOfResults'])
 
