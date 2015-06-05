@@ -43,7 +43,6 @@ class XMLParser(object):
             else:
                 return decoded
         except ValueError as err:
-            logger.warn('trying to deserialize faulty content %s', str(err))
             return value
 
     @classmethod
