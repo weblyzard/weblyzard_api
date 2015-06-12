@@ -16,6 +16,7 @@ from pprint import pprint
 from collections import namedtuple
 from urllib import urlencode
 from SPARQLWrapper import SPARQLWrapper, JSON
+import unittest
 
 QUERIES = {
 'configured_profiles': ''' PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
@@ -187,14 +188,18 @@ class OpenRdfClient(object):
                      content_type='application/x-turtle;charset=UTF-8')
         
 if __name__ == '__main__':
+    unittest.main()
     
-    openrdf_url = 'http://voyager.srv.weblyzard.net:8080' #old sesame server
-    openrdf_url = ''
-    client = OpenRdfClient('http://voyager.srv.weblyzard.net:8080')
-    pprint(client.get_repositories())
+class TestOpenRdf(unittest.TestCase):
     
-    print client.repository_exists('test')
-    print client.repository_exists('config.weblyzard.com')
-    client.get_all_statements('SYSTEM')
-#    client.get_repo_size('geonames')
+    def test_repositories(self):
+        openrdf_url = 'http://voyager.srv.weblyzard.net:8080' #old sesame server
+        openrdf_url = ''
+        client = OpenRdfClient('http://voyager.srv.weblyzard.net:8080')
+        pprint(client.get_repositories())
+        
+        print client.repository_exists('test')
+        print client.repository_exists('config.weblyzard.com')
+        client.get_all_statements('SYSTEM')
+    #    client.get_repo_size('geonames')
     
