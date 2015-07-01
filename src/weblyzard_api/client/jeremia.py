@@ -162,7 +162,8 @@ class Jeremia(MultiRESTClient):
         :returns: the sentence blacklist for the given source_id''' 
         return self.request('cache/getBlacklist/%s' % source_id)
 
-    def submit(self, batch_id, documents, source_id=None, use_blacklist=False):
+    def submit(self, batch_id, documents, source_id=None, use_blacklist=False, 
+               with_deduplication=True):
         ''' Convenience function to submit documents. The function will submit
         the list of documents and finally call commit to retrieve the result
 
@@ -177,8 +178,10 @@ class Jeremia(MultiRESTClient):
                 raise Exception('Blacklist requires a source_id')
         
             url = 'submit_documents_blacklist/%s/%s' % (batch_id, source_id)
-        else: 
+        elif with_deduplication: 
             url = 'submit_documents/%s' % batch_id
+        elif not with_deduplication:
+            url = 'submit_documents_without_deduplication/%s' % batch_id
             
         self.request(url, documents)
         
