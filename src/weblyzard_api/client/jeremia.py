@@ -3,12 +3,15 @@
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
 import unittest
+import logging
 from time import time
 from sys import argv
 
 from eWRT.ws.rest import MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
+
+logger = logging.getLogger('weblyzard_api.client.jeremia')
 
 class Jeremia(MultiRESTClient):
     '''
@@ -69,13 +72,21 @@ class Jeremia(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
 
 
-    def commit(self, batch_id):
+    def commit(self, batch_id, sentence_threshold=None):
         ''' 
         :param batch_id: the batch_id to retrieve 
         :return: a generator yielding all the documents of that particular batch 
         '''
         while True:
-            result = self.request('commit/%s' % batch_id)
+            
+            path = 'commit/%s' % batch_id
+            
+            
+            if not sentence_threshold is None:
+                path = '%s?sentence_threshold=%s' % (path, sentence_threshold) 
+            
+            result = self.request(path)
+            
             if not result:
                 break
             else:
@@ -162,7 +173,8 @@ class Jeremia(MultiRESTClient):
         :returns: the sentence blacklist for the given source_id''' 
         return self.request('cache/getBlacklist/%s' % source_id)
 
-    def submit(self, batch_id, documents, source_id=None, use_blacklist=False):
+    def submit(self, batch_id, documents, source_id=None, use_blacklist=False, 
+               sentence_threshold=None):
         ''' Convenience function to submit documents. The function will submit
         the list of documents and finally call commit to retrieve the result
 
@@ -179,10 +191,10 @@ class Jeremia(MultiRESTClient):
             url = 'submit_documents_blacklist/%s/%s' % (batch_id, source_id)
         else: 
             url = 'submit_documents/%s' % batch_id
-            
+
         self.request(url, documents)
         
-        return self.commit(batch_id) 
+        return self.commit(batch_id, sentence_threshold=sentence_threshold) 
 
 class JeremiaTest(unittest.TestCase):
 
