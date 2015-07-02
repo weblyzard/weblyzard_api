@@ -79,12 +79,11 @@ class Jeremia(MultiRESTClient):
         '''
         while True:
             
-            if sentence_threshold is None: 
-                path = 'commit/%s' % batch_id
-            else: 
-                logger.debug('commit with double sentence threshold `%s`', 
-                             sentence_threshold)
-                path = 'commitWithTreshold/%s/%s' % (batch_id, sentence_threshold)
+            path = 'commit/%s' % batch_id
+            
+            
+            if not sentence_threshold is None:
+                path = '%s?sentence_threshold=%s' % (path, sentence_threshold) 
             
             result = self.request(path)
             
