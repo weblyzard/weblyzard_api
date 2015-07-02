@@ -171,3 +171,47 @@ We use the Stuttgart-Tübingen-Tagset (STTS) that is used for the NEGRA Corpus.
 	\$,     Komma                                   ,
 	\$.     Satzbeendende Interpunktion             . ? ! ; :
 	\$(     sonstige Satzzeichen; satzintern        - [,]()
+
+
+Spanish
+--------
+
+We use the simplified version of the tagset used in the AnCora treebank. The original AnCora part-of-speech tags were modeled after the EAGLES Spanish tagset: http://nlp.lsi.upc.edu/freeling/doc/tagsets/tagset-es.html The "simplification" consists of nulling out many of the final fields which don't strictly belong in a part-of-speech tag. Therefore, the fields in the POS tags produced by the tagger correspond exactly to AnCora POS fields, but a lot of those fields will be null. For most practical purposes you'll only need to look at the first 2–4 characters of the tag. The first character always indicates the broad POS category, and the second character indicates some kind of subtype.
+
+::
+
+    a   adjective
+    c   conjunction
+    d   determiner
+    f   punctuation
+    i   interjection
+    n   noun    (c common  f feminine m masculine p plural s singular)   
+    p   pronoun
+    r   adverb  (general negative)
+    s   preposition (c common p plural s singular)
+    v   verb
+    w   date    31_de_julio
+    z   number  2,74_por_ciento
+
+
+Examples:
+::
+
+    pd000000    esta           
+    vsip000 es 
+    di0000  una 
+    nc0s000 oracion, prueba, escándalo
+    sp000   de
+    dd0000  Ese
+    vmis000 provocó
+    aq0000  amplios
+    nc0p000 cambios
+    np00000 Chris_Woodruff, El_Periódico_de_Cataluña
+    rg  no_obstante
+    nc00000 stock_options
+    
+Documentation:
+
+http://clic.ub.edu/corpus/webfm_send/18
+
+https://docs.google.com/document/d/1lI-ie4-GGx2IA6RJNc0PMb3CHDoNQMUa0gj0eQEDYQ0/
