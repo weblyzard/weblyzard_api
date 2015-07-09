@@ -65,7 +65,7 @@ class OpenRdfClient(object):
         ''' '''
         for orphan in self.get_orphaned_analyzers():
             self.delete_statements(self.config_repository, 
-                                           subj='<_:%s>'%orphan,
+                                           subj='_:%s'%orphan,
                                            delete=True)
         
     def get_orphaned_analyzers(self):
@@ -192,7 +192,7 @@ class OpenRdfClient(object):
         if isinstance(text, unicode):
             text = text.encode('utf-8')
         
-        print text
+#         print text
         
         return json.loads(r.text) if r.text else r.text
 
