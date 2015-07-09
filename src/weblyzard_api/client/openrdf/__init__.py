@@ -19,13 +19,17 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import unittest
 
 QUERIES = {
-'configured_profiles': ''' PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-        
-        SELECT ?s ?profile_name 
-        WHERE {
-               ?s rdfs:label  ?profile_name .
-        }
-    '''           
+           'configured_profiles': ''' 
+                PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX re: <http://www.semanticlab.net/prj/recognize/voc/>
+                SELECT ?s ?profile_name ?analyzer
+                WHERE {
+                       ?s rdfs:label  ?profile_name .
+                       ?s re:analyzer ?analyzer .
+                }''',   
+        'all_subjects': '''
+            select distinct ?s where {?s ?p ?o}
+        '''    
 }
 
 RepositoryDetail = namedtuple('RepositoryDetail', ['id', 'uri', 'title'])
@@ -56,6 +60,31 @@ class OpenRdfClient(object):
         for result in results['results']['bindings']:
             yield result
     
+
+    def cleanup_config(self):
+        ''' '''
+        for orphan in self.get_orphaned_analyzers():
+            self.delete_statements(self.config_repository, 
+                                           subj='<_:%s>'%orphan,
+                                           delete=True)
+        
+    def get_orphaned_analyzers(self):
+        profiles = self.get_profiles()
+        configured = []
+        for profile in profiles.itervalues():
+            configured.extend(profile['analyzers'])
+            
+        orphaned = []
+        query = QUERIES['all_subjects']
+        for result in self.run_query(self.config_repository, query):
+            name = result['s']['value']
+            if name.startswith('genid'):
+                if name in configured:
+                    pass
+                else:
+                    orphaned.append(name)
+        return orphaned
+    
     def get_profiles(self):
         ''' returns a dictionary (subject_uri, profile_name) for all profiles
         configured in the config repositoriy
@@ -66,12 +95,42 @@ class OpenRdfClient(object):
         profiles = {}
         
         for result in self.run_query(self.config_repository, query):
+            profile = {}
             profile_name = result['profile_name']['value']
-            subject_uri = result['s']['value']
-            profiles[profile_name] = subject_uri
-    
+            profile['subject_uri'] = result['s']['value']
+            profile['analyzers'] = [result['analyzer']['value']]
+            if profile_name in profiles:
+                profiles[profile_name]['analyzers'].extend(profile['analyzers'])
+            else:
+                profiles[profile_name] = profile
+            
         return profiles
     
+    def remove_profile(self, profile_name):
+        ''' Removes a given profile name '''
+        subject_uris = []
+        profiles = self.get_profiles()
+        if profile_name in profiles:
+            profile = profiles[profile_name]
+            if not profile_name.startswith('pr:'):
+                profile_name = 'pr:%s' % profile_name
+            
+            subject_uris.extend(['<%s>'%analyzer for analyzer in profile['analyzers']])
+            subject_uris.append('<%s>'%profile['subject_uri'])
+            
+        if len(subject_uris):
+#             if not subject_uri.startswith('pr:'):
+#                 subject_uri = 'pr:%s' % subject_uri
+#             if not subject_uri.endswith('>'):
+#                 subject_uri = '%s>' % subject_uri
+            for subject_uri in subject_uris:
+                try:
+                    self.delete_statements(self.config_repository, 
+                                           subj=subject_uri,
+                                           delete=True)
+                except Exception, e:
+                    print e
+            
     def update_profile(self, profile_name, profile_definition):
         ''' Updates the given profile on the server '''
         
