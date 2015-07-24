@@ -36,10 +36,24 @@ class OpinionClient(MultiRESTClient):
             ocurred, it is also contained in the dict with the 'error' key.
         :rtype: dict
         '''
-        return self.request('document', 
-                            parameters={'format': content_format,
-                                        'content': content},
-                            return_plain=False)
+        result = None
+        retrycount = 1
+        retries = 0
+        while retries <= retrycount:
+            retries += 1
+            try:
+                result = self.request('document', 
+                                      parameters={'format': content_format,
+                                                  'content': content},
+                                      return_plain=False)
+            except Exception as e:
+                if retries <= retrycount:
+                    pass  # silently retry
+                else:
+                    result = {
+                        'error': 'Request to sentiment webservice timed out %d times' % retries}
+        return result
+
 
     def status(self):
         return self.request('config')
