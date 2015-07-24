@@ -24,14 +24,16 @@ class DomainSpecificity(MultiRESTClient):
     '''
     URL_PATH = 'rest/domain_specificity' 
     
-    def __init__(self, url=WEBLYZARD_API_URL, 
-                 usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
         '''
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
+                                 default_timeout=default_timeout)
+
 
     def add_profile(self, profile_name, profile_mapping):
         '''

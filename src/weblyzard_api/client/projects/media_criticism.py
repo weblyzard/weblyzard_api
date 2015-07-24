@@ -16,9 +16,10 @@ class MediaCriticism(MultiRESTClient):
     '''
     CLASSIFIER_WS_BASE_PATH = '/mc2/rest/'
 
-    def __init__(self, url=WEBLYZARD_API_URL,
-                 usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
+                                 default_timeout=default_timeout)
 
     def hello_world(self):
         '''

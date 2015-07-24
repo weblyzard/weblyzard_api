@@ -33,13 +33,14 @@ class Jesaja(MultiRESTClient):
                                            'md5sum': 'id'}}
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
-                 pwd=WEBLYZARD_API_PASS):
+                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
         '''
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
+                                 default_timeout=default_timeout)
         
     @classmethod
     def get_documents(cls, xml_content_dict):

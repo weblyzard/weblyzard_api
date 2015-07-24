@@ -13,9 +13,15 @@ class OpinionClient(MultiRESTClient):
     
     URL_PATH = '/'.join(SERVER_URL_PATH.split('/')[:-1])
 
-    def __init__(self, url=WEBLYZARD_API_URL, 
-                 usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd)
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
+        '''
+        :param url: URL of the jeremia web service
+        :param usr: optional user name
+        :param pwd: optional password
+        '''
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
+                                 default_timeout=default_timeout)
 
     def get_polarity(self, content, content_format):
         '''
