@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
@@ -313,7 +315,29 @@ class JeremiaTest(unittest.TestCase):
                           documents=self.DOCS, 
                           use_blacklist=False)
         assert len(list(result)), 'result is empty'
-        
+
+    def test_missing_space_tokenattribute(self):
+        def text_as_doc(text):
+            docs = [ {'id': 'alpha',
+                      'body': text,
+                      'title': '',
+                      'format': 'text/html',
+                      'header': {}} ]
+            return docs
+
+        j = Jeremia()
+
+        test_texts = {
+                'Min. 25 000 Kč - řidiči nákladních automobilů, tahačů a… Úřad práce Písek http://t.co/QowX6PQjrR': 17,
+                'Retos de la #RSE (II): 1. Más autocrítica en las memorias de sostenibilidad': 17,
+                }
+
+        for text, token_number in test_texts.iteritems():
+            result = j.submit(batch_id='meh5678',
+                              documents=text_as_doc(text))
+            res_xml = list(result)[0]['xml_content']
+            assert len(list(XMLContent(res_xml).sentences[0].tokens)) == token_number 
+
 if __name__ == '__main__':
     if len(argv) > 1:
         txt = argv[1]
