@@ -5,6 +5,7 @@ Created on Feb, 27 2013
 
 .. codeauthor: Heinz-Peter Lang <lang@weblyzard.com>
 .. codeauthor: Albert Weichselbraun <Weichselbraun@weblyzard.com>
+.. codeauthor: Fabian Fischer <fabian.fischer@modul.ac.at>
 
 Handles the new (http://www.weblyzard.com/wl/2013#) weblyzard
 XML format.
