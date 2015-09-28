@@ -18,6 +18,7 @@ Remove functions:
 '''
 
 from collections import namedtuple
+import json
 import logging
 from lxml import etree
 from pprint import pprint
@@ -46,6 +47,18 @@ class Sentence(object):
         * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
         * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
+    #:  Maps the keys of the attributes to the corresponding key for the API JSON
+    API_MAPPINGS = {
+        1.0: {
+            'md5sum': 'id',
+            'value': 'value',
+            'pos': 'pos_list',
+            'sem_orient': 'polarity',
+            'token': 'tok_list',
+            'is_title': 'is_title',
+            'dependency': 'dep_tree',
+            }
+        }
     
     def __init__(self, md5sum=None, pos=None, sem_orient=None, significance=None, 
                  token=None, value=None, is_title=False, dependency=None):
@@ -184,6 +197,32 @@ class Sentence(object):
             new_pos.append(dependency.pos)
         self.pos = ' '.join(new_pos)
         self.dependency = ' '.join(deps)
+
+    def to_json(self, version=1.0):
+        '''
+        Converts the Sentence object to the corresponding JSON string
+        according to the given API version (default 1.0).
+
+        :param version: The API version to target.
+        :type version: float
+        :returns: A JSON string.
+        :rtype: str
+        '''
+        return json.dumps(self.to_api_dict(version))
+
+    def to_api_dict(self, version=1.0):
+        '''
+        Serializes the Sentence object to a dict conforming to the
+        specified API version (default 1.0).
+
+        :param version: The API version to target.
+        :type version: float
+        :returns: A dict with the correct keys as defined in the API.
+        :rtype: dict
+        '''
+        key_map = self.API_MAPPINGS[version]
+        return {key_map[key]: value for key, value in
+                self.as_dict().iteritems() if key in key_map}
             
     sentence = property(get_sentence, set_sentence)
     pos_tags = property(get_pos_tags, set_pos_tags)
@@ -796,6 +835,39 @@ class TestXMLContent(unittest.TestCase):
         tmp_dependency = sentence.dependency_list
         sentence.dependency_list = tmp_dependency
         assert sentence.dependency_list == tmp_dependency
+
+
+class TestSentence(unittest.TestCase):
+    '''
+    Test for the Sentence class, especially anything for converting
+    it to JSON for the API.
+    '''
+    test_sentence = Sentence(
+            md5sum=u'6e4c1420b2edaa374ff9d2300b8df31d',
+            pos=u"RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+            sem_orient=0.0,
+            significance=None,
+            token=u'0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
+            value=u'Therefore we could show that "x>y" and "y<z.".',
+            is_title=False,
+            dependency=u'2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT')
+    test_sentence_dict = {
+            'value': 'Therefore we could show that "x>y" and "y<z.".',
+            'id': '6e4c1420b2edaa374ff9d2300b8df31d',
+            'is_title': False,
+            'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+            'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
+            'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
+            'polarity': 0.0,
+            }
+
+    def test_sentence_to_json(self):
+        '''
+        Tests that Sentence objects can successfully be serialized to
+        JSON.
+        '''
+        assert self.test_sentence.to_json(version=1.0) == \
+                json.dumps(self.test_sentence_dict)
 
 
 if __name__ == '__main__':
