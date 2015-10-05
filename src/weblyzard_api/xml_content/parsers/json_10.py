@@ -56,10 +56,13 @@ class JSONParserBase(object):
         :returns: The list of missing fields, None if all present.
         :rtype: list
         '''
-        # TODO check if the fields contain non-null values
         missing_fields = []
         for key in cls.FIELDS_REQUIRED:
-            if key not in api_dict:
+            if key in api_dict:
+                # check if the fields contain non-null values
+                if api_dict[key] is None or api_dict[key] == '':
+                    missing_fields.append(key)
+            else:
                 missing_fields.append(key)
         if len(missing_fields) > 0:
             return missing_fields
@@ -133,10 +136,22 @@ class JSON10ParserDocument(JSONParserBase):
         :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
         '''
         cls._check_document_format(api_dict)
+        # This basically creates an empty XMLContent object
+        xml_content = XMLContent(xml_content=None, remove_duplicates=True)
+        # add all items in api_dict unless they need special handling
+        xml_content.update_attributes({key:value for key, value in api_dict.iteritems() if 
+                                       key not in ('sentences', 'annotations', 'language_id')})
         sentences = [JSON10ParserSentence.from_api_dict(sentence_dict) for 
                      sentence_dict in api_dict.get('sentences', [])]
         annotations = [JSON10ParserAnnotation.from_api_dict(annotation_dict) for 
                        annotation_dict in api_dict.get('annotations', [])]
+        xml_content.sentences = sentences
+        # map the language_id to XMLContent.lang
+        if 'language_id' in api_dict:
+            xml_content.attributes['lang'] = api_dict['language_id']
+        # Since title is a required field, no check here
+        xml_content.titles = [Sentence(value=api_dict['title'], is_title=True), ]
+        return xml_content
 
 
 class JSON10ParserSentence(JSONParserBase):
@@ -157,7 +172,7 @@ class JSON10ParserSentence(JSONParserBase):
         :param json_string: The JSON to parse
         :type json_string: str
         :returns: The parsed XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
+        :rtype: :py:class:`weblyzard_api.xml_content.Sentence`
         '''
         return cls.from_api_dict(json.loads(json_string))
 
@@ -170,7 +185,7 @@ class JSON10ParserSentence(JSONParserBase):
         :param api_dict: The document to parse.
         :type api_dict: dict
         :returns: The parsed document as XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
+        :rtype: :py:class:`weblyzard_api.xml_content.Sentence`
         '''
         cls._check_document_format(api_dict)
         sentence = Sentence(
@@ -226,11 +241,33 @@ class TestJSON10ParserDocument(object):
     Tests for the JSON_10_Parser class.
     '''
     test_xmlcontent_minimal_dict = {
-            'repository_id': None,
-            'uri': None,
-            'title': None,
-            'content_type': None,
-            'content': None,
+            'repository_id': 'repository1',
+            'uri': "the repository's uri",
+            'title': 'document title',
+            'content_type': 'text',
+            'content': 'document content',
+            }
+    FIELDS_OPTIONAL = ['language_id', 'sentences', 'annotations', 'meta_data']
+    test_xmlcontent_maximal_dict = {
+            'repository_id': 'repository1',
+            'uri': "the repository's uri",
+            'title': 'document title',
+            'content_type': 'text',
+            'content': 'document content',
+            'language_id': 'en',
+            'sentences': [
+                {
+                    'value': 'Therefore we could show that "x>y" and "y<z.".',
+                    'id': '6e4c1420b2edaa374ff9d2300b8df31d',
+                    'is_title': False,
+                    'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+                    'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
+                    'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
+                    'polarity': 0.0,
+                },
+            ],
+            #'annotations': [],
+            'meta_data': {},
             }
 
     def test_unexpected_document_fields(self):
@@ -273,7 +310,14 @@ class TestJSON10ParserDocument(object):
         Tests for the correct serialization as JSON of a XMLContent
         object.
         '''
-        assert False
+        assert self.test_xmlcontent_minimal_dict == json.loads(
+                JSON10ParserDocument.from_json_string(
+                    json.dumps(self.test_xmlcontent_minimal_dict)
+                ).to_json(version=1.0))
+        assert self.test_xmlcontent_maximal_dict == json.loads(
+                JSON10ParserDocument.from_json_string(
+                    json.dumps(self.test_xmlcontent_maximal_dict)
+                ).to_json(version=1.0))
 
 
 class TestJSON10ParserSentence(object):

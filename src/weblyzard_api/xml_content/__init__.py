@@ -237,6 +237,11 @@ class XMLContent(object):
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005, 
                               XML2013.VERSION: XML2013, 
                               XMLDeprecated.VERSION: XMLDeprecated}
+    API_MAPPINGS = {
+        1.0: {
+            'lang': 'language_id',
+            }
+        }
     
     def __init__(self, xml_content, remove_duplicates=True):
         self.xml_version = None
@@ -329,7 +334,12 @@ class XMLContent(object):
         self.attributes[key] = value
 
     def update_attributes(self, new_attributes):
-        ''' updates the existing attributes with new ones '''
+        '''
+        Updates the existing attributes with new ones 
+        
+        :param new_attributes: The new attributes to set.
+        :type new_attributes: dict
+        '''
         
         # not using dict.update to allow advanced processing
         
@@ -388,6 +398,42 @@ class XMLContent(object):
                     result[mapping[attr]] = value
             
         return result
+
+    def to_api_dict(self, version=1.0):
+        '''
+        Transforms the XMLContent object to a dict analoguous to the
+        API JSON definition in the given version.
+
+        :param version: The version to conform to.
+        :type version: float
+        :returns: A dict.
+        :rtype: dict
+        '''
+        document_dict = self.as_dict()
+        if self.sentences and len(self.sentences) > 0:
+            sentences = [s.to_api_dict(version) for s in self.sentences]
+            document_dict['sentences'] = sentences
+        else:
+            del document_dict['sentences']
+        for key in self.API_MAPPINGS[version]:
+            if key in document_dict:
+                document_dict[self.API_MAPPINGS[version][key]] = \
+                        document_dict[key]
+                del document_dict[key]
+        return document_dict
+
+
+    def to_json(self, version=1.0):
+        '''
+        Serializes the XMLContent object to JSON according to the
+        specified version.
+
+        :param version: The version to conform to.
+        :type version: float
+        :returns: A JSON string.
+        :rtype: str
+        '''
+        return json.dumps(self.to_api_dict(version=version))
 
     def _get_attribute(self, attr_name):
         ''' ::returns: the attribute for the given name '''
