@@ -223,7 +223,8 @@ class Sentence(object):
         '''
         key_map = self.API_MAPPINGS[version]
         return {key_map[key]: value for key, value in
-                self.as_dict().iteritems() if key in key_map}
+                self.as_dict().iteritems() if key in key_map and \
+                value is not None}
             
     sentence = property(get_sentence, set_sentence)
     pos_tags = property(get_pos_tags, set_pos_tags)
@@ -415,6 +416,9 @@ class XMLContent(object):
             document_dict['sentences'] = sentences
         else:
             del document_dict['sentences']
+        annotations = document_dict.get('annotations', None)
+        if annotations is not None and len(annotations) == 0:
+            del document_dict['annotations']
         for key in self.API_MAPPINGS[version]:
             if key in document_dict:
                 document_dict[self.API_MAPPINGS[version][key]] = \

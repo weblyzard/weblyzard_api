@@ -146,6 +146,7 @@ class JSON10ParserDocument(JSONParserBase):
         annotations = [JSON10ParserAnnotation.from_api_dict(annotation_dict) for 
                        annotation_dict in api_dict.get('annotations', [])]
         xml_content.sentences = sentences
+        xml_content.attributes['annotations'] = annotations
         # map the language_id to XMLContent.lang
         if 'language_id' in api_dict:
             xml_content.attributes['lang'] = api_dict['language_id']
@@ -225,15 +226,18 @@ class JSON10ParserAnnotation(JSONParserBase):
     @classmethod
     def from_api_dict(cls, api_dict):
         '''
-        Parses a dict with a structure analoguous to the JSON format defined
-        in the API specification.
+        Parses a dict with a structure analoguous to the JSON annotation 
+        format defined in the API specification.
+
+        For now, it just checks the dict and returns it, if it validates.
 
         :param api_dict: The document to parse.
         :type api_dict: dict
-        :returns: The parsed document as XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
+        :returns: The parsed annotation as dict
+        :rtype: dict
         '''
         cls._check_document_format(api_dict)
+        return api_dict
 
 
 class TestJSON10ParserDocument(object):
@@ -265,7 +269,13 @@ class TestJSON10ParserDocument(object):
                     'polarity': 0.0,
                 },
             ],
-            #'annotations': [],
+            'annotations': [
+                {
+                    'start': 0,
+                    'end': 9,
+                    'surface_form': 'Therefore',
+                },
+            ],
             'meta_data': {},
             }
     xml_content_string = '''
