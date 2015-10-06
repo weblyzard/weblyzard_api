@@ -31,7 +31,6 @@ class Jeremia(MultiRESTClient):
 
      * :func:`clear_blacklist`
      * :func:`get_blacklist`
-     * :func:`submit_document_blacklist`
      * :func:`update_blacklist`
 
     Jeremia returns a 
@@ -75,28 +74,6 @@ class Jeremia(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
-
-    def commit(self, batch_id, sentence_threshold=None):
-        ''' 
-        :param batch_id: the batch_id to retrieve 
-        :return: a generator yielding all the documents of that particular batch 
-        '''
-        while True:
-            
-            path = 'commit/%s' % batch_id
-            
-            
-            if not sentence_threshold is None:
-                path = '%s?sentence_threshold=%s' % (path, sentence_threshold) 
-            
-            result = self.request(path)
-            
-            if not result:
-                break
-            else:
-                for doc in result:
-                    yield doc
-                    
     def submit_document(self, document):
         '''
         processes a single document with jeremia (annotates a single document)
@@ -105,15 +82,16 @@ class Jeremia(MultiRESTClient):
         '''
         return self.request('submit_document', document)
     
-    def submit_documents(self, batch_id, documents):
+    def submit_documents(self, documents, source_id=-1, double_sentence_threshold=10):
         ''' 
         :param batch_id: batch_id to use for the given submission
         :param documents: a list of dictionaries containing the document 
         '''
         if not documents:
             raise ValueError('Cannot process an empty document list')
-        return self.request('submit_documents/%s' % batch_id, documents)
-    
+        request = 'submit_documents/%s/%d' % (source_id, double_sentence_threshold)
+        return self.request(request, documents)
+
     def status(self):
         '''
         :returns: the status of the Jeremia web service.
@@ -144,23 +122,13 @@ class Jeremia(MultiRESTClient):
         result = results[0]
         return XMLContent(result['xml_content'])
     
-    def submit_documents_blacklist(self, batch_id, documents, source_id):
-        ''' submits the documents and removes blacklist sentences 
-
-        :param batch_id: batch_id to use for the given submission
-        :param documents: a list of dictionaries containing the document 
-        :param source_id: source_id for the documents, determines the blacklist
-        '''
-        url = 'submit_documents_blacklist/%s/%s' % (batch_id, source_id)
-        return self.request(url, documents)
-    
     def update_blacklist(self, source_id, blacklist):
         ''' 
         updates an existing blacklist cache 
 
         :param source_id: the blacklist's source id
         '''
-        url = 'cache/updateBlacklist/%s' % source_id
+        url = 'cache/update_blacklist/%s' % source_id
         return self.request(url, blacklist)
         
     def clear_blacklist(self, source_id):
@@ -169,46 +137,23 @@ class Jeremia(MultiRESTClient):
 
         Empties the existing sentence blacklisting cache for the given source_id
         ''' 
-        return self.request('cache/clearBlacklist/%s' % source_id)
+        return self.request('cache/clear_blacklist/%s' % source_id)
         
     def get_blacklist(self, source_id):
         ''' 
         :param source_id: the blacklist's source id
         :returns: the sentence blacklist for the given source_id''' 
-        return self.request('cache/getBlacklist/%s' % source_id)
+        return self.request('cache/get_blacklist/%s' % source_id)
 
-    def submit(self, batch_id, documents, source_id=None, use_blacklist=False, 
-               sentence_threshold=None):
-        ''' Convenience function to submit documents. The function will submit
-        the list of documents and finally call commit to retrieve the result
-
-        :param batch_id: ID of the batch
-        :param documents: list of documents (dict)
-        :param source_id: 
-        :param use_blacklist: use the blacklist or not 
-        :returns: result as a list with dicts
-        '''
-        if use_blacklist: 
-            if not source_id:
-                raise Exception('Blacklist requires a source_id')
-        
-            url = 'submit_documents_blacklist/%s/%s' % (batch_id, source_id)
-        else: 
-            url = 'submit_documents/%s' % batch_id
-
-        self.request(url, documents)
-        
-        return self.commit(batch_id, sentence_threshold=sentence_threshold) 
 
 class JeremiaTest(unittest.TestCase):
 
     DOCS = [ {'id': content_id,
-              'body': 'Good day Mr. President! Hello "world" ' + str(content_id),
+              'body': 'Good day Mr. President! Hello "world" {}'.format(content_id),
               'title': 'Hello "world" more ',
               'format': 'text/html',
               'header': {}}  for content_id in xrange(1000,1020)]
-    
-                      
+
     def test_single_document_processing(self):
         j = Jeremia()
         print 'submitting document...'
@@ -262,24 +207,17 @@ class JeremiaTest(unittest.TestCase):
 
     def test_batch_processing(self):
         j = Jeremia()
-        print 'Submitting documents...'
-        j.submit_documents('1234', self.DOCS[:10])
-        j.submit_documents('1234', self.DOCS[10:])
-        
-        # retrieve initial patch 
-        print 'Retrieving results...'
-        docs = list(j.commit('1234'))
+        docs = j.submit_documents(self.DOCS)
         self.assertEqual(len(docs), 20)
         
-        # no more results are available
-        self.assertEqual(len(list(j.commit('1234'))), 0)
 
     def test_sentence_splitting(self):
         j = Jeremia()
-        j.submit_documents( '1222', self.DOCS[:1] )
+        
 
-        for doc in j.commit('1222'):
+        for doc in j.submit_documents(self.DOCS[:1]):
             # extract sentences
+            print doc
             xml_obj = XMLContent(doc['xml_content'])
             sentences = [s.sentence for s in xml_obj.sentences]
             print doc['xml_content']
@@ -297,8 +235,7 @@ class JeremiaTest(unittest.TestCase):
                   'header': {}} ]
 
         j = Jeremia()
-        j.submit_documents( '12234', DOCS )
-        for doc in list(j.commit('12234')):
+        for doc in j.submit_documents(DOCS):
             xml = XMLContent(doc['xml_content'])
             print doc['xml_content']
             assert xml.sentences[0].sentence != None
@@ -307,15 +244,8 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia()
 
         with self.assertRaises(ValueError):
-            j.submit_documents('1223', [])
+            j.submit_documents([])
     
-    def test_submit(self):
-        j = Jeremia()
-        result = j.submit(batch_id='meh1234', 
-                          documents=self.DOCS, 
-                          use_blacklist=False)
-        assert len(list(result)), 'result is empty'
-
     def test_missing_space_tokenattribute(self):
         def text_as_doc(text):
             docs = [ {'id': 'alpha',
@@ -333,10 +263,78 @@ class JeremiaTest(unittest.TestCase):
                 }
 
         for text, token_number in test_texts.iteritems():
-            result = j.submit(batch_id='meh5678',
-                              documents=text_as_doc(text))
+            result = j.submit_documents(documents=text_as_doc(text))
             res_xml = list(result)[0]['xml_content']
             assert len(list(XMLContent(res_xml).sentences[0].tokens)) == token_number 
+
+
+    def _get_sentences(self, jeremia_result):
+        ''' extracts the list of sentences (as text) from an
+            jeremia result.
+        '''
+        result = []
+        for json_document in jeremia_result:
+            result.append([ s.sentence for s in XMLContent(json_document['xml_content']).sentences ])
+
+        return result
+
+    def test_blacklist(self):
+        ''' tests the blacklist-based sentence filtering '''
+        source_id = 1
+        blacklist = ['6e44889df94d6408bbeeab8837bfbe01', '422d7f2000393b8c50a37f9d363ad511']
+        docs = [{'id': 123,
+                 'body': 'Hier wird die Zensur zuschlagen. Der zweite Satz ist aber okay.',
+                 'title': 'Testdokument :)',
+                 'format': 'text/html',
+                 'header': {}}]
+
+        # use the blacklist
+        j = Jeremia()
+        j.update_blacklist(source_id=source_id, blacklist=blacklist)
+        sentences = self._get_sentences(j.submit_documents(docs, source_id=source_id)).pop()
+        assert 'Hier wird die Zensur zuschlagen.' not in sentences
+        assert 'Der zweite Satz ist aber okay.' in sentences
+
+        # check blacklist items
+        assert blacklist == j.get_blacklist(source_id)
+
+        # no blacklist
+        sentences = self._get_sentences(j.submit_documents(docs)).pop()
+        assert 'Hier wird die Zensur zuschlagen.' in sentences
+        assert 'Der zweite Satz ist aber okay.' in sentences
+
+        # clear blacklist
+        j.clear_blacklist(source_id)
+        sentences = self._get_sentences(j.submit_documents(docs, source_id=source_id)).pop()
+        assert 'Hier wird die Zensur zuschlagen.' in sentences
+        assert 'Der zweite Satz ist aber okay.' in sentences
+
+        # check empty blacklist
+        assert [] == j.get_blacklist(source_id)
+
+    def test_custom_headers(self):
+        ''' verifies that custom headers are preserved and no headers added '''
+        docs = ({'id': 123,
+                 'body': 'Hier wird die Zensur zuschlagen. Der zweite Satz ist aber okay.',
+                 'title': 'Testdokument :)',
+                 'format': 'text/html',
+                 'header': {'dc:author': 'Ana', 'dc:source': 'http://test.org'}
+                },
+                {'id': 124,
+                 'body': 'Das zweite Dokument.',
+                 'title': 'Zweites Testdokument :)',
+                 'format': 'text/html',
+                 'header': {},
+                },
+               )
+
+        j = Jeremia()
+        first, second = j.submit_documents(docs)
+        assert 'dc:source="http://test.org"' in first['xml_content']
+        assert 'dc:author="Ana"' in first['xml_content']
+
+        assert '<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="124" dc:format="text/html" xml:lang="de" wl:nilsimsa="8030473ac029f400680409349e47100e00a29585c04a25ec808342b4c0a1aec8">' in second['xml_content']
+
 
 if __name__ == '__main__':
     if len(argv) > 1:
@@ -345,7 +343,7 @@ if __name__ == '__main__':
                 'body': txt, 
                 'title': '', 
                 'format': 'text/html', 
-                'header': {}}
+                'header': {'test': 'testvalue'}}
         j = Jeremia()
         docs['body_annotation'] = [{'start':0, 'end': 3, 'key': 'test annotation'}]
         l = j.submit_document(docs)
