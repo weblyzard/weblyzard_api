@@ -26,6 +26,12 @@ class UnexpectedFieldException(Exception):
     '''
     pass
 
+class MalformedJSONException(Exception):
+    '''
+    Exception to throw if the json.loads function fails.
+    '''
+    pass
+
 
 class JSONParserBase(object):
     '''
@@ -40,7 +46,22 @@ class JSONParserBase(object):
 
     @classmethod
     def from_json_string(cls, json_string):
-        raise NotImplementedError
+        '''
+        Parses a JSON string.
+
+        :param json_string: The JSON to parse
+        :type json_string: str
+        :returns: The parsed object.
+        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent` or \
+            :py:class:`wl_core.document.Document` or \
+            :py:class:`weblyzard_api.xml_content.Sentence` or\
+            dict.
+        '''
+        try:
+            api_dict = json.loads(json_string)
+        except Exception:
+            raise MalformedJSONException('JSON could not be parsed. Maybe not correct JSON?')
+        return cls.from_api_dict(api_dict)
 
     @classmethod
     def from_api_dict(cls, api_dict):
@@ -90,39 +111,37 @@ class JSONParserBase(object):
             return None
 
     @classmethod
-    def _check_document_format(cls, api_dict):
+    def _check_document_format(cls, api_dict, strict=True):
+        '''
+        Checks if the api_dict has all required fields and if there
+        are unexpected and unallowed keys. 
+
+        :param api_dict: The dict to check.
+        :type api_dict: dict
+        :param strict: If set to true, an UnexpectedFieldException is raised \
+                if an unexpected key is contained in the dict.
+        :type strict: bool
+        '''
         missing_fields = cls._missing_fields(api_dict)
         if missing_fields is not None:
             raise MissingFieldException("Missing document-level field(s) %s" % 
                     ', '.join(missing_fields))
-        #  TODO maybe raising an exception is too strict?
-        unexpected_fields = cls._unexpected_fields(api_dict)
-        if unexpected_fields is not None:
-            raise UnexpectedFieldException("Got unexpected field(s): %s" %
-                    ', '.join(unexpected_fields))
+        if strict:
+            unexpected_fields = cls._unexpected_fields(api_dict)
+            if unexpected_fields is not None:
+                raise UnexpectedFieldException("Got unexpected field(s): %s" %
+                        ', '.join(unexpected_fields))
 
 
-class JSON10ParserDocument(JSONParserBase):
+class JSON10ParserXMLContent(JSONParserBase):
     '''
     This class is the parser class for JSON documents conforming to
     the Weblyzard API 1.0 definition.
     '''
-    FIELDS_REQUIRED = ['repository_id', 'uri', 'title', 'content_type',
-                       'content']
-    FIELDS_OPTIONAL = ['language_id', 'sentences', 'annotations', 'meta_data']
+    FIELDS_REQUIRED = ['title']
+    FIELDS_OPTIONAL = ['language_id', 'sentences', 'annotations']
     API_VERSION = 1.0
 
-    @classmethod
-    def from_json_string(cls, json_string):
-        '''
-        Parses a JSON string.
-
-        :param json_string: The JSON to parse
-        :type json_string: str
-        :returns: The parsed XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
-        '''
-        return cls.from_api_dict(json.loads(json_string))
 
     @classmethod
     def from_api_dict(cls, api_dict):
@@ -166,18 +185,6 @@ class JSON10ParserSentence(JSONParserBase):
     API_VERSION = 1.0
 
     @classmethod
-    def from_json_string(cls, json_string):
-        '''
-        Parses a JSON string.
-
-        :param json_string: The JSON to parse
-        :type json_string: str
-        :returns: The parsed XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.Sentence`
-        '''
-        return cls.from_api_dict(json.loads(json_string))
-
-    @classmethod
     def from_api_dict(cls, api_dict):
         '''
         Parses a dict with a structure analoguous to the JSON format defined
@@ -212,18 +219,6 @@ class JSON10ParserAnnotation(JSONParserBase):
     API_VERSION = 1.0
 
     @classmethod
-    def from_json_string(cls, json_string):
-        '''
-        Parses a JSON string.
-
-        :param json_string: The JSON to parse
-        :type json_string: str
-        :returns: The parsed XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
-        '''
-        return cls.from_api_dict(json.loads(json_string))
-
-    @classmethod
     def from_api_dict(cls, api_dict):
         '''
         Parses a dict with a structure analoguous to the JSON annotation 
@@ -240,7 +235,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         return api_dict
 
 
-class TestJSON10ParserDocument(object):
+class TestJSON10ParserXMLContent(object):
     '''
     Tests for the JSON_10_Parser class.
     '''
@@ -292,12 +287,12 @@ class TestJSON10ParserDocument(object):
         Tests that the parser rejects documents with unexpected fields.
         '''
         testkey = 'testkey'
-        assert testkey not in JSON10ParserDocument.FIELDS_REQUIRED
-        assert testkey not in JSON10ParserDocument.FIELDS_OPTIONAL
+        assert testkey not in JSON10ParserXMLContent.FIELDS_REQUIRED
+        assert testkey not in JSON10ParserXMLContent.FIELDS_OPTIONAL
         xmldict_ = dict(self.test_xmlcontent_minimal_dict)
         xmldict_[testkey] = 'random'
         with pytest.raises(UnexpectedFieldException):
-            JSON10ParserDocument.from_json_string(
+            JSON10ParserXMLContent.from_json_string(
                 json.dumps(xmldict_))
 
     def test_required_document_fields(self):
@@ -308,15 +303,15 @@ class TestJSON10ParserDocument(object):
             xmldict_ = dict(self.test_xmlcontent_minimal_dict)
             del xmldict_[key]
             with pytest.raises(MissingFieldException):
-                JSON10ParserDocument.from_json_string(json.dumps(xmldict_))
-        assert JSON10ParserDocument.from_json_string(
+                JSON10ParserXMLContent.from_json_string(json.dumps(xmldict_))
+        assert JSON10ParserXMLContent.from_json_string(
                 json.dumps(self.test_xmlcontent_minimal_dict)) is not None
 
     def test_minimal_xmlcontent_from_json(self):
         '''
         Tests for the correct conversion from a JSON string.
         '''
-        xmlcontent = JSON10ParserDocument.from_json_string(
+        xmlcontent = JSON10ParserXMLContent.from_json_string(
                 json.dumps(self.test_xmlcontent_minimal_dict))
         assert xmlcontent.title == self.test_xmlcontent_minimal_dict['title']
         assert xmlcontent.content_type == self.test_xmlcontent_minimal_dict['content_type']
@@ -328,11 +323,11 @@ class TestJSON10ParserDocument(object):
         object.
         '''
         assert self.test_xmlcontent_minimal_dict == json.loads(
-                JSON10ParserDocument.from_json_string(
+                JSON10ParserXMLContent.from_json_string(
                     json.dumps(self.test_xmlcontent_minimal_dict)
                 ).to_json(version=1.0))
         assert self.test_xmlcontent_maximal_dict == json.loads(
-                JSON10ParserDocument.from_json_string(
+                JSON10ParserXMLContent.from_json_string(
                     json.dumps(self.test_xmlcontent_maximal_dict)
                 ).to_json(version=1.0))
 
@@ -344,7 +339,7 @@ class TestJSON10ParserDocument(object):
         '''
         xml_content = XMLContent(self.xml_content_string)
         json_string = xml_content.to_json(version=1.0)
-        xml_content = JSON10ParserDocument.from_json_string(json_string)
+        xml_content = JSON10ParserXMLContent.from_json_string(json_string)
         assert self.xml_content_string == xml_content.get_xml_document()
 
 
