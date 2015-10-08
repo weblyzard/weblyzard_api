@@ -138,8 +138,8 @@ class JSON10ParserXMLContent(JSONParserBase):
     This class is the parser class for JSON documents conforming to
     the Weblyzard API 1.0 definition.
     '''
-    FIELDS_REQUIRED = ['title']
-    FIELDS_OPTIONAL = ['language_id', 'sentences', 'annotations']
+    FIELDS_REQUIRED = []
+    FIELDS_OPTIONAL = ['title', 'language_id', 'sentences']
     API_VERSION = 1.0
 
 
@@ -169,8 +169,8 @@ class JSON10ParserXMLContent(JSONParserBase):
         # map the language_id to XMLContent.lang
         if 'language_id' in api_dict:
             xml_content.attributes['lang'] = api_dict['language_id']
-        # Since title is a required field, no check here
-        xml_content.titles = [Sentence(value=api_dict['title'], is_title=True), ]
+        if 'title' in api_dict:
+            xml_content.titles = [Sentence(value=api_dict['title'], is_title=True), ]
         return xml_content
 
 
@@ -240,18 +240,9 @@ class TestJSON10ParserXMLContent(object):
     Tests for the JSON_10_Parser class.
     '''
     test_xmlcontent_minimal_dict = {
-            'repository_id': 'repository1',
-            'uri': "the repository's uri",
-            'title': 'document title',
-            'content_type': 'text',
-            'content': 'document content',
             }
     test_xmlcontent_maximal_dict = {
-            'repository_id': 'repository1',
-            'uri': "the repository's uri",
             'title': 'document title',
-            'content_type': 'text',
-            'content': 'document content',
             'language_id': 'en',
             'sentences': [
                 {
@@ -264,14 +255,6 @@ class TestJSON10ParserXMLContent(object):
                     'polarity': 0.0,
                 },
             ],
-            'annotations': [
-                {
-                    'start': 0,
-                    'end': 9,
-                    'surface_form': 'Therefore',
-                },
-            ],
-            'meta_data': {},
             }
     xml_content_string = '''
         <?xml version="1.0" encoding="UTF-8"?>
@@ -313,8 +296,6 @@ class TestJSON10ParserXMLContent(object):
         '''
         xmlcontent = JSON10ParserXMLContent.from_json_string(
                 json.dumps(self.test_xmlcontent_minimal_dict))
-        assert xmlcontent.title == self.test_xmlcontent_minimal_dict['title']
-        assert xmlcontent.content_type == self.test_xmlcontent_minimal_dict['content_type']
         # TODO other keys have no obvious direct equivalent in XMLContent
 
     def test_document_to_json(self):
