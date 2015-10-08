@@ -116,9 +116,7 @@ class Jeremia(MultiRESTClient):
                   'body': text, 
                   'format': 'text/plain'}]
         
-        batch_id = str(time())
-        self.submit_documents(batch_id, batch)
-        results = list(self.commit(batch_id))
+        results = self.submit_documents(batch)
         result = results[0]
         return XMLContent(result['xml_content'])
     
