@@ -9,7 +9,7 @@ setup (
     author_email = 'lang@weblyzard.com',
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = ['eWRT>=0.9.1.3', 
+    install_requires = ['eWRT>=0.9.1.4', 
                         'nose',
                         'lxml',
                         'requests'],
