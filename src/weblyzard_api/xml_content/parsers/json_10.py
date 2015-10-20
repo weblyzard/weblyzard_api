@@ -159,7 +159,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
         xml_content.update_attributes({key:value for key, value in api_dict.iteritems() if 
-                                       key not in ('sentences', 'annotations', 'language_id')})
+                                       key not in ('sentences', 'annotations', 'language_id', 'title')})
         sentences = [JSON10ParserSentence.from_api_dict(sentence_dict) for 
                      sentence_dict in api_dict.get('sentences', [])]
         annotations = [JSON10ParserAnnotation.from_api_dict(annotation_dict) for 
