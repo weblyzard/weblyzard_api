@@ -154,12 +154,12 @@ class JSON10ParserXMLContent(JSONParserBase):
         :returns: The parsed document as XMLContent object.
         :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
         '''
-        cls._check_document_format(api_dict)
+        cls._check_document_format(api_dict, strict=False)
         # This basically creates an empty XMLContent object
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
         xml_content.update_attributes({key:value for key, value in api_dict.iteritems() if 
-                                       key not in ('sentences', 'annotations', 'language_id', 'title')})
+                                       key not in ('sentences', 'annotations', 'language_id')})
         sentences = [JSON10ParserSentence.from_api_dict(sentence_dict) for 
                      sentence_dict in api_dict.get('sentences', [])]
         annotations = [JSON10ParserAnnotation.from_api_dict(annotation_dict) for 
@@ -169,8 +169,9 @@ class JSON10ParserXMLContent(JSONParserBase):
         # map the language_id to XMLContent.lang
         if 'language_id' in api_dict:
             xml_content.attributes['lang'] = api_dict['language_id']
-        if 'title' in api_dict:
-            xml_content.titles = [Sentence(value=api_dict['title'], is_title=True), ]
+        # removed this: title is already set via attributes
+        #if 'title' in api_dict:
+        #    xml_content.titles = [Sentence(value=api_dict['title'], is_title=True), ]
         return xml_content
 
 
@@ -320,8 +321,12 @@ class TestJSON10ParserXMLContent(object):
         '''
         xml_content = XMLContent(self.xml_content_string)
         json_string = xml_content.to_json(version=1.0)
-        xml_content = JSON10ParserXMLContent.from_json_string(json_string)
-        assert self.xml_content_string == xml_content.get_xml_document()
+        xml_content2 = JSON10ParserXMLContent.from_json_string(json_string)
+        print 'before parsing'
+        print xml_content.get_xml_document()
+        print 'after parsing'
+        print xml_content2.get_xml_document()
+        assert xml_content2.get_xml_document() == xml_content.get_xml_document()
 
 
 class TestJSON10ParserSentence(object):
