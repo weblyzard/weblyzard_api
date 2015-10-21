@@ -356,8 +356,11 @@ class TestJSON10ParserXMLContent(object):
         xml_content = XMLContent(self.xml_content_string)
         api_dict = xml_content.to_api_dict(version=1.0)
         api_dict['title'] = 'wrongtitle'
-        with pytest.raises(MalformedJSONException):
-            JSON10ParserXMLContent.from_api_dict(api_dict)
+        try:
+            xml_content = JSON10ParserXMLContent.from_api_dict(api_dict)
+            assert xml_content == False
+        except MalformedJSONException as e:
+            assert 'is_title' in e.message
 
 
 class TestJSON10ParserSentence(object):
