@@ -321,9 +321,8 @@ class TestJSON10ParserXMLContent(object):
 
     def test_document_xml_dict(self):
         '''
-        Test that takes an XML string, creates a XMLContent object,
-        serializes as JSON, creates an XMLContent object again and
-        serializes back to XML string.
+        Tests that starting with an XML string, we get the
+        correct JSON with only expected attributes.
         '''
         xml_content = XMLContent(self.xml_content_string)
         api_dict = xml_content.to_api_dict(version=1.0)
@@ -353,6 +352,10 @@ class TestJSON10ParserXMLContent(object):
         }
 
     def test_incoherent_title(self):
+        '''
+        Tests that we raise exception if a sentence marked as
+        title and the title attribute mismatch.
+        '''
         xml_content = XMLContent(self.xml_content_string)
         api_dict = xml_content.to_api_dict(version=1.0)
         api_dict['title'] = 'wrongtitle'
