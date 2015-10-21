@@ -154,7 +154,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         :returns: The parsed document as XMLContent object.
         :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
         '''
-        cls._check_document_format(api_dict, strict=False)
+        cls._check_document_format(api_dict, strict=True)
         # This basically creates an empty XMLContent object
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
@@ -313,20 +313,38 @@ class TestJSON10ParserXMLContent(object):
                     json.dumps(self.test_xmlcontent_maximal_dict)
                 ).to_json(version=1.0))
 
-    def test_document_xml_json_xml(self):
+    def test_document_xml_dict(self):
         '''
         Test that takes an XML string, creates a XMLContent object,
         serializes as JSON, creates an XMLContent object again and
         serializes back to XML string.
         '''
         xml_content = XMLContent(self.xml_content_string)
-        json_string = xml_content.to_json(version=1.0)
-        xml_content2 = JSON10ParserXMLContent.from_json_string(json_string)
-        print 'before parsing'
-        print xml_content.get_xml_document()
-        print 'after parsing'
-        print xml_content2.get_xml_document()
-        assert xml_content2.get_xml_document() == xml_content.get_xml_document()
+        api_dict = xml_content.to_api_dict(version=1.0)
+        assert api_dict == {
+            'language_id': 'en',
+            'title': 'Global Dimming.',
+            'sentences': [
+                {'polarity': 0.0,
+                 'value': 'Global Dimming.', 
+                 'pos_list': 'JJ NN .', 
+                 'tok_list': '0,6 7,14 14,15', 
+                 'is_title': 'True', 
+                 'id': '27cd03a5aaac20ae0dba60038f17fdad'},
+                {'id': '7f3251087b6552159846493558742f18',
+                 'is_title': False,
+                 'polarity': 0.0,
+                 'pos_list': '( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP : PRP VBD PRP JJ NN .',
+                 'tok_list': '0,1 1,2 2,6 7,18 18,19 20,25 26,38 39,44 45,47 48,51 52,57 57,58 59,69 70,74 75,85 86,90 91,96 97,100 101,105 106,107 108,115 116,118 119,127 128,136 137,140 141,146 146,147 148,152 153,159 160,162 163,169 170,177 177,178',
+                 'value': '(*FULL DOCUMENTARY) Since measurements began in the 1950s, scientists have discovered that there has been a decline of sunlight reaching the Earth; they called it global dimming.'},
+                {'id': '93f56b9d196787d1cf662a06ab5f866b',
+                 'is_title': False,
+                 'polarity': 0.0,
+                 'pos_list': 'CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG .',
+                 'tok_list': '0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183',
+                 'value': 'But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.'}
+            ],
+        }
 
 
 class TestJSON10ParserSentence(object):

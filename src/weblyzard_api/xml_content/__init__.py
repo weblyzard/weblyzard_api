@@ -241,6 +241,7 @@ class XMLContent(object):
     API_MAPPINGS = {
         1.0: {
             'lang': 'language_id',
+            'title': 'title',
             }
         }
     
@@ -411,20 +412,28 @@ class XMLContent(object):
         :rtype: dict
         '''
         document_dict = self.as_dict()
-        if self.sentences and len(self.sentences) > 0:
-            sentences = [s.to_api_dict(version) for s in self.sentences]
-            document_dict['sentences'] = sentences
-        else:
-            del document_dict['sentences']
-        annotations = document_dict.get('annotations', None)
-        if annotations is not None and len(annotations) == 0:
-            del document_dict['annotations']
+        api_dict = {}
         for key in self.API_MAPPINGS[version]:
             if key in document_dict:
-                document_dict[self.API_MAPPINGS[version][key]] = \
-                        document_dict[key]
-                del document_dict[key]
-        return document_dict
+                api_dict[self.API_MAPPINGS[version][key]] = \
+                         document_dict[key]
+        if self.sentences and len(self.sentences) > 0:
+            sentences = [s.to_api_dict(version) for s in self.sentences]
+            api_dict['sentences'] = sentences
+        if self.titles and len(self.titles) > 0:
+            for t in self.titles:
+                api_dict['sentences'] = [t.to_api_dict(version)] + api_dict.get('sentences', [])
+                print t.to_api_dict(version)
+                if 'title' not in api_dict:
+                    api_dict['title'] = t.value
+                elif api_dict['title'] != t.value:
+                    raise Exception('Mismatch between sentence marked as title and '+\
+                                    'title attribute:\n'+\
+                                    '%s != %s' % (t.value, api_dict['title']))
+        annotations = document_dict.get('annotations', None)
+        if annotations:
+            api_dict['annotations'] = annotations
+        return api_dict
 
 
     def to_json(self, version=1.0):
