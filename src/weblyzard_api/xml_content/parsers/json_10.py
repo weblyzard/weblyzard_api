@@ -352,6 +352,13 @@ class TestJSON10ParserXMLContent(object):
             ],
         }
 
+    def test_incoherent_title(self):
+        xml_content = XMLContent(self.xml_content_string)
+        api_dict = xml_content.to_api_dict(version=1.0)
+        api_dict['title'] = 'wrongtitle'
+        with pytest.raises(MalformedJSONException):
+            JSON10ParserXMLContent.from_api_dict(api_dict)
+
 
 class TestJSON10ParserSentence(object):
     test_sentence = Sentence(
