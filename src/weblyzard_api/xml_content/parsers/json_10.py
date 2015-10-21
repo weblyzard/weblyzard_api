@@ -170,8 +170,15 @@ class JSON10ParserXMLContent(JSONParserBase):
         if 'language_id' in api_dict:
             xml_content.attributes['lang'] = api_dict['language_id']
         # removed this: title is already set via attributes
-        #if 'title' in api_dict:
-        #    xml_content.titles = [Sentence(value=api_dict['title'], is_title=True), ]
+        if 'title' in api_dict:
+            for sentence in sentences:
+                if sentence.is_title and sentence.value != api_dict['title']:
+                    raise MalformedJSONException('The sentence marked with "is_title": "True" must '+
+                                                 'match the "title" attribute.')
+        else:
+            for sentence in sentences:
+                if sentence.is_title:
+                    api_dict['title'] == sentence.value
         return xml_content
 
 
@@ -202,7 +209,7 @@ class JSON10ParserSentence(JSONParserBase):
             value=api_dict['value'],
             pos=api_dict.get('pos_list', None),
             sem_orient=api_dict.get('polarity', None),
-            significance=None,
+            significance=0.0,
             token=api_dict.get('tok_list', None),
             is_title=api_dict.get('is_title', False),
             dependency=api_dict.get('dep_tree', None))
@@ -297,7 +304,6 @@ class TestJSON10ParserXMLContent(object):
         '''
         xmlcontent = JSON10ParserXMLContent.from_json_string(
                 json.dumps(self.test_xmlcontent_minimal_dict))
-        # TODO other keys have no obvious direct equivalent in XMLContent
 
     def test_document_to_json(self):
         '''
@@ -352,7 +358,7 @@ class TestJSON10ParserSentence(object):
             md5sum=u'6e4c1420b2edaa374ff9d2300b8df31d',
             pos=u"RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
             sem_orient=0.0,
-            significance=None,
+            significance=0.0,
             token=u'0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
             value=u'Therefore we could show that "x>y" and "y<z.".',
             is_title=False,

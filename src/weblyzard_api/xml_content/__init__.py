@@ -423,7 +423,6 @@ class XMLContent(object):
         if self.titles and len(self.titles) > 0:
             for t in self.titles:
                 api_dict['sentences'] = [t.to_api_dict(version)] + api_dict.get('sentences', [])
-                print t.to_api_dict(version)
                 if 'title' not in api_dict:
                     api_dict['title'] = t.value
                 elif api_dict['title'] != t.value:
