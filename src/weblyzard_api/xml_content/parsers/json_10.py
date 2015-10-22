@@ -28,7 +28,8 @@ class UnexpectedFieldException(Exception):
 
 class MalformedJSONException(Exception):
     '''
-    Exception to throw if the json.loads function fails.
+    Exception to throw if the json.loads function fails or the JSON is
+    otherwise ill formatted.
     '''
     pass
 
@@ -124,7 +125,7 @@ class JSONParserBase(object):
         '''
         missing_fields = cls._missing_fields(api_dict)
         if missing_fields is not None:
-            raise MissingFieldException("Missing document-level field(s) %s" % 
+            raise MissingFieldException("Missing field(s) %s" % 
                     ', '.join(missing_fields))
         if strict:
             unexpected_fields = cls._unexpected_fields(api_dict)
@@ -221,9 +222,8 @@ class JSON10ParserAnnotation(JSONParserBase):
     This class is the parser class for JSON annotations conforming to
     the Weblyzard API 1.0 definition.
     '''
-    FIELDS_REQUIRED = ['start', 'end', 'surface_form']
-    FIELDS_OPTIONAL = ['key', 'sentence', 'displayName', 'annotationType',
-                       'polarity', 'properties']
+    FIELDS_REQUIRED = ['start', 'end', 'surface_form', 'annotation_type']
+    FIELDS_OPTIONAL = ['key', 'sentence', 'display_name', 'polarity', 'properties']
     API_VERSION = 1.0
 
     @classmethod
@@ -239,8 +239,82 @@ class JSON10ParserAnnotation(JSONParserBase):
         :returns: The parsed annotation as dict
         :rtype: dict
         '''
+
         cls._check_document_format(api_dict)
-        return api_dict
+        result = dict(api_dict)
+        del result['annotation_type']
+        return result
+
+    @classmethod
+    def to_api_dict(cls, annotation_type, annotation):
+        '''
+        This method simply puts the annotation_type within
+        the annotation dict again.
+
+        :param annotation_type: The type of annotation
+        :type annotation_type: str
+        :param annotation: The annotation data
+        :type annotation: dict
+        :returns: the annotation with annotation_type set 
+        :rtype: dict
+        '''
+        result = dict(annotation)
+        result['annotation_type'] = annotation_type
+        return result
+
+    @classmethod
+    def from_api_list(cls, api_list):
+        '''
+        Parses a list of annotations and returns a dict mapping the
+        annotations to their annotation type. I.e. each annotation
+        in the list individually states its type and in the output
+        dict this type is the key and the value are the individual
+        annotations of this type. E.g.
+
+        >>> api_list = [{'start': 87, \
+                         'end': 101, \
+                         'surface_form': 'Public Service',\
+                         'annotation_type': 'OrganizationEntity'}]
+        >>> JSON10ParserAnnotation.from_api_list(api_list)
+        {'OrganizationEntity': [{'start': 87, 'surface_form': 'Public Service', 'end': 101}]}
+
+        :param api_list: A list of annotations.
+        :type api_list: list
+        :returns: a nested dict with the annotation types as key \
+                and a list of annotations as the value.
+        :rtype: dict
+        '''
+        result = {}
+        for annotation in api_list:
+            cls._check_document_format(annotation)
+            result.setdefault(annotation['annotation_type'], [])
+            result.setdefault(annotation['annotation_type'], []).append(
+                              JSON10ParserAnnotation.from_api_dict(annotation))
+        return result
+
+    @classmethod
+    def to_api_list(cls, annotations):
+        '''
+        Takes a dict that nests a list of annotations in their annotation_type
+        and returns a flat list of annotations where each has its
+        annotation_type set individually.
+
+        >>> annotations = {'OrganizationEntity': [\
+                {'start': 87, 'surface_form': 'Public Service', 'end': 101}]}
+        >>> JSON10ParserAnnotation.to_api_list(annotations)
+        [{'start': 87, 'surface_form': 'Public Service', 'end': 101, 'annotation_type': 'OrganizationEntity'}]
+
+        :param annotations: The nested dict mapping annotation_type to a list
+        :type annotations: dict
+        :returns: The flat list of annotations.
+        :rtype: list
+        '''
+        result = []
+        for annotation_type in annotations:
+            for annotation in annotations[annotation_type]:
+                result.append(JSON10ParserAnnotation.to_api_dict(annotation_type,
+                                                                 annotation))
+        return result
 
 
 class TestJSON10ParserXMLContent(object):
