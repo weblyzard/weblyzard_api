@@ -6,14 +6,18 @@
 '''
 import unittest
 import logging
-from time import time
+from time import sleep
 from sys import argv
+from random import random
 
 from eWRT.ws.rest import MultiRESTClient
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
 
 logger = logging.getLogger('weblyzard_api.client.jeremia')
+
+# max number of seconds to wait if the web service is currently occupied
+DEFAULT_MAX_RETRY_DELAY = 15
 
 class Jeremia(MultiRESTClient):
     '''
@@ -82,14 +86,22 @@ class Jeremia(MultiRESTClient):
         '''
         return self.request('submit_document', document)
     
-    def submit_documents(self, documents, source_id=-1, double_sentence_threshold=10):
+    def submit_documents(self, documents, source_id=-1, 
+            double_sentence_threshold=10, max_retry_delay=DEFAULT_MAX_RETRY_DELAY):
         ''' 
         :param batch_id: batch_id to use for the given submission
         :param documents: a list of dictionaries containing the document 
         '''
         if not documents:
             raise ValueError('Cannot process an empty document list')
+
         request = 'submit_documents/%s/%d' % (source_id, double_sentence_threshold)
+
+        # wait until the web service has available threads for processing
+        # the request
+        while self.has_queued_threads():
+            sleep(max_retry_delay * random())
+ 
         return self.request(request, documents)
 
     def status(self):
@@ -142,6 +154,18 @@ class Jeremia(MultiRESTClient):
         :param source_id: the blacklist's source id
         :returns: the sentence blacklist for the given source_id''' 
         return self.request('cache/get_blacklist/%s' % source_id)
+
+    def has_queued_threads(self):
+        '''
+        :returns:
+            True if Jeremia still has queued (i.e. unprocessed) threads or
+            False otherwise.
+
+        :note:
+            Submitting jobs if threads are queued is discouraged, since it
+            will slow down the overall performance.
+        '''
+        return self.request('has_queued_threads')
 
 
 class JeremiaTest(unittest.TestCase):
@@ -332,6 +356,10 @@ class JeremiaTest(unittest.TestCase):
         assert 'dc:author="Ana"' in first['xml_content']
 
         assert '<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="124" dc:format="text/html" xml:lang="de" wl:nilsimsa="8030473ac029f400680409349e47100e00a29585c04a25ec808342b4c0a1aec8">' in second['xml_content']
+
+    def test_has_queued_threads(self):
+        has_queued_threads = Jeremia().has_queued_threads()
+        assert has_queued_threads == True or has_queued_threads == False
 
 
 if __name__ == '__main__':
