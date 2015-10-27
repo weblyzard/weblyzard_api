@@ -376,7 +376,7 @@ class EntityLyzardTest(unittest.TestCase):
             </wl:page>
             ''']
  
-    DOCS = [Recognize.convert_document(xml) for xml in DOCS_XML]
+    
     #we need to get the recognize client twice (once here and once in setUp)
  
     TESTED_PROFILES = ['de.people.ng', 'en.geo.500000.ng', 'en.organization.ng', 'en.people.ng']
@@ -397,7 +397,8 @@ class EntityLyzardTest(unittest.TestCase):
                 self.available_profiles.append(profile)
  
         self.all_profiles = self.client.list_profiles()
- 
+        self.DOCS = [Recognize.convert_document(xml) for xml in self.DOCS_XML]
+        
     def test_missing_profiles(self):
         self.missing_profiles = []
  
