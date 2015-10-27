@@ -179,7 +179,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         else:
             for sentence in sentences:
                 if sentence.is_title:
-                    api_dict['title'] == sentence.value
+                    api_dict['title'] = sentence.value
         return xml_content
 
 
@@ -310,7 +310,9 @@ class JSON10ParserAnnotation(JSONParserBase):
         :rtype: list
         '''
         result = []
-        for annotation_type in annotations:
+        if not annotations:
+            return result
+        for annotation_type in annotations.iteritems():
             for annotation in annotations[annotation_type]:
                 result.append(JSON10ParserAnnotation.to_api_dict(annotation_type,
                                                                  annotation))
