@@ -3,13 +3,13 @@ from setuptools.command import sdist
 
 setup (
     name = 'weblyzard_api',
-    version = '0.4.8.8',
+    version = '0.4.9',
     description= ' Web services for weblyzard',
     author = 'Heinz-Peter Lang and Albert Weichselbraun',
     author_email = 'lang@weblyzard.com',
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = ['eWRT>=0.9.1.3', 
+    install_requires = ['eWRT>=0.9.1.4', 
                         'nose',
                         'lxml',
                         'requests'],
