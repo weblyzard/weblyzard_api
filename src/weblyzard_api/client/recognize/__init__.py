@@ -117,7 +117,9 @@ class Recognize(MultiRESTClient):
 
         ::param profile_name: name of the profile to load.
         '''
-        is_internal_profile = profile_name.startswith(INTERNAL_PROFILE_PREFIX)
+        if profile_name.startswith(INTERNAL_PROFILE_PREFIX):
+            return
+        
         profile_exists = profile_name in self.profile_cache and not force
         if not profile_exists:
             profile_exists = profile_name in self.list_profiles() and not force
@@ -125,7 +127,7 @@ class Recognize(MultiRESTClient):
         if profile_exists and not profile_name in self.profile_cache:
             self.profile_cache.append(profile_name)
 
-        if not is_internal_profile and not profile_exists:
+        if not profile_exists:
             self.profile_cache.append(profile_name) #only try to add once
             return self.request('add_profile/%s' % profile_name)
 
@@ -530,6 +532,18 @@ class EntityLyzardTest(unittest.TestCase):
             self.client.add_profile('en.people.ng')
             print self.client.search_documents('en.people.ng', docs)
   
+  
+    def test_date_profile(self):
+          """ """
+          docs = [{'content_id': '12', 'content': u'Franz Klammer fährt gestern Ski, 12th September 2014 are we feeling better'}]
+    #                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
+          profile = 'extras.com.weblyzard.backend.recognize.extras.DateTimeProfile'
+    #         assert self.IS_ONLINE and self.service_is_online
+    #         assert profile in self.available_profiles
+      
+          result = self.client.search_documents(profile_names=[profile], doc_list=docs)
+          print result
+          
     def test_password(self):
         test_cases = (
             ('http://test.net', 'test', 'password'),
