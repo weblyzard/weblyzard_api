@@ -165,8 +165,11 @@ class Jeremia(MultiRESTClient):
             Submitting jobs if threads are queued is discouraged, since it
             will slow down the overall performance.
         '''
-        return self.request('has_queued_threads')
-
+        try: 
+            result = self.request('has_queued_threads')
+        except Exception as e:
+            result = True
+        return result
 
 class JeremiaTest(unittest.TestCase):
 
@@ -361,6 +364,10 @@ class JeremiaTest(unittest.TestCase):
         has_queued_threads = Jeremia().has_queued_threads()
         assert has_queued_threads == True or has_queued_threads == False
 
+    def test_has_queued_threads_exception(self):
+        j = Jeremia(url='http://localhost:6666')
+        has_queued_threads = j.has_queued_threads()
+        assert has_queued_threads == True
 
 if __name__ == '__main__':
     if len(argv) > 1:
