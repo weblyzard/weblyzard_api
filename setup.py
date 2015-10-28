@@ -14,6 +14,6 @@ setup (
                         'lxml',
                         'requests'],
     dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.4'],
-zip_safe = False,
+    zip_safe = False,
     scripts = ['src/weblyzard_api/client/openrdf/wl_upload_repository.py',]
 )
