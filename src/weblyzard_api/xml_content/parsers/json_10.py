@@ -299,8 +299,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         and returns a flat list of annotations where each has its
         annotation_type set individually.
 
-        >>> annotations = {'OrganizationEntity': [\
-                {'start': 87, 'surface_form': 'Public Service', 'end': 101}]}
+        >>> annotations = {'OrganizationEntity': [{'start': 87, 'surface_form': 'Public Service', 'end': 101}]}
         >>> JSON10ParserAnnotation.to_api_list(annotations)
         [{'start': 87, 'surface_form': 'Public Service', 'end': 101, 'annotation_type': 'OrganizationEntity'}]
 
@@ -312,7 +311,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         result = []
         if not annotations:
             return result
-        for annotation_type in annotations.iteritems():
+        for annotation_type in annotations:
             for annotation in annotations[annotation_type]:
                 result.append(JSON10ParserAnnotation.to_api_dict(annotation_type,
                                                                  annotation))
