@@ -18,6 +18,7 @@ logger = logging.getLogger('weblyzard_api.client.jeremia')
 
 # max number of seconds to wait if the web service is currently occupied
 DEFAULT_MAX_RETRY_DELAY = 15
+DEFAULT_MAX_RETRY_ATTEMPTS = 50
 
 class Jeremia(MultiRESTClient):
     '''
@@ -87,7 +88,8 @@ class Jeremia(MultiRESTClient):
         return self.request('submit_document', document)
     
     def submit_documents(self, documents, source_id=-1, 
-            double_sentence_threshold=10, max_retry_delay=DEFAULT_MAX_RETRY_DELAY):
+            double_sentence_threshold=10, max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
+            max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
         ''' 
         :param batch_id: batch_id to use for the given submission
         :param documents: a list of dictionaries containing the document 
@@ -99,8 +101,10 @@ class Jeremia(MultiRESTClient):
 
         # wait until the web service has available threads for processing
         # the request
-        while self.has_queued_threads():
+        attempts = 0
+        while self.has_queued_threads() and attempts < max_retry_attempts:
             sleep(max_retry_delay * random())
+            attempts = attempts + 1
  
         return self.request(request, documents)
 
@@ -165,8 +169,11 @@ class Jeremia(MultiRESTClient):
             Submitting jobs if threads are queued is discouraged, since it
             will slow down the overall performance.
         '''
-        return self.request('has_queued_threads')
-
+        try: 
+            result = self.request('has_queued_threads')
+        except Exception as e:
+            result = True
+        return result
 
 class JeremiaTest(unittest.TestCase):
 
@@ -361,6 +368,10 @@ class JeremiaTest(unittest.TestCase):
         has_queued_threads = Jeremia().has_queued_threads()
         assert has_queued_threads == True or has_queued_threads == False
 
+    def test_has_queued_threads_exception(self):
+        j = Jeremia(url='http://localhost:6666')
+        has_queued_threads = j.has_queued_threads()
+        assert has_queued_threads == True
 
 if __name__ == '__main__':
     if len(argv) > 1:
