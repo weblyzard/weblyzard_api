@@ -71,8 +71,7 @@ class Recognize(MultiRESTClient):
         :param usr: optional user name
         :param pwd: optional password
         '''
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
-                                 use_random_server=True, 
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd, 
                                  default_timeout=default_timeout)
         self.profile_cache = []
 
