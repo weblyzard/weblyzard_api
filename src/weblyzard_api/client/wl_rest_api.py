@@ -56,7 +56,7 @@ class WlRestApiClient(object):
         :type content_id: int
         :rtype: str
         '''
-        r = requests.get('/'.join([self.base_url, 'documents', portal_name, content_id]))
+        r = requests.get('/'.join([self.base_url, 'documents', portal_name, str(content_id)]))
         return r.json()
 
     def update_document(self, portal_name, content_id, document):
@@ -78,7 +78,7 @@ class WlRestApiClient(object):
         r = requests.put('/'.join([self.base_url,
                                    'documents',
                                    portal_name,
-                                   content_id]),
+                                   str(content_id)]),
                          data=document,
                          headers={'Content-Type': 'application/json'})
         return r.json()
@@ -98,7 +98,7 @@ class WlRestApiClient(object):
         r = requests.delete('/'.join([self.base_url,
                                       'documents',
                                       portal_name,
-                                      content_id]))
+                                      str(content_id)]))
         return r.json()
 
     def annotate_document(self, document, analyzer_steps):
@@ -184,7 +184,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
     
     def setUp(self):
         #TODO Change this to the running instance
-        self.client = WlRestApiClient("http://127.0.0.1:5555")
+        self.client = WlRestApiClient("http://zaphod:5000")
         print "+++ INFO: Sending requests to %s +++" % self.client.base_url
     
     def compare_with_base(self, base_dict, extended_dict):
@@ -211,6 +211,24 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
     def test_annotate_documet(self):
         result = self.client.annotate_document(self.test_dict_content, ['sem_orient_ng'])
         del result['meta_data']['published_date']
+        assert result['sentences'] == [
+                {
+                    "dep_tree": "1:NMOD -1:ROOT", 
+                    "id": "9b6496ed96416839b561e2d3e64579bf", 
+                    "is_title": True, 
+                    "pos_list": "NN NN", 
+                    "tok_list": "0,8 9,14", 
+                    "value": "document title"
+                }, 
+                {
+                    "dep_tree": "2:ADV 2:SBJ 16:DEP 2:VC 3:ADV 4:P 4:COORD 8:MNR 6:CONJ 16:DEP 16:DEP 12:P 13:AMOD 14:NMOD 16:P 16:DEP -1:ROOT", 
+                    "id": "6e4c1420b2edaa374ff9d2300b8df31d", 
+                    "is_title": False, 
+                    "pos_list": "RB PRP MD VB IN `` CC JJR JJ `` CC `` NN JJR CD `` .", 
+                    "tok_list": "0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46", 
+                    "value": "Therefore we could show that \"x>y\" and \"y<z.\"."
+                }
+            ] 
         assert result == {
             "language_id": "en", 
             "meta_data": {
@@ -227,7 +245,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
                     "value": "document title"
                 }, 
                 {
-                    "dep_tree": "2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 4:P 4:COORD 8:MNR 6:CONJ 16:DEP 16:DEP 12:P 13:AMOD 14:NMOD 16:P 16:DEP -1:ROOT", 
+                    "dep_tree": "2:ADV 2:SBJ 16:DEP 2:VC 3:ADV 4:P 4:COORD 8:MNR 6:CONJ 16:DEP 16:DEP 12:P 13:AMOD 14:NMOD 16:P 16:DEP -1:ROOT", 
                     "id": "6e4c1420b2edaa374ff9d2300b8df31d", 
                     "is_title": False, 
                     "pos_list": "RB PRP MD VB IN `` CC JJR JJ `` CC `` NN JJR CD `` .", 
