@@ -184,7 +184,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
     
     def setUp(self):
         #TODO Change this to the running instance
-        self.client = WlRestApiClient("http://zaphod:5000")
+        self.client = WlRestApiClient("http://zaphod:5555")
         print "+++ INFO: Sending requests to %s +++" % self.client.base_url
     
     def compare_with_base(self, base_dict, extended_dict):
@@ -284,6 +284,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
         read1_response = self.client.retrieve_document(portal_name=portal_name,
                                                        content_id=content_id)
         assert isinstance(read1_response, dict)
+        print read1_response
         assert read1_response['_id'] == content_id
         assert read1_response['repository_id'] == 'repository'
         assert read1_response['title'] == 'document title'
@@ -297,6 +298,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
                                                        content_id=content_id,
                                                        document=updated_document)
         assert isinstance(updated_response, dict)
+        print updated_response
         assert updated_response['created'] == False
         assert updated_response['_id'] == content_id
         assert 'title' not in updated_response
@@ -305,6 +307,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
         read2_response = self.client.retrieve_document(portal_name=portal_name,
                                                        content_id=content_id)
         assert isinstance(read2_response, dict)
+        print read2_response
         assert read2_response['_id'] == content_id
         assert read2_response['repository_id'] == 'repository'
         assert read2_response['title'] == 'updated document title'
@@ -314,6 +317,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
         delete_response = self.client.delete_document(portal_name=portal_name,
                                                       content_id=content_id)
         assert isinstance(delete_response, dict)
+        print delete_response
         assert delete_response['_id'] == content_id
         assert delete_response['deleted'] == True
         assert len(delete_response) == 2
@@ -321,4 +325,5 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
         # READ and fail
         read3_response = self.client.retrieve_document(portal_name=portal_name,
                                                        content_id=content_id)
+        print read3_response
         assert False
