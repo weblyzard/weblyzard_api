@@ -157,9 +157,7 @@ class Joanna(object):
             elif conn.code == 500:
                 data = conn.read()
                 logger.error(
-                             'Server failure: attempts %d %s', 
-                            (attempts, data))
-                             
+                    'Server failure: attempts %d %s', attempts, data)
             sleep(max_retry_delay * random())
             attempts += 1
             
