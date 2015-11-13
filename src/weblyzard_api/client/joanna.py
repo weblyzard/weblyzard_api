@@ -17,58 +17,68 @@ DEFAULT_MAX_RETRY_DELAY = 15
 DEFAULT_MAX_RETRY_ATTEMPTS = 5
 DAYS_BACK_DEFAULT = 20
 
-WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS = 'http://localhost:8080', '', ''
 
 class PostRequest(object):
-    def __init__(self, url, data, headers=[{"Content-Type":"application/json"}]):
+    ''' Make a post request and return the connection without
+    reading the data. Allows for finer handling of error codes
+    '''
+    def __init__(self, url, data):
         self.url = url
-        self.data = json.dumps({"hashes":data})
-        self.headers = headers
+        self.data = json.dumps({"hashes": data})
+        self.headers = [{"Content-Type": "application/json"}]
+    
     def request(self):
         handler = urllib2.HTTPHandler()
         opener = urllib2.build_opener(handler)
         req = urllib2.Request(url=self.url)
-        req.add_header("Content-Type","application/json")
-        req.get_method = lambda:"POST"
+        req.add_header("Content-Type", "application/json")
+        req.get_method = lambda: "POST"
         req.add_data(self.data)
         try:
             conn = opener.open(req)
-        except urllib2.URLError, e:
-            logger.error("Connection refused.. {}".format(e))
-            raise e
         except urllib2.HTTPError, e:
             conn = e
+        except urllib2.URLError, e:
+            logger.error("Connection refused.. %s", e)
+            raise e
         return conn
         
+
 class Joanna(object):
     """
     Joanna Nilsimsa web service client
     Available endpoints:
         /load/:portalName/:sourceId/:daysBack
-            - GET: load the nilsimsa hashes for a portal with sourceId and days back to load
+            - GET: load the nilsimsa hashes for a portal with sourceId 
+              and days back to load
             - Python client function: reload_source_nilsimsa
         /is_similar/:sourceId/:nilsimsaHash
-            - Returns true or false for a given nilsimsa hash with a sourceId
+            - Returns true or false for a given nilsimsa hash 
+              with a sourceId
             - Python client function: similar_document
         /get_hashes/:sourceId
             - GET: return the list of hashes for a given sourceId
             - Python client function: get_hashes
         /clean_hashes
-            - GET: cleans cached hash lists by removing outdated elements and duplicates
+            - GET: cleans cached hash lists by removing outdated 
+              elements and duplicates
             - Python client function: clean_hashes
         /version
             - GET: return the current version of the API
             - Python client function: version
         /status
-            - GET: return the status of the API. If functioning it will return "ONLINE" 
+            - GET: return the status of the API. 
+              If functioning it will return "ONLINE" 
             - Python client function: status
         /batchIsSimilar/:portalName/:sourceId/:daysBack
-            - POST: make a batch of nilsimsa. If the sourceId isn't present 
-                    it will make a /load request instead. The client will 
-                    try again to return the batch request. 
+            - POST: make a batch of nilsimsa. If the sourceId isn't
+               present it will make a /load request instead. 
+               The client will try again to return the batch request. 
             - Returns: 
-                Dictionary of hash and similarity {hash:similarity-bool}
-                Similarity: False means it is not similar to anythhing with that sourceId
+                Dictionary of hash and similarity 
+                {hash:similarity-bool}
+                Similarity: False means it is not similar to 
+                anything with that sourceId
             - Python client function: similar_documents
     Example usage:
         jo = Joanna(url="http://localhost:8080")
@@ -80,65 +90,78 @@ class Joanna(object):
         self.multiRestclient = MultiRESTClient(self.url)
 
     def get_hashes(self, sourceId, portalName):
+        ''' Return the hashes for a specific source and portal
+        '''
         request_url = "get_hashes/{}/{}".format(sourceId, portalName)
         return self.multiRestclient.request(request_url)
     
     def clean_hashes(self):
+        ''' Make a request to clean old nilsimsa hashes
+        '''
         request_url = "clean_hashes"
         return self.multiRestclient.request(request_url)
     
     def similar_document(self, sourceId, nilsimsa, portalName):
-        request_url = "is_similar/{}/{}/{}".format(sourceId, portalName, nilsimsa)
+        ''' Get the similarity of a single document. 
+        Expected response: Boolean True or False 
+        '''
+        request_url = "is_similar/{}/{}/{}".format(
+                    sourceId, portalName, nilsimsa)
         return self.multiRestclient.request(request_url)
 
-    def similar_documents(self, sourceId, portalName, nilsimsaList, daysBack=20, max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
-        max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
-        """ Uses PostRequest instead of the eWRT MultiRESTClient for finer control
-         of the connection codes for retries
+    def similar_documents(self, sourceId, portalName, nilsimsaList, 
+                          daysBack=20):
+        """ Uses PostRequest instead of the eWRT MultiRESTClient 
+         for finer control of the connection codes for retries
              result: {hash:boolean, ..}
         """
+        max_retry_delay = DEFAULT_MAX_RETRY_DELAY,
+        max_retry_attempts = DEFAULT_MAX_RETRY_ATTEMPTS
         if daysBack is None:
-            daysBack=DAYS_BACK_DEFAULT
+            daysBack = DAYS_BACK_DEFAULT
             
         if not (sourceId or nilsimsaList):
             logger.error("Arguments missing")
             return
         if isinstance(nilsimsaList, basestring):
-            logger.warning("Expected list. Using single instead of batch..")
-            return self.similar_document(sourceId, nilsimsaList)
-        request_url = "batchIsSimilar/{}/{}/{}".format(portalName, sourceId, daysBack)
+            logger.error("Expected list. Please use single_document")
+            raise ValueError('Expected a list')
+
+        request_url = "batchIsSimilar/{}/{}/{}".format(
+                                    portalName, sourceId, daysBack)
         req = PostRequest(self.url + '/' + request_url, nilsimsaList)
-        logger.debug('Trying to request: {}'.format(req.url))
+        logger.debug('Trying to request: %s', req.url)
 
         attempts = 0
         conn_code = -1
+
         while attempts < max_retry_attempts and conn_code != 204:
             conn = req.request()
             conn_code = conn.code
             if conn.code == 200:
                 logger.info('successful request')
                 data = conn.read()
-                if data=="LOADED":
-                    logger.info("Nilsimsas loaded from db. Sending request again for results..")
+                if data == "LOADED":
+                    logger.info("Nilsimsas loaded from db. \
+                    Sending request again for results..")
                 else:
-                    attempts=max_retry_attempts
+                    attempts = max_retry_attempts
                     return json.loads(data)
             elif conn.code == 204:
-                logger.info('No content found attempts {}'.format(attempts))
+                logger.info('No content found attempts %d', attempts)
                 data = conn.read()
-                logger.error("No content found.. attempts {} {}".format(
-                                                               attempts, data))
             elif conn.code == 400:
                 logger.error('Bad request.. 404 error')
                 data = conn.read()
                 logger.error('Err: {}'.format(data))
             elif conn.code == 500:
                 data = conn.read()
-                logger.error('Server failure: attempts {} {}'.format(attempts, 
-                                                                         data))
+                logger.error(
+                             'Server failure: attempts %d %s', 
+                            (attempts, data))
                              
             sleep(max_retry_delay * random())
-            attempts+=1
+            attempts += 1
             
     def reload_source_nilsimsa(self, sourceId, portal_db, daysBack=20):
         if daysBack is None:
@@ -161,9 +184,10 @@ class Joanna(object):
         
     def stress_test(self, sourceId, portalName, num_docs):
         docs_to_send = self.rand_strings(num_docs)
-#         print "Docs to send: {}".format(docs_to_send)
-        results = self.similar_documents(sourceId, portalName, docs_to_send)
+        results = self.similar_documents(
+                                sourceId, portalName, docs_to_send)
         print "Results {}".format(results)
+
 
 class JoannaTest(unittest.TestCase):
     
@@ -177,34 +201,54 @@ class JoannaTest(unittest.TestCase):
     def test_random_strings(self):
         self.assertEqual(len(self.rand_strings), 10)
 #     
+
     def test_online(self):
         self.assertEqual(self.joanna.status(), '"ONLINE"')
     
     def test_batch_request(self):
-        batch_results = self.joanna.similar_documents(self.source_id, self.test_db, self.rand_strings, 20)
-        for nilsimsa, similar in batch_results.iteritems():
+        batch_results = self.joanna.similar_documents(
+                        self.source_id, self.test_db, 
+                        self.rand_strings, 20)
+        for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'false')
-        batch_results = self.joanna.similar_documents(self.source_id, self.test_db, self.rand_strings, 20)
-        for nilsimsa, similar in batch_results.iteritems():
+        batch_results = self.joanna.similar_documents(
+                        self.source_id, self.test_db, 
+                        self.rand_strings, 20)
+        for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'true')
         
     def test_single_request(self):
         self.rand_strings = self.joanna.rand_strings(self.docs)
-        single_result = self.joanna.similar_document(self.source_id, self.rand_strings[0], self.test_db)
+        single_result = self.joanna.similar_document(
+                        self.source_id, self.rand_strings[0], 
+                        self.test_db)
         self.assertEqual(single_result, False)
-        single_result = self.joanna.similar_document(self.source_id, self.rand_strings[0], self.test_db)
+        single_result = self.joanna.similar_document(
+                        self.source_id, self.rand_strings[0], 
+                        self.test_db)
         self.assertEqual(single_result, True)
      
     def test_loaded(self):
-        loaded_result = self.joanna.reload_source_nilsimsa(self.source_id, self.test_db, 20)
+        loaded_result = self.joanna.reload_source_nilsimsa(
+                        self.source_id, self.test_db, 20)
         self.assertEqual(loaded_result, 'LOADED')
     
     def test_existing_document(self):
-        existing_doc = '1100101100100110001001110011001000000010001000001010100001001110100010000001001110110010101100111101000011000100100101110010000100001111011011100001101110100001100101011011001001001100100011000110100001000001101111100101001011100010010100101111010001001011'
-        single_result = self.joanna.similar_document(self.source_id, existing_doc, self.test_db)
+        ''' Test an existing doc from the database. Note: 
+        this is expected to fail when the document becomes very old
+        '''
+        existing_doc = ['1100101100100110001001110011001000000010001',
+        '00000101010000100111010001000000100111011001010110011110100',
+        '00110001001001011100100001000011110110111000011011101000011',
+        '00101011011001001001100100011000110100001000001101111100101',
+        '001011100010010100101111010001001011']
+        existing_doc = ''.join(existing_doc)
+        single_result = self.joanna.similar_document(
+                        self.source_id, existing_doc, self.test_db)
         self.assertEqual(single_result, True)
-        batch_result = self.joanna.similar_documents(self.source_id, self.test_db, [existing_doc])
-        for nilsimsa, similar in batch_result.iteritems():
+        batch_result = self.joanna.similar_documents(
+                        self.source_id, self.test_db, [existing_doc])
+        for _, similar in batch_result.iteritems():
             self.assertEqual(similar, 'true')
             
 if __name__ == '__main__':    
