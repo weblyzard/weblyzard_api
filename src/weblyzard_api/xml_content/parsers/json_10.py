@@ -12,6 +12,11 @@ import pytest
 
 from weblyzard_api.xml_content import Sentence, XMLContent
 
+class MissingContentException(Exception):
+    '''
+    Exception class thrown if a JSON document misses required fields.
+    '''
+    pass
 
 class MissingFieldException(Exception):
     '''
@@ -61,7 +66,7 @@ class JSONParserBase(object):
         try:
             api_dict = json.loads(json_string)
         except Exception:
-            raise MalformedJSONException('JSON could not be parsed. Maybe not correct JSON?')
+            raise MalformedJSONException('JSON could not be parsed')
         return cls.from_api_dict(api_dict)
 
     @classmethod
@@ -139,8 +144,8 @@ class JSON10ParserXMLContent(JSONParserBase):
     This class is the parser class for JSON documents conforming to
     the Weblyzard API 1.0 definition.
     '''
-    FIELDS_REQUIRED = []
-    FIELDS_OPTIONAL = ['title', 'language_id', 'sentences']
+    FIELDS_REQUIRED = ['uri', 'title']
+    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content']
     API_VERSION = 1.0
 
 
