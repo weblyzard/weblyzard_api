@@ -5,6 +5,8 @@ Created on Oct 30, 2015
 '''
 import logging
 
+from random import random
+from time import sleep
 from weblyzard_api.client.joanna import Joanna
 
 logger = logging.getLogger('weblyzard_api.client.joanna_argparse')
@@ -41,9 +43,17 @@ def check_arguments(args):
         if None in (args.sourceId, args.portal_db):
             print 'invalid arguments. Requires sourceId and portal_db'
             return
-        reloaded = jo.reload_source_nilsimsa(
-               args.sourceId, args.portal_db, daysBack=args.days_back)
-        print "Reloaded: {}".format(reloaded)
+        if args.repeat_test:
+            for i in xrange(args.repeat_test):
+                reloaded = jo.reload_source_nilsimsa(
+                    args.sourceId, args.portal_db, 
+                    daysBack=args.days_back)
+                sleep(random()*10)
+                print "Iteration {} Reloaded: {}".format(i, reloaded)
+        else:
+            reloaded = jo.reload_source_nilsimsa(
+                   args.sourceId, args.portal_db, daysBack=args.days_back)
+            print "Reloaded: {}".format(reloaded)
     elif args.send_document:
         if None in (args.sourceId, args.nilsimsa, args.portal_db):
             print 'invalid arguments. Requires sourceId, \
@@ -74,14 +84,6 @@ def check_arguments(args):
     
     elif args.nilsimsa and args.send_document is False:
         print 'need to specify --send-document with a nilsimsa'
-    elif args.stress_test:
-        if args.num_docs is None:
-            print 'using default num_docs as 20'
-            args.num_docs = 20
-        if None in (args.sourceId, args.portal_db):
-            print 'invalid arguments. Requires sourceId and portal_db'
-            return 
-        jo.stress_test(args.sourceId, args.portal_db, args.num_docs)
 
 
 def main():
@@ -119,10 +121,9 @@ def main():
             '--batch-document', dest='batch_document', 
             action='store_true', help="""load nilsimsa hashes from db.
             Requires sourceId, portalDb, days back args""")
-    parser.add_argument(
-            '--stress-test', dest='stress_test', action='store_true')
     parser.add_argument('--num-docs', dest='num_docs', type=int)
-    
+    parser.add_argument('--repeat-test', type=int, 
+                        dest='repeat_test', help="repeat X times")
     args = parser.parse_args()
     check_arguments(args)
     
