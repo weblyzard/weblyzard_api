@@ -101,21 +101,31 @@ class Joanna(object):
         request_url = "clean_hashes"
         return self.multiRestclient.request(request_url)
     
-    def similar_document(self, sourceId, nilsimsa, portalName):
+    def similar_document(self, sourceId, nilsimsa, portalName, 
+                         daysBack=None):
         ''' Get the similarity of a single document. 
         Expected response: Boolean True or False 
         '''
-        request_url = "is_similar/{}/{}/{}".format(
-                    sourceId, portalName, nilsimsa)
-        return self.multiRestclient.request(request_url)
+        if daysBack is None:
+            daysBack = 20
+        request_url = "is_similar/{}/{}/{}/{}".format(
+                    sourceId, portalName, nilsimsa, daysBack)
+        
+        result = self.multiRestclient.request(
+                request_url, return_plain=True)
+        if result == "LOADED":
+            result = self.multiRestclient.request(
+                    request_url, return_plain=True)
+        else:
+            return result
 
-    def similar_documents(self, sourceId, portalName, nilsimsaList, 
+    def similar_documents(self, sourceId, portalName, nilsimsaList,
                           daysBack=20):
         """ Uses PostRequest instead of the eWRT MultiRESTClient 
          for finer control of the connection codes for retries
              result: {hash:boolean, ..}
         """
-        max_retry_delay = DEFAULT_MAX_RETRY_DELAY,
+        max_retry_delay = DEFAULT_MAX_RETRY_DELAY
         max_retry_attempts = DEFAULT_MAX_RETRY_ATTEMPTS
         if daysBack is None:
             daysBack = DAYS_BACK_DEFAULT
@@ -153,13 +163,11 @@ class Joanna(object):
             elif conn.code == 400:
                 logger.error('Bad request.. 404 error')
                 data = conn.read()
-                logger.error('Err: {}'.format(data))
+                logger.error('Err: %s', data)
             elif conn.code == 500:
                 data = conn.read()
                 logger.error(
-                             'Server failure: attempts %d %s', 
-                            (attempts, data))
-                             
+                    'Server failure: attempts %d %s', attempts, data)
             sleep(max_retry_delay * random())
             attempts += 1
             
@@ -181,13 +189,7 @@ class Joanna(object):
             rand_str = "".join([str(randint(0, 1)) for _ in xrange(256)])
             docs_to_send.append(rand_str)
         return docs_to_send
-        
-    def stress_test(self, sourceId, portalName, num_docs):
-        docs_to_send = self.rand_strings(num_docs)
-        results = self.similar_documents(
-                                sourceId, portalName, docs_to_send)
-        print "Results {}".format(results)
-
+    
 
 class JoannaTest(unittest.TestCase):
     
@@ -200,12 +202,12 @@ class JoannaTest(unittest.TestCase):
 
     def test_random_strings(self):
         self.assertEqual(len(self.rand_strings), 10)
-#     
-
+        
     def test_online(self):
         self.assertEqual(self.joanna.status(), '"ONLINE"')
     
     def test_batch_request(self):
+        self.rand_strings = self.joanna.rand_strings(self.docs)
         batch_results = self.joanna.similar_documents(
                         self.source_id, self.test_db, 
                         self.rand_strings, 20)
@@ -216,40 +218,54 @@ class JoannaTest(unittest.TestCase):
                         self.rand_strings, 20)
         for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'true')
-        
+         
     def test_single_request(self):
         self.rand_strings = self.joanna.rand_strings(self.docs)
         single_result = self.joanna.similar_document(
                         self.source_id, self.rand_strings[0], 
                         self.test_db)
-        self.assertEqual(single_result, False)
+        self.assertEqual(single_result, 'false')
         single_result = self.joanna.similar_document(
                         self.source_id, self.rand_strings[0], 
                         self.test_db)
-        self.assertEqual(single_result, True)
-     
+        self.assertEqual(single_result, 'true')
+      
     def test_loaded(self):
         loaded_result = self.joanna.reload_source_nilsimsa(
                         self.source_id, self.test_db, 20)
         self.assertEqual(loaded_result, 'LOADED')
-    
+     
     def test_existing_document(self):
         ''' Test an existing doc from the database. Note: 
         this is expected to fail when the document becomes very old
         '''
-        existing_doc = ['1100101100100110001001110011001000000010001',
-        '00000101010000100111010001000000100111011001010110011110100',
-        '00110001001001011100100001000011110110111000011011101000011',
-        '00101011011001001001100100011000110100001000001101111100101',
-        '001011100010010100101111010001001011']
+        existing_doc = [
+            '1100101100100110001001110011001000000010001000001010100',
+            '001001110100010000001001110110010101100111101000011000',
+            '1001001011100100001000011110110111000011011101000011',
+            '0010101101100100100110010001100011010000100000110111110',
+            '0101001011100010010100101111010001001011']
         existing_doc = ''.join(existing_doc)
         single_result = self.joanna.similar_document(
                         self.source_id, existing_doc, self.test_db)
-        self.assertEqual(single_result, True)
+        self.assertEqual(single_result, 'true')
         batch_result = self.joanna.similar_documents(
                         self.source_id, self.test_db, [existing_doc])
         for _, similar in batch_result.iteritems():
             self.assertEqual(similar, 'true')
-            
+
+    def test_batch_rand(self):
+        docs = self.rand_strings
+        batch_results = self.joanna.similar_documents(
+                        self.source_id, self.test_db, 
+                        docs, 20)
+        print "Batch results {}".format(batch_results)
+        self.rand_strings = self.joanna.rand_strings(self.docs)
+
+        docs = self.joanna.rand_strings(30)
+        batch_results = self.joanna.similar_documents(
+                        self.source_id, self.test_db, docs, 20)
+        print "Batch results {}".format(batch_results)
+
 if __name__ == '__main__':    
     unittest.main()
