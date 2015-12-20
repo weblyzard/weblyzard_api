@@ -6,7 +6,8 @@
 '''
 import unittest
 import logging
-from time import sleep
+import urllib2
+from time import sleep, time
 from sys import argv
 from random import random
 
@@ -16,9 +17,9 @@ from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZAR
 
 logger = logging.getLogger('weblyzard_api.client.jeremia')
 
-# max number of seconds to wait if the web service is currently occupied
+# number of seconds to wait if the web service is occupied
 DEFAULT_MAX_RETRY_DELAY = 15
-DEFAULT_MAX_RETRY_ATTEMPTS = 50
+DEFAULT_WAIT_TIME = 60*30
 
 class Jeremia(MultiRESTClient):
     '''
@@ -38,7 +39,7 @@ class Jeremia(MultiRESTClient):
      * :func:`get_blacklist`
      * :func:`update_blacklist`
 
-    Jeremia returns a 
+    Jeremia returns a
     :doc:`webLyzard XML document <weblyzard_api.data_format.xml_format>`.
     The weblyzard_api provides the class :class:`.XMLContent` to process
     and manipulate the weblyzard XML documents.:
@@ -50,26 +51,26 @@ class Jeremia(MultiRESTClient):
             from weblyzard_api.client.recognize import Recognize
             from pprint import pprint
 
-            docs = {'id': '192292', 
-                    'title': 'The document title.', 
-                    'body': 'This is the document text...', 
-                    'format': 'text/html', 
+            docs = {'id': '192292',
+                    'title': 'The document title.',
+                    'body': 'This is the document text...',
+                    'format': 'text/html',
                     'header': {}}
             client = Jeremia()
             result = client.submit_document(docs)
             pprint(result)
     '''
     URL_PATH = 'jeremia/rest'
-    ATTRIBUTE_MAPPING = {'content_id': 'id', 
-                         'title': 'title', 
+    ATTRIBUTE_MAPPING = {'content_id': 'id',
+                         'title': 'title',
                          'sentences': 'sentence',
                          'lang': 'lang',
                          'sentences_map': {'pos': 'pos',
-                                           'token': 'token', 
+                                           'token': 'token',
                                            'value': 'value',
                                            'md5sum': 'id'}}
-    
-    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
@@ -86,13 +87,13 @@ class Jeremia(MultiRESTClient):
         :param document: the document to be processed
         '''
         return self.request('submit_document', document)
-    
-    def submit_documents(self, documents, source_id=-1, 
+
+    def submit_documents(self, documents, source_id=-1,
             double_sentence_threshold=10, max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
-            max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
-        ''' 
+            wait_time=DEFAULT_WAIT_TIME):
+        '''
         :param batch_id: batch_id to use for the given submission
-        :param documents: a list of dictionaries containing the document 
+        :param documents: a list of dictionaries containing the document
         '''
         if not documents:
             raise ValueError('Cannot process an empty document list')
@@ -101,12 +102,21 @@ class Jeremia(MultiRESTClient):
 
         # wait until the web service has available threads for processing
         # the request
-        attempts = 0
-        while self.has_queued_threads() and attempts < max_retry_attempts:
-            sleep(max_retry_delay * random())
-            attempts = attempts + 1
- 
+        start_time = time()
+        while time() - start_time < wait_time:
+            # here we need to check for a 503 error in
+            # case that has_queued_threads has not been
+            # up to date.
+            try:
+                result = self.request(request, documents,
+                                      pass_through_http_exceptions=(503, ))
+                return result
+            except urllib2.HTTPError as e:
+                sleep(max_retry_delay * random())
+
+        # compatibility to the old implementation
         return self.request(request, documents)
+
 
     def status(self):
         '''
@@ -119,7 +129,7 @@ class Jeremia(MultiRESTClient):
         :returns: the current version of the jeremia deployed on the server
         '''
         return self.request('version', return_plain=True)
-    
+
     def get_xml_doc(self, text, content_id='1'):
         '''
         Processes text and returns a XMLContent object.
@@ -127,36 +137,36 @@ class Jeremia(MultiRESTClient):
         :param text: the text to process
         :param content_id: optional content id
         '''
-        batch = [{'id': content_id, 
-                  'title': '', 
-                  'body': text, 
+        batch = [{'id': content_id,
+                  'title': '',
+                  'body': text,
                   'format': 'text/plain'}]
-        
+
         results = self.submit_documents(batch)
         result = results[0]
         return XMLContent(result['xml_content'])
-    
+
     def update_blacklist(self, source_id, blacklist):
-        ''' 
-        updates an existing blacklist cache 
+        '''
+        updates an existing blacklist cache
 
         :param source_id: the blacklist's source id
         '''
         url = 'cache/update_blacklist/%s' % source_id
         return self.request(url, blacklist)
-        
+
     def clear_blacklist(self, source_id):
-        ''' 
+        '''
         :param source_id: the blacklist's source id
 
         Empties the existing sentence blacklisting cache for the given source_id
-        ''' 
+        '''
         return self.request('cache/clear_blacklist/%s' % source_id)
-        
+
     def get_blacklist(self, source_id):
-        ''' 
+        '''
         :param source_id: the blacklist's source id
-        :returns: the sentence blacklist for the given source_id''' 
+        :returns: the sentence blacklist for the given source_id'''
         return self.request('cache/get_blacklist/%s' % source_id)
 
     def has_queued_threads(self):
@@ -169,11 +179,12 @@ class Jeremia(MultiRESTClient):
             Submitting jobs if threads are queued is discouraged, since it
             will slow down the overall performance.
         '''
-        try: 
+        try:
             result = self.request('has_queued_threads')
         except Exception as e:
             result = True
         return result
+
 
 class JeremiaTest(unittest.TestCase):
 
@@ -188,7 +199,7 @@ class JeremiaTest(unittest.TestCase):
         print 'submitting document...'
         document_annotated = j.submit_document(self.DOCS[1])
         self.assertTrue(document_annotated != "")
-    
+
     def test_single_document_with_annotations(self):
         '''
         Tests the handling of single document annotations.
@@ -207,7 +218,7 @@ class JeremiaTest(unittest.TestCase):
 
         j = Jeremia()
 
-        # this test requires Jeremia version 0.0.4+ 
+        # this test requires Jeremia version 0.0.4+
         if j.version() < "0.0.4":
             return
 
@@ -238,11 +249,11 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia()
         docs = j.submit_documents(self.DOCS)
         self.assertEqual(len(docs), 20)
-        
+
 
     def test_sentence_splitting(self):
         j = Jeremia()
-        
+
 
         for doc in j.submit_documents(self.DOCS[:1]):
             # extract sentences
@@ -252,8 +263,8 @@ class JeremiaTest(unittest.TestCase):
             print doc['xml_content']
             assert 'wl:is_title' in doc['xml_content']
             print sentences
-            
-            # TODO: check sentence splitting in jeremia! 
+
+            # TODO: check sentence splitting in jeremia!
             # self.assertEqual(len(sentences), 3)
 
     def test_illegal_xml_format_filtering(self):
@@ -268,13 +279,13 @@ class JeremiaTest(unittest.TestCase):
             xml = XMLContent(doc['xml_content'])
             print doc['xml_content']
             assert xml.sentences[0].sentence != None
-       
+
     def test_illegal_input_args(self):
         j = Jeremia()
 
         with self.assertRaises(ValueError):
             j.submit_documents([])
-    
+
     def test_missing_space_tokenattribute(self):
         def text_as_doc(text):
             docs = [ {'id': 'alpha',
@@ -294,8 +305,7 @@ class JeremiaTest(unittest.TestCase):
         for text, token_number in test_texts.iteritems():
             result = j.submit_documents(documents=text_as_doc(text))
             res_xml = list(result)[0]['xml_content']
-            assert len(list(XMLContent(res_xml).sentences[0].tokens)) == token_number 
-
+            assert len(list(XMLContent(res_xml).sentences[0].tokens)) == token_number
 
     def _get_sentences(self, jeremia_result):
         ''' extracts the list of sentences (as text) from an
@@ -373,13 +383,14 @@ class JeremiaTest(unittest.TestCase):
         has_queued_threads = j.has_queued_threads()
         assert has_queued_threads == True
 
+
 if __name__ == '__main__':
     if len(argv) > 1:
         txt = argv[1]
-        docs = {'id': '192292', 
-                'body': txt, 
-                'title': '', 
-                'format': 'text/html', 
+        docs = {'id': '192292',
+                'body': txt,
+                'title': '',
+                'format': 'text/html',
                 'header': {'test': 'testvalue'}}
         j = Jeremia()
         docs['body_annotation'] = [{'start':0, 'end': 3, 'key': 'test annotation'}]
