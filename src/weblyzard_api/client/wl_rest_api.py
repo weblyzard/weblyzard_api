@@ -184,7 +184,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
     
     def setUp(self):
         #TODO Change this to the running instance
-        self.client = WlRestApiClient("http://zaphod:5555")
+        self.client = WlRestApiClient("http://sol2.wu.ac.at:5555")
         print "+++ INFO: Sending requests to %s +++" % self.client.base_url
     
     def compare_with_base(self, base_dict, extended_dict):
@@ -256,6 +256,20 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
             "title": "document title", 
             "uri": "the repository's uri"
         }
+
+    def test_annotate_documet_de(self):
+        test_document_de = {
+            'repository_id': 'repository',
+            'uri': "the repository's uri",
+            'title': 'Dokumenttitel',
+            'content_type': 'text',
+            'content': """Wenn die Sprache nicht richtig erkannt wird oder immer neutral zurückgeliefert wird, dann ist das sehr schlecht und ein Fehler.""",
+            'language_id': 'de',
+        }
+        result = self.client.annotate_document(test_document_de, ['sem_orient_ng'])
+        del result['meta_data']['published_date']
+        assert result['meta_data']['polarity'] not in ['neutral', 0.0]
+        assert result['language_id'] == 'de'
 
     def test_crud_document(self):
         '''
