@@ -166,7 +166,7 @@ class TestWlApiClient(unittest.TestCase):
         'repository_id': 'repository',
         'uri': "the repository's uri",
         'title': 'document title',
-        'content_type': 'text',
+        'content_type': 'text/plain',
         'content': """
     
 Google X's Project Wing concept was a unique take on the delivery drone: a single-winged UAV that took off and landed vertically. Despite extensive testing in Australia, the plan didn't work as well as the company hoped. In March this year Google X head Astro Teller announced the organization was working on a new design, and now, FAA documents show that two Google-built UAVs, codenamed the M2 and the B3, have been registered this month in the US. The M2 made the FAA registry on October 2nd, while the B3 was listed October 7th.
@@ -185,6 +185,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
     def setUp(self):
         #TODO Change this to the running instance
         self.client = WlRestApiClient("http://sol2.wu.ac.at:5555")
+        #self.client = WlRestApiClient("http://localhost:5555")
         print "+++ INFO: Sending requests to %s +++" % self.client.base_url
     
     def compare_with_base(self, base_dict, extended_dict):
@@ -257,18 +258,51 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
             "uri": "the repository's uri"
         }
 
-    def test_annotate_documet_de(self):
+    def test_annotate_documet_sentiment_ng(self):
         test_document_de = {
             'repository_id': 'repository',
             'uri': "the repository's uri",
             'title': 'Dokumenttitel',
-            'content_type': 'text',
+            'content_type': 'text/plain',
             'content': """Wenn die Sprache nicht richtig erkannt wird oder immer neutral zurückgeliefert wird, dann ist das sehr schlecht und ein Fehler.""",
             'language_id': 'de',
         }
+        test_document_de_ascii = {
+            'repository_id': 'repository',
+            'uri': "the repository's uri",
+            'title': 'Dokumenttitel',
+            'content_type': 'text/plain',
+            'content': """Wenn die Sprache nicht richtig erkannt wird oder immer neutral retourniert wird, dann ist das sehr schlecht und ein Fehler.""",
+            'language_id': 'de',
+        }
+        test_document_en = {
+            'repository_id': 'repository',
+            'uri': "the repository's uri",
+            'title': 'Document title',
+            'content_type': 'text/plain',
+            'content': """An excellent text as input!""",
+            'language_id': 'en',
+        }
+        test_document_fr = {
+            'repository_id': 'repository',
+            'uri': "the repository's uri",
+            'title': 'Titre du document',
+            'content_type': 'text/plain',
+            'content': """C'est un texte grave.""",
+            'language_id': 'fr',
+        }
+        result = self.client.annotate_document(test_document_en, ['sem_orient_ng'])
+        assert result['meta_data']['polarity'] in [1.0, 'positive']
+        print result['meta_data']['polarity']
+        assert result['language_id'] == 'en'
+        result = self.client.annotate_document(test_document_fr, ['sem_orient_ng'])
+        assert result['meta_data']['polarity'] in [-1.0, 'negative']
+        assert result['language_id'] == 'fr'
+        result = self.client.annotate_document(test_document_de_ascii, ['sem_orient_ng'])
+        assert result['meta_data']['polarity'] in [-1.0, 'negative']
+        assert result['language_id'] == 'de'
         result = self.client.annotate_document(test_document_de, ['sem_orient_ng'])
-        del result['meta_data']['published_date']
-        assert result['meta_data']['polarity'] not in ['neutral', 0.0]
+        assert result['meta_data']['polarity'] in [-1.0, 'negative']
         assert result['language_id'] == 'de'
 
     def test_crud_document(self):
