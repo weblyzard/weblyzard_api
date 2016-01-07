@@ -46,6 +46,7 @@ class OpinionClient(MultiRESTClient):
                                       parameters={'format': content_format,
                                                   'content': content},
                                       return_plain=False)
+                break
             except Exception as e:
                 if retries <= retrycount:
                     pass  # silently retry

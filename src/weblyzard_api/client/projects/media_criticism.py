@@ -25,7 +25,7 @@ class MediaCriticism(MultiRESTClient):
         '''
         tests the simple hello world service
         '''
-        return self.request(self.CLASSIFIER_WS_BASE_PATH + 'helloworld') 
+        return self.request(self.CLASSIFIER_WS_BASE_PATH + 'status') 
 
     def check_domain_relevance(self, weblyzard_xml):
         '''
