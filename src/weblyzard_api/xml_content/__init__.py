@@ -425,10 +425,10 @@ class XMLContent(object):
                 api_dict['sentences'] = [t.to_api_dict(version)] + api_dict.get('sentences', [])
                 if 'title' not in api_dict:
                     api_dict['title'] = t.value
-                elif api_dict['title'] != t.value:
-                    raise Exception('Mismatch between sentence marked as title and '+\
-                                    'title attribute:\n'+\
-                                    '%s != %s' % (t.value, api_dict['title']))
+#                 elif api_dict['title'] != t.value:
+#                     raise Exception('Mismatch between sentence marked as title and '+\
+#                                     'title attribute:\n'+\
+#                                     '%s != %s' % (t.value, api_dict['title']))
         annotations = document_dict.get('annotations', None)
         if annotations:
             api_dict['annotations'] = annotations
