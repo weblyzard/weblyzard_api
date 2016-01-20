@@ -5,6 +5,8 @@ import java.io.InputStream;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.http.auth.AuthenticationException;
+
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.api.domain.weblyzard.XmlDocument;
 
@@ -49,7 +51,7 @@ public class JeremiaConnector extends BasicConnector {
 
 
 
-	public XmlDocument callSubmitDocumentRaw(Document data) throws IOException {
+	public XmlDocument callSubmitDocumentRaw(Document data) throws IOException, AuthenticationException {
 
 		String url = super.weblyzard_url + SUBMITDOCUMENTSERVICEURL;
 
@@ -61,7 +63,7 @@ public class JeremiaConnector extends BasicConnector {
 
 
 
-	public Document callSubmitDocument(Document data) throws IOException, JAXBException {
+	public Document callSubmitDocument(Document data) throws IOException, JAXBException, AuthenticationException {
 		XmlDocument response = callSubmitDocumentRaw(data);
 		return new Document().unmarshal(response.xml_content);
 	}
