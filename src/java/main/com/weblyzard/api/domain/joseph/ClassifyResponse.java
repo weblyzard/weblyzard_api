@@ -1,8 +1,10 @@
 package com.weblyzard.api.domain.joseph;
 
+import java.util.Collections;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  * Domain Transfer Object defining the interface for other services to use this
@@ -37,4 +39,11 @@ public class ClassifyResponse {
 		this.classification = classification;
 		return this;
 	}
+
+
+
+	public Set<Classification> getClassification() {
+		return classification != null ? classification : Collections.<Classification> emptySet();
+	}
+
 }

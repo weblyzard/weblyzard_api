@@ -14,8 +14,8 @@ import com.weblyzard.util.http.HTTPPOST;
 
 public class JosephConnector extends BasicConnector {
 
-	private static final String CLASSIFYSERVICEURL = "/rest/1/classify/";
-	private static final String LEARNSERVICEURL = "/rest/learn/";
+	private static final String CLASSIFYSERVICEURL = "/joseph/rest/1/classify/";
+	private static final String LEARNSERVICEURL = "/joseph/rest/learn/";
 
 
 
@@ -46,7 +46,8 @@ public class JosephConnector extends BasicConnector {
 
 
 
-	public ClassifyResponse[] callClassify(String profileName, ClassifyRequest request) throws IOException, AuthenticationException {
+	public ClassifyResponse[] callClassify(String profileName, ClassifyRequest request)
+			throws IOException, AuthenticationException {
 
 		String url = super.weblyzard_url + CLASSIFYSERVICEURL + profileName;
 
@@ -58,7 +59,8 @@ public class JosephConnector extends BasicConnector {
 
 
 
-	public LearnResponse callLearn(String profileName, LearnRequest request) throws IOException, AuthenticationException {
+	public LearnResponse callLearn(String profileName, LearnRequest request)
+			throws IOException, AuthenticationException {
 
 		String url = super.weblyzard_url + LEARNSERVICEURL + profileName;
 

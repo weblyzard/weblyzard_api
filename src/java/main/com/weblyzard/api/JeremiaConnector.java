@@ -20,7 +20,7 @@ import com.weblyzard.util.http.HTTPPOST;
  */
 public class JeremiaConnector extends BasicConnector {
 
-	private static final String SUBMITDOCUMENTSERVICEURL = "/rest/submit_document";
+	private static final String SUBMITDOCUMENTSERVICEURL = "/jeremia/rest/submit_document";
 
 
 
