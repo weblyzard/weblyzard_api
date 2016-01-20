@@ -22,7 +22,7 @@ public class JosephConnectorTest {
 
 	JosephConnector connector = new JosephConnector();
 
-	String profile = "mk";
+	String profile = "yourProfilename";
 
 
 
