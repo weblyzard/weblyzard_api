@@ -2,8 +2,10 @@ package com.weblyzard.api.domain.joseph;
 
 import java.util.Date;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.weblyzard.api.domain.weblyzard.Document;
 
 /**
@@ -16,8 +18,10 @@ import com.weblyzard.api.domain.weblyzard.Document;
  */
 @XmlRootElement
 public class LearnRequest {
-	public Document document;
+	@JsonIgnore
+	private Document document;
 
+	private String xml_document;
 	/**
 	 * The category as which the features of the document should be trained for
 	 * This must be set for <code>webservice.learn()</code>-Service. This is
@@ -59,6 +63,27 @@ public class LearnRequest {
 	public LearnRequest setOldCategory(String oldCategory) {
 		this.oldCategory = oldCategory;
 		return this;
+	}
+
+
+
+	public String getXml_document() {
+		return xml_document;
+	}
+
+
+
+	public LearnRequest setXml_document(String xml_document) throws JAXBException {
+		this.xml_document = xml_document;
+		return this;
+	}
+
+
+
+	public Document getDocument() throws JAXBException {
+		if (this.document == null && this.xml_document.length() > 0)
+			this.document = new Document().unmarshal(xml_document);
+		return document;
 	}
 
 

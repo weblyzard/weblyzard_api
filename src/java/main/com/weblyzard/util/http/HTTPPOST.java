@@ -3,7 +3,6 @@ package com.weblyzard.util.http;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -40,6 +39,10 @@ public class HTTPPOST {
 
 		switch (httpResponse.getStatusLine()
 							.getStatusCode()) {
+		case 400:
+			throw new HttpResponseException(400, "bad request for url: " + url);
+		case 401:
+			throw new HttpResponseException(400, "unauthorized for url: " + url);
 		case 500:
 			throw new HttpResponseException(500, "internal server error for url: " + url);
 		default:

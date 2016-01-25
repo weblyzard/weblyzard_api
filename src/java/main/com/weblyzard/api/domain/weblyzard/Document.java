@@ -179,7 +179,7 @@ public class Document implements Serializable, IXMLMarshallable<Document> {
 	public String marshal() throws JAXBException {
 		StringWriter s = new StringWriter();
 		JAXBElement<Document> jaxbElement = new JAXBElement<Document>(
-				new QName(Document.NAMESPACE_WEBLYZARD, "wl:page", "wl"), Document.class, this);
+				new QName(Document.NAMESPACE_WEBLYZARD, "page", "wl"), Document.class, this);
 		JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
 		Marshaller xmlMarshaller = jaxbContext.createMarshaller();
 		xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

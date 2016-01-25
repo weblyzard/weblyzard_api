@@ -34,8 +34,24 @@ public class JosephConnectorTest {
 
 
 
+	@Test
+	public void testClassifyExtended()
+			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
+		ClassifyResponse[] responses = classifyExtended(profile, new ClassifyRequest());
+		return;
+	}
+
+
+
 	private ClassifyResponse[] classify(String profile, ClassifyRequest data)
 			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
 		return connector.callClassify(profile, data);
+	}
+
+
+
+	private ClassifyResponse[] classifyExtended(String profile, ClassifyRequest data)
+			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
+		return connector.callClassifyExtended(profile, data);
 	}
 }

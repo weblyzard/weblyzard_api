@@ -15,6 +15,7 @@ import com.weblyzard.util.http.HTTPPOST;
 public class JosephConnector extends BasicConnector {
 
 	private static final String CLASSIFYSERVICEURL = "/joseph/rest/1/classify/";
+	private static final String CLASSIFYEXTENDEDSERVICEURL = "/joseph/rest/enhancedClassify/";
 	private static final String LEARNSERVICEURL = "/joseph/rest/learn/";
 
 
@@ -57,6 +58,17 @@ public class JosephConnector extends BasicConnector {
 		return (ClassifyResponse[]) GSONHelper.parseInputStream(responseStream, ClassifyResponse[].class);
 	}
 
+	
+	public ClassifyResponse[] callClassifyExtended(String profileName, ClassifyRequest request)
+			throws IOException, AuthenticationException {
+
+		String url = super.weblyzard_url + CLASSIFYEXTENDEDSERVICEURL + profileName;
+
+		InputStream responseStream = HTTPPOST.requestJSON(url, GSONHelper.parseObject(request, ClassifyRequest.class),
+				super.username, super.password, APPLICATIONJSON);
+
+		return (ClassifyResponse[]) GSONHelper.parseInputStream(responseStream, ClassifyResponse[].class);
+	}
 
 
 	public LearnResponse callLearn(String profileName, LearnRequest request)

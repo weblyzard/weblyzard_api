@@ -14,13 +14,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Classification {
 
 	public String category;
-	public double probability;
+	public float probability;
 	public int productId;
 	public Set<Significance> featureSignificances;
 
 
 
 	public Classification() {
+	}
+
+
+
+	public Classification(String category, float probability) {
+		super();
+		this.category = category;
+		this.probability = probability;
+	}
+
+
+
+	public Classification(String category, float probability, Set<Significance> featureSignificances) {
+		super();
+		this.category = category;
+		this.probability = probability;
+		this.featureSignificances = featureSignificances;
+	}
+
+
+
+	public Classification(String category) {
+		this.category = category;
 	}
 
 
@@ -32,9 +55,9 @@ public class Classification {
 
 
 
-	public Classification setProbability(double probability) {
+	public Classification setProbability(float probability) {
 		if (Double.isNaN(probability))
-			probability = 0d;
+			probability = 0f;
 		this.probability = probability;
 		return this;
 	}
