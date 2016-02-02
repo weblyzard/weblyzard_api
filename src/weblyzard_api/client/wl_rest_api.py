@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-This module provides an easy client for the WL REST API.
+This module provides an easy client for the WL Document REST API.
 
     .. moduleauthor: Fabian Fischer <fabian.fischer@modul.ac.at>
 '''
@@ -12,9 +12,9 @@ import requests
 import unittest
 
 
-class WlRestApiClient(object):
+class WlDocumentRestApiClient(object):
     '''
-    The client for the WL REST API.
+    The client for the WL Document REST API.
     '''
     API_VERSION = 1.0
 
@@ -155,7 +155,7 @@ class WlRestApiClient(object):
         return r.json()
 
 
-class TestWlApiClient(unittest.TestCase):
+class TestWlDocumentRestApiClient(unittest.TestCase):
     '''
     Test class for the WlRestApiClient class.
     '''
@@ -184,7 +184,7 @@ Google X's Project Wing concept was a unique take on the delivery drone: a singl
     
     def setUp(self):
         #TODO Change this to the running instance
-        self.client = WlRestApiClient("http://sol2.wu.ac.at:5555")
+        self.client = WlDocumentRestApiClient("http://sol2.wu.ac.at:5555")
         #self.client = WlRestApiClient("http://localhost:5555")
         print "+++ INFO: Sending requests to %s +++" % self.client.base_url
     
