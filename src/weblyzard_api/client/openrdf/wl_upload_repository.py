@@ -26,7 +26,7 @@ def get_files(src_directory, file_ext='.nt'):
                 yield os.path.join(src_directory, fn)
 
 def upload_directory(src_directory, repository, graph_name, 
-                     server_url=WEBLYZARD_API_URL, file_ext='.nt'):
+                     server_url=WEBLYZARD_API_URL, file_ext='.ttl'):
     ''' uploads all files with the correct file extension to the repository '''
 
     client = OpenRdfClient(server_url)
@@ -54,6 +54,6 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     upload_directory(server_url=args.server_url, 
-                     src_directory=args.src_directory, 
+                     src_directory=args.source_directory, 
                      repository=args.repository, 
                      graph_name=args.graph_name)
