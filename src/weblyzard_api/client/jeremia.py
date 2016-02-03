@@ -90,8 +90,10 @@ class Jeremia(MultiRESTClient):
         return self.request('submit_document', document)
 
     def submit_documents(self, documents, source_id=-1,
-            double_sentence_threshold=10, max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
-            wait_time=DEFAULT_WAIT_TIME, max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
+                         double_sentence_threshold=10, 
+                         max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
+                         wait_time=DEFAULT_WAIT_TIME, 
+                         max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
         '''
         :param batch_id: batch_id to use for the given submission
         :param documents: a list of dictionaries containing the document
