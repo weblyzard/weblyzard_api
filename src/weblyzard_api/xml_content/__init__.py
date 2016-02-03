@@ -382,8 +382,7 @@ class XMLContent(object):
                     sent_attributes = self.apply_dict_mapping(sent.as_dict(),
                                                               sent_mapping)
                     result[sentence_attr_name].append(sent_attributes)
-        except Exception, e:
-            print e
+        except Exception:
             result = self.attributes
             result.update({'sentences': [sent.as_dict() for sent in self.sentences]})
         
@@ -432,6 +431,7 @@ class XMLContent(object):
         annotations = document_dict.get('annotations', None)
         if annotations:
             api_dict['annotations'] = annotations
+            
         return api_dict
 
 
