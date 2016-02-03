@@ -9,11 +9,11 @@ setup (
     author_email = 'lang@weblyzard.com',
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = ['eWRT>=0.9.1.4', 
+    install_requires = ['eWRT>=0.9.1.12', 
                         'nose',
                         'lxml',
                         'requests',
-			'pytest'],
+			            'pytest'],
     dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.4'],
     zip_safe = False,
     scripts = ['src/weblyzard_api/client/openrdf/wl_upload_repository.py',]
