@@ -111,7 +111,7 @@ class Jeremia(MultiRESTClient):
                 result = self.request(request, documents,
                                       pass_through_http_exceptions=(503, ))
                 return result
-            except urllib2.HTTPError as e:
+            except Exception as e:
                 sleep(max_retry_delay * random())
 
         # compatibility to the old implementation
