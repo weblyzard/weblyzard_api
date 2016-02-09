@@ -248,17 +248,3 @@ class OpenRdfClient(object):
         
 if __name__ == '__main__':
     unittest.main()
-    
-class TestOpenRdf(unittest.TestCase):
-    
-    def test_repositories(self):
-        openrdf_url = 'http://voyager.srv.weblyzard.net:8080' #old sesame server
-        openrdf_url = ''
-        client = OpenRdfClient('http://voyager.srv.weblyzard.net:8080')
-        pprint(client.get_repositories())
-        
-        print client.repository_exists('test')
-        print client.repository_exists('config.weblyzard.com')
-        client.get_all_statements('SYSTEM')
-    #    client.get_repo_size('geonames')
-    
