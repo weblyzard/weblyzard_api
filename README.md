@@ -1,8 +1,8 @@
 ## The webLyzard API
 
-Provides access to all webLyzard Web services.
+Provides access to all webLyzard Web services through a python and java library.
 
-Full Documentation in http://weblyzard-api.readthedocs.org/en/latest/
+Full Documentation is available at http://weblyzard-api.readthedocs.org/en/latest/
 
 ### Configuration
 
@@ -50,4 +50,3 @@ The following interfaces are currently available for `weblyzard_api`:
   + docstring explaining what the method does
   + a unit test demonstrating the method's usage in the wild.
 + commits must pass all unit tests
-

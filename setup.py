@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 from setuptools import setup, find_packages
 from setuptools.command import sdist
 
@@ -5,11 +8,11 @@ setup (
     name = 'weblyzard_api',
     version = '0.5.5',
     description= ' Web services for weblyzard',
-    author = 'Heinz-Peter Lang and Albert Weichselbraun',
-    author_email = 'lang@weblyzard.com',
-    packages = find_packages('src'),
-    package_dir = {'': 'src'},
-    install_requires = ['eWRT>=0.9.1.12', 
+    author = 'Albert Weichselbraun, Heinz-Peter Lang, Max Göbels and Philipp Kuntschik',
+    author_email = 'weichselbraun@weblyzard.com',
+    packages = find_packages('src/python'),
+    package_dir = {'': 'src/python'},
+    install_requires = ['eWRT>=0.9.1.12',
                         'nose',
                         'lxml',
                         'requests',
@@ -17,5 +20,5 @@ setup (
     dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.11'],
 
     zip_safe = False,
-    scripts = ['src/weblyzard_api/client/openrdf/wl_upload_repository.py',]
+    scripts = ['src/python/weblyzard_api/client/openrdf/wl_upload_repository.py',]
 )
