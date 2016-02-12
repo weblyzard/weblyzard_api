@@ -18,9 +18,11 @@ from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZAR
 logger = logging.getLogger('weblyzard_api.client.jeremia')
 
 # number of seconds to wait if the web service is occupied
-DEFAULT_MAX_RETRY_DELAY = 15
-DEFAULT_MAX_RETRY_ATTEMPTS = 50
-DEFAULT_WAIT_TIME = 60*30
+# - we stop once either DEFAULT_MAX_RETRY_DELAY or DEFAULT_MAX_RETRY_ATTEMPTS is reached
+# . DEFAULT_WAIT_TIME should therefore amount to DEFAULT_MAX_RETRY_DELAY/2 * DEFAULT_MAX_RETRY_ATTEMPTS
+DEFAULT_WAIT_TIME = 20 * 60
+DEFAULT_MAX_RETRY_DELAY = 20
+DEFAULT_MAX_RETRY_ATTEMPTS = 120
 
 class Jeremia(MultiRESTClient):
     '''
@@ -90,8 +92,8 @@ class Jeremia(MultiRESTClient):
         return self.request('submit_document', document)
 
     def submit_documents(self, documents, source_id=-1,
-                         double_sentence_threshold=10, 
-                         wait_time=DEFAULT_WAIT_TIME, 
+                         double_sentence_threshold=10,
+                         wait_time=DEFAULT_WAIT_TIME,
                          max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
                          max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
         '''
@@ -106,22 +108,25 @@ class Jeremia(MultiRESTClient):
         # wait until the web service has available threads for processing
         # the request
         attempts = 0
-        
-        while self.has_queued_threads() and attempts < max_retry_attempts:
-            start_time = time()
-            while time() - start_time < wait_time:
-                # here we need to check for a 503 error in
-                # case that has_queued_threads has not been
-                # up to date.
-                try:
-                    result = self.request(request, documents,
-                                          pass_through_http_exceptions=(503, ))
-                    return result
-                except urllib2.HTTPError as e:
-                    sleep(max_retry_delay * random())
-                    attempts = attempts + 1
+        start_time = time()
+        while time() - start_time < wait_time and attempts < max_retry_attempts:
+            # wait until threads are available
+            while self.has_queued_threads() and time() - start_time < wait_time:
+                sleep(max_retry_delay * random())
 
-        # compatibility to the old implementation
+            # submit the request
+            # - here we need to check for a 502 and 503 error in
+            #   case that has_queued_threads has not been
+            #   up to date.
+            try:
+                result = self.request(request, documents,
+                                      pass_through_http_exceptions=(503, 502))
+                return result
+            except urllib2.HTTPError as e:
+                attempts = attempts + 1
+
+        # this access most certainly causes an exception since the
+        # requests above have failed.
         return self.request(request, documents)
 
 
