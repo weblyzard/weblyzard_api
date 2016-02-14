@@ -193,9 +193,12 @@ class OpenRdfClient(object):
             text = text.encode('utf-8')
 
 #         print text
-
-        return json.loads(r.text) if r.text else r.text
-
+        try:
+            return json.loads(r.text) if r.text else r.text
+        except Exception, e:
+            print text
+            return text
+        
     def get_repo_size(self, repo_id):
 
         result = self.request('repositories/%s/size' % repo_id)
