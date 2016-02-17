@@ -45,6 +45,12 @@ dist
 *.pyo
 *.tmp*
 
+# Java               #
+######################
+/target/
+/target/*
+
+
 # eclipse
 .project
 .pydevproject
