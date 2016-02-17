@@ -12,7 +12,7 @@ setup (
     author_email = 'weichselbraun@weblyzard.com',
     packages = find_packages('src/python'),
     package_dir = {'': 'src/python'},
-    install_requires = ['eWRT>=0.9.1.12',
+    install_requires = ['eWRT>=0.9.2.0',
                         'nose',
                         'lxml',
                         'requests',
