@@ -120,7 +120,7 @@ class Jeremia(MultiRESTClient):
             #   up to date.
             try:
                 result = self.request(request, documents,
-                                      pass_through_http_exceptions=(503, 502))
+                                      pass_through_exceptions=True)
                 return result
             except (urllib2.HTTPError, urllib2.URLError) as e:
                 attempts = attempts + 1
