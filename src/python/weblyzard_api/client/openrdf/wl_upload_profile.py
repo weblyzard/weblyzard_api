@@ -25,6 +25,8 @@ def upload_profile(profile_fn, service_url, config_repository):
 
     client = OpenRdfClient(server_uri=service_url,
                            config_repository=config_repository)
+    available_repositories = client.get_repositories()
+    
     profile_fns = []
     if os.path.isdir(profile_fn):
         for root, dirs, files in os.walk(profile_fn):
@@ -45,6 +47,11 @@ def upload_profile(profile_fn, service_url, config_repository):
             url = urlparse.urlparse(service_url)
             hostname = '%s://%s' % (url.scheme, url.netloc)
             profile_definition = profile_definition.replace('$HOSTNAME', hostname)
+            repo_name = [line for line in profile_definition.split('\n') if 'dcterms:source' in line][0]
+            repo_name = repo_name.replace('";','').split('/')[-1].strip()
+            if not repo_name in available_repositories:
+                print('Skipping profile %s: bad repository' % profile_name)
+                continue
             client.update_profile(profile_name, profile_definition)
 
 if __name__ == '__main__':
