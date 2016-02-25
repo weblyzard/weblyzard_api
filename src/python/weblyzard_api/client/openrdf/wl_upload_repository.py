@@ -57,12 +57,10 @@ def upload_directory(src_directory, repository=None, graph_name=None,
 #                         if line.startswith('pr:'):
 #                             repository = line.split(':')[-1]
 #                             graph_name = repository.split('.')[0]
-#                             break
-                        
-            if extension=='.ttl':
-                repository = fname.split('/')[-1]
-                repository = repository.replace(extension, '')
-                graph_name = repository.split('.')[0]
+#                             break                     
+            repository = fname.split('/')[-1]
+            repository = repository.replace(extension, '')
+            graph_name = repository.split('.')[0]
 
         if repository in available_repositories:
             print 'uploading %s to repository %s' % (fname, repository)
