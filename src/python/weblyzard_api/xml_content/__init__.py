@@ -36,6 +36,23 @@ SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
 
 LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 
+class Annotation(object):
+    
+    def __init__(self, annotation_type=None, start=None, end=None, key=None, 
+                 sentence=None, surfaceForm=None, md5sum=None):
+        self.annotation_type = annotation_type
+        self.surfaceForm = surfaceForm
+        self.start = start
+        self.end = end
+        self.key = key
+        self.sentence = sentence
+    
+    def as_dict(self):
+        '''
+        :returns: a dictionary representation of the sentence object.
+        '''
+        return dict((k, v) for k, v in self.__dict__.iteritems() if not k.startswith('_'))
+    
 class Sentence(object):
     '''
     The sentence class used for accessing single sentences.
@@ -251,11 +268,16 @@ class XMLContent(object):
         self.sentence_objects = []
         self.titles = []
         self.remove_duplicates = remove_duplicates
+        
+        self.body_annotations = []
+        self.title_annotations = []
 
         result = self.parse_xml_content(xml_content, remove_duplicates)
         
         if result: 
-            self.xml_version, self.attributes, self.sentence_objects, self.titles = result
+            self.xml_version, self.attributes, self.sentence_objects, \
+            self.title_annotations, self.body_annotations, self.titles = result
+        pass
 
     @classmethod
     def convert(cls, xml_content, target_version):
@@ -270,10 +292,11 @@ class XMLContent(object):
             return None
         
         sentence_objects = []
+        annotation_objects = []
         parser = cls.SUPPORTED_XML_VERSIONS[xml_version]
         
-        attributes, sentences = parser.parse(xml_content,
-                                             remove_duplicates)
+        attributes, sentences, title_annotations, body_annotations = \
+        parser.parse(xml_content, remove_duplicates)
         
         if 'title' in attributes:
             titles = [Sentence(value=attributes['title'], is_title=True)]
@@ -288,7 +311,10 @@ class XMLContent(object):
             else: 
                 sentence_objects.append(sent_obj)
                 
-        return xml_version, attributes, sentence_objects, titles
+        for annotation in body_annotations:
+            annotation_obj = Annotation(**annotation) 
+            annotation_objects.append(annotation_obj)
+        return xml_version, attributes, sentence_objects, title_annotations, annotation_objects, titles
     
     @classmethod
     def get_xml_version(cls, xml_content):
@@ -301,11 +327,13 @@ class XMLContent(object):
             
     def get_xml_document(self, header_fields='all', 
                          sentence_attributes=SENTENCE_ATTRIBUTES, 
+                         annotations=None,
                          xml_version=XML2013.VERSION):
 
         '''
         :param header_fields: the header_fields to include
         :param sentence_attributes: sentence attributes to include
+        :param annotations, optionally
         :param xml_version: version of the webLyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
         :returns: the XML representation of the webLyzard XML object
         '''
@@ -315,7 +343,8 @@ class XMLContent(object):
 
         return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
                                                                  attributes=self.attributes, 
-                                                                 sentences=self.sentences)
+                                                                 sentences=self.sentences,
+                                                                 annotations=annotations)
 
     def get_plain_text(self):
         ''' :returns: the plain text of the XML content '''
@@ -382,6 +411,15 @@ class XMLContent(object):
                     sent_attributes = self.apply_dict_mapping(sent.as_dict(),
                                                               sent_mapping)
                     result[sentence_attr_name].append(sent_attributes)
+                    
+            annotation_attr_name = mapping['body_annotations'] if 'body_annotations' in mapping else 'body_annotations' 
+            if 'annotations_map' in mapping:
+                result[annotation_attr_name] = []
+                annotation_mapping = mapping['annotations_map']            
+                for annotation in self.body_annotations:                     
+                    annotation_attributes = self.apply_dict_mapping(annotation.as_dict(),
+                                                              annotation_mapping)
+                    result[annotation_attr_name].append(annotation_attributes)
         except Exception:
             result = self.attributes
             result.update({'sentences': [sent.as_dict() for sent in self.sentences]})

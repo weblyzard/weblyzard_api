@@ -27,6 +27,12 @@ class XML2013(XMLParser):
                         '{%s}pos' % DOCUMENT_NAMESPACES['wl']: 'pos',
                         '{%s}is_title' % DOCUMENT_NAMESPACES['wl']: 'is_title',
                         '{%s}dependency' % DOCUMENT_NAMESPACES['wl']: 'dependency'}
+    ANNOTATION_MAPPING = {'{%s}key' % DOCUMENT_NAMESPACES['wl']: 'key',
+                          '{%s}surfaceForm' % DOCUMENT_NAMESPACES['wl']: 'surfaceForm',
+                          '{%s}start' % DOCUMENT_NAMESPACES['wl']: 'start',
+                          '{%s}end' % DOCUMENT_NAMESPACES['wl']: 'end',
+                          '{%s}annotationType' % DOCUMENT_NAMESPACES['wl']: 'annotation_type'
+                          }
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
@@ -42,15 +48,23 @@ class TestXML2013(unittest.TestCase):
              xml:lang="de" 
              wl:nilsimsa="37345e380610614cc7696ac08ed098e05fa64211755da1d4f525ef4cd762726e">
         <wl:sentence 
-            wl:pos="NN $( NN APPR ADJA NN VVPP" wl:id="b42bb3f2cb7ed667ba311811823f37cf" 
+            wl:pos="NN $( NN APPR ADJA NN VVPP" 
+            wl:id="b42bb3f2cb7ed667ba311811823f37cf" 
             wl:token="0,20 21,22 23,38 39,42 43,49 50,56 57,64" 
             wl:sem_orient="0.0" 
-            wl:significance="0.0" 
+            wl:significance="0.0"
             wl:is_title="true">
                 <![CDATA[Freihandelsgespr??che - Erleichterungen f??r kleine Firmen geplant]]>
-        </wl:sentence></wl:page>'''
+        </wl:sentence>
+        <wl:annotation
+            wl:key="some.url.com"
+            wl:surfaceForm="this is the text"
+            wl:start="0"
+            wl:end="10"
+            wl:md5sum="b42bb3f2cb7ed667ba311811823f37cf">
+        </wl:annotation></wl:page>'''
         
-        attributes, sentences = XML2013.parse(xml)
+        attributes, sentences, title_annotations, body_annotations = XML2013.parse(xml)
 
         assert len(attributes) == 4
         assert len(sentences) == 1
