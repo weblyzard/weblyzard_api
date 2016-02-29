@@ -26,11 +26,17 @@ class Jesaja(MultiRESTClient):
     ATTRIBUTE_MAPPING = {'content_id': 'id', 
                          'title': 'title', 
                          'sentences': 'sentence',
+                         'body_annotations': 'body_annotation',
                          'lang': 'xml:lang',
                          'sentences_map': {'pos': 'pos',
                                            'token': 'token', 
                                            'value': 'value',
-                                           'md5sum': 'id'}}
+                                           'md5sum': 'id'},
+                         'annotations_map': {'start':'start',
+                                             'end':'end',
+                                             'key':'key',
+                                             'surfaceForm':'surfaceForm'
+                                             }}
     
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):

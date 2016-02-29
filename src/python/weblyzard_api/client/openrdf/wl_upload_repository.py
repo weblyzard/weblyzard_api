@@ -15,6 +15,11 @@ from weblyzard_api.client import WEBLYZARD_API_URL
 
 from weblyzard_api.client.openrdf import OpenRdfClient
 
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in xrange(0, len(l), n):
+        yield l[i:i+n]
+        
 def get_files(src_directory, file_ext=None):
     file_list = []
     for _, _, files in os.walk(src_directory):
@@ -28,7 +33,8 @@ def get_files(src_directory, file_ext=None):
     return file_list
 
 def upload_directory(src_directory, repository=None, graph_name=None,
-                     server_url=WEBLYZARD_API_URL, file_ext=None):
+                     server_url=WEBLYZARD_API_URL, file_ext=None, 
+                     chunk_size=100000, max_retry=5):
     ''' uploads all files with the correct file extension to the repository '''
 
     client = OpenRdfClient(server_url)
@@ -44,21 +50,35 @@ def upload_directory(src_directory, repository=None, graph_name=None,
         print 'Processing file: %s' % fname
 
         if not repository and not graph_name:
-            if extension=='.ttl':
-                #extract repository and graph name from file
-                with open(fname) as f:
-                    for line in f.readlines():
-                        if line.startswith('pr:'):
-                            repository = line.split(':')[-1]
-                            graph_name = repository.split('.')[0]
-            elif extension=='.nt':
-                repository = fname.split('/')[-1]
-                repository = repository.replace('.nt', '')
-                graph_name = repository.split('.')[0]
+#             if extension=='.ttl':
+#                 #extract repository and graph name from file
+#                 with open(fname) as f:
+#                     for line in f.readlines():
+#                         if line.startswith('pr:'):
+#                             repository = line.split(':')[-1]
+#                             graph_name = repository.split('.')[0]
+#                             break                     
+            repository = fname.split('/')[-1]
+            repository = repository.replace(extension, '')
+            graph_name = repository.split('.')[0]
 
         if repository in available_repositories:
-            client.upload(open(fname).read(), graph_name, repository)
-
+            print 'uploading %s to repository %s' % (fname, repository)
+            lines = open(fname).readlines()
+            for chunk in chunks(lines, chunk_size):
+                success = False
+                retry = 0
+                while not success and retry<max_retry:
+                    try:
+                        chunk = '\n'.join(chunk)
+                        client.upload(chunk, graph_name, repository)
+                        success = True
+                    except Exception, e:
+                        print e
+                        retry += 1
+                        
+                if not success:
+                    print('Could not upload chunk, skipping...')
         else:
             print '%s does not exist on machine %s, please add...' % (repository,
                                                                       server_url)
