@@ -533,15 +533,15 @@ class EntityLyzardTest(unittest.TestCase):
   
   
     def test_date_profile(self):
-          """ """
-          docs = [{'content_id': '12', 'content': u'Franz Klammer fährt gestern Ski, 12th September 2014 are we feeling better'}]
-    #                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
-          profile = 'extras.com.weblyzard.backend.recognize.extras.DateTimeProfile'
-    #         assert self.IS_ONLINE and self.service_is_online
-    #         assert profile in self.available_profiles
-      
-          result = self.client.search_documents(profile_names=[profile], doc_list=docs)
-          print result
+        """ """
+        docs = [{'content_id': '12', 'content': u'Franz Klammer fährt gestern Ski, 12th September 2014 are we feeling better'}]
+        #                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
+        profile = 'extras.com.weblyzard.backend.recognize.extras.DateTimeProfile'
+        #         assert self.IS_ONLINE and self.service_is_online
+        #         assert profile in self.available_profiles
+        
+        result = self.client.search_documents(profile_names=[profile], doc_list=docs)
+        print result
           
     def test_password(self):
         test_cases = (
@@ -571,20 +571,22 @@ class EntityLyzardTest(unittest.TestCase):
                 else:
                     assert user_password not in correct_url
  
+    def test_swiss_profile(self):
+        required_profile = 'de_CH.geo.5000.ng'
+        client = Recognize()
+        # client.remove_profile(required_profile)
+        client.add_profile(required_profile)
+        for text in 'Haldenstein liegt in der Nähe von Landquart.', 'Sargans hat einen wichtigen Bahnhof', 'Vinzenz arbeitet in Winterthur':
+            result = client.search_text(required_profile, text, output_format='compact' )
+            print(result)
+     
+        required_profile = 'snf.media.criticism.project'
+        client.add_profile(required_profile)
+        print client.search_text(required_profile, "Die SRG und die SRF sind sehr kritisch was das Engagement der NZZ betrifft", output_format='compact')
+        print client.search_text(required_profile, "die srg und die srf sind sehr kritisch was das engagement der nzz betrifft", output_format='compact')
+
 if __name__ == '__main__':
-    # unittest.main()
+    unittest.main()
 
-    required_profile = 'de_CH.geo.5000.ng'
-    client = Recognize()
-    # client.remove_profile(required_profile)
-    client.add_profile(required_profile)
-    for text in 'Haldenstein liegt in der Nähe von Landquart.', 'Sargans hat einen wichtigen Bahnhof', 'Vinzenz arbeitet in Winterthur':
-        result = client.search_text(required_profile, text, output_format='compact' )
-        print(result)
-
-    required_profile = 'snf.media.criticism.project'
-    client.add_profile(required_profile)
-    print client.search_text(required_profile, "Die SRG und die SRF sind sehr kritisch was das Engagement der NZZ betrifft", output_format='compact')
-    print client.search_text(required_profile, "die srg und die srf sind sehr kritisch was das engagement der nzz betrifft", output_format='compact')
 
 
