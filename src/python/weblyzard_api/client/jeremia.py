@@ -381,6 +381,7 @@ class JeremiaTest(unittest.TestCase):
 
         j = Jeremia()
         first, second = j.submit_documents(docs)
+        print first['xml_content']
         assert 'dc:source="http://test.org"' in first['xml_content']
         assert 'dc:author="Ana"' in first['xml_content']
 
@@ -394,6 +395,35 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia(url='http://localhost:6666')
         has_queued_threads = j.has_queued_threads()
         assert has_queued_threads == True
+
+    def test_docs_serialization_format(self):
+        import json
+        from eWRT.util.module_path import get_resource
+
+        DOCS = [{'id': 7,
+                 'body': 'Ehre sei Gott.',
+                 'title': '',
+                 'format': 'text/html',
+                 'header': {'test': 'testvalue'}},
+                {'id': 8,
+                 'body': '',
+                 'title': 'Guten Tag!',
+                 'format': 'text/html',
+                 'header': {}}]
+        REFERENCE_MULTI = json.load(open(get_resource(__file__, 'data/jeremia_reference_output_documents.py')))
+        REFERENCE_SINGLE = json.load(open(get_resource(__file__, 'data/jeremia_reference_output_single_document.py')))
+
+        # document list
+        j = Jeremia()
+        result = j.submit_documents(DOCS)
+        assert REFERENCE_MULTI == result
+
+        # single document
+        result = j.submit_document(DOCS[0])
+        assert REFERENCE_SINGLE == result
+
+
+
 
 
 if __name__ == '__main__':
