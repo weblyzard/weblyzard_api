@@ -381,7 +381,10 @@ class JeremiaTest(unittest.TestCase):
 
         j = Jeremia()
         first, second = j.submit_documents(docs)
-        print first['xml_content']
+        # swap documents, if required
+        if first['content_id'] == '124':
+            first, second = second, first
+
         assert 'dc:source="http://test.org"' in first['xml_content']
         assert 'dc:author="Ana"' in first['xml_content']
 
@@ -410,12 +413,14 @@ class JeremiaTest(unittest.TestCase):
                  'title': 'Guten Tag!',
                  'format': 'text/html',
                  'header': {}}]
-        REFERENCE_MULTI = json.load(open(get_resource(__file__, 'data/jeremia_reference_output_documents.py')))
-        REFERENCE_SINGLE = json.load(open(get_resource(__file__, 'data/jeremia_reference_output_single_document.py')))
+        REFERENCE_MULTI = json.load(open(get_resource(__file__, 'data/jeremia_reference_output_documents.json')))
+        REFERENCE_SINGLE = json.load(open(get_resource(__file__, 'data/jeremia_reference_output_single_document.json')))
 
         # document list
         j = Jeremia()
         result = j.submit_documents(DOCS)
+        result.sort()
+        REFERENCE_MULTI.sort()
         assert REFERENCE_MULTI == result
 
         # single document
@@ -423,7 +428,13 @@ class JeremiaTest(unittest.TestCase):
         assert REFERENCE_SINGLE == result
 
 
-
+def test_suite():
+    '''
+    add support for calling Jeremia tests as part of a test suite
+    '''
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(JeremiaTest, 'test'))
+    return suite
 
 
 if __name__ == '__main__':
