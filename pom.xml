@@ -15,6 +15,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
 				<configuration>
 					<excludes>
 						<exclude>src/java/test/</exclude>
@@ -24,6 +25,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<sourceDirectory>src/java/main</sourceDirectory>
+		<testSourceDirectory>src/java/test</testSourceDirectory>
 	</build>
 
 	<properties>
@@ -40,12 +43,12 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.3.5</version>
+			<version>4.5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.2.4</version>
+			<version>2.6.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
@@ -55,7 +58,7 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>2.13</version>
+			<version>2.22.2</version>
 		</dependency>
 	</dependencies>
 </project>
