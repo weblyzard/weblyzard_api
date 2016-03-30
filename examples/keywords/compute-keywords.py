@@ -1,5 +1,5 @@
-# -*- coding: UTF-8 -*-
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 
 '''
 Jesaja Keyword Service - Example
@@ -9,7 +9,7 @@ Written by Albert Weichselbraun <weichselbraun@weblyzard.com>
 from sys import path
 from os.path import join as os_join, dirname
 from glob import glob
-from cPickle import loads, load
+from cPickle import loads, load, dump
 from gzip import GzipFile
 from json import dump as jdump, load as jload
 from time import time
@@ -19,10 +19,10 @@ from weblyzard_api.client.jeremia import Jeremia
 from weblyzard_api.xml_content import XMLContent
 from eWRT.util.module_path import get_resource
 
-MATVIEW_NAME  = 'raika'
-PROFILE_NAME  = "raika_profile"
-STOPLIST_NAME = "raika_stoplist"
-STOPLIST_FILE = "raika_stoplist.txt.gz"
+MATVIEW_NAME  = 'example'
+PROFILE_NAME  = "example_profile"
+STOPLIST_NAME = "example_stoplist"
+STOPLIST_FILE = "example_stoplist.txt.gz"
 
 PROFILE = { 'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
             'min_phrase_significance'        : 1.0,
@@ -30,7 +30,7 @@ PROFILE = { 'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
             'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
             'min_token_count'                : 2,
             'skip_underrepresented_keywords' : True,
-            'stoplists'                      : ['raika_stopwords'],
+            'stoplists'                      : [STOPLIST_NAME],
           }
 
 
@@ -56,16 +56,25 @@ def get_weblyzard_xml_documents(corpus_documents):
     result = [doc['xml_content'] for doc in jeremia.submit_documents(corpus_documents)]
     return result
 
-
-
 if __name__ == '__main__':
 
     print "Reading corpus..."
-    CORPUS_PATH = os_join(dirname(__file__), 'corpus', '*.txt.gz')
-    corpus_documents = read_corpus_files(CORPUS_PATH)
+    #CORPUS_PATH = os_join(dirname(__file__), 'corpus', '*.txt.gz')
+    #corpus_documents = read_corpus_files(CORPUS_PATH)
 
-    print "Pre-processing corpus..."
-    xml_corpus_documents = get_weblyzard_xml_documents(corpus_documents)[:10]
+    #print "Pre-processing corpus..."
+    #xml_corpus_documents = get_weblyzard_xml_documents(corpus_documents) # [10:15]
+    #jdump(xml_corpus_documents, GzipFile("input.pickle.gz", "w"))
+    xml_corpus_documents = jload(GzipFile("input.pickle.gz"))[0:2]
+    print xml_corpus_documents[1]
+    #print Jesaja.convert_document(xml_corpus_documents[0]).keys()
+    #print "---"
+    #print xml_corpus_documents[16:17][0][:500]
+    #print Jesaja.convert_document(xml_corpus_documents[16:17]).keys()
+    #print [s.keys() for s in Jesaja.convert_document(xml_corpus_documents[16])['sentence']]
+    #xml_corpus_documents = xml_corpus_documents[16:17]
+    #print type(xml_corpus_documents)
+    # print [s.keys() for s in xml_corpus_documents[
 
     print "Configuring keyword service..."
     jesaja = Jesaja()
@@ -76,7 +85,7 @@ if __name__ == '__main__':
     print "Uploading reference corpus..."
     # we try to rotate the corpus shards until enough documents have been
     # uploadd
-    while jesaja.rotate_shard() == 0:
+    while jesaja.rotate_shard(MATVIEW_NAME) == 0:
         print " Adding corpus..."
         jesaja.add_documents(MATVIEW_NAME, xml_corpus_documents)
 
