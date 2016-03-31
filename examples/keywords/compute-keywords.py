@@ -59,22 +59,11 @@ def get_weblyzard_xml_documents(corpus_documents):
 if __name__ == '__main__':
 
     print "Reading corpus..."
-    #CORPUS_PATH = os_join(dirname(__file__), 'corpus', '*.txt.gz')
-    #corpus_documents = read_corpus_files(CORPUS_PATH)
+    CORPUS_PATH = os_join(dirname(__file__), '../corpus', '*.txt.gz')
+    corpus_documents = read_corpus_files(CORPUS_PATH)
 
-    #print "Pre-processing corpus..."
-    #xml_corpus_documents = get_weblyzard_xml_documents(corpus_documents) # [10:15]
-    #jdump(xml_corpus_documents, GzipFile("input.pickle.gz", "w"))
-    xml_corpus_documents = jload(GzipFile("input.pickle.gz"))[0:2]
-    print xml_corpus_documents[1]
-    #print Jesaja.convert_document(xml_corpus_documents[0]).keys()
-    #print "---"
-    #print xml_corpus_documents[16:17][0][:500]
-    #print Jesaja.convert_document(xml_corpus_documents[16:17]).keys()
-    #print [s.keys() for s in Jesaja.convert_document(xml_corpus_documents[16])['sentence']]
-    #xml_corpus_documents = xml_corpus_documents[16:17]
-    #print type(xml_corpus_documents)
-    # print [s.keys() for s in xml_corpus_documents[
+    print "Pre-processing corpus..."
+    xml_corpus_documents = get_weblyzard_xml_documents(corpus_documents)
 
     print "Configuring keyword service..."
     jesaja = Jesaja()
@@ -82,15 +71,17 @@ if __name__ == '__main__':
     jesaja.set_keyword_profile(PROFILE_NAME, PROFILE)
     jesaja.set_matview_profile(matview_id=MATVIEW_NAME, profile_name=PROFILE_NAME)
 
-    print "Uploading reference corpus..."
-    # we try to rotate the corpus shards until enough documents have been
-    # uploadd
-    while jesaja.rotate_shard(MATVIEW_NAME) == 0:
-        print " Adding corpus..."
-        jesaja.add_documents(MATVIEW_NAME, xml_corpus_documents)
+    # check whether we have already shards available for the given matview
+    if not jesaja.has_corpus(matview_id=MATVIEW_NAME):
+        print "Uploading reference corpus..."
+        # we try to rotate the corpus shards until enough documents have been
+        # uploaded
+        while jesaja.rotate_shard(MATVIEW_NAME) == 0:
+            print " Adding corpus..."
+            jesaja.add_documents(MATVIEW_NAME, xml_corpus_documents)
 
     print "Computing keywords..."
     result = jesaja.get_keywords(MATVIEW_NAME, xml_corpus_documents)
 
-    with GzipFile("results.pickle.gz", "w") as f:
-        dump(f, result)
+    with GzipFile("results.json.gz", "w") as f:
+        jdump(result, f, indent=True)

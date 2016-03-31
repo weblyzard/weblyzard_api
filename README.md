@@ -44,6 +44,12 @@ The following interfaces are currently available for `weblyzard_api`:
 + Recognize (named entity recognition)
 + Sentiment Analysis
 
+### Examples
+
+Example scripts are available in the `example` directory.
+
++ `examples/keywords` - example keywords and pre-processing script.
+
 ### Programming Guidelines
 
 + Required documentation for public methods
