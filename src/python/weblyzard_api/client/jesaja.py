@@ -107,6 +107,13 @@ class Jesaja(MultiRESTClient):
         available_completed_shards = self.request('list_shards/complete/{}'.format(matview_id))
         return len(available_completed_shards[matview_id]) > 0
 
+    def get_corpus_size(self, matview_id):
+        available_completed_shards = self.request('list_shards/complete/{}'.format(matview_id))
+        total = 0
+        for shard in available_completed_shards[matview_id]:
+            total= total + shard['wordCount']
+        return total
+
     def list_profiles(self):
         return self.request('list_profiles')
 
