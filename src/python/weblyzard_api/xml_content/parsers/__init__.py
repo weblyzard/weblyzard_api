@@ -211,8 +211,10 @@ class XMLParser(object):
             annotation_mapping = None
         if annotations:
             # add all annotations as body annotations
-            for a_type, annotations in annotations.iteritems():
-                for annotation in annotations:       
+            for a_type, a_items in annotations.iteritems():
+                for annotation in a_items:    
+                    if not isinstance(annotation, dict):
+                        continue   
                     assert isinstance(annotation, dict), 'dict required'
                     if 'entities' in annotation:
                         for entity in annotation['entities']:
@@ -220,13 +222,10 @@ class XMLParser(object):
                             entity['key'] = annotation['key']
                             annotation_attributes = cls.dump_xml_attributes(entity,
                                                                             mapping=annotation_mapping)
-                            annotation_elem = etree.SubElement(root,
-                                                               '{%s}annotation' % cls.get_default_ns(),
-                                                               attrib=annotation_attributes,
-                                                               nsmap=cls.DOCUMENT_NAMESPACES)
-#                             if isinstance(value, int):
-#                                 value = str(value)
-#                             annotation_elem.text = etree.CDATA(value)
+                            etree.SubElement(root,
+                                             '{%s}annotation' % cls.get_default_ns(),
+                                             attrib=annotation_attributes,
+                                             nsmap=cls.DOCUMENT_NAMESPACES)
 
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
