@@ -202,8 +202,13 @@ class XMLParser(object):
                                          nsmap=cls.DOCUMENT_NAMESPACES)
             if isinstance(value, int):
                 value = str(value)
-            sent_elem.text = etree.CDATA(value)
-           
+                
+            try:
+                sent_elem.text = etree.CDATA(value)
+            except Exception, e:
+                print('Skipping bad cdata: %s (%s)' % (value, e))
+                continue
+            
         if cls.ANNOTATION_MAPPING:
             annotation_mapping = dict(zip(cls.ANNOTATION_MAPPING.values(),
                                     cls.ANNOTATION_MAPPING.keys()))

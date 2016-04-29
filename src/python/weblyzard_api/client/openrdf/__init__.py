@@ -12,11 +12,13 @@ http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrd
 '''
 import json
 import requests
+import unittest
+
 from pprint import pprint
 from collections import namedtuple
 from urllib import urlencode
 from SPARQLWrapper import SPARQLWrapper, JSON
-import unittest
+
 
 QUERIES = {
            'configured_profiles': '''
@@ -147,9 +149,9 @@ class OpenRdfClient(object):
             self.delete_statements(self.config_repository,
                                    subj=subject_uri,
                                    delete=True)
-        self.upload(content=profile_definition,
-                    context='config.weblyzard.com',
-                    target_repository=self.config_repository)
+        self.upload_statement(content=profile_definition,
+                              context='config.weblyzard.com',
+                              target_repository=self.config_repository)
 
     def check_config_repo(self):
         repositories = self.get_repositories()
@@ -192,7 +194,6 @@ class OpenRdfClient(object):
         if isinstance(text, unicode):
             text = text.encode('utf-8')
 
-#         print text
         try:
             return json.loads(r.text) if r.text else r.text
         except Exception, e:
@@ -241,7 +242,7 @@ class OpenRdfClient(object):
 
         return self.request(function, params=params, delete=delete)
 
-    def upload(self, content, context, target_repository):
+    def upload_statement(self, content, context, target_repository):
 
         params = 'context=%s' % context
         function = 'repositories/%s/statements' % target_repository
