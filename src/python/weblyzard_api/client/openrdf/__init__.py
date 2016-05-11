@@ -10,6 +10,10 @@ For details: `check Sesame REST API<http://openrdf.callimachus.net/sesame/2.7/do
 http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrdf-sesame-2.6.10/docs/system/ch08.html
 
 '''
+import ast
+import urllib
+import httplib2
+import os
 import json
 import requests
 import unittest
@@ -250,5 +254,55 @@ class OpenRdfClient(object):
         self.request(function, content, params, delete=False,
                      content_type='application/x-turtle;charset=UTF-8')
 
+    def execute_query(self, query, repository):
+        params = { 'query': query }
+        headers = {
+          'content-type': 'application/x-www-form-urlencoded',
+          'accept': 'application/sparql-results+json'
+        }
+        endpoint = "%s/%s/statements" % (self.server_uri, repository)
+        (response, content) = httplib2.Http().request(endpoint, 'POST', 
+                                                      urllib.urlencode(params),
+                                                      headers=headers)
+        return (response,ast.literal_eval(content))
+      
+    def execute_update(self, query, repository, server_url):
+        params = { 'update': query }
+        headers = {
+          'content-type': 'application/x-www-form-urlencoded',
+          'accept': 'application/sparql-results+json'
+        }
+        endpoint = "%s/%s/statements" % (self.server_uri, repository)
+        (response, content) = httplib2.Http().request(endpoint, 'POST', 
+                                                      urllib.urlencode(params),
+                                                      headers=headers)
+        print(response, content)
+        return True
+      
+    def delete_triples_by_types(self, repository, types):
+        
+        for rdf_type in types:
+            query = 'DELETE ?s WHERE {?s ?p ?o FILTER(?s = <%s>)}' % rdf_type
+            self.execute_update(query, repository)
+            
+    def upload_repo_from_file(self, filename, repository):
+        base_fn = os.path.basename(filename)
+        
+        assert base_fn.endswith('ttl')
+        
+        graph  = 'file://%s'%base_fn
+        params = { 'context': '<' + graph + '>' }
+        endpoint = "%s/%s/statements?%s" % (self.server_uri, repository, 
+                                            urllib.urlencode(params))
+        
+        print("Loading %s into %s in Sesame" % (filename, endpoint))
+        
+        data = open(filename, 'r').read()
+        (response, content) = httplib2.Http().request(endpoint, 'PUT', 
+                                                      body=data, 
+                                                      headers={'content-type': 'application/x-turtle'})
+        print("Response %s" % response.status)
+        print(content)
+    
 if __name__ == '__main__':
     unittest.main()
