@@ -272,12 +272,13 @@ class OpenRdfClient(object):
           'content-type': 'application/x-www-form-urlencoded',
           'accept': 'application/sparql-results+json'
         }
-        endpoint = "%s/%s/statements" % (self.server_uri, repository)
+        repository_url = self.repository_url_tmplt % repository
+        endpoint = "%s/statements" % (repository_url)
         (response, content) = httplib2.Http().request(endpoint, 'POST', 
                                                       urllib.urlencode(params),
                                                       headers=headers)
-        print(response, content)
-        return True
+        response = response['status']
+        return(response)
       
     def delete_triples_by_types(self, repository, types):
         
