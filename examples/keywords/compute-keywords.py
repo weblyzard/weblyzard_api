@@ -56,6 +56,17 @@ def get_weblyzard_xml_documents(corpus_documents):
     result = [doc['xml_content'] for doc in jeremia.submit_documents(corpus_documents)]
     return result
 
+def get_tokens(sentence):
+    from json import loads
+    sentence = loads(sentence)
+    text = sentence['value']
+    tokens = []
+    for indices in sentence['tok_list'].split(' '):
+        start, end = map(int, indices.split(','))
+        tokens.append(text[start:end])
+
+    return tokens
+
 if __name__ == '__main__':
 
     print "Reading corpus..."
@@ -83,5 +94,13 @@ if __name__ == '__main__':
     print "Computing keywords..."
     result = jesaja.get_keywords(MATVIEW_NAME, xml_corpus_documents)
 
+    docs = {XMLContent(content).content_id:[get_tokens(s.to_json()) for s in XMLContent(content).sentences] for content in xml_corpus_documents}
+    result_docs = {}
+    for content_id, keywords in result.items():
+        result_docs[content_id] = {'keywords': keywords,
+                                   'content' : docs[content_id]}
+
+
     with GzipFile("results.json.gz", "w") as f:
-        jdump(result, f, indent=True)
+        jdump(result_docs, f, indent=True)
+
