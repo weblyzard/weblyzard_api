@@ -14,7 +14,7 @@ from gzip import GzipFile
 from json import dump as jdump, load as jload
 from time import time
 
-from weblyzard_api.client.jesaja import Jesaja
+from weblyzard_api.client.jesaja_ng import JesajaNg as Jesaja
 from weblyzard_api.client.jeremia import Jeremia
 from weblyzard_api.xml_content import XMLContent
 from eWRT.util.module_path import get_resource
