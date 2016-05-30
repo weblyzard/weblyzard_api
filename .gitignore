@@ -56,6 +56,7 @@ dist
 .pydevproject
 .settings
 .metadata
+.classpath
 
 # vim
 .*.swp

@@ -31,7 +31,8 @@ class XML2013(XMLParser):
                           '{%s}surfaceForm' % DOCUMENT_NAMESPACES['wl']: 'surfaceForm',
                           '{%s}start' % DOCUMENT_NAMESPACES['wl']: 'start',
                           '{%s}end' % DOCUMENT_NAMESPACES['wl']: 'end',
-                          '{%s}annotationType' % DOCUMENT_NAMESPACES['wl']: 'annotation_type'
+                          '{%s}annotationType' % DOCUMENT_NAMESPACES['wl']: 'annotation_type',
+                          '{%s}preferredName' % DOCUMENT_NAMESPACES['wl']: 'preferredName'
                           }
 
     @classmethod

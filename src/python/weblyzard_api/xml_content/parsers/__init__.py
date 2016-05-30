@@ -225,6 +225,7 @@ class XMLParser(object):
                         for entity in annotation['entities']:
                             entity['annotation_type'] = a_type
                             entity['key'] = annotation['key']
+                            entity['preferredName'] = annotation['preferredName']
                             annotation_attributes = cls.dump_xml_attributes(entity,
                                                                             mapping=annotation_mapping)
                             etree.SubElement(root,
