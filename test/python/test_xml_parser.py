@@ -40,7 +40,7 @@ class TestXML2005(unittest.TestCase):
                 <![CDATA[Br??ssel/Washington (APA/dpa) - Kleine und mittlere Unternehmen k??nnen auf Erleichterungen beim Handel mit den USA hoffen.]]>    
         </wl:sentence></wl:page>'''
         
-        attributes, sentences = XML2005.parse(xml)
+        attributes, sentences, title_annotations, body_annotations = XML2005.parse(xml)
         assert len(attributes) == 5
         assert len(sentences) == 1
         assert all(attr in attributes for attr in ('content_id', 'content_type',
