@@ -142,7 +142,7 @@ class XMLParser(object):
         return sentences
 
     @classmethod
-    def dump_xml_attributes(cls, attributes, mapping, keep_none_values=False):
+    def dump_xml_attributes(cls, attributes, mapping):
         new_attributes = {}
 
         for key, value in attributes.iteritems():
@@ -150,8 +150,8 @@ class XMLParser(object):
             if mapping and key in mapping:
                 key = mapping[key]
 
-            if value and value not in ('None', 'null', '0.0'):
-                new_attributes[key] = cls.encode_value(value)
+                if value and value not in ('None', 'null', '0.0'):
+                    new_attributes[key] = cls.encode_value(value)
 
         return new_attributes
 
@@ -172,7 +172,7 @@ class XMLParser(object):
         else:
             invert_mapping = None
 
-        attributes = cls.dump_xml_attributes(attributes,
+        attributes = cls.dump_xml_attributes(attributes=attributes,
                                              mapping=invert_mapping)
         root = etree.Element('{%s}page' % cls.get_default_ns(),
                              attrib=attributes,
