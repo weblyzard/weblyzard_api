@@ -1,3 +1,6 @@
+import unittest
+
+from weblyzard_api.xml_content.parsers import XMLParser
 
 
 class TestParser(unittest.TestCase):
