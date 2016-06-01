@@ -1,5 +1,6 @@
 import unittest
 import os
+
 from pickle import load
 
 from weblyzard_api.xml_content.parsers import XMLParser
@@ -13,10 +14,9 @@ class TestXMLParser(unittest.TestCase):
         test_data_path = os.path.join(
             os.path.dirname(__file__),
             'data',
-            'document_with_illegal_header_attributes.pkl')
+            'xml_content_with_illegal_header_attributes.pkl')
         with open(test_data_path) as f:
-            document = load(f)
-            xml_content = document.xml_content
+            xml_content = load(f)
             xml_string = xml_content.get_xml_document()
             assert xml_string
 
