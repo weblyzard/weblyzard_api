@@ -1,4 +1,6 @@
 import unittest
+import os
+from pickle import load
 
 from weblyzard_api.xml_content.parsers import XMLParser
 from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
@@ -6,6 +8,18 @@ from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
 
 
 class TestXMLParser(unittest.TestCase):
+
+    def test_illegal_document_headers_for_lxml(self):
+        test_data_path = os.path.join(
+            os.path.dirname(__file__),
+            'data',
+            'document_with_illegal_header_attributes.pkl')
+        with open(test_data_path) as f:
+            document = load(f)
+            xml_content = document.xml_content
+            xml_string = xml_content.get_xml_document()
+            assert xml_string
+
 
     def test_scientific_notation_bug(self):
         '''

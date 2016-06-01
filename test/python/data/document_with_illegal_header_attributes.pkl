@@ -1,0 +1,3614 @@
+ccopy_reg
+_reconstructor
+p0
+(cwl_core_ng.models.document
+Document
+p1
+c__builtin__
+object
+p2
+Ntp3
+Rp4
+(dp5
+S'region_code'
+p6
+NsS'encoding'
+p7
+Vutf-8
+p8
+sS'sourcelist'
+p9
+I399
+sS'keywords'
+p10
+(lp11
+sS'valid_from'
+p12
+cdatetime
+datetime
+p13
+(S'\x07\xe0\x05\x1e\x00\x00\x00\x00\x00\x00'
+p14
+tp15
+Rp16
+sS'title'
+p17
+S'Munch, Monet, Michelangelo, and more: High art through a LEGO lens | Ars Technica'
+p18
+sS'ignored_errors'
+p19
+(lp20
+sS'country_id'
+p21
+NsS'language_id'
+p22
+S'en'
+p23
+sS'geo_lat'
+p24
+NsS'content'
+p25
+NsS'fti_stripped'
+p26
+NsS'fti_nouns'
+p27
+S"'and':82 'angle':91 'another':51 'anything':44 'apples':77 'approximations':73 'are':81 'arent':46 'arrangement':93 'ars':25 'art':26 'artist':21 'artists':52 'attendees':35 'attention':42 'based':7 'below':76 'brick':61 'bricks':48 'building':104 'cant':86 'cat':75 'colors':6 'conversions':24 'culture':29 'default':72 'design':30 'detail':92 'dress':89 'effect':98 'exhibit':47 'exhibits':10 'expect':31 'eyes':66 'face':110 'familiar':95 'fan':16 'fare':97 'fish':62 'fog':39 'footage':56 'frame':28 'gallery':102 'has\xc3\xa2':36 'have':87 'horse':54 'image':49 'included':101 'intact':32 'lego':57 'legos':18 'light':108 'lots':37 'moments':2 'more':63 'movements':90 'museum':58 'none':70 'now':17 'objects':43 'off':105 'painting':22 'paintings':106 'pencil':65 'pharoahs':84 'photo':3 'photographers':99 'piece':79 'pieces':85 'placement':67 'rad':83 'really':33 'recreation':19 'recreations':64 'references':50 'references\xc3\xa2':8 'results':4 'room':71 'sawayas':20 'scratch':12 'sculpture':80 'sculptures':107 'seattle':88 'ships':9 'show':1 'shows':41 'since':38 'spoke':55 'staffers':34 'statue':100 'structure':103 'sucker':15 'sup':40 'tape':11 'themes':5 'thing':45 'ton':59 'towels':27 'towns':68 'typically':111 'umbrellas':53 'vehicles':109 'video':78 'villagers':13 'way':60 'which':94 'with':69 'woman':14 'work':74 'works':23 'you':96"
+p28
+sS'sem_orient'
+p29
+F0.0
+sS'geo_long'
+p30
+NsS'annotations'
+p31
+(dp32
+sS'tags'
+p33
+ccollections
+defaultdict
+p34
+(c__builtin__
+float
+p35
+tp36
+Rp37
+I334
+F1.0
+ssS'mirror_date'
+p38
+g13
+(S'\x07\xe0\x05\x1f\x12/2\t\xdc}'
+p39
+tp40
+Rp41
+sS'domain_specificity'
+p42
+NsS'content_type'
+p43
+Vtext/html
+p44
+sS'extracted_content'
+p45
+VSam Machkovech\u000a\u000a\u000aSeattle's Pacific Science Center is the latest home to Nathan Sawaya's all-LEGO art exhibit.\u000a\u000a\u000a 1. Sam Machkovech\u000a\u000a\u000a    Seattle's Pacific Science Center is the latest home to Nathan Sawaya's all-LEGO art exhibit.\u000a\u000a\u000a 2. Sam Machkovech\u000a\u000a\u000a    Starry Night.\u000a\u000a\u000a 3. Sam Machkovech\u000a\u000a\u000a    The Second Chinese Horse.\u000a\u000a\u000a 4. Modern art: now even more modern-looking.\u000a\u000a\u000a 5. Sam Machkovech\u000a\u000a\u000a    Nolde's The Prophet.\u000a\u000a\u000a 6. Sam Machkovech\u000a\u000a\u000a    The reflected light off of this stained-glass recreation cast a cool, colorful shadow below.\u000a\u000a\u000a 7. This Mona Lisa version is easily twice the size of the real painting.\u000a\u000a\u000a 8. Otherwise, much tinier LEGOs would have been necessary.\u000a\u000a\u000a 9. Sam Machkovech\u000a\u000a\u000a    Light placement appeared to be wholly intentional, resulting in some cool shadow moments.\u000a\u000a\u000a10. Sam Machkovech\u000a\u000a\u000a    The Great Wave Off Kanagawa.\u000a\u000a\u000a11. More detail.\u000a\u000a\u000a12. Sawaya sticks largely to default, primary LEGO colors, as opposed to specially painted ones. The results are striking.\u000a\u000a\u000a13. American Gothic.\u000a\u000a\u000a14. Another angle, this time with more pitchfork.\u000a\u000a\u000a15. A Jan van Eyck painting remade as a sculpture.\u000a\u000a\u000a16. Such dress detail.\u000a\u000a\u000a17. Arrangement in Grey and Black No. 1.\u000a\u000a\u000a18. Face close-up.\u000a\u000a\u000a19. Sam Machkovech\u000a\u000a\u000a    The Scream.\u000a\u000a\u000a20. Screamier.\u000a\u000a\u000a21. Sam Machkovech\u000a\u000a\u000a    Can't get enough of LEGO nubs.\u000a\u000a\u000a22. The 2D-to-3D conversions were all pretty rad.\u000a\u000a\u000a23. Gustav Klimt's The Kiss.\u000a\u000a\u000a24. Zoom on the "kiss."\u000a\u000a\u000a25. Wanderer Above The Sea Of Fog.\u000a\u000a\u000a26. Now onto sculptures based on actual sculptures.\u000a\u000a\u000a27. Another angle.\u000a\u000a\u000a28. Such detail with only primary colors.\u000a\u000a\u000a29. Just as with the real David, LEGO David's butt got a lot of attention from photographers.\u000a\u000a\u000a30. Degas' Little Dancer Of 14 Years.\u000a\u000a\u000a31. The Gayer-Anderson Cat, found in Egypt.\u000a\u000a\u000a32. LEGO Thinker.\u000a\u000a\u000a33. More ancient sculptures.\u000a\u000a\u000a34. The exhibit's intentional shadow work really impressed.\u000a\u000a\u000a35. Don't worry, it's not ivoryâ€”it's just LEGO!\u000a\u000a\u000a36. Wonder if any tiny LEGO pharoahs were buried inside of this.\u000a\u000a\u000a37. Looking on pensively.\u000a\u000a\u000a38. Venus de LEGO.\u000a\u000a\u000a39. Another angle.\u000a\u000a\u000a40. PSC staffers told Ars that this giant MOAI statue was arguably the heaviest thing brought into the museum. None of the works are hollow, after all.\u000a\u000a\u000a41. Solid (LEGO) brick.\u000a\u000a\u000a42. The Moai piece had the most visible tape on its bricks, assumedly to keep this crazy-huge thing intact.\u000a\u000a\u000aSEATTLEâ€”We at Ars love a good piece of LEGO design, particularly the fare found at regional fan fests like BrickCon on an annual basis. But while those shows impress with pop-culture references and sprawling towns full of vehicles, spacecraft, ships, and villagers, they don't typically include the kinds ofÂ original work or high-art referencesÂ you'd expect to see at a museum.\u000a\u000a\u000aOregon-raised artist Nathan Sawaya, on the other hand, hasÂ made art out of LEGOs for yearsâ€”and shown it off at art galleries across the world since 2007. The artist's latestÂ show, which we caught on its opening weekend in Seattle, continues to revolve around his original creations, which are included in the lower gallery (and will be familiar to anybody who's attended a Sawaya show over the years). But his more recent work has revolved around LEGO recreations of classic paintings and sculptures, which you'll see in this article's upper gallery.\u000a\u000a\u000aFrom Monet to Munch, and from Egyptian temples to politically charged Americana, Sawaya's Art of the Brick collection crosses a ton of artistic movements off the LEGO list. You can see all of this and more at theÂ Pacific Science Center until September 11.\u000a\u000a\u000aSam Machkovech\u000a\u000a\u000aThis Skeletor-looking sculpture, sadly, was the closest Sawaya's exhibit got to anything in the way of pop culture.\u000a\u000a\u000a 1. Sam Machkovech\u000a\u000a\u000a    This Skeletor-looking sculpture, sadly, was the closest Sawaya's exhibit got to anything in the way of pop culture.\u000a\u000a\u000a 2. Sam Machkovech\u000a\u000a\u000a    Still looks rad, though.\u000a\u000a\u000a 3. Sawaya uses this tear-your-innards-out piece as the lead image in most promotional materials, and it's easy to see why.\u000a\u000a\u000a 4. This second gallery is made up entirely of Sawaya's own creationsâ€”meaning, they aren't based on pre-existing works of art.\u000a\u000a\u000a 5. Sam Machkovech\u000a\u000a\u000a    Unless, of course, you count the shape and structure of a T-Rex's skeleton as "pre-existing art."\u000a\u000a\u000a 6. Sam Machkovech\u000a\u000a\u000a    This sucker is huge.\u000a\u000a\u000a 7. My, what big LEGO teeth you have, T-Rex.\u000a\u000a\u000a 8. Sam Machkovech\u000a\u000a\u000a    A quick swim.\u000a\u000a\u000a 9. Sam Machkovech\u000a\u000a\u000a    Another angle.\u000a\u000a\u000a10. Sam Machkovech\u000a\u000a\u000a    "Where the heck are my hands?!"\u000a\u000a\u000a11. Sam Machkovech\u000a\u000a\u000a    "...AND MY EYES?!?!?"\u000a\u000a\u000a12. Apple, apple.\u000a\u000a\u000a13. More apples.\u000a\u000a\u000a14. Lots of detail for a little, gray desk.\u000a\u000a\u000a15. Attendees really loved the giant pencil (which was a motif in many other Sawaya works).\u000a\u000a\u000a16. Even the frame is made of LEGOs.\u000a\u000a\u000a17. The eyes of this face did NOT follow me as I walked around, thankfully.\u000a\u000a\u000a18. Close-up of the cool light-reflection effect off of the LEGO pieces.\u000a\u000a\u000a19. Many of Sawaya's pieces spoke to a serious existential bent.\u000a\u000a\u000a20. The themes tended to be about being trapped...\u000a\u000a\u000a21. ...or broken apart...\u000a\u000a\u000a22. ...or in a box...\u000a\u000a\u000a23. ...or held by invisible forces...\u000a\u000a\u000a24. (another angle of the hands)\u000a\u000a\u000a25. ...or missing your entire freakin' face.\u000a\u000a\u000a26. Sup, dudes.\u000a\u000a\u000a27. "SKULLS."\u000a\u000a\u000a28. Pretty fish!\u000a\u000a\u000a29. More pretty fish.\u000a\u000a\u000a30. Notice this woman is wearing a LEGO dress.\u000a\u000a\u000a31. As in, THIS dress.\u000a\u000a\u000a32. Another angle. This room was dedicated to other photo shoots that included LEGO approximations of real-life objects like towels, clouds, umbrellas, and more.\u000a\u000a\u000a33. Sam Machkovech\u000a\u000a\u000a    An exhibit video includes footage of Sawaya building pieces from scratch.\u000a\u000a\u000aListing image by Sam Machkovech
+p46
+sS'document_id'
+p47
+NsS'xml_content'
+p48
+g0
+(cweblyzard_api.xml_content
+XMLContent
+p49
+g2
+Ntp50
+Rp51
+(dp52
+S'xml_version'
+p53
+I2013
+sS'remove_duplicates'
+p54
+I01
+sS'sentence_objects'
+p55
+(lp56
+g0
+(cweblyzard_api.xml_content
+Sentence
+p57
+g2
+Ntp58
+Rp59
+(dp60
+S'md5sum'
+p61
+S'10f9d0ce80d4c2706d570453e4238b4c'
+p62
+sS'pos'
+p63
+NsS'value'
+p64
+S'Sam Machkovech'
+p65
+sS'dependency'
+p66
+NsS'token'
+p67
+S'0,3 4,14'
+p68
+sS'sem_orient'
+p69
+F0.0
+sS'significance'
+p70
+F0.0
+sS'is_title'
+p71
+I00
+sbag0
+(g57
+g2
+Ntp72
+Rp73
+(dp74
+g61
+S'83951b623ad7f440f1eb7719ea85d48e'
+p75
+sg63
+S'NNP POS NNP NNP NNP VBZ DT JJS NN TO NNP NNP POS JJ NN NN .'
+p76
+sg64
+S"Seattle's Pacific Science Center is the latest home to Nathan Sawaya's all-LEGO art exhibit."
+p77
+sg66
+S'4:NMOD 0:SUFFIX 4:NAME 4:NAME 5:SBJ -1:ROOT 8:NMOD 8:NMOD 5:PRD 8:NMOD 11:NAME 15:NMOD 11:SUFFIX 15:NMOD 15:NMOD 9:PMOD 5:P'
+p78
+sg67
+S'0,7 7,9 10,17 18,25 26,32 33,35 36,39 40,46 47,51 52,54 55,61 62,68 68,70 71,79 80,83 84,91 91,92'
+p79
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp80
+Rp81
+(dp82
+g61
+S'80140b010567472404579a2cb2d2a3ca'
+p83
+sg63
+S'LS . NNP NNP'
+p84
+sg64
+S'1. Sam Machkovech'
+p85
+sg66
+S'-1:ROOT 0:P 3:NAME 0:APPO'
+p86
+sg67
+S'0,1 1,2 3,6 7,17'
+p87
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp88
+Rp89
+(dp90
+g61
+S'4751819848e7f12de9214dee5fe9afee'
+p91
+sg63
+S'LS . NNP NNP'
+p92
+sg64
+S'2. Sam Machkovech'
+p93
+sg66
+S'-1:ROOT 0:P 3:NAME 0:APPO'
+p94
+sg67
+S'0,1 1,2 3,6 7,17'
+p95
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp96
+Rp97
+(dp98
+g61
+S'aacb7376a10a26a222d80c87c5caa101'
+p99
+sg63
+S'NNP NNP .'
+p100
+sg64
+S'Starry Night.'
+p101
+sg66
+S'-1:ROOT -1:ROOT 1:P'
+p102
+sg67
+S'0,6 7,12 12,13'
+p103
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp104
+Rp105
+(dp106
+g61
+S'396fb4f31418c915948ce9b896e4eecb'
+p107
+sg63
+S'LS . NNP NNP'
+p108
+sg64
+S'3. Sam Machkovech'
+p109
+sg66
+S'-1:ROOT 0:P 3:NAME 0:APPO'
+p110
+sg67
+S'0,1 1,2 3,6 7,17'
+p111
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp112
+Rp113
+(dp114
+g61
+S'afe324342de2a498bfa77fafb34169c6'
+p115
+sg63
+S'DT JJ JJ NN .'
+p116
+sg64
+S'The Second Chinese Horse.'
+p117
+sg66
+S'3:NMOD 3:NMOD 3:NMOD -1:ROOT 3:P'
+p118
+sg67
+S'0,3 4,10 11,18 19,24 24,25'
+p119
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp120
+Rp121
+(dp122
+g61
+S'4abcde5df8475b51b6e62be325c28af6'
+p123
+sg63
+S'LS . NNP NN : RB RB RBR JJ .'
+p124
+sg64
+S'4. Modern art: now even more modern-looking.'
+p125
+sg66
+S'3:NMOD 0:P 3:NMOD -1:ROOT 3:P 8:AMOD 8:AMOD 8:AMOD 3:APPO 3:P'
+p126
+sg67
+S'0,1 1,2 3,9 10,13 13,14 15,18 19,23 24,28 29,43 43,44'
+p127
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp128
+Rp129
+(dp130
+g61
+S'6a0b968f9ff9a7699bcff63f2b210f4a'
+p131
+sg63
+S'CD . NNP NNP'
+p132
+sg64
+S'5. Sam Machkovech'
+p133
+sg66
+S'-1:ROOT 0:P 3:NAME 0:APPO'
+p134
+sg67
+S'0,1 1,2 3,6 7,17'
+p135
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp136
+Rp137
+(dp138
+g61
+S'802ffed1278fd80c90864f383eeded40'
+p139
+sg63
+S'NNP POS DT NN .'
+p140
+sg64
+S"Nolde's The Prophet."
+p141
+sg66
+S'3:NMOD 0:SUFFIX 3:NMOD -1:ROOT 3:P'
+p142
+sg67
+S'0,5 5,7 8,11 12,19 19,20'
+p143
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp144
+Rp145
+(dp146
+g61
+S'031526cf74ec116e2c1e078cf05f2551'
+p147
+sg63
+S'CD . NNP NNP'
+p148
+sg64
+S'6. Sam Machkovech'
+p149
+sg66
+S'-1:ROOT 0:P 3:NAME 0:APPO'
+p150
+sg67
+S'0,1 1,2 3,6 7,17'
+p151
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp152
+Rp153
+(dp154
+g61
+S'ac73c41cbe075204d3badff91293622e'
+p155
+sg63
+S'DT VBN NN IN IN DT NN NN VBD DT JJ , JJ NN IN .'
+p156
+sg64
+S'The reflected light off of this stained-glass recreation cast a cool, colorful shadow below.'
+p157
+sg66
+S'2:NMOD 2:NMOD 15:NMOD 2:NMOD 3:AMOD 15:P 7:NMOD 8:SBJ 15:NMOD 10:NMOD 8:PRD 15:P 13:NMOD 15:DEP 13:NMOD -1:ROOT'
+p158
+sg67
+S'0,3 4,13 14,19 20,23 24,26 27,31 32,45 46,56 57,61 62,63 64,68 68,69 70,78 79,85 86,91 91,92'
+p159
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp160
+Rp161
+(dp162
+g61
+S'7e0d840bf50fbbdf23b409bc311a8204'
+p163
+sg63
+S'CD . DT NNP NNP NN VBZ RB RB DT NN IN DT JJ NN .'
+p164
+sg64
+S'7. This Mona Lisa version is easily twice the size of the real painting.'
+p165
+sg66
+S'15:TMP 15:P 5:NMOD 4:NAME 5:NMOD 6:SBJ 15:DEP 8:DEP 6:ADV 10:NMOD 6:PRD 10:NMOD 14:NMOD 14:NMOD 11:PMOD -1:ROOT'
+p166
+sg67
+S'0,1 1,2 3,7 8,12 13,17 18,25 26,28 29,35 36,41 42,45 46,50 51,53 54,57 58,62 63,71 71,72'
+p167
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp168
+Rp169
+(dp170
+g61
+S'99d2b36a71ff5e9573198803e97db25b'
+p171
+sg63
+S'CD . RB , JJ JJR NNS MD VB VBN JJ .'
+p172
+sg64
+S'8. Otherwise, much tinier LEGOs would have been necessary.'
+p173
+sg66
+S'7:SBJ 0:P 0:NMOD 7:P 6:NMOD 4:AMOD 7:SBJ -1:ROOT 7:VC 8:VC 9:PRD 7:P'
+p174
+sg67
+S'0,1 1,2 3,12 12,13 14,18 19,25 26,31 32,37 38,42 43,47 48,57 57,58'
+p175
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp176
+Rp177
+(dp178
+g61
+S'90d2381496085436a1996ac38167564d'
+p179
+sg63
+S'CD . NNP NNP'
+p180
+sg64
+S'9. Sam Machkovech'
+p181
+sg66
+S'3:NMOD 0:P 3:NAME -1:ROOT'
+p182
+sg67
+S'0,1 1,2 3,6 7,17'
+p183
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp184
+Rp185
+(dp186
+g61
+S'8cec07d6ce674ffb2ca7e49ebd8193b3'
+p187
+sg63
+S'JJ NN VBD TO VB RB JJ , VBG IN DT JJ NN NNS .'
+p188
+sg64
+S'Light placement appeared to be wholly intentional, resulting in some cool shadow moments.'
+p189
+sg66
+S'1:NMOD 2:SBJ -1:ROOT 2:OPRD 3:IM 6:AMOD 4:PRD 2:P 2:ADV 8:ADV 13:NMOD 13:NMOD 13:NMOD 9:PMOD 2:P'
+p190
+sg67
+S'0,5 6,15 16,24 25,27 28,30 31,37 38,49 49,50 51,60 61,63 64,68 69,73 74,80 81,88 88,89'
+p191
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp192
+Rp193
+(dp194
+g61
+S'ecb555b7c7fa7a949794449bbd3357f7'
+p195
+sg63
+Nsg64
+S'10.'
+p196
+sg66
+Nsg67
+S'0,2 2,3'
+p197
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp198
+Rp199
+(dp200
+g61
+S'7edac649c4b7b53708ff96f1dd68e1b9'
+p201
+sg63
+S'DT NNP NNP IN NNP .'
+p202
+sg64
+S'The Great Wave Off Kanagawa.'
+p203
+sg66
+S'2:NMOD 2:NAME 3:NMOD -1:ROOT 3:PMOD 3:P'
+p204
+sg67
+S'0,3 4,9 10,14 15,18 19,27 27,28'
+p205
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp206
+Rp207
+(dp208
+g61
+S'5c6c9bea5cebc6bb3780d84a6c51be6a'
+p209
+sg63
+Nsg64
+S'11.'
+p210
+sg66
+Nsg67
+S'0,2 2,3'
+p211
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp212
+Rp213
+(dp214
+g61
+S'c781635a98e8b6096cfd8a13bf7ba807'
+p215
+sg63
+S'RBR NN .'
+p216
+sg64
+S'More detail.'
+p217
+sg66
+S'1:NMOD -1:ROOT 1:P'
+p218
+sg67
+S'0,4 5,11 11,12'
+p219
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp220
+Rp221
+(dp222
+g61
+S'76fde070b319d3b1f25909d6ed937b89'
+p223
+sg63
+Nsg64
+S'12.'
+p224
+sg66
+Nsg67
+S'0,2 2,3'
+p225
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp226
+Rp227
+(dp228
+g61
+S'4b69441cec76118f7b23df318c4dbcde'
+p229
+sg63
+S'NNP VBZ RB TO NN , JJ NN NNS , IN VBN TO RB VBN NNS .'
+p230
+sg64
+S'Sawaya sticks largely to default, primary LEGO colors, as opposed to specially painted ones.'
+p231
+sg66
+S'1:SBJ -1:ROOT 1:ADV 1:ADV 3:PMOD 16:P 8:NMOD 8:NMOD 16:NMOD 16:P 16:DEP 10:SUB 11:ADV 14:AMOD 15:NMOD 12:PMOD 1:P'
+p232
+sg67
+S'0,6 7,13 14,21 22,24 25,32 32,33 34,41 42,46 47,53 53,54 55,57 58,65 66,68 69,78 79,86 87,91 91,92'
+p233
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp234
+Rp235
+(dp236
+g61
+S'de4adb44dcda185f23d5b48f9b747692'
+p237
+sg63
+S'DT NNS VBP JJ .'
+p238
+sg64
+S'The results are striking.'
+p239
+sg66
+S'1:NMOD 2:SBJ -1:ROOT 2:PRD 2:P'
+p240
+sg67
+S'0,3 4,11 12,15 16,24 24,25'
+p241
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp242
+Rp243
+(dp244
+g61
+S'68125b7a06283c69036d98fe17fc4dbd'
+p245
+sg63
+Nsg64
+S'13.'
+p246
+sg66
+Nsg67
+S'0,2 2,3'
+p247
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp248
+Rp249
+(dp250
+g61
+S'9e5ee3dc5fdb28410b894f4c0b3cd7b4'
+p251
+sg63
+S'JJ JJ .'
+p252
+sg64
+S'American Gothic.'
+p253
+sg66
+S'1:NMOD -1:ROOT 1:P'
+p254
+sg67
+S'0,8 9,15 15,16'
+p255
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp256
+Rp257
+(dp258
+g61
+S'5f516e9a831b1c7b7b97110c923e14b1'
+p259
+sg63
+Nsg64
+S'14.'
+p260
+sg66
+Nsg67
+S'0,2 2,3'
+p261
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp262
+Rp263
+(dp264
+g61
+S'e294f38149cb59914f81491a9419c959'
+p265
+sg63
+S'DT NN , DT NN IN JJR NN .'
+p266
+sg64
+S'Another angle, this time with more pitchfork.'
+p267
+sg66
+S'1:NMOD 7:NMOD 7:P 4:NMOD 8:NMOD 4:NMOD 7:NMOD 5:PMOD -1:ROOT'
+p268
+sg67
+S'0,7 8,13 13,14 15,19 20,24 25,29 30,34 35,44 44,45'
+p269
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp270
+Rp271
+(dp272
+g61
+S'567df8ed23cd6f7da62b22589f8af589'
+p273
+sg63
+Nsg64
+S'15.'
+p274
+sg66
+Nsg67
+S'0,2 2,3'
+p275
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp276
+Rp277
+(dp278
+g61
+S'6cceea4d6139558841e4e1ec0d0d2ccb'
+p279
+sg63
+S'DT NNP NNP NNP NN VB IN DT NN .'
+p280
+sg64
+S'A Jan van Eyck painting remade as a sculpture.'
+p281
+sg66
+S'4:NMOD 3:NAME 3:NAME 4:NMOD 5:NMOD 9:DEP 5:NMOD 8:NMOD 6:PMOD -1:ROOT'
+p282
+sg67
+S'0,1 2,5 6,9 10,14 15,23 24,30 31,33 34,35 36,45 45,46'
+p283
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp284
+Rp285
+(dp286
+g61
+S'b157d04f2dce59999a41076690eb56e6'
+p287
+sg63
+Nsg64
+S'16.'
+p288
+sg66
+Nsg67
+S'0,2 2,3'
+p289
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp290
+Rp291
+(dp292
+g61
+S'71010bb9d42eefacf2ba74e9963297ef'
+p293
+sg63
+S'JJ NN NN .'
+p294
+sg64
+S'Such dress detail.'
+p295
+sg66
+S'2:NMOD 2:NMOD -1:ROOT 2:P'
+p296
+sg67
+S'0,4 5,10 11,17 17,18'
+p297
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp298
+Rp299
+(dp300
+g61
+S'26da66e7f52458058e6a8552ceea234f'
+p301
+sg63
+Nsg64
+S'17.'
+p302
+sg66
+Nsg67
+S'0,2 2,3'
+p303
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp304
+Rp305
+(dp306
+g61
+S'ee411db4b18e1c25056d5697d66eb9e4'
+p307
+sg63
+S'NN IN NNP CC NNP NN CD .'
+p308
+sg64
+S'Arrangement in Grey and Black No. 1.'
+p309
+sg66
+S'7:DEP 0:LOC 6:NMOD 2:COORD 6:NMOD 6:NMOD 1:PMOD -1:ROOT'
+p310
+sg67
+S'0,11 12,14 15,19 20,23 24,29 30,33 34,35 35,36'
+p311
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp312
+Rp313
+(dp314
+g61
+S'ecd15ee3a7985b2440f3c41cdd5445ae'
+p315
+sg63
+Nsg64
+S'18.'
+p316
+sg66
+Nsg67
+S'0,2 2,3'
+p317
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp318
+Rp319
+(dp320
+g61
+S'6347e8fdc55f71d12e886bc485b448bb'
+p321
+sg63
+S'NNP NN .'
+p322
+sg64
+S'Face close-up.'
+p323
+sg66
+S'1:NMOD -1:ROOT 1:P'
+p324
+sg67
+S'0,4 5,13 13,14'
+p325
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp326
+Rp327
+(dp328
+g61
+S'3fbe59736dea478652b263f43af75f0f'
+p329
+sg63
+Nsg64
+S'19.'
+p330
+sg66
+Nsg67
+S'0,2 2,3'
+p331
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp332
+Rp333
+(dp334
+g61
+S'dd995ff2c938f1a12446e1b7d08747eb'
+p335
+sg63
+S'DT NNP .'
+p336
+sg64
+S'The Scream.'
+p337
+sg66
+S'1:NMOD 2:DEP -1:ROOT'
+p338
+sg67
+S'0,3 4,10 10,11'
+p339
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp340
+Rp341
+(dp342
+g61
+S'81eb1aafe187d1d6102537b21e3b3b4f'
+p343
+sg63
+Nsg64
+S'20.'
+p344
+sg66
+Nsg67
+S'0,2 2,3'
+p345
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp346
+Rp347
+(dp348
+g61
+S'5e4fb053f46944553e89862887c16394'
+p349
+sg63
+Nsg64
+S'Screamier.'
+p350
+sg66
+Nsg67
+S'0,9 9,10'
+p351
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp352
+Rp353
+(dp354
+g61
+S'f52ba4cf5a98ba14dde152f5e8bc6551'
+p355
+sg63
+Nsg64
+S'21.'
+p356
+sg66
+Nsg67
+S'0,2 2,3'
+p357
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp358
+Rp359
+(dp360
+g61
+S'ca11b5a48eb7c782a329215d029b7a1d'
+p361
+sg63
+S'NN RB VB RB IN NNP NNS .'
+p362
+sg64
+S"Can't get enough of LEGO nubs."
+p363
+sg66
+S'2:NMOD 2:ADV -1:ROOT 2:P 2:NMOD 6:NMOD 4:PMOD 2:P'
+p364
+sg67
+S'0,2 2,5 6,9 10,16 17,19 20,24 25,29 29,30'
+p365
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp366
+Rp367
+(dp368
+g61
+S'8b36712362f306d073628f0fe78b5fac'
+p369
+sg63
+Nsg64
+S'22.'
+p370
+sg66
+Nsg67
+S'0,2 2,3'
+p371
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp372
+Rp373
+(dp374
+g61
+S'849f6fcde29a8fd53d8c8798216e9e05'
+p375
+sg63
+S'DT JJ NNS VBD DT RB NN .'
+p376
+sg64
+S'The 2D-to-3D conversions were all pretty rad.'
+p377
+sg66
+S'2:NMOD 2:NMOD 3:SBJ -1:ROOT 6:NMOD 6:NMOD 3:PRD 3:P'
+p378
+sg67
+S'0,3 4,12 13,24 25,29 30,33 34,40 41,44 44,45'
+p379
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp380
+Rp381
+(dp382
+g61
+S'd4fbca7834560377a100c91364ec53ec'
+p383
+sg63
+Nsg64
+S'23.'
+p384
+sg66
+Nsg67
+S'0,2 2,3'
+p385
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp386
+Rp387
+(dp388
+g61
+S'0dcb748140e9d926209c1f1b36438d7a'
+p389
+sg63
+S'NNP NNP POS DT VBP .'
+p390
+sg64
+S"Gustav Klimt's The Kiss."
+p391
+sg66
+S'1:NAME 4:OBJ 1:SUFFIX 4:SBJ -1:ROOT 4:P'
+p392
+sg67
+S'0,6 7,12 12,14 15,18 19,23 23,24'
+p393
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp394
+Rp395
+(dp396
+g61
+S'21250cdbabe0f7964564376f3d523f38'
+p397
+sg63
+Nsg64
+S'24.'
+p398
+sg66
+Nsg67
+S'0,2 2,3'
+p399
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp400
+Rp401
+(dp402
+g61
+S'ec8e24f3ea194f0483d933b81e2ee07c'
+p403
+sg63
+S"VB IN DT `` NN . ''"
+p404
+sg64
+S'Zoom on the "kiss."'
+p405
+sg66
+S'-1:ROOT 0:ADV 4:NMOD 4:P 1:PMOD 0:P 0:P'
+p406
+sg67
+S'0,4 5,7 8,11 12,13 13,17 17,18 18,19'
+p407
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp408
+Rp409
+(dp410
+g61
+S'13f3022d707d2db79b2bbc152c21c483'
+p411
+sg63
+Nsg64
+S'25.'
+p412
+sg66
+Nsg67
+S'0,2 2,3'
+p413
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp414
+Rp415
+(dp416
+g61
+S'853415caae2bb55ce42b837b92099021'
+p417
+sg63
+S'NNP NNP NNP NNP IN NN .'
+p418
+sg64
+S'Wanderer Above The Sea Of Fog.'
+p419
+sg66
+S'3:NAME 3:NAME 3:NAME 5:NMOD 5:NAME -1:ROOT 5:P'
+p420
+sg67
+S'0,8 9,14 15,18 19,22 23,25 26,29 29,30'
+p421
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp422
+Rp423
+(dp424
+g61
+S'dd3391b01e6d23199e9d35f0a4f5d427'
+p425
+sg63
+Nsg64
+S'26.'
+p426
+sg66
+Nsg67
+S'0,2 2,3'
+p427
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp428
+Rp429
+(dp430
+g61
+S'8afa76d4c4476551689485660a3bc05e'
+p431
+sg63
+S'RB IN NNS VBN IN JJ NNS .'
+p432
+sg64
+S'Now onto sculptures based on actual sculptures.'
+p433
+sg66
+S'1:PMOD 2:NMOD 7:DEP 2:APPO 3:ADV 6:NMOD 4:PMOD -1:ROOT'
+p434
+sg67
+S'0,3 4,8 9,19 20,25 26,28 29,35 36,46 46,47'
+p435
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp436
+Rp437
+(dp438
+g61
+S'2cdebd29aacaf69cf85ee986bf491f6c'
+p439
+sg63
+Nsg64
+S'27.'
+p440
+sg66
+Nsg67
+S'0,2 2,3'
+p441
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp442
+Rp443
+(dp444
+g61
+S'cb4dd30f40d1c4f316153e4aca4c1ebc'
+p445
+sg63
+S'DT NN .'
+p446
+sg64
+S'Another angle.'
+p447
+sg66
+S'1:NMOD -1:ROOT 1:P'
+p448
+sg67
+S'0,7 8,13 13,14'
+p449
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp450
+Rp451
+(dp452
+g61
+S'97f35d6fd654c8e23c1c8085806d2012'
+p453
+sg63
+Nsg64
+S'28.'
+p454
+sg66
+Nsg67
+S'0,2 2,3'
+p455
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp456
+Rp457
+(dp458
+g61
+S'7a551a3fc72a2fdb2506c0b4175be109'
+p459
+sg63
+S'JJ NN IN JJ JJ NNS .'
+p460
+sg64
+S'Such detail with only primary colors.'
+p461
+sg66
+S'1:NMOD 6:DEP 1:NMOD 5:NMOD 5:NMOD 2:PMOD -1:ROOT'
+p462
+sg67
+S'0,4 5,11 12,16 17,21 22,29 30,36 36,37'
+p463
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp464
+Rp465
+(dp466
+g61
+S'fa429db80d7f2e42225c65eca3a5e0fe'
+p467
+sg63
+Nsg64
+S'29.'
+p468
+sg66
+Nsg67
+S'0,2 2,3'
+p469
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp470
+Rp471
+(dp472
+g61
+S'72055cfb7d32ad0f2096e9c20892b3e7'
+p473
+sg63
+S'RB IN IN DT JJ NNP , NNP NNP POS NN VBD DT NN IN NN IN NNS .'
+p474
+sg64
+S"Just as with the real David, LEGO David's butt got a lot of attention from photographers."
+p475
+sg66
+S'1:DEP 18:DEP 1:PMOD 5:NMOD 5:NMOD 2:PMOD 5:P 8:NAME 10:NMOD 8:SUFFIX 11:SBJ 5:NMOD 13:NMOD 11:OBJ 13:NMOD 14:PMOD 13:NMOD 16:PMOD -1:ROOT'
+p476
+sg67
+S'0,4 5,7 8,12 13,16 17,21 22,27 27,28 29,33 34,39 39,41 42,46 47,50 51,52 53,56 57,59 60,69 70,74 75,88 88,89'
+p477
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp478
+Rp479
+(dp480
+g61
+S'1cdc6cd68bb51aa7c2781179919aed54'
+p481
+sg63
+Nsg64
+S'30.'
+p482
+sg66
+Nsg67
+S'0,2 2,3'
+p483
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp484
+Rp485
+(dp486
+g61
+S'7e25114685708c468c15a1e70aac2cdc'
+p487
+sg63
+S'NNP POS JJ NN IN CD NNS .'
+p488
+sg64
+S"Degas' Little Dancer Of 14 Years."
+p489
+sg66
+S'3:NMOD 0:SUFFIX 3:NMOD -1:ROOT 3:NMOD 6:NMOD 4:PMOD 3:P'
+p490
+sg67
+S'0,5 5,6 7,13 14,20 21,23 24,26 27,32 32,33'
+p491
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp492
+Rp493
+(dp494
+g61
+S'e5f8f6f53656f649355828a033631cbb'
+p495
+sg63
+Nsg64
+S'31.'
+p496
+sg66
+Nsg67
+S'0,2 2,3'
+p497
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp498
+Rp499
+(dp500
+g61
+S'e39b618f81240f31575d9fc16ca0b6b8'
+p501
+sg63
+S'DT NNP NN , VBN IN NNP .'
+p502
+sg64
+S'The Gayer-Anderson Cat, found in Egypt.'
+p503
+sg66
+S'2:NMOD 2:NMOD 7:DEP 2:P 2:APPO 4:LOC 5:PMOD -1:ROOT'
+p504
+sg67
+S'0,3 4,18 19,22 22,23 24,29 30,32 33,38 38,39'
+p505
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp506
+Rp507
+(dp508
+g61
+S'3ee68dd8c816db4fe61d42a07ed12794'
+p509
+sg63
+Nsg64
+S'32.'
+p510
+sg66
+Nsg67
+S'0,2 2,3'
+p511
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp512
+Rp513
+(dp514
+g61
+S'74d5907f3c2a3ebe37f4792d0687601c'
+p515
+sg63
+S'NNP NNP .'
+p516
+sg64
+S'LEGO Thinker.'
+p517
+sg66
+S'-1:ROOT -1:ROOT 1:P'
+p518
+sg67
+S'0,4 5,12 12,13'
+p519
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp520
+Rp521
+(dp522
+g61
+S'4eb77bbfbb7dfadb2889cd985640f8b6'
+p523
+sg63
+Nsg64
+S'33.'
+p524
+sg66
+Nsg67
+S'0,2 2,3'
+p525
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp526
+Rp527
+(dp528
+g61
+S'3638710ca9db838a4e089b563b5acf0b'
+p529
+sg63
+S'RBR JJ NNS .'
+p530
+sg64
+S'More ancient sculptures.'
+p531
+sg66
+S'1:AMOD 2:NMOD -1:ROOT 2:P'
+p532
+sg67
+S'0,4 5,12 13,23 23,24'
+p533
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp534
+Rp535
+(dp536
+g61
+S'23c976d1a8379c448948eb31107041e7'
+p537
+sg63
+Nsg64
+S'34.'
+p538
+sg66
+Nsg67
+S'0,2 2,3'
+p539
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp540
+Rp541
+(dp542
+g61
+S'a1b3f16476e57155284d299ee358a082'
+p543
+sg63
+S'DT NN POS JJ NN NN RB JJ .'
+p544
+sg64
+S"The exhibit's intentional shadow work really impressed."
+p545
+sg66
+S'1:NMOD 5:NMOD 1:SUFFIX 5:NMOD 5:NMOD 7:SBJ 7:AMOD -1:ROOT 7:P'
+p546
+sg67
+S'0,3 4,11 11,13 14,25 26,32 33,37 38,44 45,54 54,55'
+p547
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp548
+Rp549
+(dp550
+g61
+S'42b4705084cd59468ee2365f27c86610'
+p551
+sg63
+Nsg64
+S'35.'
+p552
+sg66
+Nsg67
+S'0,2 2,3'
+p553
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp554
+Rp555
+(dp556
+g61
+S'91db57b0b535ebf2ea51684c1aa6095e'
+p557
+sg63
+S'VBP RB VB , PRP VBZ RB JJ NN CD PRP VBZ RB NN .'
+p558
+sg64
+VDon't worry, it's not ivoryâ€”it's just LEGO!
+p559
+sg66
+S'5:TMP 0:ADV 0:VC 5:P 5:SBJ -1:ROOT 7:AMOD 5:PRD 9:NMOD 7:OBJ 11:SBJ 9:NMOD 13:NMOD 11:PRD 5:P'
+p560
+sg67
+S'0,2 2,5 6,11 11,12 13,15 15,17 18,21 22,28 28,29 29,30 30,32 32,34 35,39 40,44 44,45'
+p561
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp562
+Rp563
+(dp564
+g61
+S'0b9018a21ebcf3a3aa7caccb0d9c969d'
+p565
+sg63
+Nsg64
+S'36.'
+p566
+sg66
+Nsg67
+S'0,2 2,3'
+p567
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp568
+Rp569
+(dp570
+g61
+S'1192af2d5653297d07fa3d1eba538b4a'
+p571
+sg63
+S'JJ IN DT JJ NN NNS VBD VBN IN IN DT .'
+p572
+sg64
+S'Wonder if any tiny LEGO pharoahs were buried inside of this.'
+p573
+sg66
+S'1:DEP 11:DEP 5:NMOD 5:NMOD 5:NMOD 6:SBJ 1:SUB 6:VC 7:ADV 8:PMOD 9:PMOD -1:ROOT'
+p574
+sg67
+S'0,6 7,9 10,13 14,18 19,23 24,32 33,37 38,44 45,51 52,54 55,59 59,60'
+p575
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp576
+Rp577
+(dp578
+g61
+S'f809e160bed476ba44ede4006561629b'
+p579
+sg63
+Nsg64
+S'37.'
+p580
+sg66
+Nsg67
+S'0,2 2,3'
+p581
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp582
+Rp583
+(dp584
+g61
+S'5d6bc77667cfd0d6d6c3bc5ffbef1e5c'
+p585
+sg63
+S'VBG IN RB .'
+p586
+sg64
+S'Looking on pensively.'
+p587
+sg66
+S'-1:ROOT 0:ADV 1:PMOD 0:P'
+p588
+sg67
+S'0,7 8,10 11,20 20,21'
+p589
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp590
+Rp591
+(dp592
+g61
+S'98543d17b5eeae58358857d31fd1691b'
+p593
+sg63
+Nsg64
+S'38.'
+p594
+sg66
+Nsg67
+S'0,2 2,3'
+p595
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp596
+Rp597
+(dp598
+g61
+S'db1299dbe7ba93aae56320b7a6568653'
+p599
+sg63
+S'NNP NNP NNP .'
+p600
+sg64
+S'Venus de LEGO.'
+p601
+sg66
+S'2:NAME 2:NAME -1:ROOT 2:P'
+p602
+sg67
+S'0,5 6,8 9,13 13,14'
+p603
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp604
+Rp605
+(dp606
+g61
+S'29ca27f6318ad1b44e574d1003c07275'
+p607
+sg63
+Nsg64
+S'39.'
+p608
+sg66
+Nsg67
+S'0,2 2,3'
+p609
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp610
+Rp611
+(dp612
+g61
+S'9f50b5c6ab862e164a04953217e256f3'
+p613
+sg63
+Nsg64
+S'40.'
+p614
+sg66
+Nsg67
+S'0,2 2,3'
+p615
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp616
+Rp617
+(dp618
+g61
+S'25e58f5e1e1f316de961ab3fbac12f9d'
+p619
+sg63
+S'NNP NNS VBD NNS IN DT JJ NNP NN VBD RB DT JJS NN VBD IN DT NN .'
+p620
+sg64
+S'PSC staffers told Ars that this giant MOAI statue was arguably the heaviest thing brought into the museum.'
+p621
+sg66
+S'1:NMOD 2:SBJ -1:ROOT 2:OBJ 2:OBJ 8:NMOD 8:NMOD 8:NMOD 9:SBJ 4:SUB 9:PRD 13:NMOD 13:NMOD 9:TMP 9:VC 14:DIR 17:NMOD 15:PMOD 2:P'
+p622
+sg67
+S'0,3 4,12 13,17 18,21 22,26 27,31 32,37 38,42 43,49 50,53 54,62 63,66 67,75 76,81 82,89 90,94 95,98 99,105 105,106'
+p623
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp624
+Rp625
+(dp626
+g61
+S'd58d570cbbb13e50edaae32eb19f561c'
+p627
+sg63
+S'NN IN DT NNS VBP JJ , IN DT .'
+p628
+sg64
+S'None of the works are hollow, after all.'
+p629
+sg66
+S'4:SBJ 0:NMOD 3:NMOD 1:PMOD -1:ROOT 4:PRD 4:P 4:ADV 7:PMOD 4:P'
+p630
+sg67
+S'0,4 5,7 8,11 12,17 18,21 22,28 28,29 30,35 36,39 39,40'
+p631
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp632
+Rp633
+(dp634
+g61
+S'6a8dfcb504793b934c295085956eafb7'
+p635
+sg63
+Nsg64
+S'41.'
+p636
+sg66
+Nsg67
+S'0,2 2,3'
+p637
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp638
+Rp639
+(dp640
+g61
+S'6dee6962f33930b33f0a8b7863fe18a0'
+p641
+sg63
+S'JJ NN NN CD NN .'
+p642
+sg64
+S'Solid (LEGO) brick.'
+p643
+sg66
+S'2:NMOD 2:P -1:ROOT 4:NMOD 5:DEP 2:P'
+p644
+sg67
+S'0,5 6,7 7,11 11,12 13,18 18,19'
+p645
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp646
+Rp647
+(dp648
+g61
+S'b63634580786cc376873425c404b1082'
+p649
+sg63
+Nsg64
+S'42.'
+p650
+sg66
+Nsg67
+S'0,2 2,3'
+p651
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp652
+Rp653
+(dp654
+g61
+S'ed3d22b4973499ab25f783095e5e99df'
+p655
+sg63
+S'DT NNP NN VBD DT RBS JJ NN IN PRP$ NNS , RB TO VB DT JJ NN JJ .'
+p656
+sg64
+S'The Moai piece had the most visible tape on its bricks, assumedly to keep this crazy-huge thing intact.'
+p657
+sg66
+S'2:NMOD 2:NMOD 3:SBJ -1:ROOT 7:NMOD 6:AMOD 7:NMOD 3:OBJ 7:NMOD 10:NMOD 8:PMOD 3:P 13:ADV 3:PRP 13:IM 17:NMOD 17:NMOD 14:OBJ 14:OPRD 3:P'
+p658
+sg67
+S'0,3 4,8 9,14 15,18 19,22 23,27 28,35 36,40 41,43 44,47 48,54 54,55 56,65 66,68 69,73 74,78 79,89 90,95 96,102 102,103'
+p659
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp660
+Rp661
+(dp662
+g61
+S'b5b73fd2c1e00bb05d7a4e5a8ca6a8c9'
+p663
+sg63
+S'NN CD CD PRP IN NNP VBP DT JJ NN IN NNP NN , RB DT NN VBN IN JJ NN NNS IN NNP IN DT JJ NN .'
+p664
+sg64
+VSEATTLEâ€”We at Ars love a good piece of LEGO design, particularly the fare found at regional fan fests like BrickCon on an annual basis.
+p665
+sg66
+S'2:NMOD 2:NMOD -1:ROOT -1:ROOT 5:NAME 6:SBJ 28:DEP 9:NMOD 9:NMOD 6:OBJ 9:NMOD 12:NMOD 10:PMOD 9:P 16:NMOD 16:NMOD 9:APPO 16:APPO 17:LOC 21:NMOD 21:NMOD 18:PMOD 21:NMOD 22:PMOD 17:ADV 27:NMOD 27:NMOD 24:PMOD 3:P'
+p666
+sg67
+S'0,8 8,9 9,10 10,12 13,15 16,19 20,24 25,26 27,31 32,37 38,40 41,45 46,52 52,53 54,66 67,70 71,75 76,81 82,84 85,93 94,97 98,103 104,108 109,117 118,120 121,123 124,130 131,136 136,137'
+p667
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp668
+Rp669
+(dp670
+g61
+S'266cca99b7b081d3901333d4aa759a58'
+p671
+sg63
+S'CC IN DT NNS VBP IN JJ NNS CC VBG NNS JJ IN NNS , NN , NNS , CC NNS , PRP VBP RB RB VBP DT NNS NN JJ NN CC JJ NN PRP MD VB TO VB IN DT NN .'
+p672
+sg64
+VBut while those shows impress with pop-culture references and sprawling towns full of vehicles, spacecraft, ships, and villagers, they don't typically include the kinds ofÂ original work or high-art referencesÂ you'd expect to see at a museum.
+p673
+sg66
+S'23:DEP 23:ADV 3:NMOD 4:SBJ 1:SUB 4:ADV 7:NMOD 5:PMOD 7:COORD 10:NMOD 8:CONJ 7:NMOD 11:AMOD 12:PMOD 13:P 13:COORD 15:P 15:COORD 23:P 43:NMOD 23:SBJ 23:P 23:SBJ 19:CONJ 23:ADV 23:ADV 23:VC 28:NMOD 26:OBJ 26:OPRD 31:NMOD 26:OBJ 31:COORD 34:NMOD 32:CONJ 36:SBJ 31:NMOD 36:VC 37:OPRD 38:IM 39:LOC 42:NMOD 40:PMOD -1:ROOT'
+p674
+sg67
+S'0,3 4,9 10,15 16,21 22,29 30,34 35,46 47,57 58,61 62,71 72,77 78,82 83,85 86,94 94,95 96,106 106,107 108,113 113,114 115,118 119,128 128,129 130,134 135,137 137,140 141,150 151,158 159,162 163,168 169,172 173,181 182,186 187,189 190,198 199,210 211,214 214,216 217,223 224,226 227,230 231,233 234,235 236,242 242,243'
+p675
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp676
+Rp677
+(dp678
+g61
+S'c1084c348f4604fcec8397d1536bbe08'
+p679
+sg63
+S'JJ NN NNP NNP , IN DT JJ NN , NN VBD NN IN IN NNS IN JJ NN NN CC VBN PRP RP IN NN NNS IN DT NN IN CD .'
+p680
+sg64
+VOregon-raised artist Nathan Sawaya, on the other hand, hasÂ made art out of LEGOs for yearsâ€”and shown it off at art galleries across the world since 2007.
+p681
+sg66
+S'1:NMOD 11:SBJ 3:NAME 1:APPO 1:P 1:NMOD 8:NMOD 8:NMOD 5:PMOD 11:P 11:SBJ -1:ROOT 11:OBJ 11:ADV 13:PMOD 14:PMOD 15:NMOD 29:NMOD 19:NMOD 11:NMOD 19:COORD 20:CONJ 21:OBJ 21:PRT 21:ADV 26:NMOD 24:PMOD 21:LOC 29:NMOD 27:PMOD 29:TMP 30:PMOD 11:P'
+p682
+sg67
+S'0,13 14,20 21,27 28,34 34,35 36,38 39,42 43,48 49,53 53,54 55,59 60,64 65,68 69,72 73,75 76,81 82,85 86,92 92,93 93,94 94,97 98,103 104,106 107,110 111,113 114,117 118,127 128,134 135,138 139,144 145,150 151,155 155,156'
+p683
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp684
+Rp685
+(dp686
+g61
+S'9c8651ce4efc41648ea2a897e0be763c'
+p687
+sg63
+S'DT NN POS NN NN , WDT PRP VBD IN PRP$ NN NN IN NNP , VBZ TO VB IN PRP$ JJ NNS , WDT VBP VBN IN DT JJR NN NN CC MD VB JJ TO NN WP VBZ VBD DT NNP NN IN DT NNS RB .'
+p688
+sg64
+VThe artist's latestÂ show, which we caught on its opening weekend in Seattle, continues to revolve around his original creations, which are included in the lower gallery (and will be familiar to anybody who's attended a Sawaya show over the years).
+p689
+sg66
+S'1:NMOD 4:NMOD 1:SUFFIX 4:NMOD 16:SBJ 4:P 8:OBJ 8:SBJ 4:NMOD 8:ADV 12:NMOD 12:NMOD 9:PMOD 12:LOC 13:PMOD 4:P -1:ROOT 16:OPRD 17:IM 18:ADV 22:NMOD 22:NMOD 19:PMOD 22:P 25:SBJ 22:NMOD 25:VC 26:LOC 30:NMOD 30:NMOD 27:PMOD 33:P 16:NMOD 32:CONJ 33:VC 34:PRD 35:AMOD 36:PMOD 39:SBJ 34:OBJ 39:VC 43:NMOD 43:NMOD 40:OBJ 40:ADV 46:NMOD 44:PMOD -1:ROOT 47:P'
+p690
+sg67
+S'0,3 4,10 10,12 13,20 21,25 25,26 27,32 33,35 36,42 43,45 46,49 50,57 58,65 66,68 69,76 76,77 78,87 88,90 91,98 99,105 106,109 110,118 119,128 128,129 130,135 136,139 140,148 149,151 152,155 156,161 162,169 170,171 171,174 175,179 180,182 183,191 192,194 195,202 203,206 206,208 209,217 218,219 220,226 227,231 232,236 237,240 241,246 246,247 247,248'
+p691
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp692
+Rp693
+(dp694
+g61
+S'631931a1cec346fa2e9afe013bfb5f3c'
+p695
+sg63
+S'CC PRP$ JJR JJ NN VBZ VBN IN NNP NNS IN JJ NNS CC NNS , WDT PRP MD VB IN DT NN POS JJ NN .'
+p696
+sg64
+S"But his more recent work has revolved around LEGO recreations of classic paintings and sculptures, which you'll see in this article's upper gallery."
+p697
+sg66
+S'5:DEP 4:NMOD 3:AMOD 4:NMOD 5:SBJ -1:ROOT 5:VC 6:LOC 9:NMOD 7:PMOD 9:NMOD 12:NMOD 10:PMOD 12:COORD 13:CONJ 12:P 5:NMOD 18:SBJ 12:NMOD 18:VC 19:LOC 22:NMOD 25:NMOD 22:SUFFIX 25:NMOD 20:PMOD 5:P'
+p698
+sg67
+S'0,3 4,7 8,12 13,19 20,24 25,28 29,37 38,44 45,49 50,61 62,64 65,72 73,82 83,86 87,97 97,98 99,104 105,108 108,111 112,115 116,118 119,123 124,131 131,133 134,139 140,147 147,148'
+p699
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp700
+Rp701
+(dp702
+g61
+S'0a46e69ad6d549b074cb69b8a27abc65'
+p703
+sg63
+S'IN NNP TO NNP , CC IN JJ NNS TO RB VBN NNS , NNP POS NNP IN DT NNP NN VBZ DT NN IN JJ NNS IN DT NNP NN .'
+p704
+sg64
+S"From Monet to Munch, and from Egyptian temples to politically charged Americana, Sawaya's Art of the Brick collection crosses a ton of artistic movements off the LEGO list."
+p705
+sg66
+S'31:P 0:PMOD 0:PMOD 2:PMOD 0:P 0:COORD 5:CONJ 8:NMOD 6:PMOD 12:NMOD 11:AMOD 12:NMOD 21:SBJ 21:P 16:NMOD 14:SUFFIX 21:SBJ 16:NMOD 20:NMOD 20:NMOD 17:PMOD 31:NMOD 23:NMOD 21:OBJ 23:NMOD 26:NMOD 24:PMOD 31:NMOD 30:NMOD 30:NMOD 27:PMOD -1:ROOT'
+p706
+sg67
+S'0,4 5,10 11,13 14,19 19,20 21,24 25,29 30,38 39,46 47,49 50,61 62,69 70,79 79,80 81,87 87,89 90,93 94,96 97,100 101,106 107,117 118,125 126,127 128,131 132,134 135,143 144,153 154,157 158,161 162,166 167,171 171,172'
+p707
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp708
+Rp709
+(dp710
+g61
+S'c90ff0e364e0cf7fcffa2aac6e5b9548'
+p711
+sg63
+S'PRP MD VB DT IN DT CC RBR IN NNP NNP NNP NNP IN NNP CD .'
+p712
+sg64
+VYou can see all of this and more at theÂ Pacific Science Center until September 11.
+p713
+sg66
+S'1:SBJ -1:ROOT 1:VC 2:OBJ 3:NMOD 4:PMOD 3:COORD 2:ADV 2:LOC 12:NAME 12:NAME 12:NAME 8:PMOD 2:TMP 15:NMOD 13:PMOD 1:P'
+p714
+sg67
+S'0,3 4,7 8,11 12,15 16,18 19,23 24,27 28,32 33,35 36,40 41,48 49,56 57,63 64,69 70,79 80,82 82,83'
+p715
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp716
+Rp717
+(dp718
+g61
+S'9718d180d1b4c53bbd0513c6f04d506a'
+p719
+sg63
+S'DT JJ NN , RB , VBD DT JJS NNP POS NN VBD TO NN IN DT NN IN NN NN .'
+p720
+sg64
+S"This Skeletor-looking sculpture, sadly, was the closest Sawaya's exhibit got to anything in the way of pop culture."
+p721
+sg66
+S'2:NMOD 2:NMOD 6:SBJ 6:P 6:ADV 6:P -1:ROOT 12:SBJ 12:TMP 6:NMOD 9:SUFFIX 12:SBJ 6:OBJ 12:ADV 13:PMOD 12:LOC 17:NMOD 15:PMOD 17:NMOD 20:NMOD 18:PMOD 6:P'
+p722
+sg67
+S'0,4 5,21 22,31 31,32 33,38 38,39 40,43 44,47 48,55 56,62 62,64 65,72 73,76 77,79 80,88 89,91 92,95 96,99 100,102 103,106 107,114 114,115'
+p723
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp724
+Rp725
+(dp726
+g61
+S'fd8a95491cc416e86655b12235ab620f'
+p727
+sg63
+S'RB VBZ NN , RB .'
+p728
+sg64
+S'Still looks rad, though.'
+p729
+sg66
+S'1:ADV -1:ROOT 1:OBJ 1:P 1:ADV 1:P'
+p730
+sg67
+S'0,5 6,11 12,15 15,16 17,23 23,24'
+p731
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp732
+Rp733
+(dp734
+g61
+S'87cafa2d50f6e9b9a2392af417634842'
+p735
+sg63
+S'LS . NNP VBZ DT JJ NN IN DT NN NN IN JJS JJ NNS , CC PRP VBZ JJ TO VB WRB .'
+p736
+sg64
+S"3. Sawaya uses this tear-your-innards-out piece as the lead image in most promotional materials, and it's easy to see why."
+p737
+sg66
+S'6:NMOD 0:P 3:SBJ 11:NMOD 6:NMOD 6:NMOD 3:OBJ 6:NMOD 10:NMOD 10:NMOD 7:PMOD -1:ROOT 13:AMOD 14:NMOD 11:PMOD -1:ROOT 11:NMOD 18:SBJ 16:CONJ 18:PRD 18:EXTR 20:IM 21:OBJ 15:P'
+p738
+sg67
+S'0,1 1,2 3,9 10,14 15,19 20,41 42,47 48,50 51,54 55,59 60,65 66,68 69,73 74,85 86,95 95,96 97,100 101,103 103,105 106,110 111,113 114,117 118,121 121,122'
+p739
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp740
+Rp741
+(dp742
+g61
+S'7451a492c9eb621ec8941cd15121fc02'
+p743
+sg63
+S'LS . DT JJ NN VBZ VBN RP RB IN NNP POS JJ NN NN CD NN , PRP VBP RB VBN IN JJ NNS IN NN .'
+p744
+sg64
+V4. This second gallery is made up entirely of Sawaya's own creationsâ€”meaning, they aren't based on pre-existing works of art.
+p745
+sg66
+S'19:P 19:DEP 4:NMOD 4:NMOD 5:SBJ 19:ADV 5:VC 6:PRT 6:MNR 8:AMOD 14:NMOD 10:SUFFIX 19:NMOD 14:NMOD 12:OBJ 16:NMOD 9:PMOD 19:P 19:SBJ -1:ROOT 19:ADV 19:VC 21:ADV 24:NMOD 22:PMOD 24:NMOD 25:PMOD 19:P'
+p746
+sg67
+S'0,1 1,2 3,7 8,14 15,22 23,25 26,30 31,33 34,42 43,45 46,52 52,54 55,58 59,69 69,70 70,71 71,78 78,79 80,84 85,88 88,91 92,97 98,100 101,113 114,119 120,122 123,126 126,127'
+p747
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp748
+Rp749
+(dp750
+g61
+S'0e5bd76596b7252e2062c34f4b2351c4'
+p751
+sg63
+S"IN , IN NN , PRP VBP DT NN CC NN IN DT NN POS NN IN `` JJ NN . ''"
+p752
+sg64
+S'Unless, of course, you count the shape and structure of a T-Rex\'s skeleton as "pre-existing art."'
+p753
+sg66
+S'6:ADV 6:P 6:ADV 2:PMOD 6:P 6:SBJ -1:ROOT 8:NMOD 6:OBJ 8:COORD 9:CONJ 10:NMOD 13:NMOD 15:NMOD 13:SUFFIX 11:PMOD 8:NMOD 16:P 19:NMOD 16:PMOD 6:P 6:P'
+p754
+sg67
+S'0,6 6,7 8,10 11,17 17,18 19,22 23,28 29,32 33,38 39,42 43,52 53,55 56,57 58,63 63,65 66,74 75,77 78,79 79,91 92,95 95,96 96,97'
+p755
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp756
+Rp757
+(dp758
+g61
+S'866ddaf03df7f27ad63c626a987b0e23'
+p759
+sg63
+S'DT NN VBZ JJ .'
+p760
+sg64
+S'This sucker is huge.'
+p761
+sg66
+S'1:NMOD 2:SBJ -1:ROOT 2:PRD 2:P'
+p762
+sg67
+S'0,4 5,11 12,14 15,19 19,20'
+p763
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp764
+Rp765
+(dp766
+g61
+S'4566e3e2c37c49b9ef61dcd16d48b5b5'
+p767
+sg63
+S'CD . PRP$ , WDT JJ NN NNS PRP VBP , NNP .'
+p768
+sg64
+S'7. My, what big LEGO teeth you have, T-Rex.'
+p769
+sg66
+S'9:P 9:DEP 12:NMOD 2:P 9:OBJ 7:NMOD 7:NMOD 12:NMOD 9:SBJ 7:NMOD 9:P 9:OBJ -1:ROOT'
+p770
+sg67
+S'0,1 1,2 3,5 5,6 7,11 12,15 16,20 21,26 27,30 31,35 35,36 37,42 42,43'
+p771
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp772
+Rp773
+(dp774
+g61
+S'8b6cafd9b185ccce088e90d119706def'
+p775
+sg63
+S'CD . NNP NNP'
+p776
+sg64
+S'8. Sam Machkovech'
+p777
+sg66
+S'-1:ROOT 0:P 3:NAME 0:APPO'
+p778
+sg67
+S'0,1 1,2 3,6 7,17'
+p779
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp780
+Rp781
+(dp782
+g61
+S'ab68d49c36b046136f2aefaf191e8e35'
+p783
+sg63
+S'DT JJ VBP .'
+p784
+sg64
+S'A quick swim.'
+p785
+sg66
+S'1:NMOD -1:ROOT 3:DEP 1:P'
+p786
+sg67
+S'0,1 2,7 8,12 12,13'
+p787
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp788
+Rp789
+(dp790
+g61
+S'c853a50a13633d492bc9317abf6fdfa5'
+p791
+sg63
+S"`` WRB DT NN VBP PRP$ NNS VBP ''"
+p792
+sg64
+S'"Where the heck are my hands?!"'
+p793
+sg66
+S'7:P 4:MNR 3:NMOD 4:SBJ 8:NMOD 6:NMOD 7:SBJ 4:OBJ -1:ROOT'
+p794
+sg67
+S'0,1 1,6 7,10 11,15 16,19 20,22 23,28 28,30 30,31'
+p795
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp796
+Rp797
+(dp798
+g61
+S'd1a18dd574ce56f94f9aa8184439d910'
+p799
+sg63
+S"`` : CC NN NNS VBP ''"
+p800
+sg64
+S'"...AND MY EYES?!?!?"'
+p801
+sg66
+S'6:NMOD 0:P 0:COORD 4:NMOD 5:SBJ 2:CONJ -1:ROOT'
+p802
+sg67
+S'0,1 1,4 4,7 8,10 11,15 15,20 20,21'
+p803
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp804
+Rp805
+(dp806
+g61
+S'34bc16b422cbf0d8a9a81824d3b67208'
+p807
+sg63
+S'NNP , NN .'
+p808
+sg64
+S'Apple, apple.'
+p809
+sg66
+S'2:NMOD 0:P -1:ROOT 2:P'
+p810
+sg67
+S'0,5 5,6 7,12 12,13'
+p811
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp812
+Rp813
+(dp814
+g61
+S'ef5793520b3c05c74561d4cc914f083f'
+p815
+sg63
+S'RBR NNS .'
+p816
+sg64
+S'More apples.'
+p817
+sg66
+S'1:NMOD -1:ROOT 1:P'
+p818
+sg67
+S'0,4 5,11 11,12'
+p819
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp820
+Rp821
+(dp822
+g61
+S'24b1123ce11a5f7fe6398a09e62e8830'
+p823
+sg63
+S'NNS IN NN IN DT JJ , JJ NN .'
+p824
+sg64
+S'Lots of detail for a little, gray desk.'
+p825
+sg66
+S'9:DEP 0:NMOD 1:PMOD 0:NMOD 8:NMOD 8:NMOD 8:P 8:NMOD 3:PMOD -1:ROOT'
+p826
+sg67
+S'0,4 5,7 8,14 15,18 19,20 21,27 27,28 29,33 34,38 38,39'
+p827
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp828
+Rp829
+(dp830
+g61
+S'b29fdcdc9b14a945b4f4a6c1d2d86e1e'
+p831
+sg63
+S'NNS RB VBD DT JJ NN NN WDT VBD DT NN IN JJ JJ NNP VBZ RB .'
+p832
+sg64
+S'Attendees really loved the giant pencil (which was a motif in many other Sawaya works).'
+p833
+sg66
+S'2:SBJ 2:ADV -1:ROOT 5:NMOD 5:NMOD 2:OBJ 8:P 8:SBJ 2:OBJ 10:NMOD 8:PRD 10:LOC 15:ADV 15:ADV 15:SBJ 11:PMOD -1:ROOT 16:P'
+p834
+sg67
+S'0,9 10,16 17,22 23,26 27,32 33,39 40,41 41,46 47,50 51,52 53,58 59,61 62,66 67,72 73,79 80,85 85,86 86,87'
+p835
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp836
+Rp837
+(dp838
+g61
+S'7bcc196cef3b3a0d5ac583d566f3f22f'
+p839
+sg63
+S'RB DT NN VBZ VBN IN NNS .'
+p840
+sg64
+S'Even the frame is made of LEGOs.'
+p841
+sg66
+S'3:ADV 2:NMOD 3:SBJ -1:ROOT 3:VC 4:ADV 5:PMOD 3:P'
+p842
+sg67
+S'0,4 5,8 9,14 15,17 18,22 23,25 26,31 31,32'
+p843
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp844
+Rp845
+(dp846
+g61
+S'6a2d0255bf918be1aeb97e952319a16f'
+p847
+sg63
+S'DT NNS IN DT NN VBD NNP VB PRP IN PRP VBD RB , RB .'
+p848
+sg64
+S'The eyes of this face did NOT follow me as I walked around, thankfully.'
+p849
+sg66
+S'1:NMOD 5:SBJ 1:NMOD 4:NMOD 2:PMOD -1:ROOT 5:OBJ 5:OPRD 7:OBJ 7:ADV 11:SBJ 9:SUB 11:ADV 7:P 7:MNR 5:P'
+p850
+sg67
+S'0,3 4,8 9,11 12,16 17,21 22,25 26,29 30,36 37,39 40,42 43,44 45,51 52,58 58,59 60,70 70,71'
+p851
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp852
+Rp853
+(dp854
+g61
+S'22911cc4eb845910e305e0b15ad86e71'
+p855
+sg63
+S'NN IN DT JJ NN NN IN IN DT NNP NNS .'
+p856
+sg64
+S'Close-up of the cool light-reflection effect off of the LEGO pieces.'
+p857
+sg66
+S'11:DEP 0:NMOD 5:NMOD 5:NMOD 5:NMOD 1:PMOD 0:NMOD 6:PMOD 10:NMOD 10:NMOD 7:PMOD -1:ROOT'
+p858
+sg67
+S'0,8 9,11 12,15 16,20 21,37 38,44 45,48 49,51 52,55 56,60 61,67 67,68'
+p859
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp860
+Rp861
+(dp862
+g61
+S'9c6e8aabc0f6fea6d2cffe0108617081'
+p863
+sg63
+S'JJ IN NNP POS NNS VBD TO DT JJ JJ NN .'
+p864
+sg64
+S"Many of Sawaya's pieces spoke to a serious existential bent."
+p865
+sg66
+S'5:SBJ 0:NMOD 4:NMOD 2:SUFFIX 1:PMOD -1:ROOT 5:ADV 10:NMOD 10:NMOD 10:NMOD 6:PMOD 5:P'
+p866
+sg67
+S'0,4 5,7 8,14 14,16 17,23 24,29 30,32 33,34 35,42 43,54 55,59 59,60'
+p867
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp868
+Rp869
+(dp870
+g61
+S'e1d0feb2e044dae9abf409db46ff5921'
+p871
+sg63
+S'DT NNS VBD TO VB IN VBG VBN :'
+p872
+sg64
+S'The themes tended to be about being trapped...'
+p873
+sg66
+S'1:NMOD -1:ROOT 1:APPO 2:OPRD 3:IM 4:PRD 5:PMOD 6:VC 1:P'
+p874
+sg67
+S'0,3 4,10 11,17 18,20 21,23 24,29 30,35 36,43 43,46'
+p875
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp876
+Rp877
+(dp878
+g61
+S'a42f02c497f4f2cb69715ef4798a9006'
+p879
+sg63
+S': CC JJ RB :'
+p880
+sg64
+S'...or broken apart...'
+p881
+sg66
+S'-1:P 2:AMOD 4:PRN 4:COORD 0:NMOD'
+p882
+sg67
+S'0,3 3,5 6,12 13,18 18,21'
+p883
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp884
+Rp885
+(dp886
+g61
+S'3f0b3a76a774e475bb4abb2acecddf55'
+p887
+sg63
+S': CC IN DT NN :'
+p888
+sg64
+S'...or in a box...'
+p889
+sg66
+S'-1:P -1:COORD 1:CONJ 4:NMOD 2:PMOD 1:P'
+p890
+sg67
+S'0,3 3,5 6,8 9,10 11,14 14,17'
+p891
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp892
+Rp893
+(dp894
+g61
+S'69b41c04fc5466aad9caf5a9aa170943'
+p895
+sg63
+S': CC VBN IN JJ NNS :'
+p896
+sg64
+S'...or held by invisible forces...'
+p897
+sg66
+S'-1:P 6:COORD 6:COORD 2:LGS 5:NMOD 3:PMOD 0:NMOD'
+p898
+sg67
+S'0,3 3,5 6,10 11,13 14,23 24,30 30,33'
+p899
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp900
+Rp901
+(dp902
+g61
+S'af2048d2bb39882f2d242f5e1f6870d6'
+p903
+sg63
+S'NN DT NN IN DT NNS VBP'
+p904
+sg64
+S'(another angle of the hands)'
+p905
+sg66
+S'6:NMOD 2:NMOD -1:ROOT 2:NMOD 5:NMOD 3:PMOD 2:P'
+p906
+sg67
+S'0,1 1,8 9,14 15,17 18,21 22,27 27,28'
+p907
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp908
+Rp909
+(dp910
+g61
+S'52a5617742deeca53543c052b5f4c832'
+p911
+sg63
+S": CC VBG PRP$ JJ VBG '' NN ."
+p912
+sg64
+S"...or missing your entire freakin' face."
+p913
+sg66
+S'-1:ROOT 0:COORD 1:CONJ 7:NMOD 7:NMOD 4:AMOD 7:P 2:OBJ 0:P'
+p914
+sg67
+S'0,3 3,5 6,13 14,18 19,25 26,33 33,34 35,39 39,40'
+p915
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp916
+Rp917
+(dp918
+g61
+S'aab93b38aaa568fd58008575a57deec8'
+p919
+sg63
+S'NN , NNS .'
+p920
+sg64
+S'Sup, dudes.'
+p921
+sg66
+S'-1:ROOT 0:P 0:NMOD 0:P'
+p922
+sg67
+S'0,3 3,4 5,10 10,11'
+p923
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp924
+Rp925
+(dp926
+g61
+S'88e19bc129f6995f9023123c92c708fc'
+p927
+sg63
+S"`` NNS . ''"
+p928
+sg64
+S'"SKULLS."'
+p929
+sg66
+S'1:P -1:ROOT 1:P 1:P'
+p930
+sg67
+S'0,1 1,7 7,8 8,9'
+p931
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp932
+Rp933
+(dp934
+g61
+S'b520fb460dd63722cba1fa16b5b16e3a'
+p935
+sg63
+S'NNP NN .'
+p936
+sg64
+S'Pretty fish!'
+p937
+sg66
+S'1:NMOD -1:ROOT 1:P'
+p938
+sg67
+S'0,6 7,11 11,12'
+p939
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp940
+Rp941
+(dp942
+g61
+S'428192f5f39c2dd46cfe909e413e343b'
+p943
+sg63
+S'RBR JJ NN .'
+p944
+sg64
+S'More pretty fish.'
+p945
+sg66
+S'1:AMOD 2:NMOD -1:ROOT 2:P'
+p946
+sg67
+S'0,4 5,11 12,16 16,17'
+p947
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp948
+Rp949
+(dp950
+g61
+S'ff6852bef213fec1d505e96cf4ae9c6d'
+p951
+sg63
+S'NNP DT NN VBZ VBG DT NN NN .'
+p952
+sg64
+S'Notice this woman is wearing a LEGO dress.'
+p953
+sg66
+S'3:DEP 2:NMOD 3:SBJ -1:ROOT 3:VC 7:NMOD 7:NMOD 4:OBJ 3:P'
+p954
+sg67
+S'0,6 7,11 12,17 18,20 21,28 29,30 31,35 36,41 41,42'
+p955
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp956
+Rp957
+(dp958
+g61
+S'49477f5f345b96ef00f387b2e48f491d'
+p959
+sg63
+S'IN IN , NN NN .'
+p960
+sg64
+S'As in, THIS dress.'
+p961
+sg66
+S'1:AMOD 4:LOC 4:P 4:NMOD -1:ROOT 4:P'
+p962
+sg67
+S'0,2 3,5 5,6 7,11 12,17 17,18'
+p963
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp964
+Rp965
+(dp966
+g61
+S'f80b2a331f6bb2749790fdc55ac50961'
+p967
+sg63
+S'DT NN VBD VBN TO JJ NN VBZ IN VBN NNP NNS IN JJ NNS IN NNS , NNS , NNS , CC RBR .'
+p968
+sg64
+S'This room was dedicated to other photo shoots that included LEGO approximations of real-life objects like towels, clouds, umbrellas, and more.'
+p969
+sg66
+S'1:NMOD 2:SBJ -1:ROOT 2:VC 3:ADV 7:NMOD 7:NMOD 4:PMOD 7:NMOD 11:NMOD 11:NMOD 24:NMOD 11:NMOD 14:NMOD 12:PMOD 14:NMOD 15:PMOD 24:P 24:DEP 18:P 18:COORD 20:P 20:COORD 24:DEP 2:P'
+p970
+sg67
+S'0,4 5,9 10,13 14,23 24,26 27,32 33,38 39,45 46,50 51,59 60,64 65,79 80,82 83,92 93,100 101,105 106,112 112,113 114,120 120,121 122,131 131,132 133,136 137,141 141,142'
+p971
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp972
+Rp973
+(dp974
+g61
+S'7b6bf417dc5d493455ff4810fa4fa56f'
+p975
+sg63
+S'DT NN NN VBZ NN IN NNP NN NNS IN NN .'
+p976
+sg64
+S'An exhibit video includes footage of Sawaya building pieces from scratch.'
+p977
+sg66
+S'2:NMOD 2:NMOD 3:SBJ -1:ROOT 3:OBJ 4:NMOD 8:NMOD 8:NMOD 5:PMOD 4:NMOD 9:PMOD 3:P'
+p978
+sg67
+S'0,2 3,10 11,16 17,25 26,33 34,36 37,43 44,52 53,59 60,64 65,72 72,73'
+p979
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbag0
+(g57
+g2
+Ntp980
+Rp981
+(dp982
+g61
+S'277db7a491b34bf890149f28fe0bd3a6'
+p983
+sg63
+S'VBG NN IN NNP NNP'
+p984
+sg64
+S'Listing image by Sam Machkovech'
+p985
+sg66
+S'1:NMOD -1:ROOT 1:NMOD 4:NAME 2:PMOD'
+p986
+sg67
+S'0,7 8,13 14,16 17,20 21,31'
+p987
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I00
+sbasS'body_annotations'
+p988
+(lp989
+sS'titles'
+p990
+(lp991
+g0
+(g57
+g2
+Ntp992
+Rp993
+(dp994
+g61
+S'3ebe8cb614b3975d94dc013ceaecd00d'
+p995
+sg63
+S'NNP , NNP , NNP , CC RBR : JJ NN IN DT NNP NN NN'
+p996
+sg64
+S'Munch, Monet, Michelangelo, and more: High art through a LEGO lens |'
+p997
+sg66
+S'4:NMOD 4:P 4:NMOD 4:P -1:ROOT 4:P 4:COORD 10:NMOD 10:P 10:NMOD 6:CONJ 4:NMOD 15:NMOD 15:NMOD 15:NMOD 11:PMOD'
+p998
+sg67
+S'0,5 5,6 7,12 12,13 14,26 26,27 28,31 32,36 36,37 38,42 43,46 47,54 55,56 57,61 62,66 67,68'
+p999
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I01
+sbag0
+(g57
+g2
+Ntp1000
+Rp1001
+(dp1002
+g61
+S'de63cf00f347db6f58b61190c98719f6'
+p1003
+sg63
+Nsg64
+S'Ars Technica'
+p1004
+sg66
+Nsg67
+S'0,3 4,12'
+p1005
+sg69
+F0.0
+sg70
+F0.0
+sg71
+I01
+sbasS'title_annotations'
+p1006
+(lp1007
+sS'attributes'
+p1008
+(dp1009
+S'twitter:creator'
+p1010
+S'@samred'
+p1011
+sg43
+S'text/html'
+p1012
+sS'application-name'
+p1013
+S'Ars Technica'
+p1014
+sS'twitter:domain'
+p1015
+S'arstechnica.com'
+p1016
+sS'parsely-metadata'
+p1017
+S'{"type":"report","title":"Munch, Monet, Michelangelo, and more: High art through a LEGO lens","post_id":892091,"lower_deck":"Longtime brick-art creator recreates famous paintings, sculptures in latest exhibit.","image_url":"http:\\/\\/cdn.arstechnica.net\\/wp-content\\/uploads\\/2016\\/05\\/IMG_0185-150x150.jpg","listing_image_url":"http:\\/\\/cdn.arstechnica.net\\/wp-content\\/uploads\\/2016\\/05\\/IMG_0185-300x150.jpg"}'
+p1018
+sS'twitter:site'
+p1019
+S'@arstechnica'
+p1020
+sS'msapplication-task'
+p1021
+S'name=Subscribe;action-uri=http://arstechnica.com/subscriptions/;icon-uri=https://cdn.arstechnica.net/ie-jump-menu/jump-subscribe.ico'
+p1022
+sS'og:url'
+p1023
+S'http://arstechnica.com/the-multiverse/2016/05/munch-monet-michelangelo-and-more-high-art-as-rendered-by-lego/'
+p1024
+sS'twitter:url'
+p1025
+S'http://arstechnica.com/the-multiverse/2016/05/munch-monet-michelangelo-and-more-high-art-as-rendered-by-lego/'
+p1026
+sS'title'
+p1027
+S'Munch, Monet, Michelangelo, and more: High art through a LEGO lens | Ars Technica'
+p1028
+sS'twitter:image:width'
+p1029
+S'640'
+p1030
+sS'og:type'
+p1031
+S'article'
+p1032
+sS'fb:admins'
+p1033
+S'10103365229664579'
+p1034
+sS'viewport'
+p1035
+S'width=1020'
+p1036
+sS'og:title'
+p1037
+S'Munch, Monet, Michelangelo, and more: High art through a LEGO lens'
+p1038
+sS'twitter:title'
+p1039
+S'Munch, Monet, Michelangelo, and more: High art through a LEGO lens'
+p1040
+sS'description'
+p1041
+S'Longtime brick-art creator recreates famous paintings, sculptures in latest exhibit.'
+p1042
+sS'msapplication-tooltip'
+p1043
+S'Ars Technica: Serving the technologist for 1.2 decades'
+p1044
+sS'twitter:image:height'
+p1045
+S'960'
+p1046
+sS'msapplication-starturl'
+p1047
+S'http://arstechnica.com/'
+p1048
+sS'og:image'
+p1049
+S'http://cdn.arstechnica.net/wp-content/uploads/2016/05/IMG_0185-640x960.jpg'
+p1050
+sS'theme-color'
+p1051
+S'#000000'
+p1052
+sS'lang'
+p1053
+S'en'
+p1054
+sS'og:site_name'
+p1055
+S'Ars Technica'
+p1056
+sS'twitter:card'
+p1057
+S'summary_large_image'
+p1058
+sS'parsely-page'
+p1059
+S'{"title":"Munch, Monet, Michelangelo, and more: High art through a LEGO lens","link":"http:\\/\\/arstechnica.com\\/the-multiverse\\/2016\\/05\\/munch-monet-michelangelo-and-more-high-art-as-rendered-by-lego\\/","type":"post","author":"Sam Machkovech","post_id":892091,"pub_date":"2016-05-30T13:30:49Z","section":"The Multiverse","tags":["ars-gallery","brick-art","gallery","lego","type: report"],"image_url":"http:\\/\\/cdn.arstechnica.net\\/wp-content\\/uploads\\/2016\\/05\\/IMG_0185-150x150.jpg"}'
+p1060
+sS'twitter:description'
+p1061
+S'Longtime brick-art creator recreates famous paintings, sculptures in latest exhibit.'
+p1062
+sS'og:description'
+p1063
+S'Longtime brick-art creator recreates famous paintings, sculptures in latest exhibit.'
+p1064
+sS'twitter:image:src'
+p1065
+S'http://cdn.arstechnica.net/wp-content/uploads/2016/05/IMG_0185-640x960.jpg'
+p1066
+sS'advertising'
+p1067
+S'ask'
+p1068
+sS'format-detection'
+p1069
+S'telephone=no'
+p1070
+sS'content_id'
+p1071
+I3839657955223420518
+sS'nilsimsa'
+p1072
+S'3ff00168865249eee2931db0ca88233585265ef3f16474442decef01465649ef'
+p1073
+ssbsS'header'
+p1074
+(dp1075
+g1010
+g1011
+sg1013
+g1014
+sg1015
+g1016
+sg1017
+g1018
+sg1019
+g1020
+sg1021
+g1022
+sg1023
+g1024
+sg1049
+g1050
+sg1029
+g1030
+sg1031
+g1032
+sg1033
+g1034
+sg1051
+g1052
+sg1037
+g1038
+sg1039
+g1040
+sg1041
+g1042
+sg1043
+g1044
+sg1045
+g1046
+sg1047
+g1048
+sg1025
+g1026
+sg1035
+g1036
+sg1055
+g1056
+sg1057
+g1058
+sg1059
+g1060
+sg1061
+g1062
+sg1063
+g1064
+sg1065
+g1066
+sg1067
+g1068
+sg1069
+g1070
+ssS'url'
+p1076
+Vhttp://arstechnica.com/the-multiverse/2016/05/munch-monet-michelangelo-and-more-high-art-as-rendered-by-lego/
+p1077
+sS'mirror_id'
+p1078
+I358
+sS'md5sum'
+p1079
+NsS'geo_uri'
+p1080
+NsS'mirror_freq'
+p1081
+NsS'last_modified'
+p1082
+NsS'new_entry'
+p1083
+I01
+sS'error'
+p1084
+NsS'source_id'
+p1085
+I29022
+sg1071
+L3839657955223420518L
+sg1072
+V3ff00168865249eee2931db0ca88233585265ef3f16474442decef01465649ef
+p1086
+sS'last_seen'
+p1087
+Nsb.
