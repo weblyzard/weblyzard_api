@@ -229,13 +229,21 @@ class XMLParser(object):
                         for entity in annotation['entities']:
                             entity['annotation_type'] = a_type
                             entity['key'] = annotation['key']
-                            entity['preferredName'] = annotation['preferredName']
+                            preferred_name = annotation['preferredName']
+                            if not isinstance(preferred_name, unicode):
+                                preferred_name = preferred_name.decode('utf-8')
+                            entity['preferredName'] = preferred_name
+
                             annotation_attributes = cls.dump_xml_attributes(entity,
                                                                             mapping=annotation_mapping)
-                            etree.SubElement(root,
-                                             '{%s}annotation' % cls.get_default_ns(),
-                                             attrib=annotation_attributes,
-                                             nsmap=cls.DOCUMENT_NAMESPACES)
+                            
+                            try:
+                                etree.SubElement(root,
+                                                 '{%s}annotation' % cls.get_default_ns(),
+                                                 attrib=annotation_attributes,
+                                                 nsmap=cls.DOCUMENT_NAMESPACES)
+                            except Exception, e:
+                                continue
 
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
