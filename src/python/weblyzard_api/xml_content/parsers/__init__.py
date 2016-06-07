@@ -10,6 +10,7 @@ import logging
 import unittest
 
 from lxml import etree
+import hashlib
 
 
 logger = logging.getLogger('weblyzard_api.xml_content.parsers')
@@ -129,10 +130,13 @@ class XMLParser(object):
 
             if 'md5sum' in sent_attributes:
                 sent_id = sent_attributes['md5sum']
-            else:
+            elif 'id' in sent_attributes:
                 sent_id = sent_attributes['id']
                 sent_attributes['md5sum'] = sent_id
                 del sent_attributes['id']
+            else:
+                sent_id = hashlib.md5(sent_element.text.encode('utf-8')).hexdigest()
+                sent_attributes['md5sum'] = sent_id
 
             if not sent_id in seen_sentences:
                 sentences.append(sent_attributes)
