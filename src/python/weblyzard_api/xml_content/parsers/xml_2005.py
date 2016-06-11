@@ -11,7 +11,20 @@ class XML2005(XMLParser):
     
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2005'
     DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE}
-    SENTENCE_MAPPING = {'pos_tags': 'pos'} 
+    ATTR_MAPPING = {'content_id': 'content_id',
+                    'source_id': 'source_id',
+                    'content_type': 'content_type',
+                    'title': 'title',
+                    'url': 'url',
+                    'nilsimsa': 'nilsimsa'}
+    SENTENCE_MAPPING = {'pos_tags': 'pos',
+                        'md5sum': 'md5sum',
+                        'content_id': 'content_id',
+                        'dependency': 'dependency',
+                        'token': 'token',
+                        'significance': 'significance',
+                        'is_title': 'is_title',
+                        'sem_orient': 'sem_orient'} 
     VERSION = 2005
 
     @classmethod
