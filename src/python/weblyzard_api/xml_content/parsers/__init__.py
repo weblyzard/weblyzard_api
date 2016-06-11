@@ -10,7 +10,6 @@ import logging
 
 from lxml import etree
 
-
 logger = logging.getLogger('weblyzard_api.xml_content.parsers')
 
 
@@ -97,21 +96,11 @@ class XMLParser(object):
         annotations = []
         for annotation_element in root.iterfind('{%s}annotation' % cls.get_default_ns(),
                                           namespaces=cls.DOCUMENT_NAMESPACES):
-
-            annotation_attrs = cls.load_attributes(annotation_element.attrib,
-                                                  mapping=cls.ANNOTATION_MAPPING)
-#             annotation_attrs['value'] = annotation_element.text.strip()
-
-#             if 'md5sum' in annotation_attrs:
-#                 sent_id = annotation_attrs['md5sum']
-#             else:
-#                 sent_id = annotation_attrs['id']
-#                 annotation_attrs['md5sum'] = sent_id
-#                 del annotation_attrs['id']
-
-            annotations.append(annotation_attrs)
+            annotations.append(cls.load_attributes(annotation_element.attrib,
+                                                  mapping=cls.ANNOTATION_MAPPING))
 
         return annotations
+
     
     @classmethod
     def load_sentences(cls, root, page_attributes=None, remove_duplicates=True):
@@ -227,11 +216,13 @@ class XMLParser(object):
                             entity['preferredName'] = annotation['preferredName']
                             annotation_attributes = cls.dump_xml_attributes(entity,
                                                                             mapping=annotation_mapping)
-                            etree.SubElement(root,
-                                             '{%s}annotation' % cls.get_default_ns(),
-                                             attrib=annotation_attributes,
-                                             nsmap=cls.DOCUMENT_NAMESPACES)
-
+                            try:
+                                etree.SubElement(root,
+                                                 '{%s}annotation' % cls.get_default_ns(),
+                                                 attrib=annotation_attributes,
+                                                 nsmap=cls.DOCUMENT_NAMESPACES)
+                            except Exception, e:
+                                continue
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
     @classmethod
