@@ -12,7 +12,10 @@ class XML2013(XMLParser):
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2013#'
     DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE,
                            'dc': 'http://purl.org/dc/elements/1.1/',
-                           'xml': 'http://www.w3.org/XML/1998/namespace'}
+                           'xml': 'http://www.w3.org/XML/1998/namespace',
+                           'sioc': 'http://rdfs.org/sioc/ns#',
+                           'skos': 'http://www.w3.org/2004/02/skos/core#',
+                           'foaf': 'http://xmlns.com/foaf/0.1/'}
     VERSION = 2013
     ATTR_MAPPING = {'{%s}nilsimsa' % DOCUMENT_NAMESPACES['wl']: 'nilsimsa',
                     '{%s}format' % DOCUMENT_NAMESPACES['dc']: 'content_type',

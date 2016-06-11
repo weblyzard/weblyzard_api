@@ -9,6 +9,7 @@ import json
 import logging
 
 from lxml import etree
+import hashlib
 
 logger = logging.getLogger('weblyzard_api.xml_content.parsers')
 
@@ -117,10 +118,13 @@ class XMLParser(object):
 
             if 'md5sum' in sent_attributes:
                 sent_id = sent_attributes['md5sum']
-            else:
+            elif 'id' in sent_attributes:
                 sent_id = sent_attributes['id']
                 sent_attributes['md5sum'] = sent_id
                 del sent_attributes['id']
+            else:
+                sent_id = hashlib.md5(sent_element.text.encode('utf-8')).hexdigest()
+                sent_attributes['md5sum'] = sent_id
 
             if not sent_id in seen_sentences:
                 sentences.append(sent_attributes)
@@ -213,9 +217,14 @@ class XMLParser(object):
                         for entity in annotation['entities']:
                             entity['annotation_type'] = a_type
                             entity['key'] = annotation['key']
-                            entity['preferredName'] = annotation['preferredName']
+                            preferred_name = annotation['preferredName']
+                            if not isinstance(preferred_name, unicode):
+                                preferred_name = preferred_name.decode('utf-8')
+                            entity['preferredName'] = preferred_name
+
                             annotation_attributes = cls.dump_xml_attributes(entity,
                                                                             mapping=annotation_mapping)
+                            
                             try:
                                 etree.SubElement(root,
                                                  '{%s}annotation' % cls.get_default_ns(),
@@ -223,6 +232,7 @@ class XMLParser(object):
                                                  nsmap=cls.DOCUMENT_NAMESPACES)
                             except Exception, e:
                                 continue
+
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
     @classmethod
