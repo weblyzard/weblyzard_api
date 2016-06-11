@@ -34,9 +34,11 @@ class XML2013(XMLParser):
                           '{%s}start' % DOCUMENT_NAMESPACES['wl']: 'start',
                           '{%s}end' % DOCUMENT_NAMESPACES['wl']: 'end',
                           '{%s}annotationType' % DOCUMENT_NAMESPACES['wl']: 'annotation_type',
-                          '{%s}preferredName' % DOCUMENT_NAMESPACES['wl']: 'preferredName'
-                          }
-
+                          '{%s}preferredName' % DOCUMENT_NAMESPACES['wl']: 'preferredName'}
+    FEATURE_MAPPING = {'{%s}key' % DOCUMENT_NAMESPACES['wl']: 'key',
+                       '{%s}context' % DOCUMENT_NAMESPACES['wl']: 'context'}
+    RELATION_MAPPING = {}
+    
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
         return attributes, titles + sentences

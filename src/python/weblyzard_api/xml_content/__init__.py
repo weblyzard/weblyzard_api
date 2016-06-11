@@ -272,12 +272,15 @@ class XMLContent(object):
         
         self.body_annotations = []
         self.title_annotations = []
+        self.features = {}
+        self.relations = []
 
         result = self.parse_xml_content(xml_content, remove_duplicates)
         
         if result: 
             self.xml_version, self.attributes, self.sentence_objects, \
-            self.title_annotations, self.body_annotations, self.titles = result
+            self.title_annotations, self.body_annotations, self.titles, \
+            self.features, self.relations = result
         pass
 
     @classmethod
@@ -296,8 +299,8 @@ class XMLContent(object):
         annotation_objects = []
         parser = cls.SUPPORTED_XML_VERSIONS[xml_version]
         
-        attributes, sentences, title_annotations, body_annotations = \
-        parser.parse(xml_content, remove_duplicates)
+        attributes, sentences, title_annotations, body_annotations, features, \
+            relations = parser.parse(xml_content, remove_duplicates)
         
         if 'title' in attributes:
             titles = [Sentence(value=attributes['title'], is_title=True)]
@@ -315,7 +318,8 @@ class XMLContent(object):
         for annotation in body_annotations:
             annotation_obj = Annotation(**annotation) 
             annotation_objects.append(annotation_obj)
-        return xml_version, attributes, sentence_objects, title_annotations, annotation_objects, titles
+        return xml_version, attributes, sentence_objects, title_annotations, \
+                annotation_objects, titles, features, relations
     
     @classmethod
     def get_xml_version(cls, xml_content):
@@ -413,7 +417,8 @@ class XMLContent(object):
                                                               sent_mapping)
                     result[sentence_attr_name].append(sent_attributes)
                     
-            annotation_attr_name = mapping['body_annotations'] if 'body_annotations' in mapping else 'body_annotations' 
+            annotation_attr_name = mapping['body_annotations'] \
+                    if 'body_annotations' in mapping else 'body_annotations' 
             if 'annotations_map' in mapping:
                 result[annotation_attr_name] = []
                 annotation_mapping = mapping['annotations_map']            

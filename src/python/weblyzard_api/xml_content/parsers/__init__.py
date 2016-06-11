@@ -21,6 +21,8 @@ class XMLParser(object):
     ATTR_MAPPING = None
     SENTENCE_MAPPING = None
     ANNOTATION_MAPPING = None
+    FEATURE_MAPPING = None
+    RELATION_MAPPING = None
     DEFAULT_NAMESPACE = 'wl'
 
     @classmethod
@@ -73,8 +75,10 @@ class XMLParser(object):
                 title_annotations.append(annotation)
             else:
                 body_annotations.append(annotation)
-                
-        return attributes, sentences, title_annotations, body_annotations
+        
+        features = cls.load_features(root, page_attributes=attributes)
+        relations = cls.load_relations(root, page_attributes=attributes)      
+        return attributes, sentences, title_annotations, body_annotations, features, relations
 
     @classmethod
     def load_attributes(cls, attributes, mapping):
@@ -135,6 +139,35 @@ class XMLParser(object):
         return sentences
 
     @classmethod
+    def cast_item(cls, item):
+        if item.lower()=='true':
+            return True
+        elif item.lower()=='false':
+            return False
+        
+        try:
+            return int(item)
+        except Exception:
+            pass
+    @classmethod
+    def load_features(cls, root, page_attributes):
+        ''' '''
+        features = {}
+        for feat_element in root.iterfind('{%s}feature' % cls.get_default_ns(),
+                                          namespaces=cls.DOCUMENT_NAMESPACES):
+            feat_attributes = cls.load_attributes(feat_element.attrib,
+                                                  mapping=cls.FEATURE_MAPPING)
+            features[feat_attributes['key']] = feat_element.text.strip()
+        return features    
+    
+    @classmethod
+    def load_relations(cls, root, page_attributes):
+        ''' '''
+        relations = []
+        
+        return relations
+    
+    @classmethod
     def dump_xml_attributes(cls, attributes, mapping):
         new_attributes = {}
 
@@ -149,8 +182,9 @@ class XMLParser(object):
         return new_attributes
 
     @classmethod
-    def dump_xml(cls, titles, attributes, sentences, annotations=None):
-        ''' returns attribute / sentence /annotations as a webLyzard XML document '''
+    def dump_xml(cls, titles, attributes, sentences, annotations=[], 
+                 features={}, relations={}):
+        ''' returns a webLyzard XML document '''
 
         attributes, sentences = cls.pre_xml_dump(titles=titles,
                                                  attributes=attributes,
@@ -206,6 +240,7 @@ class XMLParser(object):
                                     cls.ANNOTATION_MAPPING.keys()))
         else:
             annotation_mapping = None
+
         if annotations:
             # add all annotations as body annotations
             for a_type, a_items in annotations.iteritems():
@@ -221,7 +256,7 @@ class XMLParser(object):
                             if not isinstance(preferred_name, unicode):
                                 preferred_name = preferred_name.decode('utf-8')
                             entity['preferredName'] = preferred_name
-
+    
                             annotation_attributes = cls.dump_xml_attributes(entity,
                                                                             mapping=annotation_mapping)
                             
@@ -232,7 +267,20 @@ class XMLParser(object):
                                                  nsmap=cls.DOCUMENT_NAMESPACES)
                             except Exception, e:
                                 continue
+                            
+        if cls.FEATURE_MAPPING:
+            feature_mapping = dict(zip(cls.FEATURE_MAPPING.values(),
+                                       cls.FEATURE_MAPPING.keys()))
+        else:
+            feature_mapping = None
 
+        # add all annotations as body annotations
+        for f_type, f_items in features.iteritems():
+            pass
+        
+        if relations:
+            pass
+        
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
     @classmethod
