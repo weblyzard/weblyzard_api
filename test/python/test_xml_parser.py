@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import unittest
 import os
 
@@ -79,11 +81,11 @@ class TestXML2013(unittest.TestCase):
             wl:sem_orient="0.0" 
             wl:significance="0.0"
             wl:is_title="true">
-                <![CDATA[Freihandelsgespr??che - Erleichterungen f??r kleine Firmen geplant]]>
+                <![CDATA[Freihandelsgespr??che - Erleichterungen für kleine Firmen geplant]]>
         </wl:sentence>
         <wl:annotation
             wl:key="some.url.com"
-            wl:surfaceForm="this is the text"
+            wl:surfaceForm="Österreich"
             wl:start="0"
             wl:end="10"
             wl:md5sum="b42bb3f2cb7ed667ba311811823f37cf">
