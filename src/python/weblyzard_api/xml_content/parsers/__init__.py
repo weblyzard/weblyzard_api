@@ -149,6 +149,14 @@ class XMLParser(object):
             return int(item)
         except Exception:
             pass
+        
+        try:
+            return float(item)
+        except Exception:
+            pass
+        
+        return item
+        
     @classmethod
     def load_features(cls, root, page_attributes):
         ''' '''
@@ -157,14 +165,23 @@ class XMLParser(object):
                                           namespaces=cls.DOCUMENT_NAMESPACES):
             feat_attributes = cls.load_attributes(feat_element.attrib,
                                                   mapping=cls.FEATURE_MAPPING)
-            features[feat_attributes['key']] = feat_element.text.strip()
+            features[feat_attributes['key']] = cls.cast_item(feat_element.text.strip())
         return features    
     
     @classmethod
     def load_relations(cls, root, page_attributes):
         ''' '''
-        relations = []
-        
+        relations = {}
+        for rel_element in root.iterfind('{%s}relation' % cls.get_default_ns(),
+                                          namespaces=cls.DOCUMENT_NAMESPACES):
+            rel_attributes = cls.load_attributes(rel_element.attrib,
+                                                  mapping=cls.RELATION_MAPPING)
+            if rel_attributes['key'] in relations:
+                if not isinstance(relations[rel_attributes['key']], list):
+                    relations[rel_attributes['key']] = [relations[rel_attributes['key']]]
+                relations[rel_attributes['key']].append(cls.cast_item(rel_element.text.strip()))
+            else:   
+                relations[rel_attributes['key']] = cls.cast_item(rel_element.text.strip())
         return relations
     
     @classmethod
