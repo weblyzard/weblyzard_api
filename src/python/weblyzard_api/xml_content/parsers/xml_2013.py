@@ -37,7 +37,7 @@ class XML2013(XMLParser):
                           '{%s}preferredName' % DOCUMENT_NAMESPACES['wl']: 'preferredName'}
     FEATURE_MAPPING = {'{%s}key' % DOCUMENT_NAMESPACES['wl']: 'key',
                        '{%s}context' % DOCUMENT_NAMESPACES['wl']: 'context'}
-    RELATION_MAPPING = {}
+    RELATION_MAPPING = {'{%s}key' % DOCUMENT_NAMESPACES['wl']: 'key'}
     
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
