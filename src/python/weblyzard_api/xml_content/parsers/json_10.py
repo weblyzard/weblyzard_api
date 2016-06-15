@@ -161,7 +161,7 @@ class JSON10ParserXMLContent(JSONParserBase):
     the Weblyzard API 1.0 definition.
     '''
     FIELDS_REQUIRED = ['uri', 'title']
-    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content']
+    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations']
     API_VERSION = 1.0
 
 
@@ -181,13 +181,23 @@ class JSON10ParserXMLContent(JSONParserBase):
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
         xml_content.update_attributes({key:value for key, value in api_dict.iteritems() if 
-                                       key not in ('sentences', 'annotations', 'language_id')})
+                                       key not in ('sentences', 'annotations', 
+                                                   'language_id', 'features', 
+                                                   'relations', 'content')})
+        # parse sentences
         sentences = [JSON10ParserSentence.from_api_dict(sentence_dict) for 
                      sentence_dict in api_dict.get('sentences', [])]
+        xml_content.sentences = sentences
+        
+        # parse annotations
         annotations = [JSON10ParserAnnotation.from_api_dict(annotation_dict) for 
                        annotation_dict in api_dict.get('annotations', [])]
-        xml_content.sentences = sentences
-        xml_content.attributes['annotations'] = annotations
+        xml_content.body_annotations = annotations
+        
+        # add relations and features
+        xml_content.relations = api_dict.get('relations', {})
+        xml_content.features = api_dict.get('features', {})
+
         # map the language_id to XMLContent.lang
         if 'language_id' in api_dict:
             xml_content.attributes['lang'] = api_dict['language_id']
@@ -236,7 +246,6 @@ class JSON10ParserSentence(JSONParserBase):
             is_title=api_dict.get('is_title', False),
             dependency=api_dict.get('dep_tree', None))
         return sentence
-
 
 class JSON10ParserAnnotation(JSONParserBase):
     '''
