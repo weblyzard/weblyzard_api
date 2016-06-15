@@ -273,7 +273,7 @@ class XMLContent(object):
         self.body_annotations = []
         self.title_annotations = []
         self.features = {}
-        self.relations = []
+        self.relations = {}
 
         result = self.parse_xml_content(xml_content, remove_duplicates)
         
@@ -349,7 +349,9 @@ class XMLContent(object):
         return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
                                                                  attributes=self.attributes, 
                                                                  sentences=self.sentences,
-                                                                 annotations=annotations)
+                                                                 annotations=annotations,
+                                                                 features=self.features,
+                                                                 relations=self.relations)
 
     def get_plain_text(self):
         ''' :returns: the plain text of the XML content '''
