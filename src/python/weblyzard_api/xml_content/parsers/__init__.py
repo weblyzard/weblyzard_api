@@ -165,7 +165,12 @@ class XMLParser(object):
                                           namespaces=cls.DOCUMENT_NAMESPACES):
             feat_attributes = cls.load_attributes(feat_element.attrib,
                                                   mapping=cls.FEATURE_MAPPING)
-            features[feat_attributes['key']] = cls.cast_item(feat_element.text.strip())
+            if 'key' in feat_attributes and feat_attributes['key'] in features:
+                if not isinstance(features[feat_attributes['key']], list):
+                    features[feat_attributes['key']] = [features[feat_attributes['key']]]
+                features[feat_attributes['key']].append(cls.cast_item(feat_element.text.strip()))
+            else:   
+                features[feat_attributes['key']] = cls.cast_item(feat_element.text.strip())
         return features    
     
     @classmethod
@@ -176,7 +181,7 @@ class XMLParser(object):
                                           namespaces=cls.DOCUMENT_NAMESPACES):
             rel_attributes = cls.load_attributes(rel_element.attrib,
                                                   mapping=cls.RELATION_MAPPING)
-            if rel_attributes['key'] in relations:
+            if 'key' in rel_attributes and rel_attributes['key'] in relations:
                 if not isinstance(relations[rel_attributes['key']], list):
                     relations[rel_attributes['key']] = [relations[rel_attributes['key']]]
                 relations[rel_attributes['key']].append(cls.cast_item(rel_element.text.strip()))
@@ -291,12 +296,46 @@ class XMLParser(object):
         else:
             feature_mapping = None
 
-        # add all annotations as body annotations
-        for f_type, f_items in features.iteritems():
-            pass
-        
-        if relations:
-            pass
+        for key, items in features.iteritems():
+            feature_attributes = cls.dump_xml_attributes({'key': key},
+                                                         mapping=feature_mapping)
+            if not isinstance(items, list):
+                items = [items]
+            
+            for value in items:
+                try:
+                    feat_elem = etree.SubElement(root,
+                                                 '{%s}feature' % cls.get_default_ns(),
+                                                 attrib=feature_attributes,
+                                                 nsmap=cls.DOCUMENT_NAMESPACES)
+                    if isinstance(value, int) or isinstance(value, list):
+                        value = str(value)
+                    
+                    feat_elem.text = etree.CDATA(value)
+                except Exception, e:
+                    print('Skipping bad cdata: %s (%s)' % (value, e))
+                    continue
+
+            
+        for key, items in relations.iteritems():
+            rel_attributes = cls.dump_xml_attributes({'key': key},
+                                                     mapping=feature_mapping)
+            if not isinstance(items, list):
+                items = [items]
+            
+            for value in items:
+                try:
+                    rel_elem = etree.SubElement(root,
+                                                '{%s}relation' % cls.get_default_ns(),
+                                                attrib=rel_attributes,
+                                                nsmap=cls.DOCUMENT_NAMESPACES)
+                    if isinstance(value, int) or isinstance(value, list):
+                        value = str(value)
+                    
+                    rel_elem.text = etree.CDATA(value)
+                except Exception, e:
+                    print('Skipping bad cdata: %s (%s)' % (value, e))
+                    continue
         
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
