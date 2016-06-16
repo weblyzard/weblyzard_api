@@ -5,6 +5,7 @@ import os
 
 from pickle import load
 
+from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.xml_content.parsers import XMLParser
 from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
 from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
@@ -22,6 +23,16 @@ class TestXMLParser(unittest.TestCase):
             xml_string = xml_content.get_xml_document()
             assert xml_string
 
+    def test_incomplete_xml_parsing(self):
+        test_data_path = os.path.join(
+            os.path.dirname(__file__),
+            'data',
+            'failing_xml.xml')
+        with open(test_data_path) as f:
+            xml_string = f.read()
+            assert len(xml_string) > 1000
+            xml_content = XMLContent(xml_string)
+            assert len(xml_content.sentences) > 0
 
     def test_scientific_notation_bug(self):
         '''
