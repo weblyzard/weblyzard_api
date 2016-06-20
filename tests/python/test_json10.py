@@ -16,6 +16,8 @@ class TestJSON10ParserXMLContent(object):
     Tests for the JSON_10_Parser class.
     '''
     test_xmlcontent_minimal_dict = {
+            'uri': 'derstandard.at/',
+            'title': 'Test title'
             }
     test_xmlcontent_maximal_dict = {
             'title': 'document title',
