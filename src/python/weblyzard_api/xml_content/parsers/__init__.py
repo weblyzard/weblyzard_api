@@ -60,8 +60,11 @@ class XMLParser(object):
         parser = etree.XMLParser(recover=True, strip_cdata=False)
         root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''),
                                 parser=parser)
-        attributes = cls.load_attributes(root.attrib,
-                                         mapping=cls.ATTR_MAPPING)
+        try:
+            attributes = cls.load_attributes(root.attrib,
+                                             mapping=cls.ATTR_MAPPING)
+        except Exception, e:
+            attributes = {}
 
         sentences = cls.load_sentences(root, page_attributes=attributes,
                                        remove_duplicates=remove_duplicates)
@@ -85,7 +88,7 @@ class XMLParser(object):
         new_attributes = {}
 
         for key, value in attributes.iteritems():
-            if mapping:
+            if mapping and key in mapping:
                 key = mapping.get(key, key)
 
             value = cls.decode_value(value)
