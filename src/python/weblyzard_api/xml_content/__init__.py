@@ -346,6 +346,12 @@ class XMLContent(object):
         if not xml_version: 
             xml_version = self.xml_version
 
+        if not hasattr(self, 'features'):
+            self.features = {}
+            
+        if not hasattr(self, 'relations'):
+            self.relations = {}
+            
         return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
                                                                  attributes=self.attributes, 
                                                                  sentences=self.sentences,
