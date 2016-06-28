@@ -16,7 +16,12 @@ class XML2005(XMLParser):
                     'content_type': 'content_type',
                     'title': 'title',
                     'url': 'url',
-                    'nilsimsa': 'nilsimsa'}
+                    'nilsimsa': 'nilsimsa',
+                    'jonas_type': 'jonas_type',
+                    'title_de': 'title_de',
+                    'title_en': 'title_en',
+                    'title_fr': 'title_fr',
+                    }
     SENTENCE_MAPPING = {'pos_tags': 'pos',
                         'md5sum': 'md5sum',
                         'content_id': 'content_id',

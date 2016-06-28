@@ -19,6 +19,7 @@ class XML2013(XMLParser):
     VERSION = 2013
     ATTR_MAPPING = {'{%s}nilsimsa' % DOCUMENT_NAMESPACES['wl']: 'nilsimsa',
                     '{%s}id' % DOCUMENT_NAMESPACES['wl']: 'content_id',
+                    '{%s}jonas_type' % DOCUMENT_NAMESPACES['wl']: 'jonas_type',
                     '{%s}lang' % DOCUMENT_NAMESPACES['xml']: 'lang', #kept for legacy
                     '{%s}format' % DOCUMENT_NAMESPACES['dc']: 'content_type',
                     '{%s}language' % DOCUMENT_NAMESPACES['dc']: 'language',

@@ -201,8 +201,8 @@ class XMLParser(object):
             if mapping and key in mapping:
                 key = mapping[key]
 
-                if value and value not in ('None', 'null', '0.0'):
-                    new_attributes[key] = cls.encode_value(value)
+            if value and value not in ('None', 'null', '0.0'):
+                new_attributes[key] = cls.encode_value(value)
 
         return new_attributes
 
