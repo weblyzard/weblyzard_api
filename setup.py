@@ -13,10 +13,10 @@ setup (
     packages = find_packages('src/python'),
     package_dir = {'': 'src/python'},
     install_requires = ['eWRT>=0.9.2.2',
-#                         'nose',
+                        'nose',
                         'lxml',
                         'requests',
-			            'pytest'],
+			'pytest'],
     dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.12'],
     zip_safe = False,
     scripts = ['src/python/weblyzard_api/client/openrdf/wl_upload_repository.py',]
