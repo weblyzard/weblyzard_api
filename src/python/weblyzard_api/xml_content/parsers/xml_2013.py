@@ -13,9 +13,10 @@ class XML2013(XMLParser):
     DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE,
                            'dc': 'http://purl.org/dc/elements/1.1/',
                            'xml': 'http://www.w3.org/XML/1998/namespace',
-                           'sioc': 'http://rdfs.org/sioc/ns#',
-                           'skos': 'http://www.w3.org/2004/02/skos/core#',
-                           'foaf': 'http://xmlns.com/foaf/0.1/'}
+#                            'sioc': 'http://rdfs.org/sioc/ns#',
+#                            'skos': 'http://www.w3.org/2004/02/skos/core#',
+#                            'foaf': 'http://xmlns.com/foaf/0.1/',
+                           'ma': 'http://www.w3.org/ns/ma-ont#'}
     VERSION = 2013
     ATTR_MAPPING = {'{%s}nilsimsa' % DOCUMENT_NAMESPACES['wl']: 'nilsimsa',
                     '{%s}id' % DOCUMENT_NAMESPACES['wl']: 'content_id',
@@ -28,9 +29,55 @@ class XML2013(XMLParser):
                     '{%s}license' % DOCUMENT_NAMESPACES['dc']: 'license',
                     '{%s}creator' % DOCUMENT_NAMESPACES['dc']: 'creator',
                     '{%s}publisher' % DOCUMENT_NAMESPACES['dc']: 'publisher',
-                    '{%s}accountName' % DOCUMENT_NAMESPACES['foaf']: 'user_name',
-                    '{%s}num_views' % DOCUMENT_NAMESPACES['sioc']: 'view_count',
-                    '{%s}num_replies' % DOCUMENT_NAMESPACES['sioc']: 'comment_count',
+                    '{%s}subject' % DOCUMENT_NAMESPACES['dc']: 'keywords',
+                    '{%s}title' % DOCUMENT_NAMESPACES['dc']: 'title',
+                    '{%s}thumbnail' % DOCUMENT_NAMESPACES['wl']: 'thumbnail',
+                    '{%s}thumbnail' % DOCUMENT_NAMESPACES['wl']: 'picture', #FB, YT
+                    '{%s}thumbnail' % DOCUMENT_NAMESPACES['wl']: 'org_picture', #FB
+                    '{%s}thumbnail' % DOCUMENT_NAMESPACES['wl']: 'group_picture', #FB
+                    '{%s}post_type' % DOCUMENT_NAMESPACES['wl']: 'fbType', #FB
+                    '{%s}location' % DOCUMENT_NAMESPACES['wl']: 'location',
+                    '{%s}duration' % DOCUMENT_NAMESPACES['wl']: 'duration', #YT, vimeo/daily
+                    '{%s}mediacriticism' % DOCUMENT_NAMESPACES['wl']: 'mediacriticism', #to be migrated to features, eventually
+                    '{%s}article_content_id' % DOCUMENT_NAMESPACES['wl']: 'article_content_id', #to be migrated to relations eventually
+                    
+                    #INVID
+                    '{%s}locator' % DOCUMENT_NAMESPACES['ma']: 'media_url',
+                    '{%s}format' % DOCUMENT_NAMESPACES['ma']: 'media_type',
+                    '{%s}createdIn' % DOCUMENT_NAMESPACES['ma']: 'media_recordingLocation',
+                    '{%s}creationDate' % DOCUMENT_NAMESPACES['ma']: 'media_recordingDate',
+                    '{%s}hasPolicy' % DOCUMENT_NAMESPACES['ma']: 'media_license',
+                    
+                    #SM_METRICS
+                    '{%s}user_mentions' % DOCUMENT_NAMESPACES['wl']: 'user_mentions',
+                    '{%s}rating' % DOCUMENT_NAMESPACES['wl']: 'rating',
+                    '{%s}rating' % DOCUMENT_NAMESPACES['wl']: 'rating_average', #YT
+                    '{%s}num_views' % DOCUMENT_NAMESPACES['wl']: 'viewcount', #vimeo/daily
+                    '{%s}num_views' % DOCUMENT_NAMESPACES['wl']: 'statistics_viewcount', #youtube
+                    '{%s}num_replies' % DOCUMENT_NAMESPACES['wl']: 'comment_count',
+                    '{%s}num_reshares' % DOCUMENT_NAMESPACES['wl']: 'reshares', #g+, twitter                    
+                    
+                    #USER MAPPTINGS
+                    '{%s}user_id' % DOCUMENT_NAMESPACES['wl']: 'user_id', #FB, G+
+                    '{%s}user_id' % DOCUMENT_NAMESPACES['wl']: 'user_url', #YT
+                    '{%s}user_name' % DOCUMENT_NAMESPACES['wl']: 'user_name',
+                    '{%s}user_type' % DOCUMENT_NAMESPACES['wl']: 'user_type',
+                    '{%s}user_status' % DOCUMENT_NAMESPACES['wl']: 'current_status', #twitter
+                    '{%s}user_screen_name' % DOCUMENT_NAMESPACES['wl']: 'screen_name',
+                    '{%s}user_location' % DOCUMENT_NAMESPACES['wl']: 'user_location', #twitter
+                    '{%s}user_timezone' % DOCUMENT_NAMESPACES['wl']: 'user_timezone', #twitter
+                    '{%s}user_thumbnail' % DOCUMENT_NAMESPACES['wl']: 'user_thumbnail',
+                    '{%s}user_thumbnail' % DOCUMENT_NAMESPACES['wl']: 'user_img_url', #twitter
+                    
+                    #USER METRICS
+                    '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'likes_count', #FB
+                    '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'org_likes_count', #FB
+                    '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'group_likes_count', #FB
+                    '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'num_tweets', #twitter
+                    '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'plusoners', #G+
+                    '{%s}user_outdegree' % DOCUMENT_NAMESPACES['wl']: 'following', #twitter
+                    '{%s}user_indegree' % DOCUMENT_NAMESPACES['wl']: 'followers', #twitter
+
                     }
     SENTENCE_MAPPING = {'{%s}token' % DOCUMENT_NAMESPACES['wl']: 'token',
                         '{%s}sem_orient' % DOCUMENT_NAMESPACES['wl']: 'sem_orient',
