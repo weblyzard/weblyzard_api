@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 /**
@@ -29,7 +30,7 @@ public class GSONHelper {
 	 * @return the json
 	 */
 	public static <T> String parseObject(Object o, Class<T> c) {
-		final Gson gson = new Gson();
+		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(o, c);
 	}
 
