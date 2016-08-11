@@ -18,8 +18,8 @@ import com.weblyzard.util.http.HTTPPOST;
 
 public class RecognyzeConnector extends BasicConnector {
 
-	private static final String ADDPROFILESERVICEURL = "/recognize/rest/recognize/add_profile/";
-	private static final String SEARCHXMLSERVICEURL = "/recognize/rest/recognize/searchXml";
+	private static final String ADDPROFILESERVICEURL = "/Recognize/rest/recognize/load_profile/";
+	private static final String SEARCHXMLSERVICEURL = "/Recognize/rest/recognize/searchXml";
 	private static final String PROFILENAMES = "profileNames=";
 	private static final String LIMIT = "limit=";
 
@@ -52,19 +52,20 @@ public class RecognyzeConnector extends BasicConnector {
 
 
 
-	public void callAddProfile(String profileName)
+	public boolean callLoadProfile(String profileName)
 			throws AuthenticationException, ClientProtocolException, IOException {
-		
+
 		String url = super.weblyzard_url + ADDPROFILESERVICEURL + profileName;
-		
-		HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONXML);
+
+		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONJSON);
+		return (boolean) (GSONHelper.parseInputStream(responseStream, Boolean.class));
 	}
 
 
 
 	public JsonElement callSearchXML(String profileName, Document data)
 			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
-		
+
 		return callSearchXML(profileName, data, 999);
 	}
 
@@ -72,7 +73,7 @@ public class RecognyzeConnector extends BasicConnector {
 
 	public JsonElement callSearchXML(String profileName, Document data, int limit)
 			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
-		
+
 		return callSearchXML(Arrays.asList(profileName), data, limit);
 	}
 
@@ -80,7 +81,7 @@ public class RecognyzeConnector extends BasicConnector {
 
 	public JsonElement callSearchXML(List<String> profileNames, Document data)
 			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
-		
+
 		return callSearchXML(profileNames, data, 999);
 	}
 

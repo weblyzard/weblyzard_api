@@ -1,5 +1,7 @@
 package com.weblyzard.api;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
@@ -14,13 +16,13 @@ import com.weblyzard.api.domain.weblyzard.Document;
 public class RecognyzeConnectorTest {
 
 	RecognyzeConnector connector = new RecognyzeConnector();
-	String profile = "yourProfilename";
+	String profile = "yourprofilename";
 
 
 
 	@Test
 	public void testAddProfile() throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		addProfile(profile);
+		assertTrue(loadProfile(profile));
 	}
 
 
@@ -31,11 +33,9 @@ public class RecognyzeConnectorTest {
 		return;
 	}
 
-
-
-	private void addProfile(String profileName)
+	private boolean loadProfile(String profileName)
 			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		connector.callAddProfile(profileName);
+		return connector.callLoadProfile(profileName);
 	}
 
 
