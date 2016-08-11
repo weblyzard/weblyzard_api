@@ -42,7 +42,7 @@ public class HTTPPOST {
 		case 400:
 			throw new HttpResponseException(400, "bad request for url: " + url);
 		case 401:
-			throw new HttpResponseException(400, "unauthorized for url: " + url);
+			throw new HttpResponseException(401, "unauthorized for url: " + url);
 		case 500:
 			throw new HttpResponseException(500, "internal server error for url: " + url);
 		default:

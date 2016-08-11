@@ -6,6 +6,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
+import org.junit.Test;
 
 import com.weblyzard.api.domain.joseph.ClassifyRequest;
 import com.weblyzard.api.domain.joseph.ClassifyResponse;
@@ -22,25 +23,28 @@ public class JosephConnectorTest {
 	JosephConnector connector = new JosephConnector();
 
 	String profile = "yourProfilename";
-	
+
+
+
 	/*
-	 * TODO: Tests have been deactivated since there is no dummy webservice for public availability.
+	 * TODO: Tests have been deactivated since there is no dummy webservice for
+	 * public availability.
 	 */
 
-//	@Test
-//	public void testClassify() throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-//		ClassifyResponse[] responses = classify(profile, new ClassifyRequest());
-//		return;
-//	}
-//
-//
-//
-//	@Test
-//	public void testClassifyExtended()
-//			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-//		ClassifyResponse[] responses = classifyExtended(profile, new ClassifyRequest());
-//		return;
-//	}
+	@Test
+	public void testClassify() throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
+		ClassifyResponse[] responses = classify(profile, new ClassifyRequest());
+		return;
+	}
+
+
+
+	@Test
+	public void testClassifyExtended()
+			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
+		ClassifyResponse[] responses = classifyExtended(profile, new ClassifyRequest());
+		return;
+	}
 
 
 
