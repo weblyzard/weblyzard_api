@@ -99,9 +99,13 @@ if __name__ == '__main__':
     parser.add_argument('--graph-name', dest='graph_name',
                         help='name of the graph, e.g. http://dbpedia.org or'
                         ' http://geonames.org')
+    parser.add_argument('--chunk-size', dest='chunk_size', type=int, default=100000)
+    parser.add_argument('--num-retries', dest='retries', type=int, default=5)
 
     args = parser.parse_args()
     upload_directory(server_url=args.server_url,
                      src_directory=args.source_directory,
                      repository=args.repository,
-                     graph_name=args.graph_name)
+                     graph_name=args.graph_name,
+                     chunk_size=args.chunk_size,
+                     max_retry=args.retries)
