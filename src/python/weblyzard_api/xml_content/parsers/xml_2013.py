@@ -73,10 +73,10 @@ class XML2013(XMLParser):
                     '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'likes_count', #FB
                     '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'org_likes_count', #FB
                     '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'group_likes_count', #FB
-                    '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'num_tweets', #twitter
+                    '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'following', #twitter
                     '{%s}user_rating' % DOCUMENT_NAMESPACES['wl']: 'plusoners', #G+
-                    '{%s}user_outdegree' % DOCUMENT_NAMESPACES['wl']: 'following', #twitter
-                    '{%s}user_indegree' % DOCUMENT_NAMESPACES['wl']: 'followers', #twitter
+#                     '{%s}user_outdegree' % DOCUMENT_NAMESPACES['wl']: 'following', #twitter
+#                     '{%s}user_indegree' % DOCUMENT_NAMESPACES['wl']: 'followers', #twitter
 
                     }
     SENTENCE_MAPPING = {'{%s}token' % DOCUMENT_NAMESPACES['wl']: 'token',
@@ -92,6 +92,7 @@ class XML2013(XMLParser):
                           '{%s}end' % DOCUMENT_NAMESPACES['wl']: 'end',
                           '{%s}annotationType' % DOCUMENT_NAMESPACES['wl']: 'annotation_type',
                           '{%s}preferredName' % DOCUMENT_NAMESPACES['wl']: 'preferredName',
+                          '{%s}sem_orient' % DOCUMENT_NAMESPACES['wl']: 'sem_orient',
                           '{%s}md5sum' % DOCUMENT_NAMESPACES['wl']: 'md5sum'}
     FEATURE_MAPPING = {'{%s}key' % DOCUMENT_NAMESPACES['wl']: 'key',
                        '{%s}context' % DOCUMENT_NAMESPACES['wl']: 'context'}
