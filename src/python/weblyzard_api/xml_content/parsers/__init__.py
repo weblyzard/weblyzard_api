@@ -171,9 +171,9 @@ class XMLParser(object):
             if 'key' in feat_attributes and feat_attributes['key'] in features:
                 if not isinstance(features[feat_attributes['key']], list):
                     features[feat_attributes['key']] = [features[feat_attributes['key']]]
-                features[feat_attributes['key']].append(cls.cast_item(feat_element.text.strip()))
-            else:   
                 if feat_element.text is not None:
+                    features[feat_attributes['key']].append(cls.cast_item(feat_element.text.strip()))
+            elif feat_element.text is not None:
                     features[feat_attributes['key']] = cls.cast_item(feat_element.text.strip())
         return features    
     
@@ -188,10 +188,10 @@ class XMLParser(object):
             if 'key' in rel_attributes and rel_attributes['key'] in relations:
                 if not isinstance(relations[rel_attributes['key']], list):
                     relations[rel_attributes['key']] = [relations[rel_attributes['key']]]
-                relations[rel_attributes['key']].append(cls.cast_item(rel_element.text.strip()))
-            else:   
                 if rel_element.text is not None:
-                    relations[rel_attributes['key']] = cls.cast_item(rel_element.text.strip())
+                    relations[rel_attributes['key']].append(cls.cast_item(rel_element.text.strip()))
+            elif rel_element.text is not None:
+                relations[rel_attributes['key']] = cls.cast_item(rel_element.text.strip())
         return relations
     
     @classmethod
