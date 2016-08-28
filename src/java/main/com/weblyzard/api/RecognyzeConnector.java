@@ -2,8 +2,6 @@ package com.weblyzard.api;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -11,6 +9,7 @@ import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 
 import com.google.gson.JsonElement;
+import com.weblyzard.api.domain.recognize.RecognyzeResult;
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.util.GSONHelper;
 import com.weblyzard.util.http.HTTPGET;
@@ -20,6 +19,7 @@ public class RecognyzeConnector extends BasicConnector {
 
 	private static final String ADDPROFILESERVICEURL = "/Recognize/rest/recognize/load_profile/";
 	private static final String SEARCHXMLSERVICEURL = "/Recognize/rest/recognize/searchXml";
+	private static final String STATUSSERVICEURL = "/Recognize/rest/recognize/status";
 	private static final String PROFILENAMES = "profileNames=";
 	private static final String LIMIT = "limit=";
 
@@ -63,40 +63,32 @@ public class RecognyzeConnector extends BasicConnector {
 
 
 
-	public JsonElement callSearchXML(String profileName, Document data)
+	public RecognyzeResult[] callSearch(String profileName, Document data)
 			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
 
-		return callSearchXML(profileName, data, 999);
+		return callSearch(profileName, data, 999);
 	}
 
 
 
-	public JsonElement callSearchXML(String profileName, Document data, int limit)
+	public RecognyzeResult[] callSearch(String profileName, Document data, int limit)
 			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
 
-		return callSearchXML(Arrays.asList(profileName), data, limit);
-	}
-
-
-
-	public JsonElement callSearchXML(List<String> profileNames, Document data)
-			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
-
-		return callSearchXML(profileNames, data, 999);
-	}
-
-
-
-	public JsonElement callSearchXML(List<String> profileNames, Document data, int limit)
-			throws AuthenticationException, JAXBException, ClientProtocolException, IOException {
-
-		String url = super.weblyzard_url + SEARCHXMLSERVICEURL + "?";
-		for (String profileName : profileNames)
-			url += PROFILENAMES + profileName + "&";
-		url += LIMIT + limit;
+		String url = super.weblyzard_url + SEARCHXMLSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT + limit;
 
 		InputStream responseStream = HTTPPOST.requestJSON(url, data.marshal(), super.username, super.password,
 				APPLICATIONXML);
+
+		return (RecognyzeResult[]) (GSONHelper.parseInputStream(responseStream, RecognyzeResult[].class));
+	}
+
+
+
+	public JsonElement callStatus() throws AuthenticationException, ClientProtocolException, IOException {
+
+		String url = super.weblyzard_url + STATUSSERVICEURL;
+
+		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONXML);
 
 		return ((JsonElement) GSONHelper.parseInputStream(responseStream, JsonElement.class));
 	}
