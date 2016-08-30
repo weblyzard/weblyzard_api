@@ -7,6 +7,7 @@ import json
 from pprint import pprint
 
 from weblyzard_api.xml_content import Sentence, LabeledDependency, XMLContent
+from test_helper import get_test_data
 
 class TestXMLContent(unittest.TestCase):
 
@@ -386,7 +387,6 @@ class TestXMLContent(unittest.TestCase):
                           u'Wählerstimmen', u'.']
           
     def test_missing_sentence_content(self):
-        from weblyzard_api.test import get_test_data
         xml_content  = get_test_data('test-quotes.xml')
         xml = XMLContent(xml_content)
         for sentence in xml.sentences:

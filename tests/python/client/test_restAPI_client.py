@@ -3,7 +3,7 @@
 import unittest
 from weblyzard_api.client.wl_rest_api import WlDocumentRestApiClient
 
-class TestWlDocumentRestApiClient(unittest.TestCase):
+class TestWlRestAPIClient(unittest.TestCase):
     '''
     Test class for the WlRestApiClient class.
     '''
