@@ -115,8 +115,7 @@ class TestJesajaNeks(unittest.TestCase):
             print 'WARNING: Webservice is offline --> not executing all tests!!'
             
     def test_nek_annotation(self):
-        from pprint import pprint
-        
+        ''' test nek annotations '''
         xml_content = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247">
                             <wl:sentence wl:dependency="1:advmod -1:ROOT 1:advmod 1:advmod 1:adpmod 6:det 4:adpobj 6:adpmod 7:adpobj 10:compmod 8:appos 1:p" wl:id="312ea95b45c50be0c5dd4a215d5adaaf" wl:pos="ADV VVFIN ADV ADV APPR ART NN APPR NN NE NE $." wl:token="0,2 3,12 13,17 18,24 25,28 29,34 35,44 45,48 49,61 62,68 69,74 74,75"><![CDATA[So geschehen auch jüngst bei einem Interview mit US-Präsident Barack Obama.]]></wl:sentence>
                             <wl:annotation wl:sentence="0" wl:annotationType="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
@@ -125,9 +124,9 @@ class TestJesajaNeks(unittest.TestCase):
             result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME, 
                                                          [xml_content])
             assert len(result)
-            pprint(result)
-            #assert '12345' in result
-            #assert len(result['12345'])
+
+            assert '1243661964' in result
+            assert len(result['1243661964'])
             
 if __name__ == '__main__':
     unittest.main()
