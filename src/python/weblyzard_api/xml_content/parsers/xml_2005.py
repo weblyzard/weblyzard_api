@@ -30,8 +30,8 @@ class XML2005(XMLParser):
                         'significance': 'significance',
                         'is_title': 'is_title',
                         'sem_orient': 'sem_orient'} 
-    FEATURE_MAPPING = {'key': 'key'}
-    RELATION_MAPPING = {'key': 'key'}
+    FEATURE_MAPPING = {}
+    RELATION_MAPPING = {}
     
     VERSION = 2005
 
