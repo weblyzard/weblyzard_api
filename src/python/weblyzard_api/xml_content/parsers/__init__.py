@@ -204,8 +204,6 @@ class XMLParser(object):
                 key = mapping[key]
             elif ':' in key:
                 continue
-            elif '{' in value:
-                continue
 
             if value and value not in ('None', 'null', '0.0'):
                 new_attributes[key] = cls.encode_value(value)
