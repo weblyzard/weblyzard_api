@@ -11,13 +11,17 @@ from os.path import join as os_join, dirname
 from glob import glob
 from cPickle import loads, load, dump
 from gzip import GzipFile
-from json import dump as jdump, load as jload
+from json import dump as jdump
 from time import time
+from re import compile
 
 from weblyzard_api.client.jesaja_ng import JesajaNg as Jesaja
 from weblyzard_api.client.jeremia import Jeremia
 from weblyzard_api.xml_content import XMLContent
 from eWRT.util.module_path import get_resource
+
+RE_WHITESPACE = compile("\s+")
+RE_CONTENT_ID = compile("(\d+)")
 
 MATVIEW_NAME  = 'example'
 PROFILE_NAME  = "example_profile"
@@ -39,8 +43,8 @@ def read_corpus_files(path):
     ''' reads the corpus documents from the given path '''
     corpus_documents = []
     for fname in glob(path):
-        doc = {'id': fname,
-               'body': GzipFile(fname).read().strip(),
+        doc = {'id': RE_CONTENT_ID.search(fname).group(1),
+               'body': RE_WHITESPACE.sub(' ', GzipFile(fname).read().replace("\n", " ").strip()),
                'title': '',
                'format': 'text/plain'}
         corpus_documents.append(doc)
@@ -53,8 +57,8 @@ def get_weblyzard_xml_documents(corpus_documents):
     files are converted into the weblyzard XML format.
     '''
     jeremia = Jeremia()
-    result = [doc['xml_content'] for doc in jeremia.submit_documents(corpus_documents)]
-    return result
+    xml_content = [XMLContent(doc['xml_content']) for doc in jeremia.submit_documents(corpus_documents)]
+    return {doc.content_id: doc for doc in xml_content}
 
 def get_tokens(sentence):
     from json import loads
@@ -89,18 +93,14 @@ if __name__ == '__main__':
         # uploaded
         while jesaja.rotate_shard(MATVIEW_NAME) == 0:
             print " Adding corpus..."
-            jesaja.add_documents(MATVIEW_NAME, xml_corpus_documents)
+            jesaja.add_documents(MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
 
     print "Computing keywords..."
-    result = jesaja.get_keywords(MATVIEW_NAME, xml_corpus_documents)
+    result = jesaja.get_keywords(MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
 
-    docs = {XMLContent(content).content_id:[get_tokens(s.to_json()) for s in XMLContent(content).sentences] for content in xml_corpus_documents}
-    result_docs = {}
-    for content_id, keywords in result.items():
-        result_docs[content_id] = {'keywords': keywords,
-                                   'content' : docs[content_id]}
-
+    for content_id, xml_document in xml_corpus_documents.items():
+        xml_document.add_attribute('keywords', '; '.join(result[unicode(content_id)]))
 
     with GzipFile("results.json.gz", "w") as f:
-        jdump(result_docs, f, indent=True)
+        jdump([doc.get_xml_document() for doc in xml_corpus_documents.values()], f, indent=True)
 
