@@ -10,7 +10,56 @@ This module provides an easy client for the WL Document REST API.
 import json
 import requests
 
-
+class WlSearchRestApiClient(object):
+    
+    KEYWORD_END_POINT = 'rest/com.weblyzard.api.search/keywords'
+    TOKEN_END_POINT = 'token'
+    
+    def __init__(self, base_url, username, password):
+        self.base_url = base_url
+        self.username = username
+        self.password = password
+        self.auth_token = self.get_auth_token(self.username, self.password)
+    
+    def get_auth_token(self, username, password):
+        ''' GET a valid authentication token from the server'''
+        url = '/'.join([self.base_url, self.TOKEN_END_POINT])
+        r = requests.get(url, auth=(username, password))
+        if r.status_code==200:
+            return r.content
+        return r
+        
+    def search_keywords(self, sources, start_date, end_date, num_keywords=5, 
+                        num_associations=5, auth_token=None):
+        ''' '''
+        if not auth_token:
+            auth_token = self.auth_token
+        if not isinstance(sources, list):
+            sources = [sources]
+        query = '''{"bool" : {"must" : [
+                          {
+                            "date" : {
+                              "gte":"%s",
+                              "lte":"%s"
+                            }
+                          }
+                        ]
+                    }
+                    }''' % (start_date, end_date)
+        query = json.loads(query)
+        data = dict(sources=sources, query=query, count=num_keywords,
+                    associations=num_associations)
+        data = json.dumps(data)
+        headers = {'Authorization':'Bearer %s' % auth_token,
+                   'Content-Type': 'application/json'}
+        url = '/'.join([self.base_url, self.KEYWORD_END_POINT])
+        r = requests.post(url,
+                  data=data,
+                  headers=headers)
+        if r.status_code==200:
+            return json.loads(r.content)['result']
+        return r
+    
 class WlDocumentRestApiClient(object):
     '''
     The client for the WL Document REST API.
