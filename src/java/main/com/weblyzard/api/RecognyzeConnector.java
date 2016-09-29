@@ -20,10 +20,10 @@ import com.weblyzard.util.http.HTTPPOST;
 
 public class RecognyzeConnector extends BasicConnector {
 
-	private static final String ADDPROFILESERVICEURL = "/Recognize/rest/recognize/load_profile/";
-	private static final String SEARCHXMLSERVICEURL = "/Recognize/rest/recognize/searchXml";
-	private static final String SEARCHDOCUMENTSSERVICEURL = "/Recognize/rest/recognize/searchDocuments";
-	private static final String STATUSSERVICEURL = "/Recognize/rest/recognize/status";
+	private static final String ADDPROFILESERVICEURL = "/Recognize/rest/load_profile/";
+	private static final String SEARCHXMLSERVICEURL = "/Recognize/rest/searchXml";
+	private static final String SEARCHDOCUMENTSSERVICEURL = "/Recognize/rest/searchDocuments";
+	private static final String STATUSSERVICEURL = "/Recognize/rest/status";
 	private static final String PROFILENAMES = "profileName=";
 	private static final String LIMIT = "limit=";
 
