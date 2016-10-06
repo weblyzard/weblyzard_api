@@ -36,6 +36,9 @@ class WlSearchRestApiClient(object):
             auth_token = self.auth_token
         if not isinstance(sources, list):
             sources = [sources]
+        num_keywords=5
+        num_associations=5
+        sources = ['climate.6.climate2_media']
         query = '''{"bool" : {"must" : [
                           {
                             "date" : {

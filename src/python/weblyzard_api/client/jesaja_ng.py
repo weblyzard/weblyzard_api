@@ -17,14 +17,16 @@ class JesajaNg(MultiRESTClient):
     URL_PATH = 'jesaja/rest'
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
-                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
+                 pwd=WEBLYZARD_API_PASS, default_timeout=None,
+                 use_random_server=True):
         '''
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
         '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
-                                 default_timeout=default_timeout)
+                                 default_timeout=default_timeout,
+                                 use_random_server=use_random_server)
 
 
     def set_keyword_profile(self, profile_name, keyword_calculation_profile):
