@@ -7,9 +7,11 @@ Created on 07.04.2014
 '''
 import json
 import logging
+import hashlib
 
 from lxml import etree
-import hashlib
+from datetime import date, datetime
+
 
 logger = logging.getLogger('weblyzard_api.xml_content.parsers')
 
@@ -29,6 +31,8 @@ class XMLParser(object):
     def encode_value(cls, value):
         if isinstance(value, basestring):
             return value
+        elif isinstance(value, date):
+            return datetime.strftime(value, "%Y-%m-%d")
         else:
             try:
                 return json.dumps(value)
