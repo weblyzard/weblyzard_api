@@ -7,9 +7,11 @@ Created on 07.04.2014
 '''
 import json
 import logging
+import hashlib
 
 from lxml import etree
-import hashlib
+from datetime import date, datetime
+
 
 logger = logging.getLogger('weblyzard_api.xml_content.parsers')
 
@@ -29,6 +31,8 @@ class XMLParser(object):
     def encode_value(cls, value):
         if isinstance(value, basestring):
             return value
+        elif isinstance(value, date):
+            return datetime.strftime(value, "%Y-%m-%d")
         else:
             try:
                 return json.dumps(value)
@@ -211,6 +215,16 @@ class XMLParser(object):
         return new_attributes
 
     @classmethod
+    def clean_attributes(cls, attributes):
+        ''' '''
+        result = {}
+        for key, val in attributes.iteritems():
+            if val is None or isinstance(val, dict):
+                continue
+            result[key] = val
+        return result
+    
+    @classmethod
     def dump_xml(cls, titles, attributes, sentences, annotations=[], 
                  features={}, relations={}):
         ''' returns a webLyzard XML document '''
@@ -230,6 +244,7 @@ class XMLParser(object):
 
         attributes = cls.dump_xml_attributes(attributes=attributes,
                                              mapping=invert_mapping)
+        attributes = cls.clean_attributes(attributes)
         root = etree.Element('{%s}page' % cls.get_default_ns(),
                              attrib=attributes,
                              nsmap=cls.DOCUMENT_NAMESPACES)
