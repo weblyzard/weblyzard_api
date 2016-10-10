@@ -9,7 +9,6 @@ import org.apache.http.auth.AuthenticationException;
 
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.api.domain.weblyzard.XmlDocument;
-
 import com.weblyzard.util.GSONHelper;
 import com.weblyzard.util.http.HTTPPOST;
 

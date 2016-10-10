@@ -1,7 +1,12 @@
 package com.weblyzard.api.domain.weblyzard;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
