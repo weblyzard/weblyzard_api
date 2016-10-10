@@ -50,29 +50,29 @@ class TestRecognize(unittest.TestCase):
         self.all_profiles = self.client.list_profiles()
         self.DOCS = [Recognize.convert_document(xml) for xml in self.DOCS_XML]
         
-#     def test_adrian(self):
-# 
-#         from pprint import pprint
-#         
-# 
-#         print "start"
-#     
-#         #url = 'http://triple-store.ai.wu.ac.at:8080/recognize/rest/recognize'
-#         url = 'http://voyager.srv.weblyzard.net:8080/recognize/rest/recognize'
-#         client = Recognize(url)
-#         profile_names=['en.organization.ng', 'en.people.ng', 'en.geo.500000.ng']
-#         text = 'Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
-#     
-#         client.add_profile('en.organization.ng')
-#         
-#         result = client.search_text(profile_names,
-#                                     text,
-#                                     output_format='compact',
-#                                     max_entities=40,
-#                                     buckets=40,
-#                                     limit=40)
-#         pprint(result)
-#         print "end"
+    def test_adrian(self):
+ 
+        from pprint import pprint
+         
+ 
+        print "start"
+     
+        #url = 'http://triple-store.ai.wu.ac.at:8080/recognize/rest/recognize'
+        url = 'http://voyager.srv.weblyzard.net:8081/recognize/rest/recognize'
+        client = Recognize(url)
+        profile_names=['de.organization.ng', 'de.people.ng', 'de.geo.500000.ng']
+        text = 'Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
+        text = "HTL Schulzentrum Weingut Fachhochschule Netzwerk"
+        client.add_profile('en.organization.ng')
+         
+        result = client.search_text(profile_names,
+                                    text,
+                                    output_format='compact',
+                                    max_entities=40,
+                                    buckets=40,
+                                    limit=40)
+        pprint(result)
+        print "end"
             
 #     def test_missing_profiles(self):
 #         self.missing_profiles = []
@@ -180,33 +180,33 @@ class TestRecognize(unittest.TestCase):
 #         self.client.add_profile(required_profile)
 #  
 #    
-    def test_organization(self):
-        required_profile = 'en.organization.ng'
-        if required_profile not in self.available_profiles:
-            print "Profile %s not available!" % required_profile
-            return
-                   
-        docs = [{'content_id': '14', 'content': u'Bill Gates was the CEO of Microsoft.'},
-                {'content_id': '15', 'content' :u'Facebook is largest social networks.'}]
-    
-        if self.IS_ONLINE and self.service_is_online:
-            print self.client.list_profiles()
-            self.client.add_profile('en.organization.ng')
-            print self.client.search_documents('en.organization.ng', docs)
-    
-    def test_people(self):
-        required_profile = 'en.people.ng'
-        if required_profile not in self.available_profiles:
-            print "Profile %s not available!" % required_profile
-            return
-           
-        docs = [{'content_id': '16', 'content': u'George W. Bush is a former President.'},
-                {'content_id': '17', 'content' :u'Mark Zuckerberg speaks Chinese.'}]
-    
-        if self.IS_ONLINE and self.service_is_online:
-            print self.client.list_profiles()
-            self.client.add_profile('en.people.ng')
-            print self.client.search_documents('en.people.ng', docs)
+#     def test_organization(self):
+#         required_profile = 'en.organization.ng'
+#         if required_profile not in self.available_profiles:
+#             print "Profile %s not available!" % required_profile
+#             return
+#                    
+#         docs = [{'content_id': '14', 'content': u'Bill Gates was the CEO of Microsoft.'},
+#                 {'content_id': '15', 'content' :u'Facebook is largest social networks.'}]
+#     
+#         if self.IS_ONLINE and self.service_is_online:
+#             print self.client.list_profiles()
+#             self.client.add_profile('en.organization.ng')
+#             print self.client.search_documents('en.organization.ng', docs)
+#     
+#     def test_people(self):
+#         required_profile = 'en.people.ng'
+#         if required_profile not in self.available_profiles:
+#             print "Profile %s not available!" % required_profile
+#             return
+#            
+#         docs = [{'content_id': '16', 'content': u'George W. Bush is a former President.'},
+#                 {'content_id': '17', 'content' :u'Mark Zuckerberg speaks Chinese.'}]
+#     
+#         if self.IS_ONLINE and self.service_is_online:
+#             print self.client.list_profiles()
+#             self.client.add_profile('en.people.ng')
+#             print self.client.search_documents('en.people.ng', docs)
 #    
 #    
 #     def test_date_profile(self):
