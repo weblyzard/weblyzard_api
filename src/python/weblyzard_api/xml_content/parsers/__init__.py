@@ -33,6 +33,8 @@ class XMLParser(object):
             return value
         elif isinstance(value, date):
             return value.isoformat()
+        elif isinstance(value, datetime):
+            return value.isoformat()
         else:
             try:
                 return json.dumps(value)
