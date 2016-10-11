@@ -32,7 +32,7 @@ class XMLParser(object):
         if isinstance(value, basestring):
             return value
         elif isinstance(value, date):
-            return datetime.strftime(value, "%Y-%m-%d")
+            return value.isoformat()
         else:
             try:
                 return json.dumps(value)
