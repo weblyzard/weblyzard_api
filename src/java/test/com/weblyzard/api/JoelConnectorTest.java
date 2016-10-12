@@ -1,10 +1,10 @@
 package com.weblyzard.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
@@ -27,11 +27,9 @@ public class JoelConnectorTest {
 	@Test
 	@Before
 	public void testAddDocuments() throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		Set<Document> documents = new HashSet<>();
-		documents.add(new Document(""));
-		documents.add(new Document(""));
+		List<Document> documents = Arrays.asList(new Document(""), new Document(""));
 
-		Response response = connector.callAddDocuments(documents);
+		Response response = connector.call_addDocuments(documents);
 		assertTrue(response.getStatus() == 200);
 	}
 
@@ -39,7 +37,7 @@ public class JoelConnectorTest {
 
 	@Test
 	public void testCluster() throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		JsonObject response = connector.callCluster();
+		JsonObject response = connector.call_cluster();
 		assertTrue(response != null);
 	}
 
@@ -48,7 +46,7 @@ public class JoelConnectorTest {
 	@Test
 	@After
 	public void testFlush() throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		Response response = connector.callFlush();
+		Response response = connector.call_flush();
 		assertTrue(response.getStatus() == 200);
 	}
 

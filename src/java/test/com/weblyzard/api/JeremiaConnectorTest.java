@@ -22,14 +22,7 @@ public class JeremiaConnectorTest {
 	@Test
 	public void testSubmitDocument()
 			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		Document response = submitDocument(new Document(title, body));
+		Document response = connector.call_submitDocument(new Document(title, body));
 		return;
-	}
-
-
-
-	private Document submitDocument(Document data)
-			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		return connector.callSubmitDocument(data);
 	}
 }

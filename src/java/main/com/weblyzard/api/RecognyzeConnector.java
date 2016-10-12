@@ -21,7 +21,8 @@ import com.weblyzard.util.http.HTTPPOST;
 public class RecognyzeConnector extends BasicConnector {
 
 	private static final String ADDPROFILESERVICEURL = "/Recognize/rest/load_profile/";
-	private static final String SEARCHXMLSERVICEURL = "/Recognize/rest/searchXml";
+	private static final String SEARCHTEXTSERVICEURL = "/Recognize/rest/searchText";
+	private static final String SEARCHDOCUMENTSERVICEURL = "/Recognize/rest/searchDocument";
 	private static final String SEARCHDOCUMENTSSERVICEURL = "/Recognize/rest/searchDocuments";
 	private static final String STATUSSERVICEURL = "/Recognize/rest/status";
 	private static final String PROFILENAMES = "profileName=";
@@ -56,84 +57,95 @@ public class RecognyzeConnector extends BasicConnector {
 
 
 
-	public boolean callLoadProfile(String profileName)
+	public boolean call_loadProfile(String profileName)
 			throws AuthenticationException, ClientProtocolException, IOException {
 
 		String url = super.weblyzard_url + ADDPROFILESERVICEURL + profileName;
 
 		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONJSON);
+
 		return (boolean) (GSONHelper.parseInputStream(responseStream, Boolean.class));
 	}
 
 
 
-	public Set<RecognyzeResult> callSearch(String profileName, Document data)
+	public Set<RecognyzeResult> call_searchText(String profileName, String data)
 			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
 
-		String url = super.weblyzard_url + SEARCHXMLSERVICEURL + "?" + PROFILENAMES + profileName;
-
-		InputStream responseStream = HTTPPOST.requestJSON(url, data.marshal(), super.username, super.password,
-				APPLICATIONXML);
-
-		return (Set<RecognyzeResult>) (GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Set<RecognyzeResult>>() {
-				}.getType()));
+		return this.call_searchText(profileName, data, 0);
 	}
 
 
 
-	public Set<RecognyzeResult> callSearch(String profileName, Document data, int limit)
+	public Set<RecognyzeResult> call_searchText(String profileName, String data, int limit)
 			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
 
-		String url = super.weblyzard_url + SEARCHXMLSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT + limit;
+		String url = super.weblyzard_url + SEARCHTEXTSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT + limit;
 
-		InputStream responseStream = HTTPPOST.requestJSON(url, data.marshal(), super.username, super.password,
-				APPLICATIONXML);
+		InputStream responseStream = HTTPPOST.requestJSON(url, GSONHelper.parseObject(data, Document.class),
+				super.username, super.password, APPLICATIONJSON);
 
 		return (Set<RecognyzeResult>) (GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Set<RecognyzeResult>>() {
-				}.getType()));
+				new TypeToken<Set<RecognyzeResult>>() {}.getType()));
 	}
 
 
 
-	public JsonElement callStatus() throws AuthenticationException, ClientProtocolException, IOException {
+	public Set<RecognyzeResult> call_searchDocument(String profileName, Document data)
+			throws AuthenticationException, ClientProtocolException, IOException {
+
+		return this.call_searchDocument(profileName, data, 0);
+	}
+
+
+
+	public Set<RecognyzeResult> call_searchDocument(String profileName, Document data, int limit)
+			throws AuthenticationException, ClientProtocolException, IOException {
+
+		String url = super.weblyzard_url + SEARCHDOCUMENTSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT
+				+ limit;
+
+		InputStream responseStream = HTTPPOST.requestJSON(url,GSONHelper.parseObject(data, Document.class), 
+				super.username, super.password, APPLICATIONJSON);
+
+		return (Set<RecognyzeResult>) (GSONHelper.parseInputStream(responseStream,
+				new TypeToken<Set<RecognyzeResult>>() {}.getType()));
+	}
+
+
+
+	public Map<String, Set<RecognyzeResult>> call_searchDocuments(String profileName, Set<Document> data)
+			throws AuthenticationException, ClientProtocolException, IOException {
+
+		return this.call_searchDocuments(profileName, data, 0);
+	}
+
+
+
+	public Map<String, Set<RecognyzeResult>> call_searchDocuments(String profileName, Set<Document> data, int limit)
+			throws AuthenticationException, ClientProtocolException, IOException {
+
+		String url = super.weblyzard_url + SEARCHDOCUMENTSSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT
+				+ limit;
+
+		InputStream responseStream = HTTPPOST.requestJSON(url,
+				GSONHelper.parseObject(data, new TypeToken<Set<Document>>() {}.getType()), 
+				super.username, super.password, APPLICATIONJSON);
+
+		return (Map<String, Set<RecognyzeResult>>) (GSONHelper.parseInputStream(responseStream,
+				new TypeToken<Map<String, Set<RecognyzeResult>>>() {}.getType()));
+	}
+
+
+
+	public Map<String, Object> call_status() throws AuthenticationException, ClientProtocolException, IOException {
 
 		String url = super.weblyzard_url + STATUSSERVICEURL;
 
 		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONXML);
 
-		return ((JsonElement) GSONHelper.parseInputStream(responseStream, JsonElement.class));
-	}
-
-
-
-	public Map<String, Set<RecognyzeResult>> callSearchDocuments(String profileName, Set<Document> data)
-			throws AuthenticationException, ClientProtocolException, IOException {
-		String url = super.weblyzard_url + SEARCHDOCUMENTSSERVICEURL + "?" + PROFILENAMES + profileName;
-
-		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(data, new TypeToken<Set<Document>>() {
-				}.getType()), super.username, super.password, APPLICATIONJSON);
-
-		return (Map<String, Set<RecognyzeResult>>) (GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Map<String, Set<RecognyzeResult>>>() {
-				}.getType()));
-	}
-
-
-
-	public Map<String, Set<RecognyzeResult>> callSearchDocuments(String profileName, Set<Document> data, int limit)
-			throws AuthenticationException, ClientProtocolException, IOException {
-		String url = super.weblyzard_url + SEARCHDOCUMENTSSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT + limit;
-
-		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(data, new TypeToken<Set<Document>>() {
-				}.getType()), super.username, super.password, APPLICATIONJSON);
-
-		return (Map<String, Set<RecognyzeResult>>) (GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Map<String, Set<RecognyzeResult>>>() {
-				}.getType()));
+		return ((Map<String, Object>) GSONHelper.parseInputStream(responseStream, 
+				new TypeToken<Map<String, Object>>() {}.getType()));
 	}
 
 }

@@ -47,7 +47,7 @@ public class JosephConnector extends BasicConnector {
 
 
 
-	public ClassifyResponse[] callClassify(String profileName, ClassifyRequest request)
+	public ClassifyResponse[] call_classify(String profileName, ClassifyRequest request)
 			throws IOException, AuthenticationException {
 
 		String url = super.weblyzard_url + CLASSIFYSERVICEURL + profileName;
@@ -59,7 +59,7 @@ public class JosephConnector extends BasicConnector {
 	}
 
 	
-	public ClassifyResponse[] callClassifyExtended(String profileName, ClassifyRequest request)
+	public ClassifyResponse[] call_classifyExtended(String profileName, ClassifyRequest request)
 			throws IOException, AuthenticationException {
 
 		String url = super.weblyzard_url + CLASSIFYEXTENDEDSERVICEURL + profileName;
@@ -71,7 +71,7 @@ public class JosephConnector extends BasicConnector {
 	}
 
 
-	public LearnResponse callLearn(String profileName, LearnRequest request)
+	public LearnResponse call_learn(String profileName, LearnRequest request)
 			throws IOException, AuthenticationException {
 
 		String url = super.weblyzard_url + LEARNSERVICEURL + profileName;

@@ -43,14 +43,14 @@ public class RecognyzeConnectorTest {
 
 	private boolean loadProfile(String profileName)
 			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		return connector.callLoadProfile(profileName);
+		return connector.call_loadProfile(profileName);
 	}
 
 
 
 	private Set<RecognyzeResult> searchXml(String profileName, Document data)
 			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		return connector.callSearch(profileName, data);
+		return connector.call_searchDocument(profileName, data);
 	}
 
 }

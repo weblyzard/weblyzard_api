@@ -52,60 +52,59 @@ public class JesajaConnector extends BasicConnector {
 
 
 
-	public Response callSetReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
+	public Response call_setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
 			throws AuthenticationException, ClientProtocolException, IOException {
 
 		String url = super.weblyzard_url + SETREFERENCECORPUS_SERVICEURL + matviewId;
 
 		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(corpusMapping, new TypeToken<Map<String, Integer>>() {
-				}.getType()), super.username, super.password, APPLICATIONJSON);
+				GSONHelper.parseObject(corpusMapping, new TypeToken<Map<String, Integer>>() {}.getType())
+				, super.username, super.password, APPLICATIONJSON);
 
 		return (Response) GSONHelper.parseInputStream(responseStream, Response.class);
 	}
 
 
 
-	public Response callAddDocuments(String matviewId, List<Document> documents)
+	public Response call_addDocuments(String matviewId, List<Document> documents)
 			throws AuthenticationException, ClientProtocolException, IOException {
 
 		String url = super.weblyzard_url + ADDDOCUMENTS_SERVICEURL + matviewId;
 
 		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {
-				}.getType()), super.username, super.password, APPLICATIONJSON);
+				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {}.getType())
+				, super.username, super.password, APPLICATIONJSON);
 
 		return (Response) GSONHelper.parseInputStream(responseStream, Response.class);
 	}
 
 
 
-	public Map<String, Map<String, Double>> callGetKeywords(String matviewId, List<Document> documents)
+	public Map<String, Map<String, Double>> call_getKeywords(String matviewId, List<Document> documents)
 			throws AuthenticationException, ClientProtocolException, IOException {
 
 		String url = super.weblyzard_url + GETKEYWORDS_SERVICEURL + matviewId;
 
 		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {
-				}.getType()), super.username, super.password, APPLICATIONJSON);
+				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {}.getType()),
+				super.username, super.password, APPLICATIONJSON);
 
 		return (Map<String, Map<String, Double>>) GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Map<String, Map<String, Double>>>() {
-				}.getType());
+				new TypeToken<Map<String, Map<String, Double>>>() {}.getType());
 	}
 
 
 
-	public JsonObject callGetNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
-			throws AuthenticationException, ClientProtocolException, IOException {
-
-		String url = super.weblyzard_url + GETNEKANNOTATIONS_SERVICEURL + matviewId;
-
-		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {
-				}.getType()), super.username, super.password, APPLICATIONJSON);
-
-		return (JsonObject) GSONHelper.parseInputStream(responseStream, JsonObject.class);
-	}
+//	public JsonObject call_getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
+//			throws AuthenticationException, ClientProtocolException, IOException {
+//
+//		String url = super.weblyzard_url + GETNEKANNOTATIONS_SERVICEURL + matviewId;
+//
+//		InputStream responseStream = HTTPPOST.requestJSON(url,
+//				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {}.getType()), 
+//				super.username, super.password, APPLICATIONJSON);
+//
+//		return (JsonObject) GSONHelper.parseInputStream(responseStream, JsonObject.class);
+//	}
 
 }

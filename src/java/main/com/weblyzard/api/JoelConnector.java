@@ -2,8 +2,8 @@ package com.weblyzard.api;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.http.auth.AuthenticationException;
 
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.util.GSONHelper;
 import com.weblyzard.util.http.HTTPGET;
@@ -56,18 +57,20 @@ public class JoelConnector extends BasicConnector {
 
 
 
-	public Response callAddDocuments(Set<Document> documents) throws IOException, AuthenticationException {
+	public Response call_addDocuments(List<Document> documents) throws IOException, AuthenticationException {
 		String url = super.weblyzard_url + ADDDOCUMENTSSERVICEURL;
 
-		Set<String> xml = new HashSet<>();
+		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
 			try {
 				xml.add(document.marshal());
 			} catch (JAXBException e) {
 				e.printStackTrace();
 			}
+		// TODO: compare xml with documents (size, .. )
 
-		InputStream responseStream = HTTPPOST.requestJSON(url, GSONHelper.parseObject(xml, Document.class),
+		InputStream responseStream = HTTPPOST.requestJSON(url, GSONHelper.parseObject(xml, 
+				new TypeToken<List<String>>() {}.getType()),
 				super.username, super.password, APPLICATIONJSON);
 
 		return (Response) GSONHelper.parseInputStream(responseStream, Response.class);
@@ -75,7 +78,7 @@ public class JoelConnector extends BasicConnector {
 
 
 
-	public Response callFlush() throws AuthenticationException, IllegalStateException, IOException {
+	public Response call_flush() throws AuthenticationException, IllegalStateException, IOException {
 		String url = super.weblyzard_url + FLUSHDOCUMENTSERVICEURL;
 
 		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONJSON);
@@ -85,7 +88,7 @@ public class JoelConnector extends BasicConnector {
 
 
 
-	public JsonObject callCluster() throws AuthenticationException, IllegalStateException, IOException {
+	public JsonObject call_cluster() throws AuthenticationException, IllegalStateException, IOException {
 		String url = super.weblyzard_url + CLUSTERDOCUMENTSERVICEURL;
 
 		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONJSON);

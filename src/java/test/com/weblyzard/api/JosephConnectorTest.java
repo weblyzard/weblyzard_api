@@ -50,13 +50,13 @@ public class JosephConnectorTest {
 
 	private ClassifyResponse[] classify(String profile, ClassifyRequest data)
 			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		return connector.callClassify(profile, data);
+		return connector.call_classify(profile, data);
 	}
 
 
 
 	private ClassifyResponse[] classifyExtended(String profile, ClassifyRequest data)
 			throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		return connector.callClassifyExtended(profile, data);
+		return connector.call_classifyExtended(profile, data);
 	}
 }

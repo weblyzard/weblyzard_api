@@ -50,7 +50,7 @@ public class JeremiaConnector extends BasicConnector {
 
 
 
-	public XmlDocument callSubmitDocumentRaw(Document data) throws IOException, AuthenticationException {
+	public XmlDocument call_submitDocumentRaw(Document data) throws IOException, AuthenticationException {
 
 		String url = super.weblyzard_url + SUBMITDOCUMENTSERVICEURL;
 
@@ -62,8 +62,8 @@ public class JeremiaConnector extends BasicConnector {
 
 
 
-	public Document callSubmitDocument(Document data) throws IOException, JAXBException, AuthenticationException {
-		XmlDocument response = callSubmitDocumentRaw(data);
+	public Document call_submitDocument(Document data) throws IOException, JAXBException, AuthenticationException {
+		XmlDocument response = call_submitDocumentRaw(data);
 		return new Document().unmarshal(response.xml_content);
 	}
 }
