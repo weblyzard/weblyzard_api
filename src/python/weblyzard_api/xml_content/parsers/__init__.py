@@ -7,9 +7,11 @@ Created on 07.04.2014
 '''
 import json
 import logging
+import hashlib
 
 from lxml import etree
-import hashlib
+from datetime import date, datetime
+
 
 logger = logging.getLogger('weblyzard_api.xml_content.parsers')
 
@@ -29,6 +31,8 @@ class XMLParser(object):
     def encode_value(cls, value):
         if isinstance(value, basestring):
             return value
+        elif isinstance(value, date):
+            return datetime.strftime(value, "%Y-%m-%d")
         else:
             try:
                 return json.dumps(value)
@@ -202,12 +206,24 @@ class XMLParser(object):
 
             if mapping and key in mapping:
                 key = mapping[key]
+            elif ':' in key:
+                continue
 
             if value and value not in ('None', 'null', '0.0'):
                 new_attributes[key] = cls.encode_value(value)
 
         return new_attributes
 
+    @classmethod
+    def clean_attributes(cls, attributes):
+        ''' '''
+        result = {}
+        for key, val in attributes.iteritems():
+            if val is None or isinstance(val, dict):
+                continue
+            result[key] = val
+        return result
+    
     @classmethod
     def dump_xml(cls, titles, attributes, sentences, annotations=[], 
                  features={}, relations={}):
@@ -228,6 +244,7 @@ class XMLParser(object):
 
         attributes = cls.dump_xml_attributes(attributes=attributes,
                                              mapping=invert_mapping)
+        attributes = cls.clean_attributes(attributes)
         root = etree.Element('{%s}page' % cls.get_default_ns(),
                              attrib=attributes,
                              nsmap=cls.DOCUMENT_NAMESPACES)
@@ -294,53 +311,56 @@ class XMLParser(object):
                                                  nsmap=cls.DOCUMENT_NAMESPACES)
                             except Exception, e:
                                 continue
-                            
-        if cls.FEATURE_MAPPING:
+               
+        # featrure mappings if specified             
+        if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
             feature_mapping = dict(zip(cls.FEATURE_MAPPING.values(),
                                        cls.FEATURE_MAPPING.keys()))
-        else:
-            feature_mapping = None
 
-        for key, items in features.iteritems():
-            feature_attributes = cls.dump_xml_attributes({'key': key},
-                                                         mapping=feature_mapping)
-            if not isinstance(items, list):
-                items = [items]
-            
-            for value in items:
-                try:
-                    feat_elem = etree.SubElement(root,
-                                                 '{%s}feature' % cls.get_default_ns(),
-                                                 attrib=feature_attributes,
-                                                 nsmap=cls.DOCUMENT_NAMESPACES)
-                    if isinstance(value, int) or isinstance(value, list):
-                        value = str(value)
-                    
-                    feat_elem.text = etree.CDATA(value)
-                except Exception, e:
-                    print('Skipping bad cdata: %s (%s)' % (value, e))
-                    continue
+            for key, items in features.iteritems():
+                feature_attributes = cls.dump_xml_attributes({'key': key},
+                                                             mapping=feature_mapping)
+                if not isinstance(items, list):
+                    items = [items]
+                
+                for value in items:
+                    try:
+                        feat_elem = etree.SubElement(root,
+                                                     '{%s}feature' % cls.get_default_ns(),
+                                                     attrib=feature_attributes,
+                                                     nsmap=cls.DOCUMENT_NAMESPACES)
+                        if isinstance(value, int) or isinstance(value, list):
+                            value = str(value)
+                        
+                        feat_elem.text = etree.CDATA(value)
+                    except Exception, e:
+                        print('Skipping bad cdata: %s (%s)' % (value, e))
+                        continue
 
-            
-        for key, items in relations.iteritems():
-            rel_attributes = cls.dump_xml_attributes({'key': key},
-                                                     mapping=feature_mapping)
-            if not isinstance(items, list):
-                items = [items]
-            
-            for value in items:
-                try:
-                    rel_elem = etree.SubElement(root,
-                                                '{%s}relation' % cls.get_default_ns(),
-                                                attrib=rel_attributes,
-                                                nsmap=cls.DOCUMENT_NAMESPACES)
-                    if isinstance(value, int) or isinstance(value, list):
-                        value = str(value)
-                    
-                    rel_elem.text = etree.CDATA(value)
-                except Exception, e:
-                    print('Skipping bad cdata: %s (%s)' % (value, e))
-                    continue
+        # relation mappings, if specified            
+        if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
+            relation_mapping = dict(zip(cls.RELATION_MAPPING.values(),
+                                       cls.RELATION_MAPPING.keys()))
+
+            for key, items in relations.iteritems():
+                rel_attributes = cls.dump_xml_attributes({'key': key},
+                                                         mapping=relation_mapping)
+                if not isinstance(items, list):
+                    items = [items]
+                
+                for value in items:
+                    try:
+                        rel_elem = etree.SubElement(root,
+                                                    '{%s}relation' % cls.get_default_ns(),
+                                                    attrib=rel_attributes,
+                                                    nsmap=cls.DOCUMENT_NAMESPACES)
+                        if isinstance(value, int) or isinstance(value, list):
+                            value = str(value)
+                        
+                        rel_elem.text = etree.CDATA(value)
+                    except Exception, e:
+                        print('Skipping bad cdata: %s (%s)' % (value, e))
+                        continue
         
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
