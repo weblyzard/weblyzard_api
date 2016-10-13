@@ -82,7 +82,7 @@ public class RecognyzeConnector extends BasicConnector {
 
 		String url = super.weblyzard_url + SEARCHTEXTSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT + limit;
 
-		InputStream responseStream = HTTPPOST.requestJSON(url, GSONHelper.parseObject(data, Document.class),
+		InputStream responseStream = HTTPPOST.requestJSON(url, data,
 				super.username, super.password, APPLICATIONJSON);
 
 		return (Set<RecognyzeResult>) (GSONHelper.parseInputStream(responseStream,
