@@ -53,7 +53,7 @@ class Recognize(MultiRESTClient):
             pprint(result)
     '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
-    URL_PATH = 'recognize/rest/recognize'
+    URL_PATH = 'recognize/rest'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'lang': 'xml:lang',
                          'sentences' : 'sentence',
