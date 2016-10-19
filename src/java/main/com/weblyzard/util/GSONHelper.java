@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 /**
@@ -32,6 +33,23 @@ public class GSONHelper {
 	public static <T> String parseObject(Object o, Class<T> c) {
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(o, c);
+	}
+
+
+
+	/**
+	 * helper to parse an object to its Json-representation
+	 * 
+	 * @param o
+	 *            the object
+	 * @param t
+	 *            the objecttype, use following to create
+	 *            Type typeOfSrc = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();
+	 * @return the json
+	 */
+	public static <T> String parseObject(Object o, Type t) {
+		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(o, t);
 	}
 
 
