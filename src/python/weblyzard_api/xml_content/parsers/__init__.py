@@ -340,7 +340,8 @@ class XMLParser(object):
                                                      '{%s}feature' % cls.get_default_ns(),
                                                      attrib=feature_attributes,
                                                      nsmap=cls.DOCUMENT_NAMESPACES)
-                        if isinstance(value, int) or isinstance(value, list):
+                        if isinstance(value, int) or isinstance(value, float) or \
+                            isinstance(value, list):
                             value = str(value)
                         
                         feat_elem.text = etree.CDATA(value)
