@@ -2,15 +2,16 @@ package com.weblyzard.api;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
 
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.util.GSONHelper;
@@ -58,8 +59,8 @@ public class JesajaConnector extends BasicConnector {
 		String url = super.weblyzard_url + SETREFERENCECORPUS_SERVICEURL + matviewId;
 
 		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(corpusMapping, new TypeToken<Map<String, Integer>>() {}.getType())
-				, super.username, super.password, APPLICATIONJSON);
+				GSONHelper.parseObject(corpusMapping, new TypeToken<Map<String, Integer>>() {
+				}.getType()), super.username, super.password, APPLICATIONJSON);
 
 		return (Response) GSONHelper.parseInputStream(responseStream, Response.class);
 	}
@@ -72,8 +73,8 @@ public class JesajaConnector extends BasicConnector {
 		String url = super.weblyzard_url + ADDDOCUMENTS_SERVICEURL + matviewId;
 
 		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {}.getType())
-				, super.username, super.password, APPLICATIONJSON);
+				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {
+				}.getType()), super.username, super.password, APPLICATIONJSON);
 
 		return (Response) GSONHelper.parseInputStream(responseStream, Response.class);
 	}
@@ -85,26 +86,37 @@ public class JesajaConnector extends BasicConnector {
 
 		String url = super.weblyzard_url + GETKEYWORDS_SERVICEURL + matviewId;
 
+		List<String> xml = new ArrayList<>();
+		for (Document document : documents)
+			try {
+				xml.add(document.marshal());
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			}
+
 		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {}.getType()),
-				super.username, super.password, APPLICATIONJSON);
+				GSONHelper.parseObject(xml, new TypeToken<List<String>>() {
+				}.getType()), super.username, super.password, APPLICATIONJSON);
 
 		return (Map<String, Map<String, Double>>) GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Map<String, Map<String, Double>>>() {}.getType());
+				new TypeToken<Map<String, Map<String, Double>>>() {
+				}.getType());
 	}
 
-
-
-//	public JsonObject call_getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
-//			throws AuthenticationException, ClientProtocolException, IOException {
-//
-//		String url = super.weblyzard_url + GETNEKANNOTATIONS_SERVICEURL + matviewId;
-//
-//		InputStream responseStream = HTTPPOST.requestJSON(url,
-//				GSONHelper.parseObject(documents, new TypeToken<List<Document>>() {}.getType()), 
-//				super.username, super.password, APPLICATIONJSON);
-//
-//		return (JsonObject) GSONHelper.parseInputStream(responseStream, JsonObject.class);
-//	}
+	// public JsonObject call_getNonEntityKeywordAnnotations(String matviewId,
+	// List<Document> documents)
+	// throws AuthenticationException, ClientProtocolException, IOException {
+	//
+	// String url = super.weblyzard_url + GETNEKANNOTATIONS_SERVICEURL +
+	// matviewId;
+	//
+	// InputStream responseStream = HTTPPOST.requestJSON(url,
+	// GSONHelper.parseObject(documents, new TypeToken<List<Document>>()
+	// {}.getType()),
+	// super.username, super.password, APPLICATIONJSON);
+	//
+	// return (JsonObject) GSONHelper.parseInputStream(responseStream,
+	// JsonObject.class);
+	// }
 
 }

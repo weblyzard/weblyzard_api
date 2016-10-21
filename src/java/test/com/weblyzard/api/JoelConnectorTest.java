@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.weblyzard.api.domain.weblyzard.Document;
 
@@ -37,7 +38,7 @@ public class JoelConnectorTest {
 
 	@Test
 	public void testCluster() throws AuthenticationException, ClientProtocolException, IOException, JAXBException {
-		JsonObject response = connector.call_cluster();
+		JsonArray response = connector.call_cluster();
 		assertTrue(response != null);
 	}
 

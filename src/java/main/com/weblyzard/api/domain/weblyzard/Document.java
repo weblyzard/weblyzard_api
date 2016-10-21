@@ -57,7 +57,7 @@ public class Document implements Serializable, IXMLMarshallable<Document> {
 	public List<Sentence> sentences;
 
 	@XmlAttribute(name = "id", namespace = Document.NAMESPACE_WEBLYZARD)
-	public String contentId;
+	public String id;
 
 	@XmlAttribute(name = "format", namespace = Document.NAMESPACE_DUBLIN_CORE)
 	public String contentType;
@@ -113,7 +113,7 @@ public class Document implements Serializable, IXMLMarshallable<Document> {
 
 
 	public Document setContentId(String contentId) {
-		this.contentId = contentId;
+		this.id = contentId;
 		return this;
 	}
 

@@ -10,7 +10,6 @@ import javax.xml.bind.JAXBException;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.weblyzard.api.domain.recognize.RecognyzeResult;
 import com.weblyzard.api.domain.weblyzard.Document;

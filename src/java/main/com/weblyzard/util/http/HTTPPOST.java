@@ -39,13 +39,17 @@ public class HTTPPOST {
 
 		switch (httpResponse.getStatusLine().getStatusCode()) {
 		case 400:
-			throw new HttpResponseException(400, "bad request for url: " + url);
+			throw new HttpResponseException(400,
+					"'" + httpResponse.getStatusLine().getReasonPhrase() + "' for url: " + url);
 		case 401:
-			throw new HttpResponseException(401, "unauthorized for url: " + url);
+			throw new HttpResponseException(401,
+					"'" + httpResponse.getStatusLine().getReasonPhrase() + "' for url: " + url);
 		case 404:
-			throw new HttpResponseException(400, "non existend url: " + url);
+			throw new HttpResponseException(404,
+					"'" + httpResponse.getStatusLine().getReasonPhrase() + "' for url: " + url);
 		case 500:
-			throw new HttpResponseException(500, "internal server error for url: " + url);
+			throw new HttpResponseException(500,
+					"'" + httpResponse.getStatusLine().getReasonPhrase() + "' for url: " + url);
 		default:
 			return httpResponse.getEntity().getContent();
 		}

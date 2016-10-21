@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.http.auth.AuthenticationException;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.util.GSONHelper;
@@ -88,11 +88,11 @@ public class JoelConnector extends BasicConnector {
 
 
 
-	public JsonObject call_cluster() throws AuthenticationException, IllegalStateException, IOException {
+	public JsonArray call_cluster() throws AuthenticationException, IllegalStateException, IOException {
 		String url = super.weblyzard_url + CLUSTERDOCUMENTSERVICEURL;
 
 		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONJSON);
 
-		return (JsonObject) GSONHelper.parseInputStream(responseStream, JsonObject.class);
+		return (JsonArray) GSONHelper.parseInputStream(responseStream, JsonArray.class);
 	}
 }

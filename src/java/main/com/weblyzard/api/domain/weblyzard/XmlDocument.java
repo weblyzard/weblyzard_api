@@ -29,7 +29,7 @@ public class XmlDocument {
 
 
 	public XmlDocument(Document document, List<Annotation> annotation) throws JAXBException {
-		content_id = document.contentId;
+		content_id = document.id;
 		nilsimsa = document.nilsimsa;
 		this.annotation = annotation;
 		xml_content = document.marshal();
