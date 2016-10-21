@@ -5,9 +5,12 @@ Created on 07.04.2014
 
 @author: heinz-peterlang
 '''
+from __future__ import print_function
+
 import json
 import logging
 import hashlib
+import unicodedata
 
 from lxml import etree
 from datetime import date, datetime
@@ -28,11 +31,19 @@ class XMLParser(object):
     DEFAULT_NAMESPACE = 'wl'
 
     @classmethod
+    def remove_control_characters(cls, value):
+        return ''.join(ch for ch in value if unicodedata.category(ch)[0] != 'C')
+
+    @classmethod
     def encode_value(cls, value):
-        if isinstance(value, basestring):
-            return value
+        if isinstance(value, unicode):
+            return XMLParser.remove_control_characters(value)
+        elif isinstance(value, str):
+            return XMLParser.remove_control_characters(value.decode('utf-8'))
         elif isinstance(value, date):
-            return datetime.strftime(value, "%Y-%m-%d")
+            return value.isoformat()
+        elif isinstance(value, datetime):
+            return value.isoformat()
         else:
             try:
                 return json.dumps(value)
