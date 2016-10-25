@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 '''
 Created on Oct 24, 2016
 
@@ -5,8 +7,6 @@ Created on Oct 24, 2016
 '''
 
 import requests
-import unittest
-import urllib
 
 
 class SKBRESTClient():
