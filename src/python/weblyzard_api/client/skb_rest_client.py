@@ -13,7 +13,7 @@ class SKBRESTClient():
     
     TRANSLATION_PATH = '1.0/skb/translation?'
 
-    def __init__(self, url, usr=None, pwd=None):
+    def __init__(self, url):
         '''
         :param url: URL of the SKB web service
         '''
