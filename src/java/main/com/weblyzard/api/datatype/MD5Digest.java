@@ -1,4 +1,4 @@
-package com.weblyzard.lib;
+package com.weblyzard.api.datatype;
 
 import java.io.Serializable;
 import java.security.MessageDigest;

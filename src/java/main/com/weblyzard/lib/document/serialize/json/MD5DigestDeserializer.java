@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.weblyzard.lib.MD5Digest;
+import com.weblyzard.api.datatype.MD5Digest;
 
 public class MD5DigestDeserializer extends StdDeserializer<MD5Digest> {
 
