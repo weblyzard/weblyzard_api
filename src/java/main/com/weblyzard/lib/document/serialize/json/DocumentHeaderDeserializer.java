@@ -19,7 +19,7 @@ import com.weblyzard.lib.document.Document;
  * @author Norman Suesstrunk
  *
  */
-public class DocumentHeaderJsonDeserializer extends KeyDeserializer{
+public class DocumentHeaderDeserializer extends KeyDeserializer{
 	
 	private ObjectMapper mapper = new ObjectMapper();
 

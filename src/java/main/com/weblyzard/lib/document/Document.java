@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Joiner;
 import com.weblyzard.lib.document.annotation.Annotation;
-import com.weblyzard.lib.document.serialize.json.DocumentHeaderJsonDeserializer;
+import com.weblyzard.lib.document.serialize.json.DocumentHeaderDeserializer;
 import com.weblyzard.lib.document.serialize.json.DocumentHeaderSerializer;
 import com.weblyzard.lib.string.nilsimsa.Nilsimsa;
 
@@ -44,7 +44,7 @@ public class Document implements Serializable {
 	
 	public final static QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 	
-	@JsonDeserialize	(keyUsing = DocumentHeaderJsonDeserializer.class)
+	@JsonDeserialize	(keyUsing = DocumentHeaderDeserializer.class)
 	@JsonSerialize		(keyUsing = DocumentHeaderSerializer.class)
 	@XmlAnyAttribute
 	private Map<QName, String> header = new HashMap<>();
