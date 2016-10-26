@@ -9,23 +9,20 @@ package com.weblyzard.lib.document.annotation;
  */
 public class AnnotationSurface {
 
-	public int sentence = 0;
+	private int sentence = 0;
+	private int start;
+	private int end;
+	private String surfaceForm;
 
-	public int start;
+	public AnnotationSurface() {}
 
-	public int end;
-
-	public String surfaceForm;
-	
-	public AnnotationSurface() { }
-	
 	public AnnotationSurface(int start, int end, int sentence, String surfaceForm) {
 		this.start = start;
 		this.end = end;
 		this.sentence = sentence;
 		this.surfaceForm = surfaceForm;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AnnotationSurface) {
@@ -34,7 +31,7 @@ public class AnnotationSurface {
 		}
 		return false;
 	}
-	
+
 	public int getSentence() {
 		return sentence;
 	}
@@ -66,8 +63,5 @@ public class AnnotationSurface {
 	public void setSurfaceForm(String surfaceForm) {
 		this.surfaceForm = surfaceForm;
 	}
-
-
-	
 
 }

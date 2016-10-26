@@ -1,4 +1,4 @@
-package com.weblyzard.lib;
+package com.weblyzard.lib.document.serialize.json;
 
 import java.io.IOException;
 
@@ -6,16 +6,17 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.weblyzard.lib.MD5Digest;
 
-public class MD5DigestJsonDS extends StdDeserializer<MD5Digest> {
+public class MD5DigestDeserializer extends StdDeserializer<MD5Digest> {
 
 	private static final long serialVersionUID = 1L;
 
-	public MD5DigestJsonDS() {
+	public MD5DigestDeserializer() {
 		this(null); 
 	}
 	
-	protected MD5DigestJsonDS(Class<?> vc) {
+	protected MD5DigestDeserializer(Class<?> vc) {
 		super(vc);
 	}
 

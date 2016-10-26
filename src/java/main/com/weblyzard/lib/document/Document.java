@@ -26,7 +26,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Joiner;
 import com.weblyzard.lib.document.annotation.Annotation;
-import com.weblyzard.lib.rest.WeblyzardWebService;
+import com.weblyzard.lib.document.serialize.json.DocumentHeaderJsonDeserializer;
+import com.weblyzard.lib.document.serialize.json.DocumentHeaderSerializer;
 import com.weblyzard.lib.string.nilsimsa.Nilsimsa;
 
 @XmlRootElement(name="page", namespace=Document.NS_WEBLYZARD)
@@ -39,13 +40,12 @@ public class Document implements Serializable {
 	
 	public final static Joiner SENTENCE_JOINER = Joiner.on("\n");
 	
-	private static Logger logger = WeblyzardWebService.getLogger(
-            Document.class);
+	private static Logger logger = Logger.getLogger(Document.class.getName());
 	
-	public final static QName WL_KEYWORD_ATTR = new QName(com.weblyzard.lib.document.Document.NS_DUBLIN_CORE, "subject");
+	public final static QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 	
-	@JsonDeserialize	(keyUsing = DocHeaderMapJsonDS.class)
-	@JsonSerialize		(keyUsing = DocHeaderMapJsonSE.class)
+	@JsonDeserialize	(keyUsing = DocumentHeaderJsonDeserializer.class)
+	@JsonSerialize		(keyUsing = DocumentHeaderSerializer.class)
 	@XmlAnyAttribute
 	private Map<QName, String> header = new HashMap<>();
 
@@ -238,7 +238,7 @@ public class Document implements Serializable {
             Marshaller xmlMarshaller = jaxbContext.createMarshaller();
             xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             xmlMarshaller.marshal(jaxbElement, s);
-        } catch (JAXBException e) {
+        } catch (JAXBException e) { // TODO: move the exception to the method's consumers
             logger.severe("Creation of the XML document for content_id "
                     + document.id +" failed due to a JAXB exception.");
             e.printStackTrace();
