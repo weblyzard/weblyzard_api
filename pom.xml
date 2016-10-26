@@ -39,6 +39,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
+					<excludes>
+						<exclude>src/java/test/</exclude>
+					</excludes>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
@@ -54,6 +57,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<sourceDirectory>src/java/main</sourceDirectory>
+		<testSourceDirectory>src/java/test</testSourceDirectory>
 	</build>
 
 	<dependencies>
