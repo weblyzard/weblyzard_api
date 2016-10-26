@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.weblyzard.lib.MD5Digest;
+import com.weblyzard.api.MD5Digest;
 import com.weblyzard.lib.document.Document;
  
 /** 

@@ -1,4 +1,4 @@
-package com.weblyzard.lib;
+package com.weblyzard.api;
 
 import java.io.IOException;
 
