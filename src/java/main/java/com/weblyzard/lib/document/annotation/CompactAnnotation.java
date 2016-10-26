@@ -31,11 +31,11 @@ public class CompactAnnotation extends Annotation {
 	public CompactAnnotation() { }
 	
 	public CompactAnnotation(Annotation annotation) {
-		super(annotation.key, annotation.surfaceForm, annotation.preferredName, 
-				annotation.start, annotation.end, annotation.annotationType);
+		super(annotation.getKey(), annotation.getSurfaceForm(), annotation.getPreferredName(), 
+				annotation.getStart(), annotation.getEnd(), annotation.getAnnotationType());
 		this.entities = new ArrayList<>();
-		if (end>start) 
-			addSurface(new AnnotationSurface(start, end, annotation.sentence, surfaceForm));
+		if (getEnd()>getStart()) 
+			addSurface(new AnnotationSurface(getEnd(), getStart(), annotation.getSentence(), getSurfaceForm()));
 	}
 	
 	public void addSurface(AnnotationSurface entitiy) {

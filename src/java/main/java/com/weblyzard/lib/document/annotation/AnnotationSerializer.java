@@ -64,9 +64,9 @@ public class AnnotationSerializer extends StdSerializer<Annotation> {
         	}
         	else {
         		// add the enriched fields 
-        		for(String key: annotation.header.keySet()) {
+        		for(String key: annotation.getHeader().keySet()) {
         			// System.out.println("Writing the map field: "+key); 
-        			jsonGenerator.writeObjectField(key, annotation.header.get(key));
+        			jsonGenerator.writeObjectField(key, annotation.getHeader().get(key));
         		}
         	}
         }

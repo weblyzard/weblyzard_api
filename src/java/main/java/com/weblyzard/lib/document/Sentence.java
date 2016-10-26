@@ -38,7 +38,7 @@ public class Sentence implements Serializable {
 
 	@XmlAttribute(name="id", namespace=Document.NS_WEBLYZARD)
 	@XmlJavaTypeAdapter(MD5Digest.class)
-	public MD5Digest id;
+	private MD5Digest id;
 
 	/**
 	 * The POS dependency tree of the given sentence.
@@ -47,25 +47,25 @@ public class Sentence implements Serializable {
 	private String pos;	
 	
 	@XmlAttribute(name="dependency", namespace=Document.NS_WEBLYZARD)
-	public String dependency;
+	private String dependency;
 	
 	@XmlAttribute(name="token", namespace=Document.NS_WEBLYZARD)
-	public String token;
+	private String token;
 	
 	@XmlAttribute(name="is_title", namespace=Document.NS_WEBLYZARD)
 	@XmlJavaTypeAdapter(BooleanAdapter.class)
-	public boolean is_title;
+	private boolean is_title;
 
 	@XmlValue 
 	@XmlCDATA
-	public String text;
+	private String text;
 	
 	// additional attributes defined in the weblyzard XML format
 	@XmlAttribute(name="sem_orient", namespace=Document.NS_WEBLYZARD)
-	public double sem_orient;
+	private double sem_orient;
 	
 	@XmlAttribute(name="significance", namespace=Document.NS_WEBLYZARD)
-	public double significance;	
+	private double significance;	
 
 
 	// required by JAXB
@@ -75,7 +75,6 @@ public class Sentence implements Serializable {
 		this.text = text;
 		id = MD5Digest.fromText(text);
 	}
-	
 	
 	public Sentence (String text, String token, String pos) {
 		this(text);
@@ -146,5 +145,49 @@ public class Sentence implements Serializable {
 			
 	public String toString() {
 		return text;
+	}
+
+	public MD5Digest getId() {
+		return id;
+	}
+
+	public void setId(MD5Digest id) {
+		this.id = id;
+	}
+
+	public boolean isIs_title() {
+		return is_title;
+	}
+
+	public void setIs_title(boolean is_title) {
+		this.is_title = is_title;
+	}
+
+	public double getSem_orient() {
+		return sem_orient;
+	}
+
+	public void setSem_orient(double sem_orient) {
+		this.sem_orient = sem_orient;
+	}
+
+	public double getSignificance() {
+		return significance;
+	}
+
+	public void setSignificance(double significance) {
+		this.significance = significance;
+	}
+
+	public String getDependency() {
+		return dependency;
+	}
+
+	public void setDependency(String dependency) {
+		this.dependency = dependency;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

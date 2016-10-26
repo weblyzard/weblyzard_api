@@ -47,7 +47,7 @@ public class Document implements Serializable {
 	@JsonDeserialize	(keyUsing = DocHeaderMapJsonDS.class)
 	@JsonSerialize		(keyUsing = DocHeaderMapJsonSE.class)
 	@XmlAnyAttribute
-	public Map<QName, String> header = new HashMap<>();
+	private Map<QName, String> header = new HashMap<>();
 
 	@XmlElement(name="title", namespace=Document.NS_WEBLYZARD)
 	private String title;
@@ -66,19 +66,19 @@ public class Document implements Serializable {
 	// Elements used in the output (and input)
 	// 
 	@XmlElement(name="sentence", namespace=Document.NS_WEBLYZARD)
-	public List<Sentence> sentence;
+	private List<Sentence> sentence;
 	
 	@XmlAttribute(name="id", namespace=Document.NS_WEBLYZARD) 
-	public String id;
+	private String id;
 	
 	@XmlAttribute(name="format", namespace=Document.NS_DUBLIN_CORE)
-	public String format;
+	private String format;
 	
 	@XmlAttribute(name="xml:lang")
-	public String lang;
+	private String lang;
 	
 	@XmlAttribute(namespace=Document.NS_WEBLYZARD)
-	public String nilsimsa;
+	private String nilsimsa;
 	
 	// private field that contains all annotations after the
 	// documents finalization
@@ -86,9 +86,8 @@ public class Document implements Serializable {
 	private List<Annotation> annotation;
 
 
-	// required by JAXB
-	public Document() {
-	}
+	// empty constructor required by JAXB
+	public Document() {}
 	
 	public Document(String body) {
 		this.title = ""; 
@@ -101,22 +100,31 @@ public class Document implements Serializable {
 		this.header = header;
 	}
 	
-	public void setBody(String body) {
-		this.body = body;
+	/** getter / setter **/
+
+	public Map<QName, String> getHeader() {
+		return header;
 	}
-	
+
+	public void setHeader(Map<QName, String> header) {
+		this.header = header;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public String getBody() {
-		return this.body;
+		return body;
 	}
-	
-	public String getTitle() {
-		return this.title;
+
+	public void setBody(String body) {
+		this.body = body;
 	}
-	
 
 	public List<Annotation> getBody_annotation() {
 		return body_annotation != null ? body_annotation : Collections.<Annotation>emptyList(); 
@@ -132,6 +140,54 @@ public class Document implements Serializable {
 
 	public void setTitle_annotation(List<Annotation> title_annotation) {
 		this.title_annotation = title_annotation;
+	}
+
+	public List<Sentence> getSentence() {
+		return sentence;
+	}
+
+	public void setSentence(List<Sentence> sentence) {
+		this.sentence = sentence;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public String getNilsimsa() {
+		return nilsimsa;
+	}
+
+	public void setNilsimsa(String nilsimsa) {
+		this.nilsimsa = nilsimsa;
+	}
+
+	public List<Annotation> getAnnotation() {
+		return annotation;
+	}
+
+	public void setAnnotation(List<Annotation> annotation) {
+		this.annotation = annotation;
 	}
 
 	/**
@@ -152,10 +208,6 @@ public class Document implements Serializable {
 		
 		title_annotation = null;
 		body_annotation = null;
-	}
-	
-	public List<Annotation> getAnnotations() {
-		return annotation;
 	}
 	
 	/**

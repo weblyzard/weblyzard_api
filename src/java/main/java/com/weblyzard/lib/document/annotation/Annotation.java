@@ -31,38 +31,38 @@ public class Annotation implements Serializable {
 	 * The custom Serializer {@link AnnotationSerializer} writes the keys of this map 
 	 * as fields to the json annotation objects 
 	 */
-	public Map<String, List<String>> header = new HashMap<>(); 
+	private Map<String, List<String>> header = new HashMap<>(); 
      
     /** 
      * unique identifier of the annotation 
      */ 
     @XmlAttribute(name="key", namespace=Document.NS_WEBLYZARD) 
-    public String key;  
+    private String key;  
  
     @XmlAttribute(name="surfaceForm", namespace=Document.NS_WEBLYZARD) 
-    public String surfaceForm;     
+    private String surfaceForm;     
  
     @XmlAttribute(name="preferredName", namespace=Document.NS_WEBLYZARD) 
-    public String preferredName;   
+    private String preferredName;   
     
     @XmlAttribute(name="start", namespace=Document.NS_WEBLYZARD) 
-    public int start;  
+    private int start;  
      
     @XmlAttribute(name="end", namespace=Document.NS_WEBLYZARD) 
-    public int end; 
+    private int end; 
     
     @XmlAttribute(name="pos", namespace=Document.NS_WEBLYZARD) 
-    public String pos; 
+    private String pos; 
     
     @XmlAttribute(name="sentence", namespace=Document.NS_WEBLYZARD) 
-    public int sentence; 
+    private int sentence; 
  
     @XmlAttribute(name="md5sum", namespace=Document.NS_WEBLYZARD) 
     @XmlJavaTypeAdapter(MD5Digest.class) 
-    public MD5Digest md5sum; 
+    private MD5Digest md5sum; 
      
     @XmlAttribute(name="annotationType", namespace=Document.NS_WEBLYZARD) 
-    public String annotationType;     
+    private String annotationType;     
      
     // required for JAXB 
     public Annotation() {} 
@@ -87,6 +87,88 @@ public class Annotation implements Serializable {
     @Override 
     public String toString() { 
         return "key: "+key+" surfaceForm: "+surfaceForm+" start: "+start+" end: "+end+" md5: "+md5sum; 
-    } 
+    }
+
+	public Map<String, List<String>> getHeader() {
+		return header;
+	}
+
+	public void setHeader(Map<String, List<String>> header) {
+		this.header = header;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getSurfaceForm() {
+		return surfaceForm;
+	}
+
+	public void setSurfaceForm(String surfaceForm) {
+		this.surfaceForm = surfaceForm;
+	}
+
+	public String getPreferredName() {
+		return preferredName;
+	}
+
+	public void setPreferredName(String preferredName) {
+		this.preferredName = preferredName;
+	}
+
+	public int getStart() {
+		return start;
+	}
+
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	public int getEnd() {
+		return end;
+	}
+
+	public void setEnd(int end) {
+		this.end = end;
+	}
+
+	public String getPos() {
+		return pos;
+	}
+
+	public void setPos(String pos) {
+		this.pos = pos;
+	}
+
+	public int getSentence() {
+		return sentence;
+	}
+
+	public void setSentence(int sentence) {
+		this.sentence = sentence;
+	}
+
+	public MD5Digest getMd5sum() {
+		return md5sum;
+	}
+
+	public void setMd5sum(MD5Digest md5sum) {
+		this.md5sum = md5sum;
+	}
+
+	public String getAnnotationType() {
+		return annotationType;
+	}
+
+	public void setAnnotationType(String annotationType) {
+		this.annotationType = annotationType;
+	} 
+    
+    
      
 }
