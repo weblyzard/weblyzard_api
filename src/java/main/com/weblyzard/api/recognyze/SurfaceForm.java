@@ -1,4 +1,4 @@
-package com.weblyzard.api.recognize;
+package com.weblyzard.api.recognyze;
 
 public class SurfaceForm {
 
