@@ -1,13 +1,5 @@
 package com.weblyzard.api.document;
 
-/**************************************************************************
- * 
- * webLyzard Sentence class 
- * @author: Albert Weichselbraun <weichselbraun@weblyzard.com>
- * 
- **************************************************************************/
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +20,12 @@ import com.google.common.base.Splitter;
 import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 
+/**
+ * 
+ * webLyzard Sentence class 
+ * @author: Albert Weichselbraun <weichselbraun@weblyzard.com>
+ * 
+ **/
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Sentence implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -54,7 +52,7 @@ public class Sentence implements Serializable {
 	private String token;
 	
 	@XmlAttribute(name="is_title", namespace=Document.NS_WEBLYZARD)
-	@XmlJavaTypeAdapter(BooleanAdapter.class)
+	// @XmlJavaTypeAdapter(BooleanAdapter.class)
 	private boolean is_title;
 
 	@XmlValue 
@@ -159,7 +157,7 @@ public class Sentence implements Serializable {
 	public boolean isIs_title() {
 		return is_title;
 	}
-
+	
 	public void setIs_title(boolean is_title) {
 		this.is_title = is_title;
 	}

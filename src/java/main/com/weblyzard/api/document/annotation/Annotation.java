@@ -1,6 +1,7 @@
 package com.weblyzard.api.document.annotation; 
  
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class Annotation implements Serializable {
 	 * The custom Serializer {@link AnnotationSerializer} writes the keys of this map 
 	 * as fields to the json annotation objects 
 	 */
-	private Map<String, List<String>> header = new HashMap<>(); 
+	public Map<String, List<String>> header = new HashMap<>(); 
      
     /** 
      * unique identifier of the annotation 
@@ -63,7 +64,7 @@ public class Annotation implements Serializable {
     @XmlJavaTypeAdapter(MD5Digest.class) 
     private MD5Digest md5sum; 
      
-    @XmlAttribute(name="annotationType", namespace=Document.NS_WEBLYZARD) 
+    @XmlAttribute(name="annotationType", namespace=Document.NS_WEBLYZARD, required=false) 
     private String annotationType;     
      
     // required for JAXB 
