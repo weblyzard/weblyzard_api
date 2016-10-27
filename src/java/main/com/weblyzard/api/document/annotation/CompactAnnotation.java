@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.annotation;
+package com.weblyzard.api.document.annotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 /**
  * Compact form of an annotation

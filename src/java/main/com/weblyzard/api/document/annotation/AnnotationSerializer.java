@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.serialize.json;
+package com.weblyzard.api.document.annotation;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.weblyzard.lib.document.annotation.Annotation;
 
 
 /**

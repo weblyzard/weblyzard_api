@@ -1,4 +1,4 @@
-package com.weblyzard.lib.rest;
+package com.weblyzard.api.rest;
 
 
 import javax.ws.rs.WebApplicationException;

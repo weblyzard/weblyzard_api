@@ -1,4 +1,4 @@
-package com.weblyzard.lib.logger;
+package com.weblyzard.api.logger;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document;
+package com.weblyzard.api.document;
 
 import java.io.Serializable;
 import java.io.StringReader;
@@ -25,9 +25,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Joiner;
-import com.weblyzard.lib.document.annotation.Annotation;
-import com.weblyzard.lib.document.serialize.json.DocumentHeaderDeserializer;
-import com.weblyzard.lib.document.serialize.json.DocumentHeaderSerializer;
+import com.weblyzard.api.document.annotation.Annotation;
+import com.weblyzard.api.document.serialize.json.DocumentHeaderDeserializer;
+import com.weblyzard.api.document.serialize.json.DocumentHeaderSerializer;
 import com.weblyzard.lib.string.nilsimsa.Nilsimsa;
 
 @XmlRootElement(name="page", namespace=Document.NS_WEBLYZARD)

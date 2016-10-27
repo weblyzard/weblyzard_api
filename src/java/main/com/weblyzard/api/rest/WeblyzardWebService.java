@@ -1,4 +1,4 @@
-package com.weblyzard.lib.rest;
+package com.weblyzard.api.rest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.weblyzard.lib.logger.DictionaryLogHandler;
+import com.weblyzard.api.logger.DictionaryLogHandler;
 
 
 /**

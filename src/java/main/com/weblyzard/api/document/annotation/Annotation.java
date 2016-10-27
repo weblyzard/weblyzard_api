@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.annotation; 
+package com.weblyzard.api.document.annotation; 
  
 import java.io.Serializable;
 import java.util.HashMap;
@@ -13,8 +13,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import com.weblyzard.api.datatype.MD5Digest;
-import com.weblyzard.lib.document.Document;
-import com.weblyzard.lib.document.serialize.json.AnnotationSerializer;
+import com.weblyzard.api.document.Document;
+import com.weblyzard.api.document.serialize.json.AnnotationSerializer;
  
 /** 
  *  

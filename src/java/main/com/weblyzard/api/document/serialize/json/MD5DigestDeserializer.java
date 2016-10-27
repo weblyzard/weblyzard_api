@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.serialize.json;
+package com.weblyzard.api.document.serialize.json;
 
 import java.io.IOException;
 

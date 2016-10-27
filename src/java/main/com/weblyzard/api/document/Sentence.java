@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document;
+package com.weblyzard.api.document;
 
 /**************************************************************************
  * 
@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Splitter;
 import com.weblyzard.api.datatype.MD5Digest;
-import com.weblyzard.lib.document.serialize.xml.BooleanAdapter;
+import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Sentence implements Serializable {

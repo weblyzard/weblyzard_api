@@ -10,8 +10,8 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.primitives.Longs;
-import com.weblyzard.lib.document.serialize.json.MD5DigestDeserializer;
-import com.weblyzard.lib.document.serialize.json.MD5DigestSerializer;
+import com.weblyzard.api.document.serialize.json.MD5DigestDeserializer;
+import com.weblyzard.api.document.serialize.json.MD5DigestSerializer;
 
 /**
  * A performance and memory optimized representation of MD5Digests.

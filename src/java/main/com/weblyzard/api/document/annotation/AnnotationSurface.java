@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.annotation;
+package com.weblyzard.api.document.annotation;
 
 
 /**
