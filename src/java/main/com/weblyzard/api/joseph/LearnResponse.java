@@ -1,4 +1,4 @@
-package com.weblyzard.api.domain.joseph;
+package com.weblyzard.api.joseph;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

@@ -6,7 +6,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.weblyzard.api.document.Document;
-import com.weblyzard.api.domain.weblyzard.XmlDocument;
+import com.weblyzard.api.document.XmlDocument;
 
 /**
  * 

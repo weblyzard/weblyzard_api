@@ -1,4 +1,4 @@
-package com.weblyzard.api.domain.recognize;
+package com.weblyzard.api.recognyze;
 
 import java.util.Set;
 

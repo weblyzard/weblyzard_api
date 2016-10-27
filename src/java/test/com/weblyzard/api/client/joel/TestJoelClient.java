@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.weblyzard.api.client.JoelClient;
 import com.weblyzard.api.document.Document;
 
 public class TestJoelClient extends JoelTestBase {
@@ -31,12 +32,14 @@ public class TestJoelClient extends JoelTestBase {
 		logger.info(statusResponse.toString());
 	}
 	
+	/*
 	@Test
 	public void testJoelClient() {
 		Response statusResponse = joelClient.status(); 
 		assertNotNull(statusResponse);
 		logger.info(statusResponse.toString());
 	}
+	*/
 	
 	@Test
 	public void testJoelClientWithDocuments(){
