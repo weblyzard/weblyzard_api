@@ -9,8 +9,8 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.weblyzard.api.domain.recognize.RecognyzeResult;
 import com.weblyzard.api.document.Document;
+import com.weblyzard.api.domain.recognize.RecognyzeResult;
 
 public class RecognyzeClient extends BasicClient {
 
@@ -53,11 +53,14 @@ public class RecognyzeClient extends BasicClient {
 
 	public boolean loadProfile(String profileName) throws ClientErrorException {
 
-		Response response = super.target.path(ADDPROFILESERVICEURL + profileName)
-				.request(MediaType.APPLICATION_JSON_TYPE).get();
+		Response response = super.target
+				.path(ADDPROFILESERVICEURL + profileName)
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.get();
 
 		super.checkResponseStatus(response);
-		boolean result = response.readEntity(Boolean.class);
+		boolean result = response
+				.readEntity(Boolean.class);
 		response.close();
 
 		return result;
@@ -75,10 +78,12 @@ public class RecognyzeClient extends BasicClient {
 
 		Response response = super.target
 				.path(SEARCHTEXTSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.post(Entity.json(data));
 
 		super.checkResponseStatus(response);
-		Set<RecognyzeResult> result = response.readEntity(new GenericType<Set<RecognyzeResult>>() {});
+		Set<RecognyzeResult> result = response
+				.readEntity(new GenericType<Set<RecognyzeResult>>() {});
 		response.close();
 
 		return result;
@@ -98,10 +103,12 @@ public class RecognyzeClient extends BasicClient {
 
 		Response response = super.target
 				.path(SEARCHDOCUMENTSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.post(Entity.json(data));
 
 		super.checkResponseStatus(response);
-		Set<RecognyzeResult> result = response.readEntity(new GenericType<Set<RecognyzeResult>>() {});
+		Set<RecognyzeResult> result = response
+				.readEntity(new GenericType<Set<RecognyzeResult>>() {});
 		response.close();
 
 		return result;
@@ -122,10 +129,12 @@ public class RecognyzeClient extends BasicClient {
 		
 		Response response = super.target
 				.path(SEARCHDOCUMENTSSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.post(Entity.json(data));
 
 		super.checkResponseStatus(response);
-		Map<String, Set<RecognyzeResult>> result = response.readEntity(new GenericType<Map<String, Set<RecognyzeResult>>>() {});
+		Map<String, Set<RecognyzeResult>> result = response
+				.readEntity(new GenericType<Map<String, Set<RecognyzeResult>>>() {});
 		response.close();
 
 		return result;
@@ -136,10 +145,12 @@ public class RecognyzeClient extends BasicClient {
 	public Map<String, Object> status() throws ClientErrorException {
 		
 		Response response = super.target.path(STATUSSERVICEURL)
-				.request(MediaType.APPLICATION_JSON_TYPE).get();
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.get();
 
 		super.checkResponseStatus(response);
-		Map<String, Object> result = response.readEntity(new GenericType<Map<String, Object>>() {});
+		Map<String, Object> result = response
+				.readEntity(new GenericType<Map<String, Object>>() {});
 		response.close();
 
 		return result;

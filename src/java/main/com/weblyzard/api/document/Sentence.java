@@ -156,8 +156,9 @@ public class Sentence implements Serializable {
 		return is_title;
 	}
 	
-	public void setIs_title(boolean is_title) {
-		this.is_title = is_title;
+	public void setIs_title(boolean b) {
+		this.is_title = b; 
+		
 	}
 
 	public double getSem_orient() {
@@ -187,4 +188,6 @@ public class Sentence implements Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+
 }
