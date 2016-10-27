@@ -38,11 +38,12 @@ public class CompactAnnotation extends Annotation {
 			addSurface(new AnnotationSurface(getEnd(), getStart(), annotation.getSentence(), getSurfaceForm()));
 	}
 	
-	public void addSurface(AnnotationSurface entitiy) {
+	public CompactAnnotation addSurface(AnnotationSurface entitiy) {
 		if (this.entities == null)
 			entities = new ArrayList<>();
 		if (!this.entities.contains(entitiy))
 			this.entities.add(entitiy);
+		return this;
 	}
 
 	public List<AnnotationSurface> getEntities() {

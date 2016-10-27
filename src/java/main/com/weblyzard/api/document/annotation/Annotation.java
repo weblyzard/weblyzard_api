@@ -94,80 +94,90 @@ public class Annotation implements Serializable {
 		return header;
 	}
 
-	public void setHeader(Map<String, List<String>> header) {
+	public Annotation setHeader(Map<String, List<String>> header) {
 		this.header = header;
+		return this;
 	}
 
 	public String getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public Annotation setKey(String key) {
 		this.key = key;
+		return this;
 	}
 
 	public String getSurfaceForm() {
 		return surfaceForm;
 	}
 
-	public void setSurfaceForm(String surfaceForm) {
+	public Annotation setSurfaceForm(String surfaceForm) {
 		this.surfaceForm = surfaceForm;
+		return this;
 	}
 
 	public String getPreferredName() {
 		return preferredName;
 	}
 
-	public void setPreferredName(String preferredName) {
+	public Annotation setPreferredName(String preferredName) {
 		this.preferredName = preferredName;
+		return this;
 	}
 
 	public int getStart() {
 		return start;
 	}
 
-	public void setStart(int start) {
+	public Annotation setStart(int start) {
 		this.start = start;
+		return this;
 	}
 
 	public int getEnd() {
 		return end;
 	}
 
-	public void setEnd(int end) {
+	public Annotation setEnd(int end) {
 		this.end = end;
+		return this;
 	}
 
 	public String getPos() {
 		return pos;
 	}
 
-	public void setPos(String pos) {
+	public Annotation setPos(String pos) {
 		this.pos = pos;
+		return this;
 	}
 
 	public int getSentence() {
 		return sentence;
 	}
 
-	public void setSentence(int sentence) {
+	public Annotation setSentence(int sentence) {
 		this.sentence = sentence;
+		return this;
 	}
 
 	public MD5Digest getMd5sum() {
 		return md5sum;
 	}
 
-	public void setMd5sum(MD5Digest md5sum) {
+	public Annotation setMd5sum(MD5Digest md5sum) {
 		this.md5sum = md5sum;
+		return this;
 	}
 
 	public String getAnnotationType() {
 		return annotationType;
 	}
 
-	public void setAnnotationType(String annotationType) {
+	public Annotation setAnnotationType(String annotationType) {
 		this.annotationType = annotationType;
+		return this;
 	} 
     
     
