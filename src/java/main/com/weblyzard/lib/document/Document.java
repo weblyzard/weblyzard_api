@@ -106,88 +106,99 @@ public class Document implements Serializable {
 		return header;
 	}
 
-	public void setHeader(Map<QName, String> header) {
+	public Document setHeader(Map<QName, String> header) {
 		this.header = header;
+		return this;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public Document setTitle(String title) {
 		this.title = title;
+		return this;
 	}
 
 	public String getBody() {
 		return body;
 	}
 
-	public void setBody(String body) {
+	public Document setBody(String body) {
 		this.body = body;
+		return this;
 	}
 
 	public List<Annotation> getBody_annotation() {
 		return body_annotation != null ? body_annotation : Collections.<Annotation>emptyList(); 
 	}
 
-	public void setBody_annotation(List<Annotation> body_annotation) {
+	public Document setBody_annotation(List<Annotation> body_annotation) {
 		this.body_annotation = body_annotation;
+		return this;
 	}
 
 	public List<Annotation> getTitle_annotation() {
 		return title_annotation != null ? title_annotation : Collections.<Annotation>emptyList();
 	}
 
-	public void setTitle_annotation(List<Annotation> title_annotation) {
+	public Document setTitle_annotation(List<Annotation> title_annotation) {
 		this.title_annotation = title_annotation;
+		return this;
 	}
 
 	public List<Sentence> getSentence() {
 		return sentence;
 	}
 
-	public void setSentence(List<Sentence> sentence) {
+	public Document setSentence(List<Sentence> sentence) {
 		this.sentence = sentence;
+		return this;
 	}
 
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public Document setId(String id) {
 		this.id = id;
+		return this;
 	}
 
 	public String getFormat() {
 		return format;
 	}
 
-	public void setFormat(String format) {
+	public Document setFormat(String format) {
 		this.format = format;
+		return this;
 	}
 
 	public String getLang() {
 		return lang;
 	}
 
-	public void setLang(String lang) {
+	public Document setLang(String lang) {
 		this.lang = lang;
+		return this;
 	}
 
 	public String getNilsimsa() {
 		return nilsimsa;
 	}
 
-	public void setNilsimsa(String nilsimsa) {
+	public Document setNilsimsa(String nilsimsa) {
 		this.nilsimsa = nilsimsa;
+		return this;
 	}
 
 	public List<Annotation> getAnnotation() {
 		return annotation;
 	}
 
-	public void setAnnotation(List<Annotation> annotation) {
+	public Document setAnnotation(List<Annotation> annotation) {
 		this.annotation = annotation;
+		return this;
 	}
 
 	/**
