@@ -13,12 +13,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Splitter;
 import com.weblyzard.api.datatype.MD5Digest;
-import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 
 /**
  * 

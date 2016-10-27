@@ -1,5 +1,5 @@
 /**
- * The {@link com.weblyzard.lib.document.Document} and {@link com.weblyzard.lib.document.Sentence} 
+ * The {@link com.weblyzard.api.document.Document} and {@link com.weblyzard.api.document.Sentence} 
  * classes used for the webLyzardXML format.
  */
 
@@ -10,8 +10,8 @@
 	           @XmlNs(prefix="dc", namespaceURI=Document.NS_DUBLIN_CORE)}
 	)
 package com.weblyzard.api.document;
+
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
-import com.weblyzard.api.document.Document;
 
