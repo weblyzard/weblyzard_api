@@ -82,7 +82,7 @@ public class LearnRequest {
 
 	public Document getDocument() throws JAXBException {
 		if (this.document == null && this.xml_document.length() > 0)
-			this.document = new Document().unmarshal(xml_document);
+			this.document = Document.unmarshallDocumentXMLString(xml_document);
 		return document;
 	}
 

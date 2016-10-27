@@ -5,6 +5,9 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 
+import com.weblyzard.lib.document.Document;
+import com.weblyzard.lib.document.annotation.Annotation;
+
 /**
  * Data format used to return to the Web service client
  * 
@@ -29,9 +32,9 @@ public class XmlDocument {
 
 
 	public XmlDocument(Document document, List<Annotation> annotation) throws JAXBException {
-		content_id = document.id;
-		nilsimsa = document.nilsimsa;
+		content_id = document.getId();
+		nilsimsa = document.getNilsimsa();
 		this.annotation = annotation;
-		xml_content = document.marshal();
+		xml_content = Document.getXmlRepresentation(document);
 	}
 }

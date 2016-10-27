@@ -86,7 +86,7 @@ public class RecognyzeClient extends BasicClient {
 
 
 
-	public Set<RecognyzeResult> call_searchDocument(String profileName, Document data) throws ClientErrorException {
+	public Set<RecognyzeResult> searchDocument(String profileName, Document data) throws ClientErrorException {
 
 		return this.searchDocument(profileName, data, 0);
 	}
