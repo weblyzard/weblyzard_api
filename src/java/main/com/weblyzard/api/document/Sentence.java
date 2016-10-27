@@ -152,7 +152,7 @@ public class Sentence implements Serializable {
 		this.id = id;
 	}
 
-	public boolean isIs_title() {
+	public boolean is_title() {
 		return is_title;
 	}
 	

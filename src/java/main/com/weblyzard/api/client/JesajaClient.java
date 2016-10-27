@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonObject;
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 public class JesajaClient extends BasicClient {
 

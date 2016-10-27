@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 public class TestJoelClient extends JoelTestBase {
 	

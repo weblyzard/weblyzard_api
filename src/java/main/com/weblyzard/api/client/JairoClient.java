@@ -8,7 +8,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.weblyzard.lib.document.annotation.Annotation;
+import com.weblyzard.api.document.annotation.Annotation;
 
 public class JairoClient extends BasicClient
 
