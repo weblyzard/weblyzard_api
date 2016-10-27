@@ -1,4 +1,4 @@
-package com.weblyzard.api;
+package com.weblyzard.api.client.legacy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.http.auth.AuthenticationException;
 
+import com.weblyzard.api.client.BasicClient;
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.api.domain.weblyzard.XmlDocument;
 import com.weblyzard.util.GSONHelper;
@@ -17,14 +18,14 @@ import com.weblyzard.util.http.HTTPPOST;
  * @author philipp.kuntschik@htwchur.ch
  *
  */
-public class JeremiaConnector extends BasicConnector {
+public class JeremiaConnector extends BasicClient {
 
 	private static final String SUBMITDOCUMENTSERVICEURL = "/jeremia/rest/submit_document";
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JeremiaConnector() {
 		super();
@@ -33,7 +34,7 @@ public class JeremiaConnector extends BasicConnector {
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JeremiaConnector(String weblyzard_url) {
 		super(weblyzard_url);
@@ -42,7 +43,7 @@ public class JeremiaConnector extends BasicConnector {
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JeremiaConnector(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);

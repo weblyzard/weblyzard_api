@@ -1,4 +1,4 @@
-package com.weblyzard.api;
+package com.weblyzard.api.client.legacy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +8,12 @@ import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 
 import com.google.gson.reflect.TypeToken;
+import com.weblyzard.api.client.BasicClient;
 import com.weblyzard.api.domain.weblyzard.Annotation;
 import com.weblyzard.util.GSONHelper;
 import com.weblyzard.util.http.HTTPPOST;
 
-public class JairoConnector extends BasicConnector
+public class JairoConnector extends BasicClient
 
 {
 
@@ -21,7 +22,7 @@ public class JairoConnector extends BasicConnector
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JairoConnector() {
 		super();
@@ -30,7 +31,7 @@ public class JairoConnector extends BasicConnector
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JairoConnector(String weblyzard_url) {
 		super(weblyzard_url);
@@ -39,7 +40,7 @@ public class JairoConnector extends BasicConnector
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JairoConnector(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);

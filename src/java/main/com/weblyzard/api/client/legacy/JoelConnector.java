@@ -1,4 +1,4 @@
-package com.weblyzard.api;
+package com.weblyzard.api.client.legacy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import org.apache.http.auth.AuthenticationException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
+import com.weblyzard.api.client.BasicClient;
 import com.weblyzard.api.domain.weblyzard.Document;
 import com.weblyzard.util.GSONHelper;
 import com.weblyzard.util.http.HTTPGET;
@@ -22,7 +23,7 @@ import com.weblyzard.util.http.HTTPPOST;
  * @author philipp.kuntschik@htwchur.ch
  *
  */
-public class JoelConnector extends BasicConnector {
+public class JoelConnector extends BasicClient {
 
 	private static final String ADDDOCUMENTSSERVICEURL = "/joel/rest/addDocuments";
 	private static final String CLUSTERDOCUMENTSERVICEURL = "/joel/rest/cluster";
@@ -31,7 +32,7 @@ public class JoelConnector extends BasicConnector {
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JoelConnector() {
 		super();
@@ -40,7 +41,7 @@ public class JoelConnector extends BasicConnector {
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JoelConnector(String weblyzard_url) {
 		super(weblyzard_url);
@@ -49,7 +50,7 @@ public class JoelConnector extends BasicConnector {
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
 	public JoelConnector(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);

@@ -1,4 +1,4 @@
-package com.weblyzard.api;
+package com.weblyzard.api.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import com.weblyzard.util.GSONHelper;
 import com.weblyzard.util.http.HTTPGET;
 import com.weblyzard.util.http.HTTPPOST;
 
-public class RecognyzeConnector extends BasicConnector {
+public class RecognyzeClient extends BasicClient {
 
 	private static final String ADDPROFILESERVICEURL = "/Recognize/rest/load_profile/";
 	private static final String SEARCHTEXTSERVICEURL = "/Recognize/rest/searchText";
@@ -30,27 +30,27 @@ public class RecognyzeConnector extends BasicConnector {
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public RecognyzeConnector() {
+	public RecognyzeClient() {
 		super();
 	}
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public RecognyzeConnector(String weblyzard_url) {
+	public RecognyzeClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public RecognyzeConnector(String weblyzard_url, String username, String password) {
+	public RecognyzeClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
 

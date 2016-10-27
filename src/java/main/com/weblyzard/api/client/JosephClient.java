@@ -1,4 +1,4 @@
-package com.weblyzard.api;
+package com.weblyzard.api.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import com.weblyzard.api.domain.joseph.LearnResponse;
 import com.weblyzard.util.GSONHelper;
 import com.weblyzard.util.http.HTTPPOST;
 
-public class JosephConnector extends BasicConnector {
+public class JosephClient extends BasicClient {
 
 	private static final String CLASSIFYSERVICEURL = "/joseph/rest/1/classify/";
 	private static final String CLASSIFYEXTENDEDSERVICEURL = "/joseph/rest/enhancedClassify/";
@@ -21,27 +21,27 @@ public class JosephConnector extends BasicConnector {
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public JosephConnector() {
+	public JosephClient() {
 		super();
 	}
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public JosephConnector(String weblyzard_url) {
+	public JosephClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public JosephConnector(String weblyzard_url, String username, String password) {
+	public JosephClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
 

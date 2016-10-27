@@ -1,6 +1,6 @@
-package com.weblyzard.api;
+package com.weblyzard.api.client;
 
-public abstract class BasicConnector {
+public abstract class BasicClient {
 
 	protected final String weblyzard_url;
 	protected final String username;
@@ -19,7 +19,7 @@ public abstract class BasicConnector {
 	/**
 	 * Constructor using environment variables.
 	 */
-	public BasicConnector() {
+	public BasicClient() {
 		this(System.getenv(ENV_WEBLYZARD_API_URL));
 	}
 
@@ -31,7 +31,7 @@ public abstract class BasicConnector {
 	 * @param weblyzard_url
 	 *            the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
 	 */
-	public BasicConnector(String weblyzard_url) {
+	public BasicClient(String weblyzard_url) {
 		this(weblyzard_url, System.getenv(ENV_WEBLYZARD_API_USER), System.getenv(ENV_WEBLYZARD_API_PASS));
 	}
 
@@ -47,7 +47,7 @@ public abstract class BasicConnector {
 	 * @param password
 	 *            may be null
 	 */
-	public BasicConnector(String weblyzard_url, String username, String password) {
+	public BasicClient(String weblyzard_url, String username, String password) {
 
 		if (weblyzard_url == null)
 			this.weblyzard_url = FALLBACK_WEBLYZARD_API_URL;

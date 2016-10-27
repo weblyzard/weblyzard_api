@@ -1,4 +1,4 @@
-package com.weblyzard.api;
+package com.weblyzard.api.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,34 +16,34 @@ import com.weblyzard.util.http.HTTPPOST;
  * @author philipp.kuntschik@htwchur.ch
  *
  */
-public class DocumentApiConnector extends BasicConnector {
+public class DocumentApiClient extends BasicClient {
 
 	private static final String WEBLYZARDDOCUMENTAPIURL = "";
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public DocumentApiConnector() {
+	public DocumentApiClient() {
 		super();
 	}
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public DocumentApiConnector(String weblyzard_url) {
+	public DocumentApiClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
 
 
 	/**
-	 * @see BasicConnector
+	 * @see BasicClient
 	 */
-	public DocumentApiConnector(String weblyzard_url, String username, String password) {
+	public DocumentApiClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
 
