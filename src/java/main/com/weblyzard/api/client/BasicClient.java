@@ -1,18 +1,19 @@
 package com.weblyzard.api.client;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+
 public abstract class BasicClient {
-
-	protected final String weblyzard_url;
-	protected final String username;
-	protected final String password;
-
-	protected static final String APPLICATIONXML = "application/xml;charset=UTF-8";
-	protected static final String APPLICATIONJSON = "application/json;charset=UTF-8";
 
 	private static final String ENV_WEBLYZARD_API_URL = "WEBLYZARD_API_URL";
 	private static final String ENV_WEBLYZARD_API_USER = "WEBLYZARD_API_USER";
 	private static final String ENV_WEBLYZARD_API_PASS = "WEBLYZARD_API_PASS";
 	private static final String FALLBACK_WEBLYZARD_API_URL = "http://localhost:8080";
+
+	protected WebTarget target;
 
 
 
@@ -26,7 +27,7 @@ public abstract class BasicClient {
 
 
 	/**
-	 * Constructor using environment variables with a custom url. * @param
+	 * Constructor using environment variables with a custom url.
 	 * 
 	 * @param weblyzard_url
 	 *            the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
@@ -49,12 +50,15 @@ public abstract class BasicClient {
 	 */
 	public BasicClient(String weblyzard_url, String username, String password) {
 
-		if (weblyzard_url == null)
-			this.weblyzard_url = FALLBACK_WEBLYZARD_API_URL;
-		else
-			this.weblyzard_url = weblyzard_url;
+		ClientConfig config = new ClientConfig();
+		if (username != null && password != null)
+			config.register(HttpAuthenticationFeature.basicBuilder()
+						.nonPreemptive()
+						.credentials(username, password)
+						.build());
 
-		this.username = username;
-		this.password = password;
+		this.target = ClientBuilder.newClient(config)
+				.target(weblyzard_url == null ? 
+						FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
 	}
 }
