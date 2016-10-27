@@ -1,7 +1,15 @@
 package com.weblyzard.api.client;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import javax.xml.ws.http.HTTPException;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -52,13 +60,29 @@ public abstract class BasicClient {
 
 		ClientConfig config = new ClientConfig();
 		if (username != null && password != null)
-			config.register(HttpAuthenticationFeature.basicBuilder()
-						.nonPreemptive()
-						.credentials(username, password)
-						.build());
+			config.register(
+					HttpAuthenticationFeature.basicBuilder().nonPreemptive().credentials(username, password).build());
 
 		this.target = ClientBuilder.newClient(config)
-				.target(weblyzard_url == null ? 
-						FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
+				.target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
+	}
+
+
+
+	public void checkResponseStatus(Response response) throws ClientErrorException {
+		switch (response.getStatus()) {
+		case 200:
+			return;
+		case 400:
+			throw new BadRequestException(response);
+		case 401:
+			throw new NotAuthorizedException(response);
+		case 404:
+			throw new NotFoundException(response);
+		case 500:
+			throw new InternalServerErrorException(response);
+		default:
+			throw new HTTPException(-999);
+		}
 	}
 }

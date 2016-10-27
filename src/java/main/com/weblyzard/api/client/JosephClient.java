@@ -48,7 +48,8 @@ public class JosephClient extends BasicClient {
 
 		Response response = super.target.path(CLASSIFYSERVICEURL + profileName).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(request));
-
+		
+		super.checkResponseStatus(response);
 		ClassifyResponse[] result = response.readEntity(ClassifyResponse[].class);
 		response.close();
 
@@ -61,7 +62,8 @@ public class JosephClient extends BasicClient {
 
 		Response response = super.target.path(CLASSIFYEXTENDEDSERVICEURL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
-
+		
+		super.checkResponseStatus(response);
 		ClassifyResponse[] result = response.readEntity(ClassifyResponse[].class);
 		response.close();
 
@@ -75,7 +77,8 @@ public class JosephClient extends BasicClient {
 
 		Response response = super.target.path(LEARNSERVICEURL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
-
+		
+		super.checkResponseStatus(response);
 		LearnResponse result = response.readEntity(LearnResponse.class);
 		response.close();
 
