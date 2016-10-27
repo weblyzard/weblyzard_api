@@ -6,7 +6,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.weblyzard.api.domain.weblyzard.Document;
+import com.weblyzard.lib.document.Document;
 
 /**
  * Domain Transfer Object defining the interface for other services to use this

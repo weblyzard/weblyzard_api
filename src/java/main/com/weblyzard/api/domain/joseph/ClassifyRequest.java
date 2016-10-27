@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.weblyzard.api.domain.weblyzard.Document;
+import com.weblyzard.lib.document.Document;
 
 /**
  * Domain Transfer Object defining the interface for other services to use this

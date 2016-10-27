@@ -1,14 +1,10 @@
 package com.weblyzard.api.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.http.auth.AuthenticationException;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 import com.weblyzard.api.domain.document_api.Request;
 import com.weblyzard.api.domain.document_api.Response;
-import com.weblyzard.util.GSONHelper;
-import com.weblyzard.util.http.HTTPPOST;
 
 /**
  * TODO: untested!
@@ -49,13 +45,15 @@ public class DocumentApiClient extends BasicClient {
 
 
 
-	public Response callInsertNewDocument(Request request) throws IOException, AuthenticationException {
+	public Response callInsertNewDocument(Request request) {
 
-		String url = super.weblyzard_url + WEBLYZARDDOCUMENTAPIURL;
+		javax.ws.rs.core.Response response = super.target.path(WEBLYZARDDOCUMENTAPIURL)
+				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 
-		InputStream responseStream = HTTPPOST.requestJSON(url, GSONHelper.parseObject(request, Request.class),
-				super.username, super.password, APPLICATIONJSON);
+		super.checkResponseStatus(response);
+		Response result = response.readEntity(Response.class);
+		response.close();
 
-		return (Response) GSONHelper.parseInputStream(responseStream, Response.class);
+		return result;
 	}
 }
