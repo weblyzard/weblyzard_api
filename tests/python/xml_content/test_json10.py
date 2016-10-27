@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 import pytest
+import unittest
 
 from weblyzard_api.xml_content.parsers.json_10 import (JSON10ParserSentence,
                                                        MalformedJSONException, 
@@ -11,7 +12,7 @@ from weblyzard_api.xml_content.parsers.json_10 import (JSON10ParserSentence,
 from weblyzard_api.xml_content import Sentence, XMLContent
 
 
-class TestJSON10ParserXMLContent(object):
+class TestJSON10ParserXMLContent(unittest.TestCase):
     '''
     Tests for the JSON_10_Parser class.
     '''
@@ -163,3 +164,6 @@ class TestJSON10ParserSentence(object):
         new_sentence = JSON10ParserSentence.from_json_string(
             json.dumps(self.test_sentence_dict))
         assert new_sentence.as_dict() == self.test_sentence.as_dict()
+
+if __name__ == '__main__':
+    unittest.main()
