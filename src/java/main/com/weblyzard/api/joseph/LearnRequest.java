@@ -1,4 +1,4 @@
-package com.weblyzard.api.domain.joseph;
+package com.weblyzard.api.joseph;
 
 import java.util.Date;
 
@@ -6,7 +6,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 /**
  * Domain Transfer Object defining the interface for other services to use this

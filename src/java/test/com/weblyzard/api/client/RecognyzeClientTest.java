@@ -10,7 +10,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.weblyzard.api.document.Document;
-import com.weblyzard.api.domain.recognize.RecognyzeResult;
+import com.weblyzard.api.recognize.RecognyzeResult;
 
 public class RecognyzeClientTest {
 

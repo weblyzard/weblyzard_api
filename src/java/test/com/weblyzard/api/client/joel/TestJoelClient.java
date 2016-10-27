@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.weblyzard.api.document.Document;
+import com.weblyzard.api.joel.JoelClient;
 
 public class TestJoelClient extends JoelTestBase {
 	

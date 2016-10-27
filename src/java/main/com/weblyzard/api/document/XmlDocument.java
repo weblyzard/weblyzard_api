@@ -1,12 +1,11 @@
-package com.weblyzard.api.domain.weblyzard;
+package com.weblyzard.api.document;
 
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.weblyzard.lib.document.Document;
-import com.weblyzard.lib.document.annotation.Annotation;
+import com.weblyzard.api.document.annotation.Annotation;
 
 /**
  * Data format used to return to the Web service client

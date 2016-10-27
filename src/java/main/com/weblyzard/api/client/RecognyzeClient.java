@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.weblyzard.api.document.Document;
-import com.weblyzard.api.domain.recognize.RecognyzeResult;
+import com.weblyzard.api.recognize.RecognyzeResult;
 
 public class RecognyzeClient extends BasicClient {
 

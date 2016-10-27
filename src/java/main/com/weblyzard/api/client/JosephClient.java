@@ -5,10 +5,10 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.weblyzard.api.domain.joseph.ClassifyRequest;
-import com.weblyzard.api.domain.joseph.ClassifyResponse;
-import com.weblyzard.api.domain.joseph.LearnRequest;
-import com.weblyzard.api.domain.joseph.LearnResponse;
+import com.weblyzard.api.joseph.ClassifyRequest;
+import com.weblyzard.api.joseph.ClassifyResponse;
+import com.weblyzard.api.joseph.LearnRequest;
+import com.weblyzard.api.joseph.LearnResponse;
 
 public class JosephClient extends BasicClient {
 
