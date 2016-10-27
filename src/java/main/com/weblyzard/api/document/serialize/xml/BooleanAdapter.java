@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document;
+package com.weblyzard.api.document.serialize.xml;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 

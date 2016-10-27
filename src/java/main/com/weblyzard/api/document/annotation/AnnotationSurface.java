@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.annotation;
+package com.weblyzard.api.document.annotation;
 
 
 /**
@@ -36,36 +36,32 @@ public class AnnotationSurface {
 		return sentence;
 	}
 
-	public AnnotationSurface setSentence(int sentence) {
+	public void setSentence(int sentence) {
 		this.sentence = sentence;
-		return this;
 	}
 
 	public int getStart() {
 		return start;
 	}
 
-	public AnnotationSurface setStart(int start) {
+	public void setStart(int start) {
 		this.start = start;
-		return this;
 	}
 
 	public int getEnd() {
 		return end;
 	}
 
-	public AnnotationSurface setEnd(int end) {
+	public void setEnd(int end) {
 		this.end = end;
-		return this;
 	}
 
 	public String getSurfaceForm() {
 		return surfaceForm;
 	}
 
-	public AnnotationSurface setSurfaceForm(String surfaceForm) {
+	public void setSurfaceForm(String surfaceForm) {
 		this.surfaceForm = surfaceForm;
-		return this;
 	}
 
 }

@@ -1,20 +1,19 @@
-package com.weblyzard.lib.document.annotation; 
+package com.weblyzard.api.document.annotation; 
  
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType; 
-import javax.xml.bind.annotation.XmlAccessorType; 
-import javax.xml.bind.annotation.XmlAttribute; 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import com.weblyzard.api.datatype.MD5Digest;
-import com.weblyzard.lib.document.Document;
-import com.weblyzard.lib.document.serialize.json.AnnotationSerializer;
+import com.weblyzard.api.document.Document;
+import com.weblyzard.api.document.serialize.json.AnnotationSerializer;
  
 /** 
  *  
@@ -33,7 +32,7 @@ public class Annotation implements Serializable {
 	 * The custom Serializer {@link AnnotationSerializer} writes the keys of this map 
 	 * as fields to the json annotation objects 
 	 */
-	private Map<String, List<String>> header = new HashMap<>(); 
+	public Map<String, List<String>> header = new HashMap<>(); 
      
     /** 
      * unique identifier of the annotation 
@@ -63,7 +62,7 @@ public class Annotation implements Serializable {
     @XmlJavaTypeAdapter(MD5Digest.class) 
     private MD5Digest md5sum; 
      
-    @XmlAttribute(name="annotationType", namespace=Document.NS_WEBLYZARD) 
+    @XmlAttribute(name="annotationType", namespace=Document.NS_WEBLYZARD, required=false) 
     private String annotationType;     
      
     // required for JAXB 
@@ -95,90 +94,80 @@ public class Annotation implements Serializable {
 		return header;
 	}
 
-	public Annotation setHeader(Map<String, List<String>> header) {
+	public void setHeader(Map<String, List<String>> header) {
 		this.header = header;
-		return this;
 	}
 
 	public String getKey() {
 		return key;
 	}
 
-	public Annotation setKey(String key) {
+	public void setKey(String key) {
 		this.key = key;
-		return this;
 	}
 
 	public String getSurfaceForm() {
 		return surfaceForm;
 	}
 
-	public Annotation setSurfaceForm(String surfaceForm) {
+	public void setSurfaceForm(String surfaceForm) {
 		this.surfaceForm = surfaceForm;
-		return this;
 	}
 
 	public String getPreferredName() {
 		return preferredName;
 	}
 
-	public Annotation setPreferredName(String preferredName) {
+	public void setPreferredName(String preferredName) {
 		this.preferredName = preferredName;
-		return this;
 	}
 
 	public int getStart() {
 		return start;
 	}
 
-	public Annotation setStart(int start) {
+	public void setStart(int start) {
 		this.start = start;
-		return this;
 	}
 
 	public int getEnd() {
 		return end;
 	}
 
-	public Annotation setEnd(int end) {
+	public void setEnd(int end) {
 		this.end = end;
-		return this;
 	}
 
 	public String getPos() {
 		return pos;
 	}
 
-	public Annotation setPos(String pos) {
+	public void setPos(String pos) {
 		this.pos = pos;
-		return this;
 	}
 
 	public int getSentence() {
 		return sentence;
 	}
 
-	public Annotation setSentence(int sentence) {
+	public void setSentence(int sentence) {
 		this.sentence = sentence;
-		return this;
 	}
 
 	public MD5Digest getMd5sum() {
 		return md5sum;
 	}
 
-	public Annotation setMd5sum(MD5Digest md5sum) {
+	public void setMd5sum(MD5Digest md5sum) {
 		this.md5sum = md5sum;
-		return this;
 	}
 
 	public String getAnnotationType() {
 		return annotationType;
 	}
 
-	public Annotation setAnnotationType(String annotationType) {
+	public void setAnnotationType(String annotationType) {
 		this.annotationType = annotationType;
-		return this;
 	} 
     
     

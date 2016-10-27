@@ -1,12 +1,4 @@
-package com.weblyzard.lib.document;
-
-/**************************************************************************
- * 
- * webLyzard Sentence class 
- * @author: Albert Weichselbraun <weichselbraun@weblyzard.com>
- * 
- **************************************************************************/
-
+package com.weblyzard.api.document;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,13 +13,17 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Splitter;
 import com.weblyzard.api.datatype.MD5Digest;
-import com.weblyzard.lib.document.serialize.xml.BooleanAdapter;
 
+/**
+ * 
+ * webLyzard Sentence class 
+ * @author: Albert Weichselbraun <weichselbraun@weblyzard.com>
+ * 
+ **/
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Sentence implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -54,7 +50,7 @@ public class Sentence implements Serializable {
 	private String token;
 	
 	@XmlAttribute(name="is_title", namespace=Document.NS_WEBLYZARD)
-	@XmlJavaTypeAdapter(BooleanAdapter.class)
+	// @XmlJavaTypeAdapter(BooleanAdapter.class)
 	private boolean is_title;
 
 	@XmlValue 
@@ -94,16 +90,14 @@ public class Sentence implements Serializable {
 	}
 
 	@JsonProperty("text")
-	public Sentence setText(String text) {
+	public void setText(String text) {
 		// required to allow marshalling of the XML document (!)
 		this.text = text.replace("\"", "&quot;");
-		return this;
 	}
 	
-	public Sentence setPos(String pos) {
+	public void setPos(String pos) {
 		// required for handling double quotes in POS tags.
 		this.pos = pos.replace("\"", "&quot;");
-		return this;
 	}
 
 	public String getPos() { 
@@ -154,49 +148,43 @@ public class Sentence implements Serializable {
 		return id;
 	}
 
-	public Sentence setId(MD5Digest id) {
+	public void setId(MD5Digest id) {
 		this.id = id;
-		return this;
 	}
 
-	public boolean is_title() {
+	public boolean isIs_title() {
 		return is_title;
 	}
-
-	public Sentence setIs_title(boolean is_title) {
+	
+	public void setIs_title(boolean is_title) {
 		this.is_title = is_title;
-		return this;
 	}
 
 	public double getSem_orient() {
 		return sem_orient;
 	}
 
-	public Sentence setSem_orient(double sem_orient) {
+	public void setSem_orient(double sem_orient) {
 		this.sem_orient = sem_orient;
-		return this;
 	}
 
 	public double getSignificance() {
 		return significance;
 	}
 
-	public Sentence setSignificance(double significance) {
+	public void setSignificance(double significance) {
 		this.significance = significance;
-		return this;
 	}
 
 	public String getDependency() {
 		return dependency;
 	}
 
-	public Sentence setDependency(String dependency) {
+	public void setDependency(String dependency) {
 		this.dependency = dependency;
-		return this;
 	}
 
-	public Sentence setToken(String token) {
+	public void setToken(String token) {
 		this.token = token;
-		return this;
 	}
 }

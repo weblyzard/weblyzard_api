@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.serialize.json;
+package com.weblyzard.api.document.serialize.json;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializer;
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 /**
  * Custom Key Serializer for header field in {@link Document} model class 

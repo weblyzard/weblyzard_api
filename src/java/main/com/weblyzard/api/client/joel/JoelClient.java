@@ -8,7 +8,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 public class JoelClient {
 	

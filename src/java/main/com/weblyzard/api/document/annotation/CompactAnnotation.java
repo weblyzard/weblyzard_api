@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.annotation;
+package com.weblyzard.api.document.annotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 /**
  * Compact form of an annotation
@@ -38,12 +38,11 @@ public class CompactAnnotation extends Annotation {
 			addSurface(new AnnotationSurface(getEnd(), getStart(), annotation.getSentence(), getSurfaceForm()));
 	}
 	
-	public CompactAnnotation addSurface(AnnotationSurface entitiy) {
+	public void addSurface(AnnotationSurface entitiy) {
 		if (this.entities == null)
 			entities = new ArrayList<>();
 		if (!this.entities.contains(entitiy))
 			this.entities.add(entitiy);
-		return this;
 	}
 
 	public List<AnnotationSurface> getEntities() {

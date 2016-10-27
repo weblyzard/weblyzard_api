@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document.serialize.json;
+package com.weblyzard.api.document.serialize.json;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 /**
  * 

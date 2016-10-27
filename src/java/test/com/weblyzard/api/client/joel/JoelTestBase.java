@@ -10,7 +10,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.junit.Before;
 
-import com.weblyzard.lib.document.Document;
+import com.weblyzard.api.document.Document;
 
 import javax.json.Json; 
 import javax.json.stream.JsonParser; 

@@ -1,4 +1,4 @@
-package com.weblyzard.lib.document;
+package com.weblyzard.api.document;
 
 import java.io.Serializable;
 import java.io.StringReader;
@@ -15,6 +15,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,13 +27,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Joiner;
-import com.weblyzard.lib.document.annotation.Annotation;
-import com.weblyzard.lib.document.serialize.json.DocumentHeaderDeserializer;
-import com.weblyzard.lib.document.serialize.json.DocumentHeaderSerializer;
+import com.weblyzard.api.document.annotation.Annotation;
+import com.weblyzard.api.document.serialize.json.DocumentHeaderDeserializer;
+import com.weblyzard.api.document.serialize.json.DocumentHeaderSerializer;
 import com.weblyzard.lib.string.nilsimsa.Nilsimsa;
 
 @XmlRootElement(name="page", namespace=Document.NS_WEBLYZARD)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Document implements Serializable {
 	
 	private final static long serialVersionUID = 1L;
@@ -55,16 +58,18 @@ public class Document implements Serializable {
 	@XmlElement(name="body")
 	private String body;
 	
-	// attributes required for the annotation handling
+	/**
+	 * attributes required for the annotation handling
+	 */
 	@XmlElement(name="body_annotation", namespace=Document.NS_WEBLYZARD)
 	private List<Annotation> body_annotation;
 	
 	@XmlElement(name="title_annotation", namespace=Document.NS_WEBLYZARD)
 	private List<Annotation> title_annotation;
 	
-	//
-	// Elements used in the output (and input)
-	// 
+	/**
+	 *  Elements used in the output (and input)
+	 **/ 
 	@XmlElement(name="sentence", namespace=Document.NS_WEBLYZARD)
 	private List<Sentence> sentence;
 	
@@ -106,99 +111,88 @@ public class Document implements Serializable {
 		return header;
 	}
 
-	public Document setHeader(Map<QName, String> header) {
+	public void setHeader(Map<QName, String> header) {
 		this.header = header;
-		return this;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public Document setTitle(String title) {
+	public void setTitle(String title) {
 		this.title = title;
-		return this;
 	}
 
 	public String getBody() {
 		return body;
 	}
 
-	public Document setBody(String body) {
+	public void setBody(String body) {
 		this.body = body;
-		return this;
 	}
 
 	public List<Annotation> getBody_annotation() {
 		return body_annotation != null ? body_annotation : Collections.<Annotation>emptyList(); 
 	}
 
-	public Document setBody_annotation(List<Annotation> body_annotation) {
+	public void setBody_annotation(List<Annotation> body_annotation) {
 		this.body_annotation = body_annotation;
-		return this;
 	}
 
 	public List<Annotation> getTitle_annotation() {
 		return title_annotation != null ? title_annotation : Collections.<Annotation>emptyList();
 	}
 
-	public Document setTitle_annotation(List<Annotation> title_annotation) {
+	public void setTitle_annotation(List<Annotation> title_annotation) {
 		this.title_annotation = title_annotation;
-		return this;
 	}
 
 	public List<Sentence> getSentence() {
 		return sentence;
 	}
 
-	public Document setSentence(List<Sentence> sentence) {
+	public void setSentence(List<Sentence> sentence) {
 		this.sentence = sentence;
-		return this;
 	}
 
 	public String getId() {
 		return id;
 	}
 
-	public Document setId(String id) {
+	public void setId(String id) {
 		this.id = id;
-		return this;
 	}
 
 	public String getFormat() {
 		return format;
 	}
 
-	public Document setFormat(String format) {
+	public void setFormat(String format) {
 		this.format = format;
-		return this;
 	}
 
 	public String getLang() {
 		return lang;
 	}
 
-	public Document setLang(String lang) {
+	public void setLang(String lang) {
 		this.lang = lang;
-		return this;
 	}
 
 	public String getNilsimsa() {
 		return nilsimsa;
 	}
 
-	public Document setNilsimsa(String nilsimsa) {
+	public void setNilsimsa(String nilsimsa) {
 		this.nilsimsa = nilsimsa;
-		return this;
 	}
 
 	public List<Annotation> getAnnotation() {
 		return annotation;
 	}
 
-	public Document setAnnotation(List<Annotation> annotation) {
+	public void setAnnotation(List<Annotation> annotation) {
 		this.annotation = annotation;
-		return this;
 	}
 
 	/**
@@ -241,20 +235,20 @@ public class Document implements Serializable {
 	 * @return the XML representation of the given document
 	 */
     public static String getXmlRepresentation(Document document) {
-        StringWriter s = new StringWriter();
+        StringWriter stringWriter = new StringWriter();
         JAXBElement<Document> jaxbElement = new JAXBElement<Document>(
                 new QName(Document.NS_WEBLYZARD, "wl:page", "wl"), Document.class, document);
         try {
         	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
             Marshaller xmlMarshaller = jaxbContext.createMarshaller();
             xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            xmlMarshaller.marshal(jaxbElement, s);
+            xmlMarshaller.marshal(jaxbElement, stringWriter);
         } catch (JAXBException e) { // TODO: move the exception to the method's consumers
             logger.severe("Creation of the XML document for content_id "
                     + document.id +" failed due to a JAXB exception.");
             e.printStackTrace();
         }
-        return s.toString();
+        return stringWriter.toString();
     }
     
 	public static Document unmarshallDocumentXMLString(String xml) {
