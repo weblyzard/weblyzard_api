@@ -159,7 +159,7 @@ public class Sentence implements Serializable {
 		return this;
 	}
 
-	public boolean isIs_title() {
+	public boolean is_title() {
 		return is_title;
 	}
 
