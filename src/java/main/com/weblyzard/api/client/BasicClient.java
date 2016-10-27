@@ -2,14 +2,12 @@ package com.weblyzard.api.client;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import javax.xml.ws.http.HTTPException;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -82,7 +80,7 @@ public abstract class BasicClient {
 		case 500:
 			throw new InternalServerErrorException(response);
 		default:
-			throw new HTTPException(-999);
+			throw new ClientErrorException(response);
 		}
 	}
 }

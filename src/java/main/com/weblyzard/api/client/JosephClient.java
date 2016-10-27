@@ -1,5 +1,6 @@
 package com.weblyzard.api.client;
 
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -44,7 +45,7 @@ public class JosephClient extends BasicClient {
 
 
 
-	public ClassifyResponse[] classify(String profileName, ClassifyRequest request) {
+	public ClassifyResponse[] classify(String profileName, ClassifyRequest request) throws ClientErrorException{
 
 		Response response = super.target.path(CLASSIFYSERVICEURL + profileName).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(request));
@@ -58,7 +59,7 @@ public class JosephClient extends BasicClient {
 
 
 
-	public ClassifyResponse[] classifyExtended(String profileName, ClassifyRequest request) {
+	public ClassifyResponse[] classifyExtended(String profileName, ClassifyRequest request) throws ClientErrorException{
 
 		Response response = super.target.path(CLASSIFYEXTENDEDSERVICEURL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
@@ -72,7 +73,7 @@ public class JosephClient extends BasicClient {
 
 
 
-	public LearnResponse call_learn(String profileName, LearnRequest request) {
+	public LearnResponse learn(String profileName, LearnRequest request) throws ClientErrorException{
 		
 
 		Response response = super.target.path(LEARNSERVICEURL + profileName)

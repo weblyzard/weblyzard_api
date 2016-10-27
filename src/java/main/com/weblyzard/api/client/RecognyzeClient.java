@@ -1,21 +1,16 @@
 package com.weblyzard.api.client;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.JAXBException;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.ClientProtocolException;
-
-import com.google.gson.reflect.TypeToken;
 import com.weblyzard.api.domain.recognize.RecognyzeResult;
-import com.weblyzard.api.domain.weblyzard.Document;
-import com.weblyzard.util.GSONHelper;
-import com.weblyzard.util.http.HTTPGET;
-import com.weblyzard.util.http.HTTPPOST;
+import com.weblyzard.lib.document.Document;
 
 public class RecognyzeClient extends BasicClient {
 
@@ -24,7 +19,7 @@ public class RecognyzeClient extends BasicClient {
 	private static final String SEARCHDOCUMENTSERVICEURL = "/Recognize/rest/searchDocument";
 	private static final String SEARCHDOCUMENTSSERVICEURL = "/Recognize/rest/searchDocuments";
 	private static final String STATUSSERVICEURL = "/Recognize/rest/status";
-	private static final String PROFILENAMES = "profileName=";
+	private static final String PROFILENAME = "profileName=";
 	private static final String LIMIT = "limit=";
 
 
@@ -56,95 +51,97 @@ public class RecognyzeClient extends BasicClient {
 
 
 
-	public boolean call_loadProfile(String profileName)
-			throws AuthenticationException, ClientProtocolException, IOException {
+	public boolean loadProfile(String profileName) throws ClientErrorException {
 
-		String url = super.weblyzard_url + ADDPROFILESERVICEURL + profileName;
+		Response response = super.target.path(ADDPROFILESERVICEURL + profileName)
+				.request(MediaType.APPLICATION_JSON_TYPE).get();
 
-		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONJSON);
+		super.checkResponseStatus(response);
+		boolean result = response.readEntity(Boolean.class);
+		response.close();
 
-		return (boolean) (GSONHelper.parseInputStream(responseStream, Boolean.class));
+		return result;
 	}
 
 
 
-	public Set<RecognyzeResult> call_searchText(String profileName, String data)
-			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
-
-		return this.call_searchText(profileName, data, 0);
+	public Set<RecognyzeResult> searchText(String profileName, String data) throws ClientErrorException {
+		return this.searchText(profileName, data, 0);
 	}
 
 
 
-	public Set<RecognyzeResult> call_searchText(String profileName, String data, int limit)
-			throws AuthenticationException, ClientProtocolException, JAXBException, IOException {
+	public Set<RecognyzeResult> searchText(String profileName, String data, int limit) throws ClientErrorException {
 
-		String url = super.weblyzard_url + SEARCHTEXTSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT + limit;
+		Response response = super.target
+				.path(SEARCHTEXTSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
+				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
-		InputStream responseStream = HTTPPOST.requestJSON(url, data,
-				super.username, super.password, APPLICATIONJSON);
+		super.checkResponseStatus(response);
+		Set<RecognyzeResult> result = response.readEntity(new GenericType<Set<RecognyzeResult>>() {});
+		response.close();
 
-		return (Set<RecognyzeResult>) (GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Set<RecognyzeResult>>() {}.getType()));
+		return result;
 	}
 
 
 
-	public Set<RecognyzeResult> call_searchDocument(String profileName, Document data)
-			throws AuthenticationException, ClientProtocolException, IOException {
+	public Set<RecognyzeResult> call_searchDocument(String profileName, Document data) throws ClientErrorException {
 
-		return this.call_searchDocument(profileName, data, 0);
+		return this.searchDocument(profileName, data, 0);
 	}
 
 
 
-	public Set<RecognyzeResult> call_searchDocument(String profileName, Document data, int limit)
-			throws AuthenticationException, ClientProtocolException, IOException {
+	public Set<RecognyzeResult> searchDocument(String profileName, Document data, int limit)
+			throws ClientErrorException {
 
-		String url = super.weblyzard_url + SEARCHDOCUMENTSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT
-				+ limit;
+		Response response = super.target
+				.path(SEARCHDOCUMENTSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
+				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
-		InputStream responseStream = HTTPPOST.requestJSON(url,GSONHelper.parseObject(data, Document.class), 
-				super.username, super.password, APPLICATIONJSON);
+		super.checkResponseStatus(response);
+		Set<RecognyzeResult> result = response.readEntity(new GenericType<Set<RecognyzeResult>>() {});
+		response.close();
 
-		return (Set<RecognyzeResult>) (GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Set<RecognyzeResult>>() {}.getType()));
+		return result;
 	}
 
 
 
-	public Map<String, Set<RecognyzeResult>> call_searchDocuments(String profileName, Set<Document> data)
-			throws AuthenticationException, ClientProtocolException, IOException {
+	public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data)
+			throws ClientErrorException {
 
-		return this.call_searchDocuments(profileName, data, 0);
+		return this.searchDocuments(profileName, data, 0);
 	}
 
 
 
-	public Map<String, Set<RecognyzeResult>> call_searchDocuments(String profileName, Set<Document> data, int limit)
-			throws AuthenticationException, ClientProtocolException, IOException {
+	public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data, int limit)
+			throws ClientErrorException {
+		
+		Response response = super.target
+				.path(SEARCHDOCUMENTSSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
+				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
-		String url = super.weblyzard_url + SEARCHDOCUMENTSSERVICEURL + "?" + PROFILENAMES + profileName + "&" + LIMIT
-				+ limit;
+		super.checkResponseStatus(response);
+		Map<String, Set<RecognyzeResult>> result = response.readEntity(new GenericType<Map<String, Set<RecognyzeResult>>>() {});
+		response.close();
 
-		InputStream responseStream = HTTPPOST.requestJSON(url,
-				GSONHelper.parseObject(data, new TypeToken<Set<Document>>() {}.getType()), 
-				super.username, super.password, APPLICATIONJSON);
-
-		return (Map<String, Set<RecognyzeResult>>) (GSONHelper.parseInputStream(responseStream,
-				new TypeToken<Map<String, Set<RecognyzeResult>>>() {}.getType()));
+		return result;
 	}
 
 
 
-	public Map<String, Object> call_status() throws AuthenticationException, ClientProtocolException, IOException {
+	public Map<String, Object> status() throws ClientErrorException {
+		
+		Response response = super.target.path(STATUSSERVICEURL)
+				.request(MediaType.APPLICATION_JSON_TYPE).get();
 
-		String url = super.weblyzard_url + STATUSSERVICEURL;
+		super.checkResponseStatus(response);
+		Map<String, Object> result = response.readEntity(new GenericType<Map<String, Object>>() {});
+		response.close();
 
-		InputStream responseStream = HTTPGET.requestJSON(url, super.username, super.password, APPLICATIONXML);
-
-		return ((Map<String, Object>) GSONHelper.parseInputStream(responseStream, 
-				new TypeToken<Map<String, Object>>() {}.getType()));
+		return result;
 	}
-
 }
