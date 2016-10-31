@@ -40,6 +40,7 @@ public class ClassifyRequest {
 	 * if not set the number of results will be set to the value specified in
 	 * defaultproperties.
 	 */
+	@Deprecated
 	public int numOfResults;
 
 	/**
