@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.JsonObject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.gson.JsonObject;
 import com.weblyzard.api.document.Document;
 
 public class JesajaClient extends BasicClient {

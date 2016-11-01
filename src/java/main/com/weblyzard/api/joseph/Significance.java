@@ -1,4 +1,4 @@
-package com.weblyzard.api.domain.joseph;
+package com.weblyzard.api.joseph;
 
 /**
  * Simple Wrapper Class containing one feature and the calculated significance

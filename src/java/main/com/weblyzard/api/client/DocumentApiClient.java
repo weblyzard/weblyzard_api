@@ -3,8 +3,8 @@ package com.weblyzard.api.client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
-import com.weblyzard.api.domain.document_api.Request;
-import com.weblyzard.api.domain.document_api.Response;
+import com.weblyzard.api.document_api.Request;
+import com.weblyzard.api.document_api.Response;
 
 /**
  * TODO: untested!

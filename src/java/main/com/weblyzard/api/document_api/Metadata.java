@@ -1,4 +1,4 @@
-package com.weblyzard.api.domain.document_api;
+package com.weblyzard.api.document_api;
 
 public class Metadata {
 

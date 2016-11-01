@@ -1,4 +1,4 @@
-package com.weblyzard.api.domain.weblyzard;
+package com.weblyzard.api.document;
 
 import java.util.List;
 
