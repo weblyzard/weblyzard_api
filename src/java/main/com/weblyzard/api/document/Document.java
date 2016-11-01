@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Joiner;
@@ -61,11 +62,13 @@ public class Document implements Serializable {
 	/**
 	 * attributes required for the annotation handling
 	 */
+	@JsonProperty("body_annotation")
 	@XmlElement(name="body_annotation", namespace=Document.NS_WEBLYZARD)
-	private List<Annotation> body_annotation;
+	private List<Annotation> bodyAnnotation;
 	
+	@JsonProperty("title_annotation")
 	@XmlElement(name="title_annotation", namespace=Document.NS_WEBLYZARD)
-	private List<Annotation> title_annotation;
+	private List<Annotation> titleAnnotation;
 	
 	/**
 	 *  Elements used in the output (and input)
@@ -79,6 +82,7 @@ public class Document implements Serializable {
 	@XmlAttribute(name="format", namespace=Document.NS_DUBLIN_CORE)
 	private String format;
 	
+	@JsonProperty("lang")
 	@XmlAttribute(name="xml:lang")
 	private String lang;
 	
@@ -132,19 +136,19 @@ public class Document implements Serializable {
 	}
 
 	public List<Annotation> getBody_annotation() {
-		return body_annotation != null ? body_annotation : Collections.<Annotation>emptyList(); 
+		return bodyAnnotation != null ? bodyAnnotation : Collections.<Annotation>emptyList(); 
 	}
 
 	public void setBody_annotation(List<Annotation> body_annotation) {
-		this.body_annotation = body_annotation;
+		this.bodyAnnotation = body_annotation;
 	}
 
 	public List<Annotation> getTitle_annotation() {
-		return title_annotation != null ? title_annotation : Collections.<Annotation>emptyList();
+		return titleAnnotation != null ? titleAnnotation : Collections.<Annotation>emptyList();
 	}
 
 	public void setTitle_annotation(List<Annotation> title_annotation) {
-		this.title_annotation = title_annotation;
+		this.titleAnnotation = title_annotation;
 	}
 
 	public List<Sentence> getSentence() {
@@ -211,8 +215,8 @@ public class Document implements Serializable {
 		annotation.addAll(getTitle_annotation());
 		annotation.addAll(getBody_annotation());
 		
-		title_annotation = null;
-		body_annotation = null;
+		titleAnnotation = null;
+		bodyAnnotation = null;
 	}
 	
 	/**

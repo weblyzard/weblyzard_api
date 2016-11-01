@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Splitter;
 import com.weblyzard.api.datatype.MD5Digest;
+import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 
 /**
  * 
@@ -49,17 +50,20 @@ public class Sentence implements Serializable {
 	@XmlAttribute(name="token", namespace=Document.NS_WEBLYZARD)
 	private String token;
 	
+	@JsonProperty("is_title")
 	@XmlAttribute(name="is_title", namespace=Document.NS_WEBLYZARD)
-	// @XmlJavaTypeAdapter(BooleanAdapter.class)
-	private boolean is_title;
+	@XmlJavaTypeAdapter(BooleanAdapter.class)
+	private boolean isTitle;
 
+	@JsonProperty("text")
 	@XmlValue 
 	@XmlCDATA
 	private String text;
 	
 	// additional attributes defined in the weblyzard XML format
+	@JsonProperty("sem_orient")
 	@XmlAttribute(name="sem_orient", namespace=Document.NS_WEBLYZARD)
-	private double sem_orient;
+	private double semOrient;
 	
 	@XmlAttribute(name="significance", namespace=Document.NS_WEBLYZARD)
 	private double significance;	
@@ -84,12 +88,10 @@ public class Sentence implements Serializable {
 		this.dependency = dependency;
 	}
 	
-	@JsonProperty("text")
 	public String getText() { 
 		return text; 
 	}
 
-	@JsonProperty("text")
 	public void setText(String text) {
 		// required to allow marshalling of the XML document (!)
 		this.text = text.replace("\"", "&quot;");
@@ -153,19 +155,19 @@ public class Sentence implements Serializable {
 	}
 
 	public boolean isIs_title() {
-		return is_title;
+		return isTitle;
 	}
 	
 	public void setIs_title(boolean is_title) {
-		this.is_title = is_title;
+		this.isTitle = is_title;
 	}
 
 	public double getSem_orient() {
-		return sem_orient;
+		return semOrient;
 	}
 
 	public void setSem_orient(double sem_orient) {
-		this.sem_orient = sem_orient;
+		this.semOrient = sem_orient;
 	}
 
 	public double getSignificance() {
