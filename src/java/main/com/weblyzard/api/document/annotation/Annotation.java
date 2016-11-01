@@ -17,7 +17,7 @@ import com.weblyzard.api.document.serialize.json.AnnotationSerializer;
  
 /** 
  *  
- * @author Norman Suesstrunk 
+ * @author Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
  * 
  */ 
 
@@ -169,7 +169,5 @@ public class Annotation implements Serializable {
 	public void setAnnotationType(String annotationType) {
 		this.annotationType = annotationType;
 	} 
-    
-    
      
 }

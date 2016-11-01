@@ -1,9 +1,6 @@
 package com.weblyzard.api.document;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,9 +10,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Splitter;
 import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 
@@ -28,11 +23,6 @@ import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Sentence implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	
-	public final static Logger logger = Logger.getLogger(Sentence.class.getName());
-	private static final Splitter WHITE_SPACE_SPLITTER = Splitter.on(" ");
-	
 
 	@XmlAttribute(name="id", namespace=Document.NS_WEBLYZARD)
 	@XmlJavaTypeAdapter(MD5Digest.class)
@@ -110,38 +100,6 @@ public class Sentence implements Serializable {
 		return token; 
 	}
 		
-	/**
-	 * @return
-	 * 		a list of tokens for the given sentence.
-	 */
-	@JsonIgnore
-	public List<String> getTokenList() {
-		List<String> result = new ArrayList<>();
-		int separatorPos;
-		try {
-			for (String tokenPos: WHITE_SPACE_SPLITTER.split(token)) {
-				separatorPos = tokenPos.indexOf(',');
-				result.add(text.substring(Integer.parseInt(tokenPos.substring(0, separatorPos)), 
-						Integer.parseInt(tokenPos.substring(separatorPos+1))));
-			} 
-		} 
-		catch (StringIndexOutOfBoundsException e) {
-			logger.warning(String.format("Invalid tokenization for sentence '%s' with tokens '%s' (%s).", 
-					getText(), getPos(), e));
-		}
-		return result;
-	}
-	
-	
-	/**
-	 * @return
-	 * 		a list of pos tags for the given sentence.
-	 */
-	@JsonIgnore
-	public List<String> getPosList() {
-		return WHITE_SPACE_SPLITTER.splitToList(pos);
-	}
-			
 	public String toString() {
 		return text;
 	}
@@ -189,6 +147,5 @@ public class Sentence implements Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
-
 
 }

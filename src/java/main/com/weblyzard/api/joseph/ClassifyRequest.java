@@ -72,7 +72,7 @@ public class ClassifyRequest {
 
 	public Document getDocument() throws JAXBException {
 		if (this.document == null && this.xml_document.length() > 0)
-			this.document = Document.unmarshallDocumentXMLString(xml_document);
+			this.document = Document.unmarshallDocumentXmlString(xml_document);
 		return document;
 	}
 

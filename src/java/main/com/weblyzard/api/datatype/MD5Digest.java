@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.primitives.Longs;
 import com.weblyzard.api.document.serialize.json.MD5DigestDeserializer;
 import com.weblyzard.api.document.serialize.json.MD5DigestSerializer;
 
@@ -30,8 +29,8 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest> implements Serializ
 	private long low, high;
 	
 	public MD5Digest(byte[] m) {
-		high = Longs.fromBytes(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]);
-		low= Longs.fromBytes(m[8],m[9], m[10],m[11],m[12],m[13],m[14],m[15]);
+		high = fromBytes(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]);
+		low= fromBytes(m[8],m[9], m[10],m[11],m[12],m[13],m[14],m[15]);
 	}
 	
 	// required for JAXB
@@ -81,12 +80,13 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest> implements Serializ
 	/* 
 	 * @return a message digest instance
 	 */
-	public static MessageDigest getMessageDigest() {
+	public static MessageDigest getMessageDigest()  {
 		try {
 			return MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			return null;
+			// MD5 is supported according to the JVM specification
+			// this case can never happen...
+			throw new RuntimeException("The MD5 message digest is not supported by the JVM.");
 		}
 	}
 
@@ -98,6 +98,24 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest> implements Serializ
 	@Override
 	public String marshal(MD5Digest v) throws Exception {
 		return v == null ? "" : v.toString();
+	}
+	
+	/**
+	 * @return
+	 * 		The {@code long} value of the given big-endian representation of a long.
+	 *  
+	 * 		This code has been taken from
+	 *         https://github.com/google/guava/blob/master/guava/src/com/google/common/primitives/Longs.java
+	 */
+	private static long fromBytes(byte b1, byte b2, byte b3, byte b4, byte b5, byte b6, byte b7, byte b8) {
+	    return (b1 & 0xFFL) << 56
+	            | (b2 & 0xFFL) << 48
+	            | (b3 & 0xFFL) << 40
+	            | (b4 & 0xFFL) << 32
+	            | (b5 & 0xFFL) << 24
+	            | (b6 & 0xFFL) << 16
+	            | (b7 & 0xFFL) << 8
+	            | (b8 & 0xFFL);
 	}
 	
 }

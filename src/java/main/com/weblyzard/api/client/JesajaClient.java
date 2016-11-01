@@ -10,6 +10,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
 
 import com.weblyzard.api.document.Document;
 
@@ -77,7 +78,7 @@ public class JesajaClient extends BasicClient {
 
 
 	public Map<String, Map<String, Double>> getKeywords(String matviewId, List<Document> documents)
-			throws ClientErrorException {
+			throws ClientErrorException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
@@ -98,7 +99,7 @@ public class JesajaClient extends BasicClient {
 
 
 	public JsonObject call_getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
-			throws ClientErrorException {
+			throws ClientErrorException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
