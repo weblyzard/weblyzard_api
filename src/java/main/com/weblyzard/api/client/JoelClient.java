@@ -3,12 +3,13 @@ package com.weblyzard.api.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.JsonArray;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
 
-import com.google.gson.JsonArray;
 import com.weblyzard.api.document.Document;
 
 /**
@@ -51,7 +52,7 @@ public class JoelClient extends BasicClient {
 
 
 
-	public Response addDocuments(List<Document> documents) throws ClientErrorException {
+	public Response addDocuments(List<Document> documents) throws ClientErrorException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)

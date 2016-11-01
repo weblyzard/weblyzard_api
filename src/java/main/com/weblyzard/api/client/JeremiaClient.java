@@ -4,6 +4,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
 
 import com.weblyzard.api.document.Document;
 import com.weblyzard.api.document.XmlDocument;
@@ -60,8 +61,8 @@ public class JeremiaClient extends BasicClient {
 
 
 
-	public Document submitDocument(Document data) throws ClientErrorException {
+	public Document submitDocument(Document data) throws ClientErrorException, JAXBException {
 		XmlDocument response = submitDocumentRaw(data);
-		return Document.unmarshallDocumentXMLString(response.xml_content);
+		return Document.unmarshallDocumentXmlString(response.xml_content);
 	}
 }

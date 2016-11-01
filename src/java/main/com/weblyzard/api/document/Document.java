@@ -3,12 +3,10 @@ package com.weblyzard.api.document;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -24,13 +22,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Joiner;
 import com.weblyzard.api.document.annotation.Annotation;
 import com.weblyzard.api.document.serialize.json.DocumentHeaderDeserializer;
 import com.weblyzard.api.document.serialize.json.DocumentHeaderSerializer;
-import com.weblyzard.lib.string.nilsimsa.Nilsimsa;
 
 @XmlRootElement(name="page", namespace=Document.NS_WEBLYZARD)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -40,11 +37,7 @@ public class Document implements Serializable {
 	private final static long serialVersionUID = 1L;
 	public final static String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
 	public final static String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
-	
-	public final static Joiner SENTENCE_JOINER = Joiner.on("\n");
-	
-	private static Logger logger = Logger.getLogger(Document.class.getName());
-	
+
 	public final static QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 	
 	@JsonDeserialize	(keyUsing = DocumentHeaderDeserializer.class)
@@ -61,11 +54,13 @@ public class Document implements Serializable {
 	/**
 	 * attributes required for the annotation handling
 	 */
+	@JsonProperty("body_annotation")
 	@XmlElement(name="body_annotation", namespace=Document.NS_WEBLYZARD)
-	private List<Annotation> body_annotation;
+	private List<Annotation> bodyAnnotation;
 	
+	@JsonProperty("title_annotation")
 	@XmlElement(name="title_annotation", namespace=Document.NS_WEBLYZARD)
-	private List<Annotation> title_annotation;
+	private List<Annotation> titleAnnotation;
 	
 	/**
 	 *  Elements used in the output (and input)
@@ -79,6 +74,7 @@ public class Document implements Serializable {
 	@XmlAttribute(name="format", namespace=Document.NS_DUBLIN_CORE)
 	private String format;
 	
+	@JsonProperty("lang")
 	@XmlAttribute(name="xml:lang")
 	private String lang;
 	
@@ -132,19 +128,19 @@ public class Document implements Serializable {
 	}
 
 	public List<Annotation> getBody_annotation() {
-		return body_annotation != null ? body_annotation : Collections.<Annotation>emptyList(); 
+		return bodyAnnotation != null ? bodyAnnotation : Collections.<Annotation>emptyList(); 
 	}
 
-	public void setBody_annotation(List<Annotation> body_annotation) {
-		this.body_annotation = body_annotation;
+	public void setBodyAnnotations(List<Annotation> body_annotation) {
+		this.bodyAnnotation = body_annotation;
 	}
 
 	public List<Annotation> getTitle_annotation() {
-		return title_annotation != null ? title_annotation : Collections.<Annotation>emptyList();
+		return titleAnnotation != null ? titleAnnotation : Collections.<Annotation>emptyList();
 	}
 
-	public void setTitle_annotation(List<Annotation> title_annotation) {
-		this.title_annotation = title_annotation;
+	public void setTitleAnnotations(List<Annotation> title_annotation) {
+		this.titleAnnotation = title_annotation;
 	}
 
 	public List<Sentence> getSentence() {
@@ -191,75 +187,35 @@ public class Document implements Serializable {
 		return annotation;
 	}
 
-	public void setAnnotation(List<Annotation> annotation) {
+	public void setAnnotations(List<Annotation> annotation) {
 		this.annotation = annotation;
 	}
 
 	/**
-	 * Clears the content and annotation fields. 
-	 * This step is required to 
-	 *   a) prevent content from being included twice in the final result.
-	 *   b) set the annotation field
-	 */
-	public void finalizeDocument() {
-		// clear content fields
-		title = null;
-		body = null;
-		
-		// process and clear annotation fields
-		annotation = new ArrayList<>(getTitle_annotation().size() + getBody_annotation().size());
-		annotation.addAll(getTitle_annotation());
-		annotation.addAll(getBody_annotation());
-		
-		title_annotation = null;
-		body_annotation = null;
-	}
-	
-	/**
-	 * computes the Nilsimsa hash of the document (title + content)
-	 */
-	public void computeNilsimsaHash() {
-		Nilsimsa n = new Nilsimsa();
-		if (sentence != null) {
-			// do not add the title to the nilsimsa hash computation, since
-			// twitter blogs use a standardized (!) title.
-			sentence.stream()
-				.forEach(s -> n.update(s.getText()));
-		}
-		nilsimsa = n.hexdigest();
-	}		
-
-	
-	/**
 	 * @param document
 	 * @return the XML representation of the given document
 	 */
-    public static String getXmlRepresentation(Document document) {
-        StringWriter stringWriter = new StringWriter();
-        JAXBElement<Document> jaxbElement = new JAXBElement<Document>(
-                new QName(Document.NS_WEBLYZARD, "wl:page", "wl"), Document.class, document);
-        try {
-        	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-            Marshaller xmlMarshaller = jaxbContext.createMarshaller();
-            xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            xmlMarshaller.marshal(jaxbElement, stringWriter);
-        } catch (JAXBException e) { // TODO: move the exception to the method's consumers
-            logger.severe("Creation of the XML document for content_id "
-                    + document.id +" failed due to a JAXB exception.");
-            e.printStackTrace();
-        }
-        return stringWriter.toString();
+    public static String getXmlRepresentation(Document document) throws JAXBException {
+    	StringWriter stringWriter = new StringWriter();
+    	JAXBElement<Document> jaxbElement = new JAXBElement<Document>(
+    			new QName(Document.NS_WEBLYZARD, "wl:page", "wl"), Document.class, document);
+    	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
+    	Marshaller xmlMarshaller = jaxbContext.createMarshaller();
+    	xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    	xmlMarshaller.marshal(jaxbElement, stringWriter);
+    	return stringWriter.toString();
     }
     
-	public static Document unmarshallDocumentXMLString(String xml) {
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			StringReader reader = new StringReader(xml);
-			return (Document) unmarshaller.unmarshal(reader);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    /**
+     * 
+     * @param xmlString
+     * @return
+     */
+    public static Document unmarshallDocumentXmlString(String xmlString) throws JAXBException {
+    	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
+    	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+    	StringReader reader = new StringReader(xmlString);
+    	return (Document) unmarshaller.unmarshal(reader);
+    }
+    
 }
