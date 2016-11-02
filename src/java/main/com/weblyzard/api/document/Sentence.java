@@ -112,11 +112,11 @@ public class Sentence implements Serializable {
 		this.id = id;
 	}
 
-	public boolean isIs_title() {
+	public boolean getIsTitle() {
 		return isTitle;
 	}
 	
-	public void setIs_title(boolean isTitle) {
+	public void setIsTitle(boolean isTitle) {
 		this.isTitle = isTitle;
 	}
 

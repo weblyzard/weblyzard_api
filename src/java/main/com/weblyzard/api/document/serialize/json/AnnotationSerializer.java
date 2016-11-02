@@ -58,6 +58,7 @@ public class AnnotationSerializer extends StdSerializer<Annotation> {
         	
         	if( ! field.getName().equals(ANNOTATION_HEADER_FIELDNAME)) {
         		try {
+        			field.setAccessible(true);
                 	jsonGenerator.writeObjectField(field.getName(), field.get(annotation));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     e.printStackTrace();

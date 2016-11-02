@@ -60,13 +60,13 @@ public class Document implements Serializable {
 	
 	@JsonProperty("title_annotation")
 	@XmlElement(name="title_annotation", namespace=Document.NS_WEBLYZARD)
-	private List<Annotation> titleAnnotation;
+	private List<Annotation> titleAnnotations;
 	
 	/**
 	 *  Elements used in the output (and input)
 	 **/ 
 	@XmlElement(name="sentence", namespace=Document.NS_WEBLYZARD)
-	private List<Sentence> sentence;
+	private List<Sentence> sentences;
 	
 	@XmlAttribute(name="id", namespace=Document.NS_WEBLYZARD) 
 	private String id;
@@ -84,7 +84,7 @@ public class Document implements Serializable {
 	// private field that contains all annotations after the
 	// documents finalization
 	@XmlElement(name="annotation", namespace=Document.NS_WEBLYZARD)
-	private List<Annotation> annotation;
+	private List<Annotation> annotations;
 
 
 	// empty constructor required by JAXB
@@ -127,28 +127,28 @@ public class Document implements Serializable {
 		this.body = body;
 	}
 
-	public List<Annotation> getBody_annotation() {
+	public List<Annotation> getBodyAnnotations() {
 		return bodyAnnotation != null ? bodyAnnotation : Collections.<Annotation>emptyList(); 
 	}
 
-	public void setBodyAnnotations(List<Annotation> body_annotation) {
-		this.bodyAnnotation = body_annotation;
+	public void setBodyAnnotations(List<Annotation> bodyAnnotations) {
+		this.bodyAnnotation = bodyAnnotations;
 	}
 
-	public List<Annotation> getTitle_annotation() {
-		return titleAnnotation != null ? titleAnnotation : Collections.<Annotation>emptyList();
+	public List<Annotation> getTitleAnnotations() {
+		return titleAnnotations != null ? titleAnnotations : Collections.<Annotation>emptyList();
 	}
 
-	public void setTitleAnnotations(List<Annotation> title_annotation) {
-		this.titleAnnotation = title_annotation;
+	public void setTitleAnnotations(List<Annotation> titleAnnotations) {
+		this.titleAnnotations = titleAnnotations;
 	}
 
-	public List<Sentence> getSentence() {
-		return sentence;
+	public List<Sentence> getSentences() {
+		return sentences;
 	}
 
-	public void setSentence(List<Sentence> sentence) {
-		this.sentence = sentence;
+	public void setSentences(List<Sentence> sentences) {
+		this.sentences = sentences;
 	}
 
 	public String getId() {
@@ -183,12 +183,12 @@ public class Document implements Serializable {
 		this.nilsimsa = nilsimsa;
 	}
 
-	public List<Annotation> getAnnotation() {
-		return annotation;
+	public List<Annotation> getAnnotations() {
+		return annotations;
 	}
 
-	public void setAnnotations(List<Annotation> annotation) {
-		this.annotation = annotation;
+	public void setAnnotations(List<Annotation> annotations) {
+		this.annotations = annotations;
 	}
 
 	/**
