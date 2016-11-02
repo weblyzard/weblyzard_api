@@ -1,5 +1,6 @@
 package com.weblyzard.api.joseph;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,12 @@ import com.weblyzard.api.document.Document;
  */
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClassifyRequest {
+public class ClassifyRequest implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@JsonIgnore
 	private Document document;

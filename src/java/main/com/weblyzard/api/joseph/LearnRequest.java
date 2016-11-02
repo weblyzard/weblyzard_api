@@ -1,5 +1,6 @@
 package com.weblyzard.api.joseph;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.xml.bind.JAXBException;
@@ -17,7 +18,12 @@ import com.weblyzard.api.document.Document;
  * 
  */
 @XmlRootElement
-public class LearnRequest {
+public class LearnRequest implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@JsonIgnore
 	private Document document;
 

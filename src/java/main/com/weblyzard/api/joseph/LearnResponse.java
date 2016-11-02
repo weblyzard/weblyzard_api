@@ -1,5 +1,7 @@
 package com.weblyzard.api.joseph;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -11,8 +13,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @XmlRootElement
-public class LearnResponse {
+public class LearnResponse implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public int statuscode;
 	public String message;
 

@@ -1,5 +1,6 @@
 package com.weblyzard.api.joseph;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -13,8 +14,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlRootElement
-public class Searchagent {
+public class Searchagent implements Serializable  {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String name;
 	public int id;
 	public List<Product> product_list;

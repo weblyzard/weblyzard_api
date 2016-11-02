@@ -1,10 +1,10 @@
 package com.weblyzard.api.joseph;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  * Domain Transfer Object defining the interface for other services to use this
@@ -16,8 +16,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @XmlRootElement
-public class ClassifyResponse {
+public class ClassifyResponse implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public int searchagent;
 	public Set<Classification> classification;
 

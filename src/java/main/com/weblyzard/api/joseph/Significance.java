@@ -1,5 +1,7 @@
 package com.weblyzard.api.joseph;
 
+import java.io.Serializable;
+
 /**
  * Simple Wrapper Class containing one feature and the calculated significance
  * of this.
@@ -7,7 +9,12 @@ package com.weblyzard.api.joseph;
  * @author philipp.kuntschik@htwchur.ch
  * 
  */
-public class Significance {
+public class Significance implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The feature
