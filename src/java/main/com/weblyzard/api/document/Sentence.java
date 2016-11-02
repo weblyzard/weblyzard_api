@@ -82,14 +82,16 @@ public class Sentence implements Serializable {
 		return text; 
 	}
 
-	public void setText(String text) {
+	public Sentence setText(String text) {
 		// required to allow marshalling of the XML document (!)
 		this.text = text.replace("\"", "&quot;");
+		return this;
 	}
 	
-	public void setPos(String pos) {
+	public Sentence setPos(String pos) {
 		// required for handling double quotes in POS tags.
 		this.pos = pos.replace("\"", "&quot;");
+		return this;
 	}
 
 	public String getPos() { 
@@ -108,44 +110,50 @@ public class Sentence implements Serializable {
 		return id;
 	}
 
-	public void setId(MD5Digest id) {
+	public Sentence setId(MD5Digest id) {
 		this.id = id;
+		return this;
 	}
 
 	public boolean getIsTitle() {
 		return isTitle;
 	}
 	
-	public void setIsTitle(boolean isTitle) {
+	public Sentence setIsTitle(boolean isTitle) {
 		this.isTitle = isTitle;
+		return this;
 	}
 
 	public double getSem_orient() {
 		return semOrient;
 	}
 
-	public void setSem_orient(double sem_orient) {
+	public Sentence setSem_orient(double sem_orient) {
 		this.semOrient = sem_orient;
+		return this;
 	}
 
 	public double getSignificance() {
 		return significance;
 	}
 
-	public void setSignificance(double significance) {
+	public Sentence setSignificance(double significance) {
 		this.significance = significance;
+		return this;
 	}
 
 	public String getDependency() {
 		return dependency;
 	}
 
-	public void setDependency(String dependency) {
+	public Sentence setDependency(String dependency) {
 		this.dependency = dependency;
+		return this;
 	}
 
-	public void setToken(String token) {
+	public Sentence setToken(String token) {
 		this.token = token;
+		return this;
 	}
 
 }
