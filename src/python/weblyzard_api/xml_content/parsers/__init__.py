@@ -230,7 +230,7 @@ class XMLParser(object):
         ''' '''
         result = {}
         for key, val in attributes.iteritems():
-            if val is None or isinstance(val, dict):
+            if key is None or val is None or isinstance(val, dict):
                 continue
             result[key] = val
         return result
@@ -255,7 +255,10 @@ class XMLParser(object):
 
         attributes = cls.dump_xml_attributes(attributes=attributes,
                                              mapping=invert_mapping)
-        attributes = cls.clean_attributes(attributes)
+        try:
+            attributes = cls.clean_attributes(attributes)
+        except Exception as e:
+            logger.warn(e)
         root = etree.Element('{%s}page' % cls.get_default_ns(),
                              attrib=attributes,
                              nsmap=cls.DOCUMENT_NAMESPACES)
