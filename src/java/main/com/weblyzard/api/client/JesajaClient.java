@@ -64,10 +64,14 @@ public class JesajaClient extends BasicClient {
 
 
 
-	public Response addDocuments(String matviewId, List<Document> documents) throws ClientErrorException {
+	public Response addDocuments(String matviewId, List<Document> documents) throws ClientErrorException, JAXBException {
 
+		List<String> xml = new ArrayList<>();
+		for (Document document : documents)
+			xml.add(Document.getXmlRepresentation(document));
+		
 		Response response = super.target.path(ADDDOCUMENTS_SERVICEURL + matviewId)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents));
+				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
 		response.close();
