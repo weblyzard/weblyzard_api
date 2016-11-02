@@ -24,6 +24,7 @@ import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 public class Sentence implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@JsonProperty("md5sum")
 	@XmlAttribute(name="id", namespace=Document.NS_WEBLYZARD)
 	@XmlJavaTypeAdapter(MD5Digest.class)
 	private MD5Digest id;

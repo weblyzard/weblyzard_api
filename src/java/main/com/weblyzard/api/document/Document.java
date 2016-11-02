@@ -65,6 +65,7 @@ public class Document implements Serializable {
 	/**
 	 *  Elements used in the output (and input)
 	 **/ 
+	@JsonProperty("sentences")
 	@XmlElement(name="sentence", namespace=Document.NS_WEBLYZARD)
 	private List<Sentence> sentences;
 	
