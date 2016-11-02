@@ -12,10 +12,9 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jersey2.version>2.19</jersey2.version>
+		<jersey2.version>2.24</jersey2.version>
 		<jaxrs.version>2.0.1</jaxrs.version>
 	</properties>
-	
 	
 	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency is openly mavenized -->
 	<repositories>
@@ -24,6 +23,16 @@
 			<url>dav:http://code.semanticlab.net/deploy/</url>
 		</repository>
 	</repositories>
+	
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>code.semanticlab.net</id>
+			<name>semanticlab deployment repository</name>
+			<url>dav:http://code.semanticlab.net/deploy/</url>
+		</repository>
+		<downloadUrl>dav:http://code.semanticlab.net/deploy/</downloadUrl>
+	</distributionManagement>
 	
 	<build>
 		<extensions>
@@ -39,6 +48,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
+					<excludes>
+						<exclude>src/java/test/</exclude>
+					</excludes>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
@@ -54,17 +66,12 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<sourceDirectory>src/java/main</sourceDirectory>
+		<testSourceDirectory>src/java/test</testSourceDirectory>
 	</build>
 
 	<dependencies>
 	
-		<!-- wl_lib string -->
-		<dependency>
-			<groupId>com.weblyzard.lib.string</groupId>
-			<artifactId>nilsimsa</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		 
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -73,25 +80,11 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- google gson -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.6.2</version>
-		</dependency>
-		
 		<!-- eclipse persistence -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
 			<version>2.5.0</version>
-		</dependency>
-		
-		<!-- guava -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>19.0</version>
 		</dependency>
 		
 		<!-- javax  -->
