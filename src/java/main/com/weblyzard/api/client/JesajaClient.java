@@ -20,7 +20,7 @@ public class JesajaClient extends BasicClient {
 	private static final String SET_REFERENCE_CORPUS_SERVICE_URL = "/jesaja/rest/add_csv/";
 	private static final String ADD_DOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/";
 	private static final String GET_NEK_ANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/";
-	private static final String ROTATE_SHARD_SERVICE_URL = "/jesaja/rest/get_nek_annotations/";
+	private static final String ROTATE_SHARD_SERVICE_URL = "/jesaja/rest/rotate_shard/";
 
 
 

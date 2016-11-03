@@ -3,6 +3,7 @@ package com.weblyzard.api.client;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ClientBuilder;
@@ -77,6 +78,8 @@ public abstract class BasicClient {
 			throw new NotAuthorizedException(response);
 		case 404:
 			throw new NotFoundException(response);
+		case 405:
+			throw new NotAllowedException(response);
 		case 500:
 			throw new InternalServerErrorException(response);
 		default:
