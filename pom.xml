@@ -4,36 +4,67 @@
 
 	<groupId>com.weblyzard.api</groupId>
 	<artifactId>weblyzard-api</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.5</version>
 	<packaging>jar</packaging>
 
-	<name>api</name>
-	<url>http://maven.apache.org</url>
-	
+	<name>com.weblyzard.api.weblyzard-api</name>
+	<description>Java library for accessing webLyzard web services</description>
+	<url>https://github.com/weblyzard/weblyzard_api</url>
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Albert Weichselbraun</name>
+			<email>weichselbraun@weblyzard.com</email>
+			<organization>Weblyzard</organization>
+			<organizationUrl>http://weblyzard.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/weblyzard/weblyzard_api.git</connection>
+		<developerConnection>scm:git:ssh://github.com:weblyzard/weblyzard_api.git</developerConnection>
+		<url>https://github.com/weblyzard/weblyzard_api/tree/master</url>
+	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jersey2.version>2.24</jersey2.version>
 		<jaxrs.version>2.0.1</jaxrs.version>
 	</properties>
-	
-	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency is openly mavenized -->
+
+	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency 
+		is openly mavenized -->
 	<repositories>
 		<repository>
 			<id>code.semanticlab.net</id>
 			<url>dav:http://code.semanticlab.net/deploy/</url>
 		</repository>
 	</repositories>
-	
+
+	<!-- <distributionManagement> <repository> <uniqueVersion>false</uniqueVersion> 
+		<id>code.semanticlab.net</id> <name>semanticlab deployment repository</name> 
+		<url>dav:http://code.semanticlab.net/deploy/</url> </repository> <downloadUrl>dav:http://code.semanticlab.net/deploy/</downloadUrl> 
+		</distributionManagement> -->
+
 	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>code.semanticlab.net</id>
-			<name>semanticlab deployment repository</name>
-			<url>dav:http://code.semanticlab.net/deploy/</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-		<downloadUrl>dav:http://code.semanticlab.net/deploy/</downloadUrl>
 	</distributionManagement>
-	
+
+
 	<build>
 		<extensions>
 			<extension>
@@ -43,6 +74,79 @@
 			</extension>
 		</extensions>
 		<plugins>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -71,7 +175,7 @@
 	</build>
 
 	<dependencies>
-	
+
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -79,15 +183,15 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- eclipse persistence -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
 			<version>2.5.0</version>
 		</dependency>
-		
-		<!-- javax  -->
+
+		<!-- javax -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -99,30 +203,30 @@
 			<version>1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.glassfish</groupId>
-		    <artifactId>javax.json</artifactId>
-		    <version>1.0.4</version>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.json</artifactId>
+			<version>1.0.4</version>
 		</dependency>
-		
+
 		<!-- jackson -->
-		<dependency>			
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.5.3</version>
 		</dependency>
-		 <dependency>
-        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-	        <artifactId>jackson-jaxrs-json-provider</artifactId>
-	        <version>2.2.3</version>
-  		</dependency>
-  		 
-  		<!-- JAX-RS & json -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<!-- JAX-RS & json -->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>${jaxrs.version}</version>
 		</dependency>
-		
+
 		<!-- jersey -->
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
