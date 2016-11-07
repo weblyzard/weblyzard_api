@@ -10,41 +10,22 @@ import javax.ws.rs.core.Response;
 
 import com.weblyzard.api.document.annotation.Annotation;
 
-public class JairoClient extends BasicClient
-
-{
+public class JairoClient extends BasicClient {
 
 	private static final String EXTEND_ANNOTATIONS = "/jairo/extend_annotations/";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JairoClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JairoClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JairoClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
-
-
-
+	
 	public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)
 			throws ClientErrorException {
 

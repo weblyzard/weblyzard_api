@@ -14,40 +14,23 @@ import com.weblyzard.api.document_api.Response;
  */
 public class DocumentApiClient extends BasicClient {
 
-	private static final String WEBLYZARDDOCUMENTAPIURL = "";
+	private static final String WEBLYZARD_DOCUMENT_API_URL = "";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public DocumentApiClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public DocumentApiClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public DocumentApiClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
 
-
-
 	public Response insertNewDocument(Request request) {
 
-		javax.ws.rs.core.Response response = super.target.path(WEBLYZARDDOCUMENTAPIURL)
+		javax.ws.rs.core.Response response = super.target.path(WEBLYZARD_DOCUMENT_API_URL)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 
 		super.checkResponseStatus(response);

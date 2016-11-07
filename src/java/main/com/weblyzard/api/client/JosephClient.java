@@ -12,33 +12,18 @@ import com.weblyzard.api.joseph.LearnResponse;
 
 public class JosephClient extends BasicClient {
 
-	private static final String CLASSIFYSERVICEURL = "/joseph/rest/1/classify/";
-	private static final String CLASSIFYEXTENDEDSERVICEURL = "/joseph/rest/enhancedClassify/";
-	private static final String LEARNSERVICEURL = "/joseph/rest/learn/";
+	private static final String CLASSIFY_SERVICE_URL = "/joseph/rest/1/classify/";
+	private static final String CLASSIFY_EXTENDED_SERVICE_URL = "/joseph/rest/enhancedClassify/";
+	private static final String LEARN_SERVICE_URL = "/joseph/rest/learn/";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JosephClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JosephClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JosephClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
@@ -47,7 +32,7 @@ public class JosephClient extends BasicClient {
 
 	public ClassifyResponse[] classify(String profileName, ClassifyRequest request) throws ClientErrorException{
 
-		Response response = super.target.path(CLASSIFYSERVICEURL + profileName).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.target.path(CLASSIFY_SERVICE_URL + profileName).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(request));
 		
 		super.checkResponseStatus(response);
@@ -61,7 +46,7 @@ public class JosephClient extends BasicClient {
 
 	public ClassifyResponse[] classifyExtended(String profileName, ClassifyRequest request) throws ClientErrorException{
 
-		Response response = super.target.path(CLASSIFYEXTENDEDSERVICEURL + profileName)
+		Response response = super.target.path(CLASSIFY_EXTENDED_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 		
 		super.checkResponseStatus(response);
@@ -76,7 +61,7 @@ public class JosephClient extends BasicClient {
 	public LearnResponse learn(String profileName, LearnRequest request) throws ClientErrorException{
 		
 
-		Response response = super.target.path(LEARNSERVICEURL + profileName)
+		Response response = super.target.path(LEARN_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 		
 		super.checkResponseStatus(response);

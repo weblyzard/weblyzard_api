@@ -1,5 +1,8 @@
 package com.weblyzard.api.client;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
@@ -11,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.logging.LoggingFeature;
 
 public abstract class BasicClient {
 
@@ -20,14 +24,16 @@ public abstract class BasicClient {
 	private static final String FALLBACK_WEBLYZARD_API_URL = "http://localhost:8080";
 
 	protected WebTarget target;
-
-
-
+	
+	private Logger logger = Logger.getLogger(getClass().getName()); 
+	
+	
 	/**
 	 * Constructor using environment variables.
 	 */
 	public BasicClient() {
 		this(System.getenv(ENV_WEBLYZARD_API_URL));
+		ClientBuilder.newClient(); 
 	}
 
 
@@ -43,7 +49,6 @@ public abstract class BasicClient {
 	}
 
 
-
 	/**
 	 * Constructor using a custom url, username and password.
 	 * 
@@ -57,10 +62,25 @@ public abstract class BasicClient {
 	public BasicClient(String weblyzard_url, String username, String password) {
 
 		ClientConfig config = new ClientConfig();
-		if (username != null && password != null)
+		
+		// https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
+		// -> Example 21.1. Logging on client-side
+		config.register(
+				new LoggingFeature(
+						logger, 
+						Level.SEVERE, 
+						LoggingFeature.Verbosity.PAYLOAD_TEXT, 
+						LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+		
+		if (username != null && password != null) {
 			config.register(
-					HttpAuthenticationFeature.basicBuilder().nonPreemptive().credentials(username, password).build());
-
+					HttpAuthenticationFeature
+					.basicBuilder()
+					.nonPreemptive()
+					.credentials(username, password).build());
+		}
+		
+		
 		this.target = ClientBuilder.newClient(config)
 				.target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
 	}

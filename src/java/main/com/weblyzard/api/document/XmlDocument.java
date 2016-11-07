@@ -11,7 +11,7 @@ import com.weblyzard.api.document.annotation.Annotation;
 /**
  * Data format used to return to the Web service client
  * 
- * @author Albert Weichselbraun <albert@weblyzard.com>
+ * @author albert@weblyzard.com
  *
  */
 public class XmlDocument {

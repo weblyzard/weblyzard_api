@@ -14,47 +14,30 @@ import com.weblyzard.api.recognyze.RecognyzeResult;
 
 public class RecognyzeClient extends BasicClient {
 
-	private static final String ADDPROFILESERVICEURL = "/Recognize/rest/load_profile/";
-	private static final String SEARCHTEXTSERVICEURL = "/Recognize/rest/searchText";
-	private static final String SEARCHDOCUMENTSERVICEURL = "/Recognize/rest/searchDocument";
-	private static final String SEARCHDOCUMENTSSERVICEURL = "/Recognize/rest/searchDocuments";
-	private static final String STATUSSERVICEURL = "/Recognize/rest/status";
+	private static final String ADD_PROFILE_SERVICE_URL = "/Recognize/rest/load_profile/";
+	private static final String SEARCH_TEXT_SERVICE_URL = "/Recognize/rest/searchText";
+	private static final String SEARCH_DOCUMENT_SERVICE_URL = "/Recognize/rest/searchDocument";
+	private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/Recognize/rest/searchDocuments";
+	private static final String STATUS_SERVICE_URL = "/Recognize/rest/status";
 	private static final String PROFILENAME = "profileName=";
 	private static final String LIMIT = "limit=";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public RecognyzeClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public RecognyzeClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public RecognyzeClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
 
-
-
 	public boolean loadProfile(String profileName) throws ClientErrorException {
 
 		Response response = super.target
-				.path(ADDPROFILESERVICEURL + profileName)
+				.path(ADD_PROFILE_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.get();
 
@@ -77,7 +60,7 @@ public class RecognyzeClient extends BasicClient {
 	public Set<RecognyzeResult> searchText(String profileName, String data, int limit) throws ClientErrorException {
 
 		Response response = super.target
-				.path(SEARCHTEXTSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
+				.path(SEARCH_TEXT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
 
@@ -102,7 +85,7 @@ public class RecognyzeClient extends BasicClient {
 			throws ClientErrorException {
 
 		Response response = super.target
-				.path(SEARCHDOCUMENTSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
+				.path(SEARCH_DOCUMENT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
 
@@ -128,7 +111,7 @@ public class RecognyzeClient extends BasicClient {
 			throws ClientErrorException {
 		
 		Response response = super.target
-				.path(SEARCHDOCUMENTSSERVICEURL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
+				.path(SEARCH_DOCUMENTS_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
 
@@ -144,7 +127,7 @@ public class RecognyzeClient extends BasicClient {
 
 	public Map<String, Object> status() throws ClientErrorException {
 		
-		Response response = super.target.path(STATUSSERVICEURL)
+		Response response = super.target.path(STATUS_SERVICE_URL)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.get();
 

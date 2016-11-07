@@ -102,8 +102,6 @@ public class Document implements Serializable {
 		this.header = header;
 	}
 	
-	/** getter / setter **/
-
 	public Map<QName, String> getHeader() {
 		return header;
 	}
@@ -203,10 +201,6 @@ public class Document implements Serializable {
 		return this;
 	}
 
-	/**
-	 * @param document
-	 * @return the XML representation of the given document
-	 */
     public static String getXmlRepresentation(Document document) throws JAXBException {
     	StringWriter stringWriter = new StringWriter();
     	JAXBElement<Document> jaxbElement = new JAXBElement<Document>(
@@ -218,11 +212,6 @@ public class Document implements Serializable {
     	return stringWriter.toString();
     }
     
-    /**
-     * 
-     * @param xmlString
-     * @return
-     */
     public static Document unmarshallDocumentXmlString(String xmlString) throws JAXBException {
     	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
     	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

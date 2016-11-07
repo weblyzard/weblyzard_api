@@ -14,18 +14,17 @@ import com.weblyzard.api.document.serialize.json.MD5DigestSerializer;
 
 /**
  * A performance and memory optimized representation of MD5Digests.
- * @author Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+ * @author albert.weichselbraun@htwchur.ch
  *
  */
 
 @JsonSerialize(using = MD5DigestSerializer.class)
 @JsonDeserialize (using = MD5DigestDeserializer.class)
 public class MD5Digest extends XmlAdapter<String, MD5Digest> implements Serializable{
-	/**
-	 * 
-	 */
+
+	
 	private static final long serialVersionUID = 1L;
-	// the md5sum's values
+	
 	private long low, high;
 	
 	public MD5Digest(byte[] m) {
@@ -33,26 +32,13 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest> implements Serializ
 		low= fromBytes(m[8],m[9], m[10],m[11],m[12],m[13],m[14],m[15]);
 	}
 	
-	// required for JAXB
-	public MD5Digest() {
-	}
+	public MD5Digest() {}
 	
-	/**
-	 * Creates an MD5Digest from a hexString
-	 * @param hexString
-	 * @return 
-	 * 	the corresponding MD5Digest object
-	 */
 	public static MD5Digest fromHexDigest(String hexString) {
 		byte[] messageDigest = DatatypeConverter.parseHexBinary(hexString);
 		return new MD5Digest(messageDigest);
 	}
 	
-	/**
-	 * Computes the MD5 digest of the given String.
-	 * @param text
-	 * @return
-	 */
 	public static MD5Digest fromText(String text) {
 		return new MD5Digest(getMessageDigest().digest(text.getBytes()));
 	}
@@ -77,9 +63,6 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest> implements Serializ
 		return String.format("%016X%016X", high, low).toLowerCase();
 	}
 	
-	/* 
-	 * @return a message digest instance
-	 */
 	public static MessageDigest getMessageDigest()  {
 		try {
 			return MessageDigest.getInstance("MD5");
@@ -100,12 +83,11 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest> implements Serializ
 		return v == null ? "" : v.toString();
 	}
 	
-	/**
-	 * @return
-	 * 		The {@code long} value of the given big-endian representation of a long.
+	/*
+	 * 	The {@code long} value of the given big-endian representation of a long.
 	 *  
-	 * 		This code has been taken from
-	 *         https://github.com/google/guava/blob/master/guava/src/com/google/common/primitives/Longs.java
+	 * 	This code has been taken from
+	 *    https://github.com/google/guava/blob/master/guava/src/com/google/common/primitives/Longs.java
 	 */
 	private static long fromBytes(byte b1, byte b2, byte b3, byte b4, byte b5, byte b6, byte b7, byte b8) {
 	    return (b1 & 0xFFL) << 56
