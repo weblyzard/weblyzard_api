@@ -16,7 +16,7 @@ import com.weblyzard.api.document.XmlDocument;
  */
 public class JeremiaClient extends BasicClient {
 
-	private static final String SUBMITDOCUMENTSERVICEURL = "/jeremia/rest/submit_document";
+	private static final String SUBMIT_DOCUMENT_SERVICE_URL = "/jeremia/rest/submit_document";
 
 
 
@@ -49,7 +49,7 @@ public class JeremiaClient extends BasicClient {
 
 	public XmlDocument submitDocumentRaw(Document data) throws ClientErrorException {
 
-		Response response = super.target.path(SUBMITDOCUMENTSERVICEURL).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.target.path(SUBMIT_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
 
 		super.checkResponseStatus(response);

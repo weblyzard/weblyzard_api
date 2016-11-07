@@ -16,10 +16,10 @@ import com.weblyzard.api.document.Document;
 
 public class JesajaClient extends BasicClient {
 
-	private static final String GETKEYWORDS_SERVICEURL = "/jesaja/rest/get_keywords/";
-	private static final String SETREFERENCECORPUS_SERVICEURL = "/jesaja/rest/add_csv/";
-	private static final String ADDDOCUMENTS_SERVICEURL = "/jesaja/rest/add_documents/";
-	private static final String GETNEKANNOTATIONS_SERVICEURL = "/jesaja/rest/get_nek_annotations/";
+	private static final String GETKEYWORDS_SERVICE_URL = "/jesaja/rest/get_keywords/";
+	private static final String SETREFERENCECORPUS_SERVICE_URL = "/jesaja/rest/add_csv/";
+	private static final String ADDDOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/";
+	private static final String GETNEKANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/";
 
 
 
@@ -53,7 +53,7 @@ public class JesajaClient extends BasicClient {
 	public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
 			throws ClientErrorException {
 
-		Response response = super.target.path(SETREFERENCECORPUS_SERVICEURL + matviewId)
+		Response response = super.target.path(SETREFERENCECORPUS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(corpusMapping));
 
 		super.checkResponseStatus(response);
@@ -70,7 +70,7 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 		
-		Response response = super.target.path(ADDDOCUMENTS_SERVICEURL + matviewId)
+		Response response = super.target.path(ADDDOCUMENTS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -88,7 +88,7 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.target.path(GETKEYWORDS_SERVICEURL + matviewId)
+		Response response = super.target.path(GETKEYWORDS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -109,7 +109,7 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.target.path(GETNEKANNOTATIONS_SERVICEURL + matviewId)
+		Response response = super.target.path(GETNEKANNOTATIONS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
