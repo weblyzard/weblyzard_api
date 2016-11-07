@@ -70,3 +70,9 @@ Example scripts are available in the `example` directory.
   + docstring explaining what the method does
   + a unit test demonstrating the method's usage in the wild.
 + commits must pass all unit tests
+
+To activate the java client debugging (logging requests / responses etc) set the environment variable **ENV_WEBLYZARD_API_DEBUG** to true: 
+
+```
+export WEBLYZARD_API_PASS="true"
+```

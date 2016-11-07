@@ -1,8 +1,12 @@
 package com.weblyzard.api.client;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,8 +15,6 @@ import javax.xml.bind.JAXBException;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -48,7 +50,7 @@ public class JoelClientTest {
 		try {
 			
 			// 1. send the psalmDocs to the joel 
-			joelClient.addDocuments(psalmDocs);
+			assertEquals(200, joelClient.addDocuments(psalmDocs).getStatus());
 			
 			// 2. cluster the documents  
 			List<ClusterResult> clusterResults = joelClient.cluster(); 
@@ -61,6 +63,21 @@ public class JoelClientTest {
 		} catch (ClientErrorException | JAXBException e) {
 			e.printStackTrace();
 		} 
+	}
+	
+	
+	/**
+	 * tests adding a document without keywords in the header
+	 */
+	@Test
+	public void testDocumentHeaderBadRequest() {
+		try {
+			joelClient.addDocuments(Arrays.asList(new Document[]{new Document("Test")}));
+		} catch (ClientErrorException clientErrorException) {
+	        assertThat(clientErrorException.getMessage(), is(JoelClient.NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE));
+		} catch (JAXBException jaxbException) {
+			jaxbException.printStackTrace();
+		}
 	}
 	
 	
