@@ -16,27 +16,18 @@ import com.weblyzard.api.document.Document;
 
 public class JesajaClient extends BasicClient {
 
-	private static final String GETKEYWORDS_SERVICE_URL = "/jesaja/rest/get_keywords/";
-	private static final String SETREFERENCECORPUS_SERVICE_URL = "/jesaja/rest/add_csv/";
-	private static final String ADDDOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/";
-	private static final String GETNEKANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/";
+	private static final String GET_KEYWORDS_SERVICE_URL = "/jesaja/rest/get_keywords/";
+	private static final String SET_REFERENCE_CORPUS_SERVICE_URL = "/jesaja/rest/add_csv/";
+	private static final String ADD_DOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/";
+	private static final String GET_NEK_ANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/";
+	private static final String ROTATE_SHARD_SERVICE_URL = "/jesaja/rest/rotate_shard/";
 
-	public JesajaClient() {
-		super();
-	}
 
-	public JesajaClient(String weblyzard_url) {
-		super(weblyzard_url);
-	}
-
-	public JesajaClient(String weblyzard_url, String username, String password) {
-		super(weblyzard_url, username, password);
-	}
 
 	public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
 			throws ClientErrorException {
 
-		Response response = super.target.path(SETREFERENCECORPUS_SERVICE_URL + matviewId)
+		Response response = super.target.path(SET_REFERENCE_CORPUS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(corpusMapping));
 
 		super.checkResponseStatus(response);
@@ -47,13 +38,14 @@ public class JesajaClient extends BasicClient {
 
 
 
-	public Response addDocuments(String matviewId, List<Document> documents) throws ClientErrorException, JAXBException {
+	public Response addDocuments(String matviewId, List<Document> documents)
+			throws ClientErrorException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
-		
-		Response response = super.target.path(ADDDOCUMENTS_SERVICE_URL + matviewId)
+
+		Response response = super.target.path(ADD_DOCUMENTS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -71,7 +63,7 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.target.path(GETKEYWORDS_SERVICE_URL + matviewId)
+		Response response = super.target.path(GET_KEYWORDS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -85,18 +77,31 @@ public class JesajaClient extends BasicClient {
 
 
 
-	public JsonObject call_getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
+	public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
 			throws ClientErrorException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.target.path(GETNEKANNOTATIONS_SERVICE_URL + matviewId)
+		Response response = super.target.path(GET_NEK_ANNOTATIONS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
 		JsonObject result = response.readEntity(JsonObject.class);
+		response.close();
+		return result;
+	}
+
+
+
+	public int rotateShard(String matviewId) throws ClientErrorException, JAXBException {
+
+		Response response = super.target.path(ROTATE_SHARD_SERVICE_URL + matviewId)
+				.request(MediaType.APPLICATION_JSON_TYPE).get();
+
+		super.checkResponseStatus(response);
+		int result = response.readEntity(Integer.class);
 		response.close();
 		return result;
 	}
