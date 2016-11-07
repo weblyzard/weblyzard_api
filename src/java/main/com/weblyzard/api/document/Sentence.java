@@ -17,7 +17,7 @@ import com.weblyzard.api.document.serialize.xml.BooleanAdapter;
 /**
  * 
  * webLyzard Sentence class 
- * @author: Albert Weichselbraun <weichselbraun@weblyzard.com>
+ * @author: weichselbraun@weblyzard.com
  * 
  **/
 @XmlAccessorType(XmlAccessType.FIELD)

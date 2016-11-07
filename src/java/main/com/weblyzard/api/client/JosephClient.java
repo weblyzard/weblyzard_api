@@ -16,29 +16,14 @@ public class JosephClient extends BasicClient {
 	private static final String CLASSIFY_EXTENDED_SERVICE_URL = "/joseph/rest/enhancedClassify/";
 	private static final String LEARN_SERVICE_URL = "/joseph/rest/learn/";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JosephClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JosephClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JosephClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}

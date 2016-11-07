@@ -16,34 +16,17 @@ public class DocumentApiClient extends BasicClient {
 
 	private static final String WEBLYZARD_DOCUMENT_API_URL = "";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public DocumentApiClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public DocumentApiClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public DocumentApiClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
-
-
 
 	public Response insertNewDocument(Request request) {
 

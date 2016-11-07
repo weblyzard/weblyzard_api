@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 /**
- *  @author Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
+ *  @author norman.suesstrunk@htwchur.ch
  *
  */
 public class ClusterResult implements Serializable{

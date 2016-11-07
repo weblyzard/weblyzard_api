@@ -4,7 +4,7 @@ package com.weblyzard.api.document.annotation;
 /**
  * The surfaced annotation
  * 
- * @author Max Goebel <goebel@weblyzard.com>
+ * @author goebel@weblyzard.com
  *
  */
 public class AnnotationSurface {

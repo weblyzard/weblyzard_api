@@ -21,34 +21,17 @@ public class JesajaClient extends BasicClient {
 	private static final String ADDDOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/";
 	private static final String GETNEKANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JesajaClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JesajaClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JesajaClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
-
-
 
 	public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
 			throws ClientErrorException {

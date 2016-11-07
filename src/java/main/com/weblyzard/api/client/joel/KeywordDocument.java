@@ -9,8 +9,8 @@ import com.weblyzard.api.document.Document;
 
 /**
  * 
- * @author Norman Suesstrunk <norman.süsstrunk@htwchur.ch>
- * @author Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+ * @author norman.suesstrunk@htwchur.ch
+ * @author albert.weichselbraun@htwchur.ch
  *
  */
 
@@ -27,9 +27,6 @@ public class KeywordDocument implements Serializable {
 	
 	public KeywordDocument() {}
 	
-	/**
-	 * the cluster this {@link KeywordDocument} belongs to
-	 */
 	public KeywordDocument(Document document) {
 		this.document = document; 
 		initKeywordsFromDocument(); 

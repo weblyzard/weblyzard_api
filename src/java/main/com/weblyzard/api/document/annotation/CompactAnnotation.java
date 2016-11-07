@@ -13,7 +13,7 @@ import com.weblyzard.api.document.Document;
 /**
  * Compact form of an annotation
  * 
- * @author Max Goebel <goebel@weblyzard.com>
+ * @author goebel@weblyzard.com
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD) 

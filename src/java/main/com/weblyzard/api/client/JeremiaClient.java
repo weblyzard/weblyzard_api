@@ -19,33 +19,17 @@ public class JeremiaClient extends BasicClient {
 	private static final String SUBMIT_DOCUMENT_SERVICE_URL = "/jeremia/rest/submit_document";
 
 
-
-	/**
-	 * @see BasicClient
-	 */
 	public JeremiaClient() {
 		super();
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JeremiaClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public JeremiaClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
-
-
 
 	public XmlDocument submitDocumentRaw(Document data) throws ClientErrorException {
 

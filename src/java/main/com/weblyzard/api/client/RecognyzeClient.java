@@ -22,32 +22,17 @@ public class RecognyzeClient extends BasicClient {
 	private static final String PROFILENAME = "profileName=";
 	private static final String LIMIT = "limit=";
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public RecognyzeClient() {
 		super();
 	}
 
-	/**
-	 * @see BasicClient
-	 */
 	public RecognyzeClient(String weblyzard_url) {
 		super(weblyzard_url);
 	}
 
-
-
-	/**
-	 * @see BasicClient
-	 */
 	public RecognyzeClient(String weblyzard_url, String username, String password) {
 		super(weblyzard_url, username, password);
 	}
-
-
 
 	public boolean loadProfile(String profileName) throws ClientErrorException {
 

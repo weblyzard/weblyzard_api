@@ -17,7 +17,7 @@ import com.weblyzard.api.document.serialize.json.AnnotationSerializer;
  
 /** 
  *  
- * @author Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
+ * @author norman.suesstrunk@htwchur.ch
  * 
  */ 
 
