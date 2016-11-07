@@ -19,9 +19,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.weblyzard.api.client.joel.ClusterResult;
-import com.weblyzard.api.client.joel.JoelClient;
 import com.weblyzard.api.document.Document;
+import com.weblyzard.api.joel.ClusterResult;
 
 /**
  * 
