@@ -2,7 +2,7 @@ package com.weblyzard.api.client;
 
 import java.util.List;
 
-import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -38,7 +38,7 @@ public class JoelClient extends BasicClient {
 		super(weblyzard_url, username, password);
 	}
 
-	public Response addDocuments(List<Document> documents) throws ClientErrorException, JAXBException {
+	public Response addDocuments(List<Document> documents) throws WebApplicationException, JAXBException {
 		Response response = super.target.path(ADDDOCUMENTS_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(documents));
 		super.checkResponseStatus(response);
@@ -47,7 +47,7 @@ public class JoelClient extends BasicClient {
 	}
 
 
-	public Response flush() throws ClientErrorException {
+	public Response flush() throws WebApplicationException {
 		Response response = super.target.path(FLUSH_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE).get();
 		super.checkResponseStatus(response);
 		response.close();
@@ -56,7 +56,7 @@ public class JoelClient extends BasicClient {
 
 
 
-	public List<ClusterResult> cluster() throws ClientErrorException {
+	public List<ClusterResult> cluster() throws WebApplicationException {
 		Response response = super.target.path(CLUSTER_DOCUMENT_SERVICEURL).request(MediaType.APPLICATION_JSON_TYPE).get();
 		super.checkResponseStatus(response);
 		List<ClusterResult> clusterResults = response.readEntity(new GenericType<List<ClusterResult>>() {});

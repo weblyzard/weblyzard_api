@@ -2,7 +2,7 @@ package com.weblyzard.api.client;
 
 import java.util.List;
 
-import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -27,7 +27,7 @@ public class JairoClient extends BasicClient {
 	}
 	
 	public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)
-			throws ClientErrorException {
+			throws WebApplicationException {
 
 		Response response = super.target.path(EXTEND_ANNOTATIONS + profileName).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(annotations));

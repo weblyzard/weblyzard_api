@@ -4,11 +4,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -86,7 +87,7 @@ public abstract class BasicClient {
 
 
 
-	public void checkResponseStatus(Response response) throws ClientErrorException {
+	public void checkResponseStatus(Response response) throws WebApplicationException {
 		switch (response.getStatus()) {
 		case 200:
 			return;
@@ -101,7 +102,7 @@ public abstract class BasicClient {
 		case 500:
 			throw new InternalServerErrorException(response);
 		default:
-			throw new ClientErrorException(response);
+			throw new WebApplicationException(response);
 		}
 	}
 }

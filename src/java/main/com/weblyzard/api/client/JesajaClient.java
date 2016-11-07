@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.json.JsonObject;
-import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -35,7 +35,7 @@ public class JesajaClient extends BasicClient {
 	}
 
 	public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
-			throws ClientErrorException {
+			throws WebApplicationException {
 
 		Response response = super.target.path(SET_REFERENCE_CORPUS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(corpusMapping));
@@ -49,7 +49,7 @@ public class JesajaClient extends BasicClient {
 
 
 	public Response addDocuments(String matviewId, List<Document> documents)
-			throws ClientErrorException, JAXBException {
+			throws WebApplicationException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
@@ -67,7 +67,7 @@ public class JesajaClient extends BasicClient {
 
 
 	public Map<String, Map<String, Double>> getKeywords(String matviewId, List<Document> documents)
-			throws ClientErrorException, JAXBException {
+			throws WebApplicationException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
@@ -88,7 +88,7 @@ public class JesajaClient extends BasicClient {
 
 
 	public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
-			throws ClientErrorException, JAXBException {
+			throws WebApplicationException, JAXBException {
 
 		List<String> xml = new ArrayList<>();
 		for (Document document : documents)
@@ -105,7 +105,7 @@ public class JesajaClient extends BasicClient {
 
 
 
-	public int rotateShard(String matviewId) throws ClientErrorException, JAXBException {
+	public int rotateShard(String matviewId) throws WebApplicationException, JAXBException {
 
 		Response response = super.target.path(ROTATE_SHARD_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).get();

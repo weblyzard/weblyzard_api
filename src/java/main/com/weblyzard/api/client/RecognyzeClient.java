@@ -3,7 +3,7 @@ package com.weblyzard.api.client;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -34,7 +34,7 @@ public class RecognyzeClient extends BasicClient {
 		super(weblyzard_url, username, password);
 	}
 
-	public boolean loadProfile(String profileName) throws ClientErrorException {
+	public boolean loadProfile(String profileName) throws WebApplicationException {
 
 		Response response = super.target
 				.path(ADD_PROFILE_SERVICE_URL + profileName)
@@ -51,13 +51,13 @@ public class RecognyzeClient extends BasicClient {
 
 
 
-	public Set<RecognyzeResult> searchText(String profileName, String data) throws ClientErrorException {
+	public Set<RecognyzeResult> searchText(String profileName, String data) throws WebApplicationException {
 		return this.searchText(profileName, data, 0);
 	}
 
 
 
-	public Set<RecognyzeResult> searchText(String profileName, String data, int limit) throws ClientErrorException {
+	public Set<RecognyzeResult> searchText(String profileName, String data, int limit) throws WebApplicationException {
 
 		Response response = super.target
 				.path(SEARCH_TEXT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
@@ -74,7 +74,7 @@ public class RecognyzeClient extends BasicClient {
 
 
 
-	public Set<RecognyzeResult> searchDocument(String profileName, Document data) throws ClientErrorException {
+	public Set<RecognyzeResult> searchDocument(String profileName, Document data) throws WebApplicationException {
 
 		return this.searchDocument(profileName, data, 0);
 	}
@@ -82,7 +82,7 @@ public class RecognyzeClient extends BasicClient {
 
 
 	public Set<RecognyzeResult> searchDocument(String profileName, Document data, int limit)
-			throws ClientErrorException {
+			throws WebApplicationException {
 
 		Response response = super.target
 				.path(SEARCH_DOCUMENT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
@@ -100,7 +100,7 @@ public class RecognyzeClient extends BasicClient {
 
 
 	public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data)
-			throws ClientErrorException {
+			throws WebApplicationException {
 
 		return this.searchDocuments(profileName, data, 0);
 	}
@@ -108,7 +108,7 @@ public class RecognyzeClient extends BasicClient {
 
 
 	public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data, int limit)
-			throws ClientErrorException {
+			throws WebApplicationException {
 		
 		Response response = super.target
 				.path(SEARCH_DOCUMENTS_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
@@ -125,7 +125,7 @@ public class RecognyzeClient extends BasicClient {
 
 
 
-	public Map<String, Object> status() throws ClientErrorException {
+	public Map<String, Object> status() throws WebApplicationException {
 		
 		Response response = super.target.path(STATUS_SERVICE_URL)
 				.request(MediaType.APPLICATION_JSON_TYPE)
