@@ -30,6 +30,13 @@ public class JoelClient extends BasicClient {
 	public JoelClient() {
 		super();
 	}
+	public JoelClient(String weblyzard_url) {
+		super(weblyzard_url);
+	}
+
+	public JoelClient(String weblyzard_url, String username, String password) {
+		super(weblyzard_url, username, password);
+	}
 
 	public Response addDocuments(List<Document> documents) throws ClientErrorException, JAXBException {
 		Response response = super.target.path(ADDDOCUMENTS_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
