@@ -1,4 +1,4 @@
-package com.weblyzard.api.client.joel;
+package com.weblyzard.api.joel;
 
 import java.io.Serializable;
 

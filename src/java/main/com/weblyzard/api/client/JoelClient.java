@@ -1,4 +1,4 @@
-package com.weblyzard.api.client.joel;
+package com.weblyzard.api.client;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 
-import com.weblyzard.api.client.BasicClient;
 import com.weblyzard.api.document.Document;
+import com.weblyzard.api.joel.ClusterResult;
 
 /**
  * 
