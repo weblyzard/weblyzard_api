@@ -24,17 +24,20 @@ public abstract class BasicClient {
 	private static final String ENV_WEBLYZARD_API_PASS = "WEBLYZARD_API_PASS";
 	private static final String FALLBACK_WEBLYZARD_API_URL = "http://localhost:8080";
 
+	private static final String ENV_WEBLYZARD_API_DEBUG = "WEBLYZARD_API_DEBUG";
+
 	protected WebTarget target;
-	
-	private Logger logger = Logger.getLogger(getClass().getName()); 
-	
-	
+
+	private Logger logger = Logger.getLogger(getClass().getName());
+
+
+
 	/**
 	 * Constructor using environment variables.
 	 */
 	public BasicClient() {
 		this(System.getenv(ENV_WEBLYZARD_API_URL));
-		ClientBuilder.newClient(); 
+		ClientBuilder.newClient();
 	}
 
 
@@ -50,6 +53,7 @@ public abstract class BasicClient {
 	}
 
 
+
 	/**
 	 * Constructor using a custom url, username and password.
 	 * 
@@ -63,25 +67,19 @@ public abstract class BasicClient {
 	public BasicClient(String weblyzard_url, String username, String password) {
 
 		ClientConfig config = new ClientConfig();
-		
-		// https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
-		// -> Example 21.1. Logging on client-side
-		config.register(
-				new LoggingFeature(
-						logger, 
-						Level.SEVERE, 
-						LoggingFeature.Verbosity.PAYLOAD_TEXT, 
-						LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
-		
+
+		if(Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))){
+			// https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
+			// -> Example 21.1. Logging on client-side
+			config.register(new LoggingFeature(logger, Level.SEVERE, LoggingFeature.Verbosity.PAYLOAD_TEXT,
+					LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+		}
+
 		if (username != null && password != null) {
 			config.register(
-					HttpAuthenticationFeature
-					.basicBuilder()
-					.nonPreemptive()
-					.credentials(username, password).build());
+					HttpAuthenticationFeature.basicBuilder().nonPreemptive().credentials(username, password).build());
 		}
-		
-		
+
 		this.target = ClientBuilder.newClient(config)
 				.target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
 	}
