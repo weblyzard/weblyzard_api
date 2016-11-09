@@ -248,5 +248,15 @@
 			<artifactId>jersey-media-jaxb </artifactId>
 			<version>${jersey2.version}</version>
 		</dependency>
+		
+		<!-- apache commons lang -->
+		<dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-lang3</artifactId>
+		  <version>3.5</version>
+		</dependency>
+		
+		
+		
 	</dependencies>
 </project>
