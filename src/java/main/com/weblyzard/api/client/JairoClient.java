@@ -1,5 +1,6 @@
 package com.weblyzard.api.client;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
@@ -33,10 +34,9 @@ public class JairoClient extends BasicClient {
 				.post(Entity.json(annotations));
 
 		super.checkResponseStatus(response);
-		List<Annotation> result = response.readEntity(new GenericType<List<Annotation>>() {
-		});
+		List<Annotation> result = response.readEntity(new GenericType<List<Annotation>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptyList() : result;
 	}
 }

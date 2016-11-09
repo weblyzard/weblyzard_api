@@ -90,6 +90,8 @@ public abstract class BasicClient {
 		switch (response.getStatus()) {
 		case 200:
 			return;
+		case 204:
+			return;
 		case 400:
 			throw new BadRequestException(response);
 		case 401:

@@ -41,7 +41,7 @@ public class JairoClientTest {
 						new Annotation().setKey("<" + "http://dbpedia.org/resource/Bruno_Schweizer" + ">")));
 
 		List<Annotation> result = client.extendAnnotations(profileName, annotations);
-		assertTrue(result.size() > 0);
+		assertTrue(result != null);
 	}
 
 }
