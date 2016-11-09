@@ -12,7 +12,7 @@ import com.weblyzard.api.document.annotation.Annotation;
 
 public class JairoClient extends BasicClient {
 
-	private static final String EXTEND_ANNOTATIONS = "/jairo/extend_annotations/";
+	private static final String EXTEND_ANNOTATIONS = "/jairo/rest/extend_annotations/";
 
 	public JairoClient() {
 		super();
