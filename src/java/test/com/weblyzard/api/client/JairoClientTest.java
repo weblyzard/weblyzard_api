@@ -69,8 +69,33 @@ public class JairoClientTest {
 			e.printStackTrace();
 		}
 	}
+		
 	
-	
+	/**
+	 * Tests from phil
+	 */
+
+	@Test
+	public void testExtendAnnotation1() {
+		jairoClient.addProfile(mockImagineProfile, mockJairoProfileName);
+		List<Annotation> annotations = new ArrayList<>(
+				Arrays.asList(new Annotation().setKey("<http://dbpedia.org/resource/Aurora_(singer)>")));
+		List<Annotation> result = jairoClient.extendAnnotations(mockJairoProfileName, annotations);
+		assertTrue(result.size() > 0);
+	}
+
+	@Test
+	public void testExtendAnnotation2() {
+		JairoClient client = new JairoClient();
+		List<Annotation> annotations = new ArrayList<>(
+				Arrays.asList(
+						new Annotation().setKey("<http://dbpedia.org/resource/Feusisberg>"),
+						new Annotation().setKey("<http://dbpedia.org/resource/Shani_Tarashaj>"),
+						new Annotation().setKey("<http://dbpedia.org/resource/Grasshopper_Club_Zürich__Shani_Tarashaj__1>"),
+						new Annotation().setKey("<http://dbpedia.org/resource/Bruno_Schweizer>")));
+		List<Annotation> result = client.extendAnnotations(mockJairoProfileName, annotations);
+		assertTrue(result != null);
+	}
 	
 	public void initMockObjects() {	
 		
@@ -90,40 +115,5 @@ public class JairoClientTest {
 		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resource/Sarnen>", null, null, 0, 0, null));
 		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resource/Die_(musician)>", null, null, 0, 0, null));
 		
-	}
-	
-	
-	// tests from phil... 
-	
-	private static final String profileName = "test";
-
-
-
-	@Test
-	public void testExtendAnnotation1() {
-		JairoClient client = new JairoClient();
-
-		List<Annotation> annotations = new ArrayList<>(
-				Arrays.asList(new Annotation().setKey("<" + "http://dbpedia.org/resource/Aurora_(singer)" + ">")));
-
-		List<Annotation> result = client.extendAnnotations(profileName, annotations);
-		assertTrue(result.size() > 0);
-	}
-
-
-
-	@Test
-	public void testExtendAnnotation2() {
-		JairoClient client = new JairoClient();
-
-		List<Annotation> annotations = new ArrayList<>(
-				Arrays.asList(new Annotation().setKey("<" + "http://dbpedia.org/resource/Feusisberg" + ">"),
-						new Annotation().setKey("<" + "http://dbpedia.org/resource/Shani_Tarashaj" + ">"),
-						new Annotation().setKey(
-								"<" + "http://dbpedia.org/resource/Grasshopper_Club_Zürich__Shani_Tarashaj__1" + ">"),
-						new Annotation().setKey("<" + "http://dbpedia.org/resource/Bruno_Schweizer" + ">")));
-
-		List<Annotation> result = client.extendAnnotations(profileName, annotations);
-		assertTrue(result != null);
 	}
 }

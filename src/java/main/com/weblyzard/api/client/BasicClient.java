@@ -68,7 +68,7 @@ public abstract class BasicClient {
 
 		ClientConfig config = new ClientConfig();
 
-		if(!Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))){
+		if(Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))){
 			// https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
 			// -> Example 21.1. Logging on client-side
 			config.register(new LoggingFeature(logger, Level.SEVERE, LoggingFeature.Verbosity.PAYLOAD_TEXT,
