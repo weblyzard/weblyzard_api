@@ -19,7 +19,7 @@ public class JairoClient extends BasicClient {
 	private static final String ADD_PROFILE 			= "/jairo/rest/add_profile/";
 	private static final String LIST_PROFILES 			= "/jairo/rest/list_profiles";
 	private static final String LIST_RDF_PREFIXES 		= "/jairo/rest/list_rdf_prefixes";
-	private static final String ADD_RDF_PREFIX 			= "/jairo/rest/add_rdf_prefix/";
+	private static final String ADD_RDF_PREFIX 			= "/jairo/rest/add_rdf_prefix";
 
 	
 	public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)

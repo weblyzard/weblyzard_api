@@ -1,5 +1,6 @@
 package com.weblyzard.api.client;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
@@ -8,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.ws.rs.client.Entity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +25,7 @@ public class JairoClientTest {
 	private String mockJairoProfileName = "IMAGINE";
 	private List<Annotation> mockImagineAnnotations; 
 	
+	@SuppressWarnings("unused")
 	private Logger logger = Logger.getLogger(getClass().getName());
 	
 	@Before
@@ -47,7 +47,7 @@ public class JairoClientTest {
 		// extend the annotations
 		List<Annotation> extendedAnnotations = jairoClient.extendAnnotations(mockJairoProfileName, mockImagineAnnotations);
 		
-		logger.info(Entity.json(extendedAnnotations).toString()); 
+		assertNotNull(extendedAnnotations); 
 		
 	}
 	
