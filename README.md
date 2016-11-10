@@ -2,7 +2,10 @@
 
 Provides access to all webLyzard Web services through a python and java library.
 
-Full Documentation is available at http://weblyzard-api.readthedocs.org/en/latest/
+Full Documentation is available at 
+
+* http://weblyzard-api.readthedocs.org/en/latest/
+* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.0.5
 
 
 ## Configuration
@@ -97,6 +100,9 @@ Deploying to the public mavencentral:
 ```
 mvn deploy -Denvironment=mavencentral
 ```
+
+
+ javadoc.io/doc/com.weblyzard.api/weblyzard-api
 
  
 
