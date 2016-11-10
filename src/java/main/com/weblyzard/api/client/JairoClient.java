@@ -25,7 +25,7 @@ public class JairoClient extends BasicClient {
 	public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)
 			throws WebApplicationException {
 
-		Response response = super.target.path(EXTEND_ANNOTATIONS + profileName).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget().path(EXTEND_ANNOTATIONS + profileName).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(annotations));
 
 		super.checkResponseStatus(response);
@@ -36,7 +36,7 @@ public class JairoClient extends BasicClient {
 	
 	public Response addProfile(Profile profile, String profileName) {
 		
-		Response response = super.target.path(ADD_PROFILE + profileName).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget().path(ADD_PROFILE + profileName).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(profile));
 		super.checkResponseStatus(response);
 		response.close(); 
@@ -45,7 +45,7 @@ public class JairoClient extends BasicClient {
 	}
 	
 	public Map<String, Profile> listProfiles() {
-		Response response = super.target.path(LIST_PROFILES).request(MediaType.APPLICATION_JSON_TYPE).get(); 
+		Response response = super.getTarget().path(LIST_PROFILES).request(MediaType.APPLICATION_JSON_TYPE).get(); 
 		super.checkResponseStatus(response);
 		Map<String, Profile> profiles = response.readEntity(new GenericType<Map<String, Profile>>() {});
 		response.close(); 
@@ -53,7 +53,7 @@ public class JairoClient extends BasicClient {
 	}
 	
 	public Response addPrefix(RDFPrefix rdfPrefix) {
-		Response response = super.target.path(ADD_RDF_PREFIX).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget().path(ADD_RDF_PREFIX).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(rdfPrefix));
 		super.checkResponseStatus(response);
 		response.close(); 
@@ -62,7 +62,7 @@ public class JairoClient extends BasicClient {
 	
 	
 	public Map<String, String> listRdfPrefixes() {
-		Response response = super.target.path(LIST_RDF_PREFIXES).request(MediaType.APPLICATION_JSON_TYPE).get(); 
+		Response response = super.getTarget().path(LIST_RDF_PREFIXES).request(MediaType.APPLICATION_JSON_TYPE).get(); 
 		super.checkResponseStatus(response);
 		Map<String, String> profiles = response.readEntity(new GenericType<Map<String, String>>() {});
 		response.close(); 

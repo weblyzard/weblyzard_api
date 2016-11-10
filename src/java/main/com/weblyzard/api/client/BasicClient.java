@@ -26,10 +26,9 @@ public abstract class BasicClient {
 
 	private static final String ENV_WEBLYZARD_API_DEBUG = "WEBLYZARD_API_DEBUG";
 
-	protected WebTarget target;
+	private WebTarget target;
 
 	private Logger logger = Logger.getLogger(getClass().getName());
-
 
 
 	/**
@@ -68,7 +67,7 @@ public abstract class BasicClient {
 
 		ClientConfig config = new ClientConfig();
 
-		if(Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))){
+		if(!Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))){
 			// https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
 			// -> Example 21.1. Logging on client-side
 			config.register(new LoggingFeature(logger, Level.SEVERE, LoggingFeature.Verbosity.PAYLOAD_TEXT,
@@ -82,6 +81,10 @@ public abstract class BasicClient {
 
 		this.target = ClientBuilder.newClient(config)
 				.target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
+	}
+	
+	public WebTarget getTarget() {
+		return this.target; 
 	}
 
 

@@ -4,11 +4,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ws.rs.ClientErrorException;
 import javax.xml.bind.JAXBException;
@@ -29,14 +29,12 @@ import com.weblyzard.api.joel.ClusterResult;
  * @author norman.suesstrunk@htwchur.ch
  *
  */
-public class JoelClientTest {
+public class JoelClientTest extends TestClientBase{
 	
 	private static final String PSALMS_DOCS_WEBLYZARDFORMAT_JSON = "resources/psalms-docs-weblyzardformat.json";
 
 	public List<Document> psalmDocs;
-	
-	private Logger logger = Logger.getLogger(getClass().getName()); 
-	
+		
 	private JoelClient joelClient; 
 	
 	@Before
@@ -47,19 +45,15 @@ public class JoelClientTest {
 	
 	@Test 
 	public void testJoelWorkflow() {
+		assumeTrue(weblyzardServiceAvailable(joelClient));
 		try {
-			
 			// 1. send the psalmDocs to the joel 
 			assertEquals(200, joelClient.addDocuments(psalmDocs).getStatus());
-			
 			// 2. cluster the documents  
 			List<ClusterResult> clusterResults = joelClient.cluster(); 
 			assertTrue(clusterResults.size()>0);
-			
 			// flush the queue 
 			assertEquals(200, joelClient.flush().getStatus()); 
-			
-			
 		} catch (ClientErrorException | JAXBException e) {
 			e.printStackTrace();
 		} 
@@ -71,6 +65,7 @@ public class JoelClientTest {
 	 */
 	@Test
 	public void testDocumentHeaderBadRequest() {
+		assumeTrue(weblyzardServiceAvailable(joelClient));
 		try {
 			joelClient.addDocuments(Arrays.asList(new Document[]{new Document("Test")}));
 		} catch (ClientErrorException clientErrorException) {

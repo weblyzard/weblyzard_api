@@ -2,6 +2,7 @@ package com.weblyzard.api.client;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,7 +18,7 @@ import com.weblyzard.api.document.annotation.Annotation;
 import com.weblyzard.api.jairo.Profile;
 import com.weblyzard.api.jairo.RDFPrefix;
 
-public class JairoClientTest {
+public class JairoClientTest extends TestClientBase{
 
 	private JairoClient jairoClient; 
 	
@@ -38,6 +39,8 @@ public class JairoClientTest {
 	@Test
 	public void testJairoWorkflow() {
 		
+		assumeTrue(weblyzardServiceAvailable(jairoClient));
+		
 		// add a profile 
 		jairoClient.addProfile(mockImagineProfile, mockJairoProfileName); 
 		
@@ -53,6 +56,9 @@ public class JairoClientTest {
 	
 	@Test 
 	public void testRDFPrefixes() {
+		
+		assumeTrue(weblyzardServiceAvailable(jairoClient));
+		
 		RDFPrefix rdfPrefix;
 		try {
 			rdfPrefix = new RDFPrefix("dbr", new URI("http://dbpedia.org/resource/"));
@@ -74,26 +80,22 @@ public class JairoClientTest {
 	/**
 	 * Tests from phil
 	 */
-
 	@Test
 	public void testExtendAnnotation1() {
+		
+		assumeTrue(weblyzardServiceAvailable(jairoClient));
+		
 		jairoClient.addProfile(mockImagineProfile, mockJairoProfileName);
 		List<Annotation> annotations = new ArrayList<>(
 				Arrays.asList(new Annotation().setKey("<http://dbpedia.org/resource/Aurora_(singer)>")));
 		List<Annotation> result = jairoClient.extendAnnotations(mockJairoProfileName, annotations);
 		assertTrue(result.size() > 0);
-	}
 
-	@Test
-	public void testExtendAnnotation2() {
-		JairoClient client = new JairoClient();
-		List<Annotation> annotations = new ArrayList<>(
-				Arrays.asList(
-						new Annotation().setKey("<http://dbpedia.org/resource/Feusisberg>"),
-						new Annotation().setKey("<http://dbpedia.org/resource/Shani_Tarashaj>"),
-						new Annotation().setKey("<http://dbpedia.org/resource/Grasshopper_Club_Zürich__Shani_Tarashaj__1>"),
-						new Annotation().setKey("<http://dbpedia.org/resource/Bruno_Schweizer>")));
-		List<Annotation> result = client.extendAnnotations(mockJairoProfileName, annotations);
+		annotations = Arrays.asList(new Annotation().setKey("<http://dbpedia.org/resource/Feusisberg>"),
+				new Annotation().setKey("<http://dbpedia.org/resource/Shani_Tarashaj>"),
+				new Annotation().setKey("<http://dbpedia.org/resource/Grasshopper_Club_Zürich__Shani_Tarashaj__1>"),
+				new Annotation().setKey("<http://dbpedia.org/resource/Bruno_Schweizer>"));
+		result = jairoClient.extendAnnotations(mockJairoProfileName, annotations);
 		assertTrue(result != null);
 	}
 	

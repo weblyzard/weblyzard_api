@@ -36,7 +36,7 @@ public class RecognyzeClient extends BasicClient {
 
 	public boolean loadProfile(String profileName) throws WebApplicationException {
 
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(ADD_PROFILE_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.get();
@@ -59,7 +59,7 @@ public class RecognyzeClient extends BasicClient {
 
 	public Set<RecognyzeResult> searchText(String profileName, String data, int limit) throws WebApplicationException {
 
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(SEARCH_TEXT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
@@ -84,7 +84,7 @@ public class RecognyzeClient extends BasicClient {
 	public Set<RecognyzeResult> searchDocument(String profileName, Document data, int limit)
 			throws WebApplicationException {
 
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(SEARCH_DOCUMENT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
@@ -110,7 +110,7 @@ public class RecognyzeClient extends BasicClient {
 	public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data, int limit)
 			throws WebApplicationException {
 		
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(SEARCH_DOCUMENTS_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
@@ -127,7 +127,7 @@ public class RecognyzeClient extends BasicClient {
 
 	public Map<String, Object> status() throws WebApplicationException {
 		
-		Response response = super.target.path(STATUS_SERVICE_URL)
+		Response response = super.getTarget().path(STATUS_SERVICE_URL)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.get();
 

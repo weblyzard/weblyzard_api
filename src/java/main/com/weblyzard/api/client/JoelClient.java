@@ -33,7 +33,7 @@ public class JoelClient extends BasicClient {
 	}
 
 	public Response addDocuments(List<Document> documents) throws ClientErrorException, JAXBException {
-		Response response = super.target.path(ADDDOCUMENTS_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget().path(ADDDOCUMENTS_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(documents));
 		
 		if(response.readEntity(String.class).equals(NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE)) {
@@ -47,7 +47,7 @@ public class JoelClient extends BasicClient {
 
 
 	public Response flush() throws WebApplicationException {
-		Response response = super.target.path(FLUSH_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE).get();
+		Response response = super.getTarget().path(FLUSH_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE).get();
 		super.checkResponseStatus(response);
 		response.close();
 		return response;
@@ -56,7 +56,7 @@ public class JoelClient extends BasicClient {
 
 
 	public List<ClusterResult> cluster() throws WebApplicationException {
-		Response response = super.target.path(CLUSTER_DOCUMENT_SERVICEURL).request(MediaType.APPLICATION_JSON_TYPE).get();
+		Response response = super.getTarget().path(CLUSTER_DOCUMENT_SERVICEURL).request(MediaType.APPLICATION_JSON_TYPE).get();
 		super.checkResponseStatus(response);
 		List<ClusterResult> clusterResults = response.readEntity(new GenericType<List<ClusterResult>>() {});
 		response.close();
