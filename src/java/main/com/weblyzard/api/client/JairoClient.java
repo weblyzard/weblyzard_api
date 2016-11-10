@@ -21,7 +21,18 @@ public class JairoClient extends BasicClient {
 	private static final String LIST_RDF_PREFIXES 		= "/jairo/rest/list_rdf_prefixes";
 	private static final String ADD_RDF_PREFIX 			= "/jairo/rest/add_rdf_prefix";
 
-	
+	public JairoClient() {
+		super();
+	}
+
+	public JairoClient(String weblyzard_url) {
+		super(weblyzard_url);
+	}
+
+	public JairoClient(String weblyzard_url, String username, String password) {
+		super(weblyzard_url, username, password);
+	}
+
 	public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)
 			throws WebApplicationException {
 

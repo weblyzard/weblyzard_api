@@ -10,6 +10,11 @@ import com.weblyzard.api.joseph.ClassifyResponse;
 import com.weblyzard.api.joseph.LearnRequest;
 import com.weblyzard.api.joseph.LearnResponse;
 
+/**
+ * 
+ * @author philipp.kuntschik@htwchur.ch
+ *
+ */
 public class JosephClient extends BasicClient {
 
 	private static final String CLASSIFY_SERVICE_URL = "/joseph/rest/1/classify/";

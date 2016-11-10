@@ -1,6 +1,7 @@
 package com.weblyzard.api.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +83,7 @@ public class JesajaClient extends BasicClient {
 				});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptyMap() : result;
 	}
 
 

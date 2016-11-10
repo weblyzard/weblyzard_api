@@ -1,5 +1,6 @@
 package com.weblyzard.api.client;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.ClientErrorException;
@@ -32,6 +33,14 @@ public class JoelClient extends BasicClient {
 		super();
 	}
 
+	public JoelClient(String weblyzard_url) {
+		super(weblyzard_url);
+	}
+
+	public JoelClient(String weblyzard_url, String username, String password) {
+		super(weblyzard_url, username, password);
+	}
+
 	public Response addDocuments(List<Document> documents) throws ClientErrorException, JAXBException {
 		Response response = super.target.path(ADDDOCUMENTS_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(documents));
@@ -60,6 +69,6 @@ public class JoelClient extends BasicClient {
 		super.checkResponseStatus(response);
 		List<ClusterResult> clusterResults = response.readEntity(new GenericType<List<ClusterResult>>() {});
 		response.close();
-		return clusterResults;
+		return clusterResults == null ? Collections.emptyList() : clusterResults;
 	}
 }

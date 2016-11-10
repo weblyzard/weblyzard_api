@@ -1,5 +1,6 @@
 package com.weblyzard.api.client;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +13,11 @@ import javax.ws.rs.core.Response;
 import com.weblyzard.api.document.Document;
 import com.weblyzard.api.recognyze.RecognyzeResult;
 
+/**
+ * 
+ * @author philipp.kuntschik@htwchur.ch
+ *
+ */
 public class RecognyzeClient extends BasicClient {
 
 	private static final String ADD_PROFILE_SERVICE_URL = "/Recognize/rest/load_profile/";
@@ -69,7 +75,7 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Set<RecognyzeResult>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptySet() : result;
 	}
 
 
@@ -94,7 +100,7 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Set<RecognyzeResult>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptySet() : result;
 	}
 
 
@@ -120,7 +126,7 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Map<String, Set<RecognyzeResult>>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptyMap() : result;
 	}
 
 
@@ -136,6 +142,6 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Map<String, Object>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptyMap() : result;
 	}
 }
