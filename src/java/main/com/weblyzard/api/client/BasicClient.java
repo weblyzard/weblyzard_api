@@ -26,7 +26,7 @@ public abstract class BasicClient {
 
 	private static final String ENV_WEBLYZARD_API_DEBUG = "WEBLYZARD_API_DEBUG";
 
-	private WebTarget target;
+	private final WebTarget target;
 
 	private Logger logger = Logger.getLogger(getClass().getName());
 
@@ -83,7 +83,7 @@ public abstract class BasicClient {
 				.target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
 	}
 	
-	public WebTarget getTarget() {
+	protected WebTarget getTarget() {
 		return this.target; 
 	}
 
