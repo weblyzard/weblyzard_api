@@ -2,6 +2,7 @@ package com.weblyzard.api.client;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -13,31 +14,28 @@ import org.junit.Test;
 import com.weblyzard.api.document.Document;
 import com.weblyzard.api.recognyze.RecognyzeResult;
 
-//TODO: fix the tests so they run on the deployed recognize service on noah
-public class RecognyzeClientTest {
+
+public class RecognyzeClientTest extends TestClientBase{
 
 	private static final String profile = "graphfullen2";
-
-
-
+	
+	private RecognyzeClient recognizeClient; 
+	
 	@Before
-	@Test
 	public void testLoadProfile() {
-		RecognyzeClient client = new RecognyzeClient();
-		boolean result = client.loadProfile(profile);
-
-		assertTrue(result);
+		recognizeClient = new RecognyzeClient();
+		assumeTrue(weblyzardServiceAvailable(recognizeClient));
+		boolean profileLoaded = recognizeClient.loadProfile(profile);
+		assumeTrue(profileLoaded);
 	}
-
-
 
 	@Test
 	public void testText() {
-		RecognyzeClient client = new RecognyzeClient();
+		assumeTrue(weblyzardServiceAvailable(recognizeClient));
 		String request = "Fast Track's Karen Bowerman asks what the changes in penguin"
 				+ " population could mean for the rest of us in the event of climate change.";
 
-		Set<RecognyzeResult> result = client.searchText(profile, request);
+		Set<RecognyzeResult> result = recognizeClient.searchText(profile, request);
 
 		// TODO: validate that the resultset is not empty (compose a small test
 		// profile, find a nice sentence to test)
@@ -49,11 +47,11 @@ public class RecognyzeClientTest {
 
 	@Test
 	public void testSearchDocument() {
-		RecognyzeClient client = new RecognyzeClient();
+		assumeTrue(weblyzardServiceAvailable(recognizeClient));
 		Document request = new Document("Fast Track's Karen Bowerman asks what the changes in penguin population"
 				+ " could mean for the rest of us in the event of climate change.");
 
-		Set<RecognyzeResult> result = client.searchDocument(profile, request);
+		Set<RecognyzeResult> result = recognizeClient.searchDocument(profile, request);
 		// TODO: validate that the resultset is not empty (compose a small test
 		// profile, find a nice sentence to test)
 		assertNotNull(result);
@@ -64,13 +62,13 @@ public class RecognyzeClientTest {
 
 	@Test
 	public void testSearchDocuments() {
-		RecognyzeClient client = new RecognyzeClient();
+		assumeTrue(weblyzardServiceAvailable(recognizeClient));
 		Set<Document> request = new HashSet<>();
 		Document document = new Document("Fast Track's Karen Bowerman asks what the changes in penguin population"
 				+ " could mean for the rest of us in the event of climate change."); 
 		document.setId("1");
 		request.add(document);
-		Map<String, Set<RecognyzeResult>> result = client.searchDocuments(profile, request);
+		Map<String, Set<RecognyzeResult>> result = recognizeClient.searchDocuments(profile, request);
 		// TODO: validate that the resultset is not empty (compose a small test
 		// profile, find a nice sentence to test)
 		assertNotNull(result);
@@ -82,12 +80,12 @@ public class RecognyzeClientTest {
 
 	@Test
 	public void testSearchDocumentsWithoutId() {
-		RecognyzeClient client = new RecognyzeClient();
+		assumeTrue(weblyzardServiceAvailable(recognizeClient));
 		Set<Document> request = new HashSet<>();
 		request.add(new Document("Fast Track's Karen Bowerman asks what the changes in penguin population"
 				+ " could mean for the rest of us in the event of climate change."));
 
-		Map<String, Set<RecognyzeResult>> result = client.searchDocuments(profile, request);
+		Map<String, Set<RecognyzeResult>> result = recognizeClient.searchDocuments(profile, request);
 		// TODO: validate that the resultset is not empty (compose a small test
 		// profile, find a nice sentence to test)
 		assertNotNull(result);
@@ -98,9 +96,8 @@ public class RecognyzeClientTest {
 
 	@Test
 	public void testStatus() {
-		RecognyzeClient client = new RecognyzeClient();
-
-		Map<String, Object> result = client.status();
+		assumeTrue(weblyzardServiceAvailable(recognizeClient));
+		Map<String, Object> result = recognizeClient.status();
 		// TODO: validate that the resultset is not empty (compose a small test
 		// profile, find a nice sentence to test)
 		assertNotNull(result);

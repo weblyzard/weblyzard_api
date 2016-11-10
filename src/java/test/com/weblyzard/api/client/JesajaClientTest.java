@@ -1,7 +1,7 @@
 package com.weblyzard.api.client;
 
 
-public class JesajaClientTest {
+public class JesajaClientTest extends TestClientBase{
 	
 	// TODO: implement
 	

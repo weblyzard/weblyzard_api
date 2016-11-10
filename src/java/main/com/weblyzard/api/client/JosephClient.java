@@ -37,7 +37,7 @@ public class JosephClient extends BasicClient {
 
 	public ClassifyResponse[] classify(String profileName, ClassifyRequest request) throws WebApplicationException{
 
-		Response response = super.target.path(CLASSIFY_SERVICE_URL + profileName).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget().path(CLASSIFY_SERVICE_URL + profileName).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(request));
 		
 		super.checkResponseStatus(response);
@@ -51,7 +51,7 @@ public class JosephClient extends BasicClient {
 
 	public ClassifyResponse[] classifyExtended(String profileName, ClassifyRequest request) throws WebApplicationException{
 
-		Response response = super.target.path(CLASSIFY_EXTENDED_SERVICE_URL + profileName)
+		Response response = super.getTarget().path(CLASSIFY_EXTENDED_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 		
 		super.checkResponseStatus(response);
@@ -66,7 +66,7 @@ public class JosephClient extends BasicClient {
 	public LearnResponse learn(String profileName, LearnRequest request) throws WebApplicationException{
 		
 
-		Response response = super.target.path(LEARN_SERVICE_URL + profileName)
+		Response response = super.getTarget().path(LEARN_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 		
 		super.checkResponseStatus(response);

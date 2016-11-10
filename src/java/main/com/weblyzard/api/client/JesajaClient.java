@@ -38,7 +38,7 @@ public class JesajaClient extends BasicClient {
 	public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
 			throws WebApplicationException {
 
-		Response response = super.target.path(SET_REFERENCE_CORPUS_SERVICE_URL + matviewId)
+		Response response = super.getTarget().path(SET_REFERENCE_CORPUS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(corpusMapping));
 
 		super.checkResponseStatus(response);
@@ -56,7 +56,7 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.target.path(ADD_DOCUMENTS_SERVICE_URL + matviewId)
+		Response response = super.getTarget().path(ADD_DOCUMENTS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -74,7 +74,7 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.target.path(GET_KEYWORDS_SERVICE_URL + matviewId)
+		Response response = super.getTarget().path(GET_KEYWORDS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -95,7 +95,7 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.target.path(GET_NEK_ANNOTATIONS_SERVICE_URL + matviewId)
+		Response response = super.getTarget().path(GET_NEK_ANNOTATIONS_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -108,7 +108,7 @@ public class JesajaClient extends BasicClient {
 
 	public int rotateShard(String matviewId) throws WebApplicationException, JAXBException {
 
-		Response response = super.target.path(ROTATE_SHARD_SERVICE_URL + matviewId)
+		Response response = super.getTarget().path(ROTATE_SHARD_SERVICE_URL + matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).get();
 
 		super.checkResponseStatus(response);
