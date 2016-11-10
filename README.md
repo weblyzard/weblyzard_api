@@ -76,3 +76,28 @@ To activate the java client debugging (logging requests / responses etc) set the
 ```
 export WEBLYZARD_API_PASS="true"
 ```
+
+## Deploying the maven artifacts 
+
+Deploy to the private semanticlab maven repository: 
+
+```
+mvn deploy -Denvironment=semanticlab
+```
+The environment **semanticlab** is set as the default maven environment, so running 
+
+```
+mvn deploy
+```
+deploys to the private semanticlab repository. 
+
+
+Deploying to the public mavencentral: 
+
+```
+mvn deploy -Denvironment=mavencentral
+```
+
+ 
+
+
