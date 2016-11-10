@@ -9,14 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.weblyzard.api.document.Document;
 import com.weblyzard.api.recognyze.RecognyzeResult;
 
 
-@Ignore
 public class RecognyzeClientTest extends TestClientBase{
 
 	private static final String profile = "graphfullen2";
@@ -27,8 +25,8 @@ public class RecognyzeClientTest extends TestClientBase{
 	public void testLoadProfile() {
 		recognizeClient = new RecognyzeClient();
 		assumeTrue(weblyzardServiceAvailable(recognizeClient));
-		boolean result = recognizeClient.loadProfile(profile);
-		assertTrue(result);
+		boolean profileLoaded = recognizeClient.loadProfile(profile);
+		assumeTrue(profileLoaded);
 	}
 
 	@Test

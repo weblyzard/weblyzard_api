@@ -1,6 +1,6 @@
 /**
  * The {@link com.weblyzard.api.document.Document} and {@link com.weblyzard.api.document.Sentence} 
- * classes used for the webLyzardXML format.
+ * classes used to encapsulate the webLyzardXML format.
  */
 
 @XmlSchema(
