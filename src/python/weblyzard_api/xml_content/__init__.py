@@ -39,7 +39,8 @@ LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 class Annotation(object):
     
     def __init__(self, annotation_type=None, start=None, end=None, key=None, 
-                 sentence=None, surfaceForm=None, md5sum=None, sem_orient=None):
+                 sentence=None, surfaceForm=None, md5sum=None, sem_orient=None,
+                 preferredName=None):
         self.annotation_type = annotation_type
         self.surfaceForm = surfaceForm
         self.start = start
@@ -48,6 +49,7 @@ class Annotation(object):
         self.sentence = sentence
         self.md5sum = md5sum
         self.sem_orient = sem_orient
+        self.preferredName = preferredName
     
     def as_dict(self):
         '''
@@ -394,6 +396,21 @@ class XMLContent(object):
         for k, v in new_attributes.iteritems():
             self.attributes[str(k)] = v
 
+    def update_features(self, new_features):
+        if not new_features or not isinstance(new_features, dict):
+            return
+        
+        for k, v in new_features.iteritems():
+            self.features[str(k)] = v
+    
+    def update_relations(self, new_relations):
+        if not new_relations or not isinstance(new_relations, dict):
+            return
+        
+        for k, v in new_relations.iteritems():
+            self.relations[str(k)] = v  
+                  
+            
     def as_dict(self, mapping=None, 
                 ignore_non_sentence=False, add_titles_to_sentences=False):
         ''' convert the XML content to a dictionary.

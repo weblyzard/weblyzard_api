@@ -49,7 +49,7 @@ class OpenRdfClient(object):
     URL_MAPPING = {'get_repositories': ('/repositories', 'GET'),
                    'fetch_statements_repository': ('', 'GET')}
 
-    def __init__(self, server_uri, config_repository='config.weblyzard.com'):
+    def __init__(self, server_uri):
         ''' initializes the client
         :param server_uri: URL of the server
         '''
@@ -62,7 +62,6 @@ class OpenRdfClient(object):
         server_update_uri = '%s/openrdf-workbench' % plain_server_uri
         self.repository_url_update_tmplt = server_update_uri + \
             '/repositories/%s/update'
-        self.config_repository = config_repository
 
     def run_query(self, repository_name, query):
         sparql = SPARQLWrapper(self.repository_url_tmplt % repository_name)
@@ -218,13 +217,12 @@ class OpenRdfClient(object):
             return text
 
     def get_repo_size(self, repo_id):
-
+        ''' '''
         result = self.request('repositories/%s/size' % repo_id)
         print 'get_repo_size', result
 
     def get_repositories(self):
         ''' '''
-
         result = self.request('repositories')
         repositories = {}
 
@@ -277,10 +275,10 @@ class OpenRdfClient(object):
         (response, content) = httplib2.Http().request(endpoint, 'POST', 
                                                       urllib.urlencode(params),
                                                       headers=headers)
-        return (response,ast.literal_eval(content))
-      
-    def execute_update(self, query, repository, server_url):
-        params = { 'update': query }
+        return (response, ast.literal_eval(content))
+
+    def execute_update(self, query, repository):
+        params = {'update': query}
         headers = {
           'content-type': 'application/x-www-form-urlencoded',
           'accept': 'application/sparql-results+json'
@@ -317,6 +315,110 @@ class OpenRdfClient(object):
                                                       headers={'content-type': 'application/x-turtle'})
         print("Response %s" % response.status)
         print(content)
+
+class RecognizeOpenRdfClient(OpenRdfClient):
     
+    def __init__(self, server_uri, config_repository='config.weblyzard.com'):
+        super(OpenRdfClient, self).__init(server_uri)
+        self.config_repository = config_repository
+        
+    def cleanup_config(self):
+        ''' '''
+        for orphan in self.get_orphaned_analyzers():
+            self.delete_statements(self.config_repository,
+                                   subj='_:%s' % orphan,
+                                   delete=True)
+
+    def get_orphaned_analyzers(self):
+        profiles = self.get_profiles()
+        configured = []
+        for profile in profiles.itervalues():
+            configured.extend(profile['analyzers'])
+
+        orphaned = []
+        query = QUERIES['all_subjects']
+        for result in self.run_query(self.config_repository, query):
+            name = result['s']['value']
+            if name.startswith('genid'):
+                if name in configured:
+                    pass
+                else:
+                    orphaned.append(name)
+        return orphaned
+
+    def get_profiles(self):
+        ''' returns a dictionary (subject_uri, profile_name) for all profiles
+        configured in the config repositoriy
+        '''
+        self.check_config_repo()
+
+        query = QUERIES['configured_profiles']
+        profiles = {}
+
+        for result in self.run_query(self.config_repository, query):
+            profile = {}
+            profile_name = result['profile_name']['value']
+            profile['subject_uri'] = result['s']['value']
+            profile['analyzers'] = [result['analyzer']['value']]
+            if profile_name in profiles:
+                profiles[profile_name]['analyzers'].extend(
+                    profile['analyzers'])
+            else:
+                profiles[profile_name] = profile
+
+        return profiles
+
+    def remove_profile(self, profile_name):
+        ''' Removes a given profile name '''
+        subject_uris = []
+        profiles = self.get_profiles()
+        if profile_name in profiles:
+            profile = profiles[profile_name]
+            if not profile_name.startswith('pr:'):
+                profile_name = 'pr:%s' % profile_name
+
+            subject_uris.extend(
+                ['<%s>' % analyzer for analyzer in profile['analyzers']])
+            subject_uris.append('<%s>' % profile['subject_uri'])
+
+        if len(subject_uris):
+            #             if not subject_uri.startswith('pr:'):
+            #                 subject_uri = 'pr:%s' % subject_uri
+            #             if not subject_uri.endswith('>'):
+            #                 subject_uri = '%s>' % subject_uri
+            for subject_uri in subject_uris:
+                try:
+                    self.delete_statements(self.config_repository,
+                                           subj=subject_uri,
+                                           delete=True)
+                except (Exception) as e:
+                    print(e)
+
+    def update_profile(self, profile_name, profile_definition):
+        ''' Updates the given profile on the server '''
+
+        profiles = self.get_profiles()
+
+        if profile_name in profiles:
+            print(profile_name)
+            subject_uri = profiles[profile_name]
+
+            # TODO: check why we need to fix this????
+            if not subject_uri.endswith('>'):
+                subject_uri = '%s>' % subject_uri
+
+            self.delete_statements(self.config_repository,
+                                   subj=subject_uri,
+                                   delete=True)
+        self.upload_statement(content=profile_definition,
+                              context='config.weblyzard.com',
+                              target_repository=self.config_repository)
+
+    def check_config_repo(self):
+        repositories = self.get_repositories()
+
+        if not self.config_repository in repositories:
+            print('warning config repo "%s" does not exist') % self.config_repository
+            
 if __name__ == '__main__':
     unittest.main()

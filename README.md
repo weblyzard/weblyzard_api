@@ -1,10 +1,11 @@
-## The webLyzard API
+# The webLyzard API
 
 Provides access to all webLyzard Web services through a python and java library.
 
 Full Documentation is available at http://weblyzard-api.readthedocs.org/en/latest/
 
-### Configuration
+
+## Configuration
 
 The API needs to know the URL, user and password used for the Web service. These data may be 
 
@@ -32,25 +33,46 @@ If you have already set the variables using `.bash_profile`, when you run a scri
 source ~/.bash_profile
 ```
 
-### Available interfaces:
+## Available interfaces:
 
 The following interfaces are currently available for `weblyzard_api`:
 
-+ domain specificity (document relevance in regard of a particular domain)
-+ Jeremia (text pre-processing)
-+ Jesaja (keyword server)
-+ OpenRDF (access OpenRDF linked open data repositories)
-+ POS (part of speech tagging)
-+ Recognize (named entity recognition)
-+ Sentiment Analysis
++ **domain specificity:** document relevance in regard of a particular domain)
++ **Jeremia**: text pre-processing (pos tagger, dependency parser, sentence splitter, languag detection)
++ **Jesaja**: keyword extraction
++ **OpenRDF**: access OpenRDF linked open data repositories
++ **Recognize**: named entity recognition
++ **Sentiment Analysis**:
+
+
+
+
+## Java API 
+
+### Jeremia Client 
+
+### Jairo Client 
+
+### Jesaia Client 
+
+### Joel Client 
+
+### Joseph Client 
+
+### Recognize Client 
+
+
+
+## Python API 
+
 
 ### Examples
 
 Example scripts are available in the `example` directory.
 
-+ `examples/keywords` - example keywords and pre-processing script.
++ `examples/keywords/compute-keywords.py` - example keywords and pre-processing script.
 
-### Programming Guidelines
+# Programming Guidelines
 
 + Required documentation for public methods
   + docstring explaining what the method does
