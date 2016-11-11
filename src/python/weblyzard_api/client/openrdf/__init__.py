@@ -11,13 +11,10 @@ http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrd
 
 '''
 import ast
-
 import httplib2
 import json
 import os
 import requests
-import unittest
-
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import namedtuple
@@ -331,6 +328,3 @@ class RecognizeOpenRdfClient(OpenRdfClient):
 
         if not self.config_repository in repositories:
             print('warning config repo "%s" does not exist') % self.config_repository
-            
-if __name__ == '__main__':
-    unittest.main()
