@@ -44,7 +44,7 @@ public class Sentence implements Serializable {
 	@JsonProperty("is_title")
 	@XmlAttribute(name="is_title", namespace=Document.NS_WEBLYZARD)
 	@XmlJavaTypeAdapter(BooleanAdapter.class)
-	private boolean isTitle;
+	private Boolean isTitle;
 
 	@JsonProperty("text")
 	@XmlValue 
@@ -116,11 +116,11 @@ public class Sentence implements Serializable {
 		return this;
 	}
 
-	public boolean getIsTitle() {
+	public Boolean getIsTitle() {
 		return isTitle;
 	}
 	
-	public Sentence setIsTitle(boolean isTitle) {
+	public Sentence setIsTitle(Boolean isTitle) {
 		this.isTitle = isTitle;
 		return this;
 	}
