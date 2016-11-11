@@ -11,21 +11,21 @@ http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrd
 
 '''
 import ast
-from collections import namedtuple
 import httplib2
 import json
 import os
-from pprint import pprint
 import requests
 import unittest
+import urllib
+
+from collections import namedtuple
+from pprint import pprint
+from SPARQLWrapper import SPARQLWrapper, JSON
+
 try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
-import urllib
-from SPARQLWrapper import SPARQLWrapper, JSON
- 
-
 
 QUERIES = {
            'configured_profiles': '''
