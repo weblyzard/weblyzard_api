@@ -12,6 +12,7 @@ import requests
 class SKBRESTClient():
     
     TRANSLATION_PATH = '1.0/skb/translation?'
+    TITLE_TRANSLATION_PATH = '1.0/skb/title_translation?'
 
     def __init__(self, url):
         '''
@@ -21,4 +22,8 @@ class SKBRESTClient():
 
     def translate(self, **kwargs):
         response = requests.get('%s/%s' % (self.url, self.TRANSLATION_PATH), params=kwargs)
+        return(response.text, kwargs['target'])
+
+    def title_translate(self, **kwargs):
+        response = requests.get('%s/%s' % (self.url, self.TITLE_TRANSLATION_PATH), params=kwargs)
         return(response.text, kwargs['target'])
