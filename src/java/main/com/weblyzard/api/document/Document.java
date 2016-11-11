@@ -242,7 +242,7 @@ public class Document implements Serializable {
     public static String getXmlRepresentation(Document document) throws JAXBException {
     	StringWriter stringWriter = new StringWriter();
     	JAXBElement<Document> jaxbElement = new JAXBElement<Document>(
-    			new QName(Document.NS_WEBLYZARD, "wl:page", "wl"), Document.class, document);
+    			new QName(Document.NS_WEBLYZARD, "page", "wl"), Document.class, document);
     	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
     	Marshaller xmlMarshaller = jaxbContext.createMarshaller();
     	xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
