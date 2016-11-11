@@ -24,6 +24,7 @@ class XML2013(XMLParser):
                     '{%s}lang' % DOCUMENT_NAMESPACES['xml']: 'lang', #kept for legacy
                     '{%s}format' % DOCUMENT_NAMESPACES['dc']: 'content_type',
                     '{%s}language' % DOCUMENT_NAMESPACES['dc']: 'language',
+                    '{%s}language' % DOCUMENT_NAMESPACES['dc']: 'lang',
                     '{%s}source' % DOCUMENT_NAMESPACES['dc']: 'source',
                     '{%s}identifier' % DOCUMENT_NAMESPACES['dc']: 'url',
                     '{%s}license' % DOCUMENT_NAMESPACES['dc']: 'license',
@@ -55,17 +56,18 @@ class XML2013(XMLParser):
                     '{%s}num_views' % DOCUMENT_NAMESPACES['wl']: 'viewcount', #vimeo/daily
                     '{%s}num_views' % DOCUMENT_NAMESPACES['wl']: 'statistics_viewcount', #youtube
                     '{%s}num_replies' % DOCUMENT_NAMESPACES['wl']: 'comment_count',
-                    '{%s}num_reshares' % DOCUMENT_NAMESPACES['wl']: 'reshares', #g+, twitter                    
+                    '{%s}num_reshares' % DOCUMENT_NAMESPACES['wl']: 'reshares', #g+ 
+                    '{%s}num_reshares' % DOCUMENT_NAMESPACES['wl']: 'nr_of_retweets', #twitter                    
                     
                     #USER MAPPTINGS
                     '{%s}user_id' % DOCUMENT_NAMESPACES['wl']: 'user_id', #FB, G+
-                    '{%s}user_id' % DOCUMENT_NAMESPACES['wl']: 'user_url', #YT
+                    '{%s}user_id' % DOCUMENT_NAMESPACES['wl']: 'user_url', #YT, twitter
                     '{%s}user_name' % DOCUMENT_NAMESPACES['wl']: 'user_name',
                     '{%s}user_type' % DOCUMENT_NAMESPACES['wl']: 'user_type',
                     '{%s}user_status' % DOCUMENT_NAMESPACES['wl']: 'current_status', #twitter
                     '{%s}user_screen_name' % DOCUMENT_NAMESPACES['wl']: 'screen_name',
                     '{%s}user_location' % DOCUMENT_NAMESPACES['wl']: 'user_location', #twitter
-                    '{%s}user_timezone' % DOCUMENT_NAMESPACES['wl']: 'user_timezone', #twitter
+                    '{%s}user_timezone' % DOCUMENT_NAMESPACES['wl']: 'user_time_zone', #twitter
                     '{%s}user_thumbnail' % DOCUMENT_NAMESPACES['wl']: 'user_thumbnail',
                     '{%s}user_thumbnail' % DOCUMENT_NAMESPACES['wl']: 'user_img_url', #twitter
                     
