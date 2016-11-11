@@ -33,6 +33,13 @@ If you have already set the variables using `.bash_profile`, when you run a scri
 source ~/.bash_profile
 ```
 
+### Runtime Configuration for Eclipse 
+
+To run the unit tests in eclipse, the environment variables have to be set in the runtime configuration: 
+
+![images/eclipse-runtime-config-junittests.png](images/eclipse-runtime-config-junittests.png)
+
+
 ## Available interfaces:
 
 The following interfaces are currently available for `weblyzard_api`:
@@ -44,26 +51,11 @@ The following interfaces are currently available for `weblyzard_api`:
 + **Recognize**: named entity recognition
 + **Sentiment Analysis**:
 
-
-
-
-## Java API 
-
-### Jeremia Client 
-
-### Jairo Client 
-
-### Jesaia Client 
-
-### Joel Client 
-
-### Joseph Client 
-
-### Recognize Client 
-
-
-
 ## Python API 
+
+### running test for jeremia 
+
+weblyzard_api/tests/python/client$ python test_jeremia.py "Ehre sei Gott!"
 
 
 ### Examples
