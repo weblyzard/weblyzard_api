@@ -100,6 +100,7 @@ public class Document implements Serializable {
 	
 	// private field that contains all annotations after the
 	// documents finalization
+	@JsonProperty("annotations")
 	@XmlElement(name="annotation", namespace=Document.NS_WEBLYZARD)
 	private List<Annotation> annotations;
 
