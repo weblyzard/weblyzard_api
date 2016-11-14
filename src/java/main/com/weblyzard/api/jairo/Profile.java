@@ -71,7 +71,6 @@ public class Profile implements Serializable {
 	    final Profile other = (Profile) obj;
 	    
 	    return new EqualsBuilder()
-                .appendSuper(super.equals(obj))
                 .append(this.query, other.query)
                 .append(this.sparqlEndpoint, other.sparqlEndpoint)
                 .isEquals();
