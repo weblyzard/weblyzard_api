@@ -7,7 +7,7 @@ import json
 from pprint import pprint
 
 from weblyzard_api.xml_content import Sentence, LabeledDependency, XMLContent
-from test_helper import get_test_data
+from weblyzard_api.tests.test_helper import get_test_data
 
 class TestXMLContent(unittest.TestCase):
 

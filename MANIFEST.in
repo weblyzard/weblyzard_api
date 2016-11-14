@@ -1,0 +1,4 @@
+include src/python/weblyzard_api/tests/data/*
+include src/python/weblyzard_api/tests/xml_content/*
+include src/python/weblyzard_api/tests/client/*
+include src/python/weblyzard_api/tests/*

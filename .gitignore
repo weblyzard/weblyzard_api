@@ -44,6 +44,9 @@ dist
 *.pyc
 *.pyo
 *.tmp*
+.cache
+.coverage
+coverage.xml
 
 # Java               #
 ######################
