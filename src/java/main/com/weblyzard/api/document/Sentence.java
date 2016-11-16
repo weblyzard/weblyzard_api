@@ -117,7 +117,7 @@ public class Sentence implements Serializable {
 	}
 
 	public Boolean getIsTitle() {
-		return isTitle;
+		return Boolean.TRUE.equals(isTitle);
 	}
 	
 	public Sentence setIsTitle(Boolean isTitle) {
