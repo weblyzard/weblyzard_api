@@ -20,5 +20,6 @@ setup (
                         'sparqlwrapper'],
     dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.12'],
     zip_safe = False,
+    include_package_data=True,
     scripts = ['src/python/weblyzard_api/client/openrdf/wl_upload_repository.py',]
 )

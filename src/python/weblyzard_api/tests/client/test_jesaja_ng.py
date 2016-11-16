@@ -11,7 +11,7 @@ from cPickle import load
 
 from weblyzard_api.client.jesaja_ng import JesajaNg
 
-from test_helper import get_full_path
+from weblyzard_api.tests.test_helper import get_full_path
 
 
 class JesajaNgTest(unittest.TestCase):

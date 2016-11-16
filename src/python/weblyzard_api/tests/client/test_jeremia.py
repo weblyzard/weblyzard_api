@@ -207,7 +207,7 @@ class JeremiaTest(unittest.TestCase):
         assert has_queued_threads == True or has_queued_threads == False
 
     def test_has_queued_threads_exception(self):
-        j = Jeremia(url='http://localhost:6666')
+        j = Jeremia(url='http://localhost:8080')
         has_queued_threads = j.has_queued_threads()
         assert has_queued_threads == True
 

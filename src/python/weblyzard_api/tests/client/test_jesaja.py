@@ -11,7 +11,7 @@ from cPickle import load
 from weblyzard_api.client.jesaja import Jesaja
 from weblyzard_api.xml_content import XMLContent
 
-from test_helper import get_full_path
+from weblyzard_api.tests.test_helper import get_full_path
 
 class JesajaTest(unittest.TestCase):
 
