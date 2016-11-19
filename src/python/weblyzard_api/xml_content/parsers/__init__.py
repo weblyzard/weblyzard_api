@@ -158,6 +158,7 @@ class XMLParser(object):
 
     @classmethod
     def cast_item(cls, item):
+        # isinstance(item, basestring)
         if item.lower()=='true':
             return True
         elif item.lower()=='false':
@@ -173,6 +174,10 @@ class XMLParser(object):
         except Exception:
             pass
         
+        try:
+            return json.loads(item)
+        except Exception:
+            pass
         return item
         
     @classmethod
@@ -326,7 +331,7 @@ class XMLParser(object):
                             except Exception, e:
                                 continue
                
-        # featrure mappings if specified             
+        # feature mappings if specified             
         if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
             feature_mapping = dict(zip(cls.FEATURE_MAPPING.values(),
                                        cls.FEATURE_MAPPING.keys()))
@@ -343,11 +348,17 @@ class XMLParser(object):
                                                      '{%s}feature' % cls.get_default_ns(),
                                                      attrib=feature_attributes,
                                                      nsmap=cls.DOCUMENT_NAMESPACES)
-                        if isinstance(value, int) or isinstance(value, float) or \
-                            isinstance(value, list):
+                        if isinstance(value, int) or isinstance(value, float):
                             value = str(value)
-                        
+                        elif isinstance(value, list) or isinstance(value, dict):
+                            try:
+                                value = json.dumps(value)
+                            except Exception, e:
+                                logger.error('could not encode %s: %s' % (value, e))
+                                value = str(value)      
+
                         feat_elem.text = etree.CDATA(value)
+        
                     except Exception, e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
@@ -369,10 +380,17 @@ class XMLParser(object):
                                                     '{%s}relation' % cls.get_default_ns(),
                                                     attrib=rel_attributes,
                                                     nsmap=cls.DOCUMENT_NAMESPACES)
-                        if isinstance(value, int) or isinstance(value, list):
+                        if isinstance(value, int) or isinstance(value, float):
                             value = str(value)
-                        
+                        elif isinstance(value, list) or isinstance(value, dict):
+                            try:
+                                value = json.dumps(value)
+                            except Exception, e:
+                                logger.error('could not encode %s: %s' % (value, e))
+                                value = str(value)      
+
                         rel_elem.text = etree.CDATA(value)
+                        
                     except Exception, e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
