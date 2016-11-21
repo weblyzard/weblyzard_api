@@ -76,8 +76,13 @@ class XMLParser(object):
         root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''),
                                 parser=parser)
         try:
+            if cls.ATTR_MAPPING:
+                invert_mapping = dict(zip(cls.ATTR_MAPPING.values(),
+                    cls.ATTR_MAPPING.keys()))
+            else:
+                invert_mapping = None
             attributes = cls.load_attributes(root.attrib,
-                                             mapping=cls.ATTR_MAPPING)
+                                             mapping=invert_mapping)
         except Exception, e:
             attributes = {}
 
@@ -252,14 +257,8 @@ class XMLParser(object):
         if attributes:
             assert isinstance(attributes, dict), 'dict required'
 
-        if cls.ATTR_MAPPING:
-            invert_mapping = dict(zip(cls.ATTR_MAPPING.values(),
-                cls.ATTR_MAPPING.keys()))
-        else:
-            invert_mapping = None
-
         attributes = cls.dump_xml_attributes(attributes=attributes,
-                                             mapping=invert_mapping)
+                                             mapping=cls.ATTR_MAPPING)
         try:
             attributes = cls.clean_attributes(attributes)
         except Exception as e:
