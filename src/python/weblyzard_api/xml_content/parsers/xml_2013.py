@@ -25,6 +25,9 @@ class XML2013(XMLParser):
                     '{%s}format' % DOCUMENT_NAMESPACES['dc']: 'content_type',
                     '{%s}language' % DOCUMENT_NAMESPACES['dc']: 'language',
                     '{%s}language' % DOCUMENT_NAMESPACES['dc']: 'lang',
+                    '{%s}issued' % DOCUMENT_NAMESPACES['dc']: 'publication_date',
+                    '{%s}issued' % DOCUMENT_NAMESPACES['dc']: 'published_date',
+                    '{%s}modified' % DOCUMENT_NAMESPACES['dc']: 'last_modified',
                     '{%s}source' % DOCUMENT_NAMESPACES['dc']: 'source',
                     '{%s}identifier' % DOCUMENT_NAMESPACES['dc']: 'url',
                     '{%s}license' % DOCUMENT_NAMESPACES['dc']: 'license',
@@ -40,7 +43,6 @@ class XML2013(XMLParser):
                     '{%s}location' % DOCUMENT_NAMESPACES['wl']: 'location',
                     '{%s}duration' % DOCUMENT_NAMESPACES['wl']: 'duration', #YT, vimeo/daily
                     '{%s}mediacriticism' % DOCUMENT_NAMESPACES['wl']: 'mediacriticism', #to be migrated to features, eventually
-                    '{%s}article_content_id' % DOCUMENT_NAMESPACES['wl']: 'article_content_id', #to be migrated to relations eventually
                     
                     #INVID
                     '{%s}locator' % DOCUMENT_NAMESPACES['ma']: 'media_url',
