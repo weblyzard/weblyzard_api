@@ -355,12 +355,16 @@ class XMLContent(object):
         if not hasattr(self, 'relations'):
             self.relations = {}
             
-        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
-                                                                 attributes=self.attributes, 
-                                                                 sentences=self.sentences,
-                                                                 annotations=annotations,
-                                                                 features=self.features,
-                                                                 relations=self.relations)
+        xml_parser = self.SUPPORTED_XML_VERSIONS[xml_version]
+        
+        for attr in self.attributes.keys():
+            if not attr in xml_parser.ATTR_MAPPING.keys():
+                print 'cid: %s -- moving %s to features' % (self.content_id, attr)
+                self.features[attr] = self.attributes[attr]
+                del self.attributes[attr]
+        return xml_parser.dump_xml(titles=self.titles, attributes=self.attributes, 
+                                   sentences=self.sentences, annotations=annotations,
+                                   features=self.features, relations=self.relations)
 
     def get_plain_text(self):
         ''' :returns: the plain text of the XML content '''
