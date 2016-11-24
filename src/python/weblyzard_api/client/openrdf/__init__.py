@@ -316,7 +316,7 @@ class OpenRdfClient(object):
 class RecognizeOpenRdfClient(OpenRdfClient):
     
     def __init__(self, server_uri, config_repository='config.weblyzard.com'):
-        super(OpenRdfClient, self).__init(server_uri)
+        OpenRdfClient.__init__(self, server_uri)
         self.config_repository = config_repository
         
     def cleanup_config(self):
