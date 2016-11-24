@@ -13,6 +13,13 @@ def cleanup_config(service_url, config_repository):
                            config_repository=config_repository)
     client.cleanup_config()
 
+def remove_all_profiles(service_url, config_repository):
+    ''' '''
+    client = OpenRdfClient(server_uri=service_url,
+                           config_repository=config_repository)
+    for profile_name in client.get_profiles():
+        client.remove_profile(profile_name)
+        
 def remove_profile(profile_name, service_url, config_repository):
     ''' '''
     client = OpenRdfClient(server_uri=service_url,
@@ -62,10 +69,12 @@ if __name__ == '__main__':
                         help='location of the profile definition file --> ttl')
     parser.add_argument('--remove-profile', dest='remove',
                         help='location of the profile definition to remove')
+    parser.add_argument('--remove-all-profiles', dest='remove_all',
+                        help='removes all profiles from the config repo')
     parser.add_argument('--config-repository', dest='config_repo',
                         help='location of the profile definitions')
-    parser.add_argument('--clean', dest='clean', action='store_true',
-                        help='clean flag to clean weblyzard configuration repository')
+    parser.add_argument('--clean-orphans', dest='clean_orphans', action='store_true',
+                        help='cleanup flag to clean weblyzard configuration repository')
     parser.add_argument('--service-url', dest='service_url', required=True,
                         help='the service url to upload the profile to')
 
@@ -81,7 +90,11 @@ if __name__ == '__main__':
                        service_url=args.service_url,
                        config_repository=args.config_repo)
 
-    if args.clean:
+    elif args.remove_all:
+        remove_all_profiles(service_url=args.service_url,
+                            config_repository=args.config_repo)
+        
+    if args.clean_orphans:
         cleanup_config(service_url=args.service_url,
                        config_repository=args.config_repo)
 
