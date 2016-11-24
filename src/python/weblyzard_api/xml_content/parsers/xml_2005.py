@@ -21,6 +21,7 @@ class XML2005(XMLParser):
                     'title_de': 'title_de',
                     'title_en': 'title_en',
                     'title_fr': 'title_fr',
+                    'lang': 'lang',
                     }
     SENTENCE_MAPPING = {'pos_tags': 'pos',
                         'md5sum': 'md5sum',
