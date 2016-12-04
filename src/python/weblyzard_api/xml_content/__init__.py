@@ -17,15 +17,12 @@ Remove functions:
  - compatibility fixes for namespaces, encodings etc.
  - support for the old POS tags mapping.
 '''
-
-from collections import namedtuple
 import json
 import logging
-from lxml import etree
-from pprint import pprint
-
-import unittest
 import hashlib
+
+from collections import namedtuple
+from lxml import etree
 
 from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
 from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
@@ -355,16 +352,12 @@ class XMLContent(object):
         if not hasattr(self, 'relations'):
             self.relations = {}
             
-        xml_parser = self.SUPPORTED_XML_VERSIONS[xml_version]
-        
-        for attr in self.attributes.keys():
-            if not attr in xml_parser.ATTR_MAPPING.keys():
-                print 'cid: %s -- moving %s to features' % (self.content_id, attr)
-                self.features[attr] = self.attributes[attr]
-                del self.attributes[attr]
-        return xml_parser.dump_xml(titles=self.titles, attributes=self.attributes, 
-                                   sentences=self.sentences, annotations=annotations,
-                                   features=self.features, relations=self.relations)
+        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
+                                                                 attributes=self.attributes, 
+                                                                 sentences=self.sentences,
+                                                                 annotations=annotations,
+                                                                 features=self.features,
+                                                                 relations=self.relations)
 
     def get_plain_text(self):
         ''' :returns: the plain text of the XML content '''
