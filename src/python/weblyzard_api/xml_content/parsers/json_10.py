@@ -9,6 +9,8 @@ JSON format.
 
 import json
 
+from datetime import datetime
+
 from weblyzard_api.xml_content import Sentence, XMLContent
 
 class MissingContentException(Exception):
@@ -23,7 +25,11 @@ class MissingFieldException(Exception):
     '''
     pass
 
-
+class UnsupportedValueException(Exception):
+    '''
+    Exception class thrown if a JSON document contains an unsupported value.
+    '''
+    pass 
 class UnexpectedFieldException(Exception):
     '''
     Exception class thrown if a JSON document contains an unexpected field.
@@ -120,7 +126,7 @@ class JSONParserBase(object):
         '''
         Checks if the api_dict has all required fields and if there
         are unexpected and unallowed keys. 
-
+ 
         :param api_dict: The dict to check.
         :type api_dict: dict
         :param strict: If set to true, an UnexpectedFieldException is raised \
@@ -138,22 +144,38 @@ class JSONParserBase(object):
                         ', '.join(unexpected_fields))
 
     @classmethod
-    def _validate_document(cls, json_document):
+    def _validate_document(cls, json_document, strict=True):
         ''' '''
+        cls._check_document_format(json_document, strict)
         if 'content' in json_document and 'content_type' not in json_document:
             raise MissingFieldException(
                     "When field 'content' is set, 'content_type' must be set, too.")
         elif 'content_type' in json_document and 'content' not in json_document:
             raise MissingFieldException(
                     "When field 'content_type' is set, 'content' must be set, too.")
-        elif 'content' not in json_document and \
-                'content_type' not in json_document and \
+        elif 'content' not in json_document and 'content_type' not in json_document and\
                 'sentences' not in json_document:
             raise MissingFieldException(
                     "Either 'sentences' or 'content' and 'content_type' must be set.")
         if 'content' in json_document and 'sentences' in json_document:
             raise MalformedJSONException(
                     "If 'sentences' is set, 'content' must not be set.")
+        if not json_document['content_type'] in cls.SUPPORTED_CONTENT_TYPES:
+            raise UnsupportedValueException("content_type %s is not supported. Supported are %s" % 
+                                            (json_document['content_type'], 
+                                             cls.SUPPORTED_CONTENT_TYPES))
+        meta_data = json_document.get('meta_data', {})
+        
+        valid_from = None
+        if 'published_date' in meta_data:
+            try:
+                from dateutil.parser import parse
+                valid_from = parse(meta_data['published_date'])
+            except Exception as e:
+                raise MissingFieldException(
+                    "Could not process published_date: %s" % meta_data['published_date'])
+            if not isinstance(valid_from, datetime):
+                raise UnsupportedValueException('Field published_date set but not parseable')
             
 class JSON10ParserXMLContent(JSONParserBase):
     '''
