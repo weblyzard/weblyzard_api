@@ -4,7 +4,7 @@
 
 	<groupId>com.weblyzard.api</groupId>
 	<artifactId>weblyzard-api</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6</version>
 	<packaging>jar</packaging>
 
 	<name>com.weblyzard.api.weblyzard-api</name>
