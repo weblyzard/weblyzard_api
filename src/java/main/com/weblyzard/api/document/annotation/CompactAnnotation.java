@@ -46,6 +46,10 @@ public class CompactAnnotation extends Annotation {
 		return this;
 	}
 
+	public void setEntities(List<AnnotationSurface> entities) {
+		this.entities = entities;
+	}
+	
 	public List<AnnotationSurface> getEntities() {
 		return entities;
 	}
