@@ -1,9 +1,8 @@
-# #! /usr/bin/env python
-# # -*- coding: utf-8 -*-
-# import unittest
-# 
-# from weblyzard_api.client.skb_rest_client import SKBRESTClient
-# from wl_core_ng.models.documents_batch import MatviewDocumentsBatch
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import unittest
+ 
+from weblyzard_api.client.skb_rest_client import SKBRESTClient
 # 
 # 
 # class TestSKBRESTClient(unittest.TestCase):
@@ -44,5 +43,32 @@
 #             assert(result[0] == expected_translations[source])
 #             assert(result[1] == 'en')
 # 
-# if __name__ == '__main__':
-#     unittest.main()
+
+class TestSKBKeywords(unittest.TestCase):
+    
+    def test_save_keyword(self):
+        skb_client = SKBRESTClient(url='http://localhost:5002')
+        kw_annotation = {
+            "topEntityId": "energy",
+            "confidence": 786.2216230656553,
+            "entities": [{
+                "surfaceForm": "energy",
+                "start": 112,
+                "end": 118,
+                "sentence": 0
+            }],
+            "grounded": True,
+            "scoreName": "CONFIDENCE x OCCURENCE",
+            "entityType": "GemetEntity",
+            "score": 786.22,
+            "key": "http://www.eionet.europa.eu/gemet/concept/2712",
+            "profileName": "en.gemet",
+            "properties": {
+                "definition": "The capacity to do work; involving thermal energy (heat), radiant energy (light), kinetic energy (motion) or chemical energy; measured in joules."
+            },
+            "preferredName": "energy"
+        }
+        assert(skb_client.save_doc_kw_skb(kw_annotation) == 'Done')
+
+if __name__ == '__main__':
+    unittest.main()
