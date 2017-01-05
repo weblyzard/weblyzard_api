@@ -137,6 +137,20 @@ class Recognize(MultiRESTClient):
         ''' removes a profile from the list of pre-loaded profiles '''
         return self.request('remove_profile/%s' % profile_name)
 
+    def extract_geo_location(self, text, language='en'):
+        ''' convenience method to extract a GEO location from free text '''
+        profile_names = ['%s.geo.500000.ng' % language]
+        for profile_name in profile_names:
+            self.add_profile(profile_name)
+        return self.request(path='search',
+                            parameters=text,
+                            query_parameters={'profileNames' : profile_names,
+                                              'rescore': 1,
+                                              'buckets': 1,
+                                              'limit': 1,
+                                              'wt': 'compact',
+                                              'debug': False})
+        
     def search_text(self, profile_names, text, debug=False, max_entities=1,
             buckets=1, limit=1, output_format='minimal'):
         '''

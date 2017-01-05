@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.weblyzard.api.document.Document;
 
 /**
@@ -25,6 +26,7 @@ public class CompactAnnotation extends Annotation {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@JsonProperty("entities")
 	@XmlElement(name="entities", namespace=Document.NS_WEBLYZARD)
 	public List<AnnotationSurface> entities;
 	
@@ -46,6 +48,10 @@ public class CompactAnnotation extends Annotation {
 		return this;
 	}
 
+	public void setEntities(List<AnnotationSurface> entities) {
+		this.entities = entities;
+	}
+	
 	public List<AnnotationSurface> getEntities() {
 		return entities;
 	}

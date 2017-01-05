@@ -17,15 +17,12 @@ Remove functions:
  - compatibility fixes for namespaces, encodings etc.
  - support for the old POS tags mapping.
 '''
-
-from collections import namedtuple
 import json
 import logging
-from lxml import etree
-from pprint import pprint
-
-import unittest
 import hashlib
+
+from collections import namedtuple
+from lxml import etree
 
 from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
 from weblyzard_api.xml_content.parsers.xml_2013 import XML2013

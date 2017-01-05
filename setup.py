@@ -6,7 +6,7 @@ from setuptools.command import sdist
 
 setup (
     name = 'weblyzard_api',
-    version = '0.7.20161102.1-dev',
+    version = '0.7.20161215-dev',
     description= ' Web services for weblyzard',
     author = 'Albert Weichselbraun, Heinz-Peter Lang, Max Göbel and Philipp Kuntschik',
     author_email = 'weichselbraun@weblyzard.com',
@@ -20,5 +20,6 @@ setup (
                         'sparqlwrapper'],
     dependency_links = ['git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.12'],
     zip_safe = False,
+    include_package_data=True,
     scripts = ['src/python/weblyzard_api/client/openrdf/wl_upload_repository.py',]
 )
