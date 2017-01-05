@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 import unittest
  
 from weblyzard_api.client.skb_rest_client import SKBRESTClient
@@ -47,7 +48,7 @@ from weblyzard_api.client.skb_rest_client import SKBRESTClient
 class TestSKBKeywords(unittest.TestCase):
     
     def test_save_keyword(self):
-        skb_client = SKBRESTClient(url='http://localhost:5002')
+        skb_client = SKBRESTClient(url=os.getenv('WL_SKB_UNITTEST_URL'))
         kw_annotation = {
             "topEntityId": "energy",
             "confidence": 786.2216230656553,
