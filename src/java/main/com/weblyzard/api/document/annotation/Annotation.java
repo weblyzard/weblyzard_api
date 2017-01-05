@@ -1,6 +1,7 @@
 package com.weblyzard.api.document.annotation; 
  
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,14 @@ public class Annotation implements Serializable {
 	 * The custom Serializer {@link AnnotationSerializer} writes the keys of this map 
 	 * as fields to the json annotation objects 
 	 */
-	public Map<String, List<String>> header = new HashMap<>(); 
+	public Map<String, ArrayList<String>> header = new HashMap<>(); 
      
+	/**
+	 * field to store types when annotation is extended with jairo service
+	 */
+	private List<String> type = new ArrayList<>();  
+
+	
     /** 
      * unique identifier of the annotation 
      */ 
@@ -90,11 +97,11 @@ public class Annotation implements Serializable {
         return "key: "+key+" surfaceForm: "+surfaceForm+" start: "+start+" end: "+end+" md5: "+md5sum; 
     }
 
-	public Map<String, List<String>> getHeader() {
+	public Map<String, ArrayList<String>> getHeader() {
 		return header;
 	}
 
-	public Annotation setHeader(Map<String, List<String>> header) {
+	public Annotation setHeader(Map<String, ArrayList<String>> header) {
 		this.header = header;
 		return this;
 	}
@@ -178,6 +185,13 @@ public class Annotation implements Serializable {
 	public Annotation setAnnotationType(String annotationType) {
 		this.annotationType = annotationType;
 		return this;
-	} 
-     
+	}
+
+	public List<String> getType() {
+		return type;
+	}
+
+	public void setType(List<String> type) {
+		this.type = type;
+	}  
 }

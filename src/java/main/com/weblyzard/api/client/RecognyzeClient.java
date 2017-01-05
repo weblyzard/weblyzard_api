@@ -1,9 +1,10 @@
 package com.weblyzard.api.client;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -12,6 +13,11 @@ import javax.ws.rs.core.Response;
 import com.weblyzard.api.document.Document;
 import com.weblyzard.api.recognyze.RecognyzeResult;
 
+/**
+ * 
+ * @author philipp.kuntschik@htwchur.ch
+ *
+ */
 public class RecognyzeClient extends BasicClient {
 
 	private static final String ADD_PROFILE_SERVICE_URL = "/Recognize/rest/load_profile/";
@@ -34,9 +40,9 @@ public class RecognyzeClient extends BasicClient {
 		super(weblyzard_url, username, password);
 	}
 
-	public boolean loadProfile(String profileName) throws ClientErrorException {
+	public boolean loadProfile(String profileName) throws WebApplicationException {
 
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(ADD_PROFILE_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.get();
@@ -51,15 +57,15 @@ public class RecognyzeClient extends BasicClient {
 
 
 
-	public Set<RecognyzeResult> searchText(String profileName, String data) throws ClientErrorException {
+	public Set<RecognyzeResult> searchText(String profileName, String data) throws WebApplicationException {
 		return this.searchText(profileName, data, 0);
 	}
 
 
 
-	public Set<RecognyzeResult> searchText(String profileName, String data, int limit) throws ClientErrorException {
+	public Set<RecognyzeResult> searchText(String profileName, String data, int limit) throws WebApplicationException {
 
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(SEARCH_TEXT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
@@ -69,12 +75,12 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Set<RecognyzeResult>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptySet() : result;
 	}
 
 
 
-	public Set<RecognyzeResult> searchDocument(String profileName, Document data) throws ClientErrorException {
+	public Set<RecognyzeResult> searchDocument(String profileName, Document data) throws WebApplicationException {
 
 		return this.searchDocument(profileName, data, 0);
 	}
@@ -82,9 +88,9 @@ public class RecognyzeClient extends BasicClient {
 
 
 	public Set<RecognyzeResult> searchDocument(String profileName, Document data, int limit)
-			throws ClientErrorException {
+			throws WebApplicationException {
 
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(SEARCH_DOCUMENT_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
@@ -94,13 +100,13 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Set<RecognyzeResult>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptySet() : result;
 	}
 
 
 
 	public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data)
-			throws ClientErrorException {
+			throws WebApplicationException {
 
 		return this.searchDocuments(profileName, data, 0);
 	}
@@ -108,9 +114,9 @@ public class RecognyzeClient extends BasicClient {
 
 
 	public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data, int limit)
-			throws ClientErrorException {
+			throws WebApplicationException {
 		
-		Response response = super.target
+		Response response = super.getTarget()
 				.path(SEARCH_DOCUMENTS_SERVICE_URL + "?" + PROFILENAME + profileName + "&" + LIMIT + limit)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
@@ -120,14 +126,14 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Map<String, Set<RecognyzeResult>>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptyMap() : result;
 	}
 
 
 
-	public Map<String, Object> status() throws ClientErrorException {
+	public Map<String, Object> status() throws WebApplicationException {
 		
-		Response response = super.target.path(STATUS_SERVICE_URL)
+		Response response = super.getTarget().path(STATUS_SERVICE_URL)
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.get();
 
@@ -136,6 +142,6 @@ public class RecognyzeClient extends BasicClient {
 				.readEntity(new GenericType<Map<String, Object>>() {});
 		response.close();
 
-		return result;
+		return result == null ? Collections.emptyMap() : result;
 	}
 }

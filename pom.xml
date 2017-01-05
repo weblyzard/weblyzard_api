@@ -4,7 +4,7 @@
 
 	<groupId>com.weblyzard.api</groupId>
 	<artifactId>weblyzard-api</artifactId>
-	<version>0.0.7-SNAPSHOT</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>com.weblyzard.api.weblyzard-api</name>
@@ -24,6 +24,18 @@
 			<email>weichselbraun@weblyzard.com</email>
 			<organization>Weblyzard</organization>
 			<organizationUrl>http://weblyzard.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>Philipp Kuntschik</name>
+			<email>philipp.kuntschik@htwchur.ch</email>
+			<organization>University of Applied Sciences Chur</organization>
+			<organizationUrl>http://www.htwchur.ch/person/kuntschik.philipp.html</organizationUrl>
+		</developer>
+		<developer>
+			<name>Norman Süsstrunk</name>
+			<email>norman.suesstrunk@htwchur.ch</email>
+			<organization>HTW Chur</organization>
+			<organizationUrl>http://htwchur.ch</organizationUrl>
 		</developer>
 	</developers>
 
@@ -48,22 +60,59 @@
 		</repository>
 	</repositories>
 
-	<!-- <distributionManagement> <repository> <uniqueVersion>false</uniqueVersion> 
-		<id>code.semanticlab.net</id> <name>semanticlab deployment repository</name> 
-		<url>dav:http://code.semanticlab.net/deploy/</url> </repository> <downloadUrl>dav:http://code.semanticlab.net/deploy/</downloadUrl> 
-		</distributionManagement> -->
+	<!-- profiles for the maven deployments -->
+	<profiles>
+		<profile>
+			<id>profile-semanticlab</id>
+			<properties>
+				<environment>semanticlab</environment>
+				<snapshot-repository-id>code.semanticlab.net</snapshot-repository-id>
+				<snapshot-repository-url>dav:http://code.semanticlab.net/deploy/</snapshot-repository-url>
+				<repository-id>code.semanticlab.net</repository-id>
+				<repository-url>dav:http://code.semanticlab.net/deploy/</repository-url>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>environment</name>
+					<value>semanticlab</value>
+				</property>
+			</activation>
+		</profile>
+		<profile>
+			<id>profile-mavencentral</id>
+			<properties>
+				<environment>mavencentral</environment>
+				<snapshot-repository-id>
+					ossrh
+				</snapshot-repository-id>
+				<snapshot-repository-url>
+					https://oss.sonatype.org/content/repositories/snapshots
+				</snapshot-repository-url>
+				<repository-id>ossrh</repository-id>
+				<repository-url>
+					https://oss.sonatype.org/service/local/staging/deploy/maven2/
+				</repository-url>
+			</properties>
+			<activation>
+				<property>
+					<name>environment</name>
+					<value>mavencentral</value>
+				</property>
+			</activation>
+		</profile>
+	</profiles>
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>${snapshot-repository-id}</id>
+			<url>${snapshot-repository-url}</url>
 		</snapshotRepository>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>${repository-id}</id>
+			<url>${repository-url}</url>
 		</repository>
 	</distributionManagement>
-
 
 	<build>
 		<extensions>
@@ -74,53 +123,6 @@
 			</extension>
 		</extensions>
 		<plugins>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -160,14 +162,9 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- test cases in this project depend on a valid server connection and 
-					therefore, are not supposed to run consequently for each derived project -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
 			</plugin>
 		</plugins>
 		<sourceDirectory>src/java/main</sourceDirectory>
@@ -188,7 +185,7 @@
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
-			<version>2.5.0</version>
+			<version>2.6.2</version>
 		</dependency>
 
 		<!-- javax -->
@@ -212,12 +209,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.5.3</version>
+			<version>2.5.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			<version>2.2.3</version>
+			<version>2.5.4</version>
 		</dependency>
 
 		<!-- JAX-RS & json -->
@@ -248,5 +245,13 @@
 			<artifactId>jersey-media-jaxb </artifactId>
 			<version>${jersey2.version}</version>
 		</dependency>
+
+		<!-- apache commons lang -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
 	</dependencies>
 </project>

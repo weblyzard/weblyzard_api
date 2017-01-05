@@ -1,6 +1,6 @@
 package com.weblyzard.api.client;
 
-import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -31,9 +31,9 @@ public class JeremiaClient extends BasicClient {
 		super(weblyzard_url, username, password);
 	}
 
-	public XmlDocument submitDocumentRaw(Document data) throws ClientErrorException {
+	public XmlDocument submitDocumentRaw(Document data) throws WebApplicationException {
 
-		Response response = super.target.path(SUBMIT_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget().path(SUBMIT_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
 
 		super.checkResponseStatus(response);
@@ -45,7 +45,7 @@ public class JeremiaClient extends BasicClient {
 
 
 
-	public Document submitDocument(Document data) throws ClientErrorException, JAXBException {
+	public Document submitDocument(Document data) throws WebApplicationException, JAXBException {
 		XmlDocument response = submitDocumentRaw(data);
 		return Document.unmarshallDocumentXmlString(response.xml_content);
 	}
