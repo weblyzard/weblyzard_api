@@ -274,6 +274,15 @@ class XMLParser(object):
         return result
     
     @classmethod
+    def map_by_annotationtype(cls, itemlist): 
+        result = {}
+        for item in itemlist:
+            if not item['annotationType'] in result:
+                result[item['annotationType']] = []
+            result[item['annotationType']].append(item)
+        return result
+    
+    @classmethod
     def dump_xml(cls, titles, attributes, sentences, annotations=[], 
                  features={}, relations={}):
         ''' returns a webLyzard XML document '''
@@ -330,6 +339,9 @@ class XMLParser(object):
             annotation_mapping = None
 
         if annotations:
+            if isinstance(annotations, list):
+                annotations = cls.map_by_annotationtype(annotations)
+
             # add all annotations as body annotations
             for a_type, a_items in annotations.iteritems():
                 for annotation in a_items:    

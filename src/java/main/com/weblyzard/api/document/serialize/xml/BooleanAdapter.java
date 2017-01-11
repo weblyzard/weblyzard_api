@@ -16,7 +16,7 @@ public class BooleanAdapter extends XmlAdapter<Boolean, Boolean> {
 
     @Override
     public Boolean marshal(Boolean v) throws Exception {
-        if(v) {
+        if(Boolean.TRUE.equals(v)) {
             return v;
         }
         return null;

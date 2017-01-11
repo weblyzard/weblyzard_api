@@ -30,7 +30,7 @@ public class DocumentApiClient extends BasicClient {
 
 	public Response insertNewDocument(Request request) {
 
-		javax.ws.rs.core.Response response = super.target.path(WEBLYZARD_DOCUMENT_API_URL)
+		javax.ws.rs.core.Response response = super.getTarget().path(WEBLYZARD_DOCUMENT_API_URL)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 
 		super.checkResponseStatus(response);

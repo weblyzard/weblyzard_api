@@ -28,7 +28,20 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.weblyzard.api.document.annotation.Annotation;
 import com.weblyzard.api.document.serialize.json.DocumentHeaderDeserializer;
 import com.weblyzard.api.document.serialize.json.DocumentHeaderSerializer;
-
+/**
+ * The {@link Document} and {@link Sentence} model classes used to represent
+ * documents.
+ * 
+ * The {@link Document} class also supports arbitrary meta data which is stored
+ * in the <code>header</code> instance variable.
+ * 
+ * The static helper function {@link Document#getXmlRepresentation(Document)} and 
+ * {@link Document#unmarshallDocumentXmlString(String)} translate between {@link Document}
+ * objects and the corresponding XML representations.
+ * 
+ * @author weichselbraun@weblyzard.com
+ *
+ */
 @XmlRootElement(name="page", namespace=Document.NS_WEBLYZARD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -38,6 +51,9 @@ public class Document implements Serializable {
 	public final static String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
 	public final static String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
 
+	/**
+	 * The Attribute used to encode document keywords
+	 */
 	public final static QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 	
 	@JsonDeserialize	(keyUsing = DocumentHeaderDeserializer.class)
@@ -84,6 +100,7 @@ public class Document implements Serializable {
 	
 	// private field that contains all annotations after the
 	// documents finalization
+	@JsonProperty("annotations")
 	@XmlElement(name="annotation", namespace=Document.NS_WEBLYZARD)
 	private List<Annotation> annotations;
 
@@ -91,14 +108,27 @@ public class Document implements Serializable {
 	// empty constructor required by JAXB
 	public Document() {}
 	
+	/**
+	 * @param body
+	 * 		the {@link Document}'s body
+	 */
 	public Document(String body) {
 		this.title = ""; 
 		this.body = body;
 	}
 	
-	public Document(String title, String content, Map<QName, String> header) {
+	/**
+	 * 
+	 * @param title
+	 * 		the {@link Document}'s title
+	 * @param body
+	 * 		the {@link Document}'s body
+	 * @param header
+	 * 		a Map of optional meta data to store with the document
+	 */
+	public Document(String title, String body, Map<QName, String> header) {
 		this.title = title;
-		this.body = content;
+		this.body = body;
 		this.header = header;
 	}
 	
@@ -201,10 +231,19 @@ public class Document implements Serializable {
 		return this;
 	}
 
+	/**
+	 * Converts a {@link Document} to the corresponding webLyzard XML representation
+	 * 
+	 * @param document
+	 * 	The {@link Document} object to convert.
+	 * @return
+	 * 	 An XML representation of the given {@link Document} object.
+	 * @throws JAXBException
+	 */
     public static String getXmlRepresentation(Document document) throws JAXBException {
     	StringWriter stringWriter = new StringWriter();
     	JAXBElement<Document> jaxbElement = new JAXBElement<Document>(
-    			new QName(Document.NS_WEBLYZARD, "wl:page", "wl"), Document.class, document);
+    			new QName(Document.NS_WEBLYZARD, "page", "wl"), Document.class, document);
     	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
     	Marshaller xmlMarshaller = jaxbContext.createMarshaller();
     	xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -212,6 +251,16 @@ public class Document implements Serializable {
     	return stringWriter.toString();
     }
     
+    /**
+     * Converts a webLyzard XML Document to a {@link Document}.
+     * 
+     * @param xmlString
+     * 	The webLyzard XML document to unmarshall
+     * @return
+     * 	The {@link Document} instance corresponding to the xmlString
+     *  
+     * @throws JAXBException
+     */
     public static Document unmarshallDocumentXmlString(String xmlString) throws JAXBException {
     	JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
     	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

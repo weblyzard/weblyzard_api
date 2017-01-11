@@ -2,7 +2,10 @@
 
 Provides access to all webLyzard Web services through a python and java library.
 
-Full Documentation is available at http://weblyzard-api.readthedocs.org/en/latest/
+Full Documentation is available at 
+
+* http://weblyzard-api.readthedocs.org/en/latest/
+* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.0.5
 
 
 ## Configuration
@@ -70,3 +73,37 @@ Example scripts are available in the `example` directory.
   + docstring explaining what the method does
   + a unit test demonstrating the method's usage in the wild.
 + commits must pass all unit tests
+
+To activate the java client debugging (logging requests / responses etc) set the environment variable **ENV_WEBLYZARD_API_DEBUG** to true: 
+
+```
+export WEBLYZARD_API_PASS="true"
+```
+
+## Deploying the maven artifacts 
+
+Deploy to the private semanticlab maven repository: 
+
+```
+mvn deploy -Denvironment=semanticlab
+```
+The environment **semanticlab** is set as the default maven environment, so running 
+
+```
+mvn deploy
+```
+deploys to the private semanticlab repository. 
+
+
+Deploying to the public mavencentral: 
+
+```
+mvn deploy -Denvironment=mavencentral
+```
+
+
+ javadoc.io/doc/com.weblyzard.api/weblyzard-api
+
+ 
+
+
