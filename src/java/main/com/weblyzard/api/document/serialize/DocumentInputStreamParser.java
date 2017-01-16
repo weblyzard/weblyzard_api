@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.weblyzard.api.document.Document;
