@@ -35,9 +35,6 @@ public class DocumentInputStreamParser {
 	 *            the input stream to parse
 	 * @return 
 	 * 	the parsed document list
-	 * @throws JAXBException 
-	 * @throws IOException 
-	 * @throws JsonParseException 
 	 */
 	public static List<Document> readDocumentFromStream(InputStream stream) throws JAXBException {
 		List<Document> documentList = new ArrayList<>();
