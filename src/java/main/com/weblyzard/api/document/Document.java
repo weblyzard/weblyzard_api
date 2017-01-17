@@ -92,7 +92,7 @@ public class Document implements Serializable {
 	private String format;
 	
 	@JsonProperty("lang")
-	@XmlAttribute(name="xml:lang")
+	@XmlAttribute(name="lang", namespace = javax.xml.XMLConstants.XML_NS_URI)
 	private String lang;
 	
 	@XmlAttribute(namespace=Document.NS_WEBLYZARD)
