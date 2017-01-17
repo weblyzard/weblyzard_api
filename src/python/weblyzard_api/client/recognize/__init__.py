@@ -89,8 +89,11 @@ class Recognize(MultiRESTClient):
         if not isinstance(xml, XMLContent):
             xml = XMLContent(xml)
 
-        if version.startswith('0.5'):
-            return xml.get_xml_document(xml_version=2013).strip()
+        try:
+            if float(version[0:3])>=0.5:#.startswith('0.5'):
+                return xml.get_xml_document(xml_version=2013).strip()
+        except Exception as e:
+            LOGGER.warn('Could not parse version: %s' % version)
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
                            ignore_non_sentence=False,
                            add_titles_to_sentences=True)
