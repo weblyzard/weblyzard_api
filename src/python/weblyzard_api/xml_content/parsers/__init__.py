@@ -12,7 +12,6 @@ import logging
 import hashlib
 import unicodedata
 
-from bson import json_util
 from lxml import etree
 from datetime import date, datetime
 
