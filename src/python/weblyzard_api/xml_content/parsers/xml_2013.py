@@ -76,7 +76,7 @@ class XML2013(XMLParser):
                     'likes_count': '{%s}user_rating' % DOCUMENT_NAMESPACES['wl'], #FB
                     'org_likes_count': '{%s}user_rating' % DOCUMENT_NAMESPACES['wl'], #FB
                     'group_likes_count': '{%s}user_rating' % DOCUMENT_NAMESPACES['wl'], #FB
-                    'following': '{%s}user_rating' % DOCUMENT_NAMESPACES['wl'], #twitter
+                    'followers': '{%s}user_rating' % DOCUMENT_NAMESPACES['wl'], #twitter
                     'plusoners': '{%s}user_rating' % DOCUMENT_NAMESPACES['wl'], #G+
 #                     '{%s}user_outdegree' % DOCUMENT_NAMESPACES['wl']: 'following', #twitter
 #                     '{%s}user_indegree' % DOCUMENT_NAMESPACES['wl']: 'followers', #twitter
