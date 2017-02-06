@@ -34,15 +34,17 @@ public class CompactAnnotation extends Annotation {
 	
 	public CompactAnnotation(Annotation annotation) {
 		super(annotation.getKey(), annotation.getSurfaceForm(), annotation.getPreferredName(), 
-				annotation.getStart(), annotation.getEnd(), annotation.getAnnotationType());
+				annotation.getStart(), annotation.getEnd(), annotation.getSentence(),
+				annotation.getAnnotationType());
 		this.entities = new ArrayList<>();
 		if (getEnd()>getStart()) 
-			addSurface(new AnnotationSurface(getStart(), getEnd(), annotation.getSentence(), getSurfaceForm()));
+			addSurface(new AnnotationSurface(getStart(), getEnd(), 
+					annotation.getSentence(), getSurfaceForm()));
 	}
 	
 	public CompactAnnotation(String key, String surfaceForm, String preferredName, int start, 
-			int end, String annotationType) {
-		super(key, surfaceForm, preferredName, start, end, annotationType);
+			int end, int sentence, String annotationType) {
+		super(key, surfaceForm, preferredName, start, end, sentence, annotationType);
 	}
 	
 	public CompactAnnotation addSurface(AnnotationSurface entity) {
