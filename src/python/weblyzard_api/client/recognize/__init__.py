@@ -74,7 +74,7 @@ class Recognize(MultiRESTClient):
         self.profile_cache = []
 
     @classmethod
-    def convert_document(cls, xml):
+    def convert_document(cls, xml, version='0.4'):
         ''' converts an XML String to a document dictionary necessary for \
             transmitting the document to Recognize.
 
@@ -89,10 +89,15 @@ class Recognize(MultiRESTClient):
         if not isinstance(xml, XMLContent):
             xml = XMLContent(xml)
 
+        try:
+            if float(version[0:3])>=0.5:#.startswith('0.5'):
+                return xml.get_xml_document(xml_version=2013).strip()
+        except Exception as e:
+            LOGGER.warn('Could not parse version: %s' % version)
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
                            ignore_non_sentence=False,
                            add_titles_to_sentences=True)
-
+    
     def list_profiles(self):
         ''' :returns: a list of all pre-loaded profiles
 
@@ -294,7 +299,7 @@ class Recognize(MultiRESTClient):
             #get all required languages from documents
             lang_list = []
             for document in doc_list:
-                if 'lang' in document:
+                if isinstance(document, dict) and 'lang' in document:
                     lang_list.append(document['lang'])
             lang_list = set(lang_list)
 
@@ -313,6 +318,8 @@ class Recognize(MultiRESTClient):
             self.add_profile(profile_name)
 
         content_type = 'application/json'
+        if len(doc_list) and isinstance(doc_list[0], basestring):
+            content_type = 'application/xml'
 
         if 'content_id' in doc_list[0]:
             search_command = 'searchDocuments'
@@ -368,3 +375,11 @@ class Recognize(MultiRESTClient):
         :returns: the status of the Recognize web service.
         '''
         return self.request(path='status')
+
+
+    def get_version(self):
+        ''' 
+        :returns: the version of the Recognize web service.
+        '''
+        return self.request(path='version', return_plain=True)
+    
