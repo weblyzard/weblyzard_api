@@ -1,5 +1,7 @@
 package com.weblyzard.api.document.annotation;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * The surfaced annotation
@@ -7,6 +9,8 @@ package com.weblyzard.api.document.annotation;
  * @author goebel@weblyzard.com
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD) 
+//@JsonIgnoreProperties({ "sentence", "start", "end", "surfaceForm", "scoreName", "grounded" })
 public class AnnotationSurface {
 
 	private int sentence = 0;
