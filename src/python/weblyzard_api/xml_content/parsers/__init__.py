@@ -349,6 +349,7 @@ class XMLParser(object):
                     assert isinstance(annotation, dict), 'dict required'
                     if 'entities' in annotation:
                         for entity in annotation['entities']:
+                            entity = entity.copy()
                             entity['annotation_type'] = a_type
                             entity['key'] = annotation['key']
                             preferred_name = annotation['preferredName']
