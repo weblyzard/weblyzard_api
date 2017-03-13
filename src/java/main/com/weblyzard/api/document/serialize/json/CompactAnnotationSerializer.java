@@ -18,7 +18,7 @@ public class CompactAnnotationSerializer extends StdSerializer<CompactAnnotation
 	public static String ANNOTATION_HEADER_FIELDNAME = "header"; 
 
 	public static List<String> IGNORE_FIELDS = new ArrayList<String>(Arrays.asList("serialVersionUID", 
-			"significance", "pos", "start", "end", "surfaceForm", "sentence", "grounded", "scoreName"));
+			"significance", "pos", "start", "end", "surfaceForm", "sentence", "grounded", "scoreName", "md5sum"));
 	public CompactAnnotationSerializer() {
 		this(null);
 	}
