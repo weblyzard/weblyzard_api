@@ -223,6 +223,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         # map the language_id to XMLContent.lang
         if 'language_id' in api_dict:
             xml_content.attributes['lang'] = api_dict['language_id']
+
         # removed this: title is already set via attributes
         if 'title' in api_dict:
             for sentence in sentences:
@@ -311,6 +312,8 @@ class JSON10ParserAnnotation(JSONParserBase):
         :rtype: dict
         '''
         result = dict(annotation)
+        if 'annotationType' in result:
+            del result['annotationType']
         result['annotation_type'] = annotation_type
         return result
 
