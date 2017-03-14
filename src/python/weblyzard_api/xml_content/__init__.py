@@ -257,13 +257,16 @@ class XMLContent(object):
                               XML2013.VERSION: XML2013, 
                               XMLDeprecated.VERSION: XMLDeprecated}
     API_MAPPINGS = {
-        1.0: {
+       1.0: {
             'lang': 'language_id',
+            'xml:lang': 'language_id',
             'title': 'title',
+            'uri': 'uri'
             }
         }
     
-    ATTRIBUTE_MAPPING = {'content_id': 'id', 
+    ATTRIBUTE_MAPPING = {'uri': 'uri',
+                         'content_id': 'id', 
                          'title': 'title', 
                          'sentences': 'sentences',
                          'body_annotations': 'annotations',
@@ -423,7 +426,7 @@ class XMLContent(object):
             self.relations[str(k)] = v  
                   
             
-    def as_dict(self, mapping=ATTRIBUTE_MAPPING, 
+    def as_dict(self, mapping=None, 
                 ignore_non_sentence=False, add_titles_to_sentences=False):
         ''' convert the XML content to a dictionary.
 
@@ -433,7 +436,9 @@ class XMLContent(object):
             are omitted from the result
         '''
         try:
-#             assert mapping, 'got no mapping'
+            if mapping is None:
+                mapping = self.ATTRIBUTE_MAPPING
+
             result = self.apply_dict_mapping(self.attributes, mapping)
             sentence_attr_name = mapping['sentences'] if 'sentences' in mapping else 'sentences' 
             

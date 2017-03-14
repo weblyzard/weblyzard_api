@@ -29,6 +29,7 @@ class XML2013(XMLParser):
                     'last_modified': '{%s}modified' % DOCUMENT_NAMESPACES['dc'],
                     'source': '{%s}source' % DOCUMENT_NAMESPACES['dc'],
                     'url': '{%s}identifier' % DOCUMENT_NAMESPACES['dc'],
+                    'uri': '{%s}identifier' % DOCUMENT_NAMESPACES['dc'],
                     'license': '{%s}license' % DOCUMENT_NAMESPACES['dc'],
                     'creator': '{%s}creator' % DOCUMENT_NAMESPACES['dc'],
                     'publisher': '{%s}publisher' % DOCUMENT_NAMESPACES['dc'],

@@ -223,6 +223,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         # map the language_id to XMLContent.lang
         if 'language_id' in api_dict:
             xml_content.attributes['lang'] = api_dict['language_id']
+
         # removed this: title is already set via attributes
         if 'title' in api_dict:
             for sentence in sentences:
