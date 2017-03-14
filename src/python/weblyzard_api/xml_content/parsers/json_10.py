@@ -311,6 +311,8 @@ class JSON10ParserAnnotation(JSONParserBase):
         :rtype: dict
         '''
         result = dict(annotation)
+        if 'annotationType' in result:
+            del result['annotationType']
         result['annotation_type'] = annotation_type
         return result
 

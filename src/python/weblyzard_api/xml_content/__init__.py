@@ -263,6 +263,21 @@ class XMLContent(object):
             }
         }
     
+    ATTRIBUTE_MAPPING = {'content_id': 'id', 
+                         'title': 'title', 
+                         'sentences': 'sentences',
+                         'body_annotations': 'annotations',
+                         'lang': 'xml:lang',
+                         'sentences_map': {'pos': 'pos',
+                                           'token': 'token', 
+                                           'value': 'value',
+                                           'md5sum': 'id'},
+                         'annotations_map': {'start':'start',
+                                             'end':'end',
+                                             'key':'key',
+                                             'surfaceForm':'surfaceForm'
+                                             }}
+
     def __init__(self, xml_content, remove_duplicates=True):
         self.xml_version = None
         self.attributes = {}
@@ -408,7 +423,7 @@ class XMLContent(object):
             self.relations[str(k)] = v  
                   
             
-    def as_dict(self, mapping=None, 
+    def as_dict(self, mapping=ATTRIBUTE_MAPPING, 
                 ignore_non_sentence=False, add_titles_to_sentences=False):
         ''' convert the XML content to a dictionary.
 
@@ -418,7 +433,7 @@ class XMLContent(object):
             are omitted from the result
         '''
         try:
-            assert mapping, 'got no mapping'
+#             assert mapping, 'got no mapping'
             result = self.apply_dict_mapping(self.attributes, mapping)
             sentence_attr_name = mapping['sentences'] if 'sentences' in mapping else 'sentences' 
             
@@ -449,7 +464,14 @@ class XMLContent(object):
                     annotation_attributes = self.apply_dict_mapping(annotation.as_dict(),
                                                               annotation_mapping)
                     result[annotation_attr_name].append(annotation_attributes)
-        except Exception:
+                    
+            if self.features:
+                result['features'] = self.features
+                
+            if self.relations:
+                result['relations'] = self.relations
+        
+        except Exception as e:
             result = self.attributes
             result.update({'sentences': [sent.as_dict() for sent in self.sentences]})
         
