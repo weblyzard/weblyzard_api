@@ -100,8 +100,6 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
         '''
         xml_content = XMLContent(self.xml_content_string)
         api_dict = xml_content.to_api_dict(version=1.0)
-        from pprint import pprint
-        pprint(api_dict)
         
         assert api_dict == {
             'uri': 'http://www.heise.de',
