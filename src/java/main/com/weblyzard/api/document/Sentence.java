@@ -80,7 +80,7 @@ public class Sentence implements Serializable {
 	}
 	
 	public String getText() { 
-		return text; 
+		return text.replace("&quot;", "\"");
 	}
 
 	public Sentence setText(String text) {
@@ -96,7 +96,10 @@ public class Sentence implements Serializable {
 	}
 
 	public String getPos() { 
-		return pos; 
+		if (pos!=null) {
+			return pos.replace("&quot;", "\"");
+		}
+		return pos;
 	}
 	
 	public String getToken() { 
