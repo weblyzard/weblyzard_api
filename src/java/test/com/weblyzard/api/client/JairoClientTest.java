@@ -113,9 +113,9 @@ public class JairoClientTest extends TestClientBase{
 		
 		// init the annotations
 		mockImagineAnnotations = new ArrayList<>();
-		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resourceVevey>", null, null, 0, 0, 0, null)); 
-		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resource/Sarnen>", null, null, 0, 0, 0, null));
-		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resource/Die_(musician)>", null, null, 0, 0, 0, null));
+		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resourceVevey>", null, null, 0, 0, 0, null, null)); 
+		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resource/Sarnen>", null, null, 0, 0, 0, null, null));
+		mockImagineAnnotations.add(new Annotation("<http://dbpedia.org/resource/Die_(musician)>", null, null, 0, 0, 0, null, null));
 		
 	}
 }

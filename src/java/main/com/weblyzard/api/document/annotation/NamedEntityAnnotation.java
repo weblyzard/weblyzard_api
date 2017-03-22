@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.document.Document;
 import com.weblyzard.api.document.serialize.json.CompactAnnotationSerializer;
 
@@ -75,11 +76,11 @@ public class NamedEntityAnnotation extends CompactAnnotation {
 	 * @param score
 	 *            custom score point to be computed by NER system
 	 */
-	public NamedEntityAnnotation(int start, int end, int sentence,
-			String key, String surfaceForm, String preferredName, 
+	public NamedEntityAnnotation(int start, int end, int sentence, 
+			MD5Digest md5sum, String key, String surfaceForm, String preferredName, 
 			String profileName, String entityType,
 			double confidence, double score, String scoreName) {
-		super(key, surfaceForm, preferredName, start, end, sentence, entityType);
+		super(key, surfaceForm, preferredName, start, end, sentence, md5sum, entityType);
 		this.profileName = profileName;
 		this.entityType = entityType;
 		this.confidence = confidence;
@@ -88,7 +89,7 @@ public class NamedEntityAnnotation extends CompactAnnotation {
 		this.entities = new ArrayList<>();
 		this.properties = new HashMap<>();
 		if (end>start) 
-			addSurface(new AnnotationSurface(start, end, sentence, surfaceForm));
+			addSurface(new AnnotationSurface(start, end, sentence, md5sum, surfaceForm));
 	}
 	
 	@JsonIgnore
@@ -102,8 +103,9 @@ public class NamedEntityAnnotation extends CompactAnnotation {
 	 */
 	public NamedEntityAnnotation(final NamedEntityAnnotation annotation) {
 		this(annotation.getStart(), annotation.getEnd(), annotation.getSentence(),
-			 annotation.getKey(), annotation.getSurfaceForm(), annotation.getPreferredName(), 
-			 annotation.getProfileName(), annotation.getEntityType(),
+			 annotation.getMd5sum(), annotation.getKey(), annotation.getSurfaceForm(), 
+			 annotation.getPreferredName(), annotation.getProfileName(), 
+			 annotation.getEntityType(),
 			 annotation.confidence, annotation.score, annotation.scoreName);
 	}
 	

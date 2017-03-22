@@ -3,6 +3,8 @@ package com.weblyzard.api.document.annotation;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import com.weblyzard.api.datatype.MD5Digest;
+
 /**
  * The surfaced annotation
  * 
@@ -17,13 +19,16 @@ public class AnnotationSurface {
 	private int start;
 	private int end;
 	private String surfaceForm;
+	private MD5Digest md5sum;
 
 	public AnnotationSurface() {}
 
-	public AnnotationSurface(int start, int end, int sentence, String surfaceForm) {
+	public AnnotationSurface(int start, int end, int sentence, 
+			MD5Digest md5sum, String surfaceForm) {
 		this.start = start;
 		this.end = end;
 		this.sentence = sentence;
+		this.md5sum = md5sum;
 		this.surfaceForm = surfaceForm;
 	}
 
@@ -56,6 +61,14 @@ public class AnnotationSurface {
 
 	public int getEnd() {
 		return end;
+	}
+	
+	public MD5Digest getMd5sum() {
+		return md5sum;
+	}
+	
+	public void setMd5sum(MD5Digest md5sum) {
+		this.md5sum = md5sum;
 	}
 
 	public AnnotationSurface setEnd(int end) {
