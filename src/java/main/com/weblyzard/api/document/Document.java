@@ -132,6 +132,10 @@ public class Document implements Serializable {
 		this.header = header;
 	}
 	
+	public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+    
 	public Map<QName, String> getHeader() {
 		return header;
 	}

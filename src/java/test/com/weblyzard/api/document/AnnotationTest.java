@@ -17,8 +17,8 @@ public class AnnotationTest {
 	@Test
 	public void testConstructors() {
 		final Annotation lcd1 = new Annotation();
-		final Annotation lcd2 = new Annotation("LCD data panel", 672, 686, 0);
-		final Annotation lcd3 = new Annotation("LCD data panel", 672, 686, 0, "Product_Feature");
+		final Annotation lcd2 = new Annotation("LCD data panel", 672, 686, 0, null);
+		final Annotation lcd3 = new Annotation("LCD data panel", 672, 686, 0, null, "Product_Feature");
 		lcd1.setSurfaceForm( "LCD data panel" );
 		lcd1.setStart(672);
 		lcd1.setEnd( 686 );

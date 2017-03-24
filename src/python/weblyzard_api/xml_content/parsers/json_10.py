@@ -160,7 +160,7 @@ class JSONParserBase(object):
         if 'content' in json_document and 'sentences' in json_document:
             raise MalformedJSONException(
                     "If 'sentences' is set, 'content' must not be set.")
-        if not json_document['content_type'] in cls.SUPPORTED_CONTENT_TYPES:
+        if 'content_type' in json_document and not json_document['content_type'] in cls.SUPPORTED_CONTENT_TYPES:
             raise UnsupportedValueException("content_type %s is not supported. Supported are %s" % 
                                             (json_document['content_type'], 
                                              cls.SUPPORTED_CONTENT_TYPES))

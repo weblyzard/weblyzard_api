@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.document.Document;
 
 /**
@@ -18,7 +19,7 @@ import com.weblyzard.api.document.Document;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD) 
-@JsonIgnoreProperties({ "sentence", "start", "end", "surfaceForm", "scoreName", "grounded" })
+@JsonIgnoreProperties({ "sentence", "start", "end", "surfaceForm", "scoreName", "grounded", "md5sum"})
 public class CompactAnnotation extends Annotation {
 	
 	/**
@@ -35,16 +36,17 @@ public class CompactAnnotation extends Annotation {
 	public CompactAnnotation(Annotation annotation) {
 		super(annotation.getKey(), annotation.getSurfaceForm(), annotation.getPreferredName(), 
 				annotation.getStart(), annotation.getEnd(), annotation.getSentence(),
-				annotation.getAnnotationType());
+				annotation.getMd5sum(), annotation.getAnnotationType());
 		this.entities = new ArrayList<>();
 		if (getEnd()>getStart()) 
 			addSurface(new AnnotationSurface(getStart(), getEnd(), 
-					annotation.getSentence(), getSurfaceForm()));
+					annotation.getSentence(), annotation.getMd5sum(), 
+					getSurfaceForm()));
 	}
 	
 	public CompactAnnotation(String key, String surfaceForm, String preferredName, int start, 
-			int end, int sentence, String annotationType) {
-		super(key, surfaceForm, preferredName, start, end, sentence, annotationType);
+			int end, int sentence, MD5Digest md5sum, String annotationType) {
+		super(key, surfaceForm, preferredName, start, end, sentence, md5sum, annotationType);
 	}
 	
 	public CompactAnnotation addSurface(AnnotationSurface entity) {

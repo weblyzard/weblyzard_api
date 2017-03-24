@@ -75,22 +75,24 @@ public class Annotation implements Serializable {
     // required for JAXB 
     public Annotation() {} 
      
-    public Annotation(String surfaceForm, int start, int end, int sentence) { 
+    public Annotation(String surfaceForm, int start, int end, int sentence,
+    		MD5Digest md5sum) { 
         this.surfaceForm = surfaceForm; 
         this.start = start; 
         this.end = end;
         this.sentence = sentence;
+        this.md5sum = md5sum;
     } 
      
     public Annotation(String surfaceForm, int start, int end, int sentence, 
-    		String annotationType) { 
-        this(surfaceForm, start, end, sentence); 
+    		MD5Digest md5sum, String annotationType) { 
+        this(surfaceForm, start, end, sentence, md5sum); 
         this.annotationType = annotationType; 
     } 
      
     public Annotation(String key, String surfaceForm, String preferredName, 
-    		int start, int end, int sentence, String annotationType) { 
-        this(surfaceForm, start, end, sentence, annotationType); 
+    		int start, int end, int sentence, MD5Digest md5sum, String annotationType) { 
+        this(surfaceForm, start, end, sentence, md5sum, annotationType); 
         this.key = key;
         this.preferredName = preferredName;
     } 
