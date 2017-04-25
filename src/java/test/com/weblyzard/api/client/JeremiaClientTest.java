@@ -24,7 +24,7 @@ public class JeremiaClientTest extends TestClientBase{
 	public void testSubmitDocument() throws ClientErrorException, JAXBException {
 		assumeTrue(weblyzardServiceAvailable(jeremiaClient));
 		Document request = new Document(
-				"Fast Track's Karen Bowerman asks what the changes in penguin population could mean for the rest of us in the event of climate change.");
+				"Fast Track's Karen Bowerman asks what the changes in penguin population could mealenn for the rest of us in the event of climate change.");
 		request.setLang("en");
 		Document response = jeremiaClient.submitDocument(request);
 		assertNotNull(response);
