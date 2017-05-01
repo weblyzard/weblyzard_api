@@ -6,6 +6,7 @@ public class SurfaceForm {
 	public int startIndex;
 	public int endIndex;
 	public boolean isContext;
+	public double confidence;
 
 
 
@@ -32,6 +33,13 @@ public class SurfaceForm {
 
 	public SurfaceForm setContext(boolean isContext) {
 		this.isContext = isContext;
+		return this;
+	}
+
+
+
+	public SurfaceForm setConfidence(double confidence) {
+		this.confidence = confidence;
 		return this;
 	}
 }
