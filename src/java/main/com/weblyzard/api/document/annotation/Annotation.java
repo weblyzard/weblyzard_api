@@ -83,6 +83,34 @@ public class Annotation implements Serializable {
         this.sentence = sentence;
         this.md5sum = md5sum;
     } 
+    
+    public Annotation(String surfaceForm, int start, int end, int sentence, String annotationType) { 
+        this.surfaceForm = surfaceForm; 
+        this.start = start; 
+        this.end = end;
+        this.sentence = sentence;
+        this.annotationType = annotationType;
+    }
+    
+    public Annotation(String surfaceForm, int start, int end, int sentence) { 
+        this.surfaceForm = surfaceForm; 
+        this.start = start; 
+        this.end = end;
+        this.sentence = sentence;
+    } 
+    
+    public Annotation(String surfaceForm, int start, int end) { 
+        this.surfaceForm = surfaceForm; 
+        this.start = start; 
+        this.end = end;
+    }
+    
+    public Annotation(String surfaceForm, int start, int end, String annotationType) { 
+        this.surfaceForm = surfaceForm; 
+        this.start = start; 
+        this.end = end;
+        this.annotationType = annotationType;
+    } 
      
     public Annotation(String surfaceForm, int start, int end, int sentence, 
     		MD5Digest md5sum, String annotationType) { 
@@ -95,6 +123,13 @@ public class Annotation implements Serializable {
         this(surfaceForm, start, end, sentence, md5sum, annotationType); 
         this.key = key;
         this.preferredName = preferredName;
+    } 
+    
+    public Annotation(String key, String surfaceForm, String preferredName, int start, int end, int sentence, String annotationType) { 
+        this(surfaceForm, start, end, annotationType); 
+        this.key = key;
+        this.preferredName = preferredName;
+        this.sentence = sentence;
     } 
      
     @Override 
