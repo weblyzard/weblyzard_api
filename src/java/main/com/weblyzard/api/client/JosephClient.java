@@ -20,6 +20,7 @@ public class JosephClient extends BasicClient {
 
 	private static final String LOAD_PROFILE_SERVICE_URL = "/joseph/rest/load_profile/";
 	private static final String UNLOAD_PROFILE_SERVICE_URL = "/joseph/rest/unload_profile/";
+	private static final String CLEAN_PROFILE_SERVICE_URL = "joseph/rest/clean/";
 	private static final String CLASSIFY_SERVICE_URL = "/joseph/rest/classify/";
 	private static final String TRAIN_SERVICE_URL = "/joseph/rest/train/";
 	private static final String RETRAIN_SERVICE_URL = "/joseph/rest/retrain/";
@@ -47,6 +48,19 @@ public class JosephClient extends BasicClient {
 
 	public boolean loadProfile(String profileName) {
 		Response response = super.getTarget().path(LOAD_PROFILE_SERVICE_URL + profileName)
+				.request(MediaType.APPLICATION_JSON_TYPE).get();
+
+		super.checkResponseStatus(response);
+		boolean result = response.readEntity(Boolean.class);
+		response.close();
+
+		return result;
+	}
+
+
+
+	public boolean cleanProfile(String profileName) {
+		Response response = super.getTarget().path(CLEAN_PROFILE_SERVICE_URL + profileName)
 				.request(MediaType.APPLICATION_JSON_TYPE).get();
 
 		super.checkResponseStatus(response);
