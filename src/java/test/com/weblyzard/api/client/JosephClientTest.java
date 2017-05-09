@@ -1,6 +1,7 @@
 package com.weblyzard.api.client;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +33,7 @@ public class JosephClientTest extends TestClientBase {
 	public void before() {
 		psalmDocs = readWeblyzardDocuments();
 		client = new JosephClient();
+		assumeTrue(weblyzardServiceAvailable(client));
 		assertTrue(client.loadProfile(profileName));
 	}
 
@@ -39,10 +41,9 @@ public class JosephClientTest extends TestClientBase {
 
 	@Test
 	public void testTrain() {
+		assumeTrue(weblyzardServiceAvailable(client));
 		psalmDocs.stream().forEach(document -> client.train("smc", document, "category"));
 	}
-
-	// TODO: implement
 
 
 
