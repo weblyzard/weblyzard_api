@@ -198,7 +198,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         :returns: The parsed document as XMLContent object.
         :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
         '''
-        cls._check_document_format(api_dict, strict=True)
+        cls._check_document_format(api_dict, strict=False)
         # This basically creates an empty XMLContent object
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
