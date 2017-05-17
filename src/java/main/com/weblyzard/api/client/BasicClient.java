@@ -1,5 +1,7 @@
 package com.weblyzard.api.client;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,9 +28,11 @@ public abstract class BasicClient {
 
 	private static final String ENV_WEBLYZARD_API_DEBUG = "WEBLYZARD_API_DEBUG";
 
-	private final WebTarget target;
+	private final WebTarget baseTarget;
+	private Map<String, WebTarget> webTargets = new ConcurrentHashMap<>();
 
 	private Logger logger = Logger.getLogger(getClass().getName());
+
 
 
 	/**
@@ -67,7 +71,7 @@ public abstract class BasicClient {
 
 		ClientConfig config = new ClientConfig();
 
-		if(Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))){
+		if (Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))) {
 			// https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
 			// -> Example 21.1. Logging on client-side
 			config.register(new LoggingFeature(logger, Level.SEVERE, LoggingFeature.Verbosity.PAYLOAD_TEXT,
@@ -79,12 +83,21 @@ public abstract class BasicClient {
 					HttpAuthenticationFeature.basicBuilder().nonPreemptive().credentials(username, password).build());
 		}
 
-		this.target = ClientBuilder.newClient(config)
+		this.baseTarget = ClientBuilder.newClient(config)
 				.target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
 	}
-	
-	protected WebTarget getTarget() {
-		return this.target; 
+
+
+
+	protected WebTarget getTarget(String urlTemplate) {
+		this.webTargets.putIfAbsent(urlTemplate, this.baseTarget.path(urlTemplate));
+		return this.webTargets.get(urlTemplate);
+	}
+
+
+
+	protected WebTarget getBaseTarget() {
+		return this.baseTarget;
 	}
 
 

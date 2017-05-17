@@ -16,12 +16,14 @@ import javax.xml.bind.JAXBException;
 import com.weblyzard.api.document.Document;
 
 public class JesajaClient extends BasicClient {
+	
+	private static final String template_matview = "matview";
 
-	private static final String GET_KEYWORDS_SERVICE_URL = "/jesaja/rest/get_keywords/";
-	private static final String SET_REFERENCE_CORPUS_SERVICE_URL = "/jesaja/rest/add_csv/";
-	private static final String ADD_DOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/";
-	private static final String GET_NEK_ANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/";
-	private static final String ROTATE_SHARD_SERVICE_URL = "/jesaja/rest/rotate_shard/";
+	private static final String GET_KEYWORDS_SERVICE_URL = "/jesaja/rest/get_keywords/{"+ template_matview + "}";
+	private static final String SET_REFERENCE_CORPUS_SERVICE_URL = "/jesaja/rest/add_csv/{"+ template_matview + "}";
+	private static final String ADD_DOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/{"+ template_matview + "}";
+	private static final String GET_NEK_ANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/{"+ template_matview + "}";
+	private static final String ROTATE_SHARD_SERVICE_URL = "/jesaja/rest/rotate_shard/{"+ template_matview + "}";
 
 	public JesajaClient() {
 		super();
@@ -38,7 +40,8 @@ public class JesajaClient extends BasicClient {
 	public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
 			throws WebApplicationException {
 
-		Response response = super.getTarget().path(SET_REFERENCE_CORPUS_SERVICE_URL + matviewId)
+		Response response = super.getTarget(SET_REFERENCE_CORPUS_SERVICE_URL)
+				.resolveTemplate(template_matview, matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(corpusMapping));
 
 		super.checkResponseStatus(response);
@@ -56,7 +59,8 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.getTarget().path(ADD_DOCUMENTS_SERVICE_URL + matviewId)
+		Response response = super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
+				.resolveTemplate(template_matview, matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -74,7 +78,8 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.getTarget().path(GET_KEYWORDS_SERVICE_URL + matviewId)
+		Response response = super.getTarget(GET_KEYWORDS_SERVICE_URL)
+				.resolveTemplate(template_matview, matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -95,7 +100,8 @@ public class JesajaClient extends BasicClient {
 		for (Document document : documents)
 			xml.add(Document.getXmlRepresentation(document));
 
-		Response response = super.getTarget().path(GET_NEK_ANNOTATIONS_SERVICE_URL + matviewId)
+		Response response = super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)
+				.resolveTemplate(template_matview, matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
 
 		super.checkResponseStatus(response);
@@ -108,7 +114,8 @@ public class JesajaClient extends BasicClient {
 
 	public int rotateShard(String matviewId) throws WebApplicationException, JAXBException {
 
-		Response response = super.getTarget().path(ROTATE_SHARD_SERVICE_URL + matviewId)
+		Response response = super.getTarget(ROTATE_SHARD_SERVICE_URL)
+				.resolveTemplate(template_matview, matviewId)
 				.request(MediaType.APPLICATION_JSON_TYPE).get();
 
 		super.checkResponseStatus(response);

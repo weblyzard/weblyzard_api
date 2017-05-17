@@ -22,11 +22,16 @@ public class JeremiaClientTest extends TestClientBase{
 
 	@Test
 	public void testSubmitDocument() throws ClientErrorException, JAXBException {
-		assumeTrue(weblyzardServiceAvailable(jeremiaClient));
+		//assumeTrue(weblyzardServiceAvailable(jeremiaClient));
 		Document request = new Document(
 				"Fast Track's Karen Bowerman asks what the changes in penguin population could mealenn for the rest of us in the event of climate change.");
 		request.setLang("en");
-		Document response = jeremiaClient.submitDocument(request);
-		assertNotNull(response);
+		Document response1 = jeremiaClient.submitDocument(request);
+		Document response2= jeremiaClient.submitDocument(request);
+		Document response3 = jeremiaClient.submitDocument(request);
+		Document response4 = jeremiaClient.submitDocument(request);
+		Document response5 = jeremiaClient.submitDocument(request);
+		Document response6 = jeremiaClient.submitDocument(request);
+		assertNotNull(response1);
 	}
 }

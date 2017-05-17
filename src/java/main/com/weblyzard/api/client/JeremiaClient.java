@@ -33,7 +33,8 @@ public class JeremiaClient extends BasicClient {
 
 	public XmlDocument submitDocumentRaw(Document data) throws WebApplicationException {
 
-		Response response = super.getTarget().path(SUBMIT_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL)
+				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(data));
 
 		super.checkResponseStatus(response);

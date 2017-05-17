@@ -21,8 +21,8 @@ public class TestClientBase {
 		
 		Socket s = null;
 		
-		String host = basicClient.getTarget().getUri().getHost();
-		int port = basicClient.getTarget().getUri().getPort();
+		String host = basicClient.getBaseTarget().getUri().getHost();
+		int port = basicClient.getBaseTarget().getUri().getPort();
 		
 		try {
 			s = new Socket(host, port);

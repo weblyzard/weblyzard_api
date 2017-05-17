@@ -14,9 +14,11 @@ import com.weblyzard.api.jairo.Profile;
 import com.weblyzard.api.jairo.RDFPrefix;
 
 public class JairoClient extends BasicClient {
+	
+	private static final String template_profileName = "profileName";
 
-	private static final String EXTEND_ANNOTATIONS 		= "/jairo/rest/extend_annotations/";
-	private static final String ADD_PROFILE 			= "/jairo/rest/add_profile/";
+	private static final String EXTEND_ANNOTATIONS 		= "/jairo/rest/extend_annotations/{" + template_profileName + "}";
+	private static final String ADD_PROFILE 			= "/jairo/rest/add_profile/{" + template_profileName + "}";
 	private static final String LIST_PROFILES 			= "/jairo/rest/list_profiles";
 	private static final String LIST_RDF_PREFIXES 		= "/jairo/rest/list_rdf_prefixes";
 	private static final String ADD_RDF_PREFIX 			= "/jairo/rest/add_rdf_prefix";
@@ -36,7 +38,9 @@ public class JairoClient extends BasicClient {
 	public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)
 			throws WebApplicationException {
 
-		Response response = super.getTarget().path(EXTEND_ANNOTATIONS + profileName).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget(EXTEND_ANNOTATIONS)
+				.resolveTemplate(template_profileName, profileName)
+				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(annotations));
 
 		super.checkResponseStatus(response);
@@ -47,8 +51,11 @@ public class JairoClient extends BasicClient {
 	
 	public Response addProfile(Profile profile, String profileName) {
 		
-		Response response = super.getTarget().path(ADD_PROFILE + profileName).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget(ADD_PROFILE)
+				.resolveTemplate(template_profileName, profileName)
+				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(profile));
+		
 		super.checkResponseStatus(response);
 		response.close(); 
 		return response;
@@ -56,7 +63,9 @@ public class JairoClient extends BasicClient {
 	}
 	
 	public Map<String, Profile> listProfiles() {
-		Response response = super.getTarget().path(LIST_PROFILES).request(MediaType.APPLICATION_JSON_TYPE).get(); 
+		Response response = super.getTarget(LIST_PROFILES)
+				.request(MediaType.APPLICATION_JSON_TYPE).get(); 
+		
 		super.checkResponseStatus(response);
 		Map<String, Profile> profiles = response.readEntity(new GenericType<Map<String, Profile>>() {});
 		response.close(); 
@@ -64,8 +73,10 @@ public class JairoClient extends BasicClient {
 	}
 	
 	public Response addPrefix(RDFPrefix rdfPrefix) {
-		Response response = super.getTarget().path(ADD_RDF_PREFIX).request(MediaType.APPLICATION_JSON_TYPE)
+		Response response = super.getTarget(ADD_RDF_PREFIX)
+				.request(MediaType.APPLICATION_JSON_TYPE)
 				.post(Entity.json(rdfPrefix));
+		
 		super.checkResponseStatus(response);
 		response.close(); 
 		return response;
@@ -73,7 +84,9 @@ public class JairoClient extends BasicClient {
 	
 	
 	public Map<String, String> listRdfPrefixes() {
-		Response response = super.getTarget().path(LIST_RDF_PREFIXES).request(MediaType.APPLICATION_JSON_TYPE).get(); 
+		Response response = super.getTarget(LIST_RDF_PREFIXES)
+				.request(MediaType.APPLICATION_JSON_TYPE).get(); 
+		
 		super.checkResponseStatus(response);
 		Map<String, String> profiles = response.readEntity(new GenericType<Map<String, String>>() {});
 		response.close(); 
