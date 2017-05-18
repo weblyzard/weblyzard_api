@@ -80,7 +80,7 @@ public abstract class BasicClient {
 
 		if (username != null && password != null) {
 			config.register(
-					HttpAuthenticationFeature.basicBuilder().nonPreemptive().credentials(username, password).build());
+					HttpAuthenticationFeature.basicBuilder().credentials(username, password).build());
 		}
 
 		this.baseTarget = ClientBuilder.newClient(config)
