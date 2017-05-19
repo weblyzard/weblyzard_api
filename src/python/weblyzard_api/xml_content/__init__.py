@@ -526,6 +526,10 @@ class XMLContent(object):
         if annotations:
             api_dict['annotations'] = annotations
             
+        if self.features and len(self.features) > 0:
+            api_dict['features'] = self.features
+        if self.relations and len(self.relations) > 0:
+            api_dict['relations'] = self.relations
         return api_dict
 
 

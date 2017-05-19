@@ -343,6 +343,10 @@ class XMLParser(object):
 
             # add all annotations as body annotations
             for a_type, a_items in annotations.iteritems():
+                
+                if a_items is None or len(a_items)==0:
+                    continue
+                
                 for annotation in a_items:    
                     if not isinstance(annotation, dict):
                         continue   

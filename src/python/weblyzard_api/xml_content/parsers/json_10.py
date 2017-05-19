@@ -12,6 +12,7 @@ import json
 from datetime import datetime
 
 from weblyzard_api.xml_content import Sentence, XMLContent
+from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
 
 class MissingContentException(Exception):
     '''
@@ -183,7 +184,8 @@ class JSON10ParserXMLContent(JSONParserBase):
     the Weblyzard API 1.0 definition.
     '''
     FIELDS_REQUIRED = ['uri', 'title']
-    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations']
+    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations'] \
+            + XML2013.ATTR_MAPPING.keys()
     API_VERSION = 1.0
 
 
