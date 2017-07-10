@@ -71,7 +71,7 @@ def upload_directory(src_directory, repository=None, graph_name=None,
                 while not success and retry<max_retry:
                     try:
                         chunk = '\n'.join(chunk)
-                        client.upload(chunk, graph_name, repository)
+                        client.upload_statement(chunk, graph_name, repository)
                         success = True
                     except Exception, e:
                         print e

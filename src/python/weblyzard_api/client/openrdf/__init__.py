@@ -15,6 +15,7 @@ import httplib2
 import json
 import os
 import requests
+import urllib
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import namedtuple
@@ -255,26 +256,48 @@ class OpenRdfClient(object):
         return self.request(function, params=params, delete=delete)
 
     def upload_statement(self, content, context, target_repository):
-
+        ''' '''
+        print ('uploading to {}'.format(target_repository))
         params = 'context=%s' % context
         function = 'repositories/%s/statements' % target_repository
 
         self.request(function, content, params, delete=False,
                      content_type='application/x-turtle;charset=UTF-8')
 
+    def check_exists(self, object, repository):
+        ''' '''
+        query = 'describe <{}>'.format(object.replace('page', 'resource'))
+        endpoint = "{}/repositories/{}" .format(self.server_uri,repository)
+        
+        print "POSTing SPARQL query to %s" % (endpoint)
+        params = { 'query': query }
+        headers = { 
+          'content-type': 'application/x-www-form-urlencoded', 
+#           'accept': 'application/sparql-results+json' 
+        }
+        (response, content) = httplib2.Http().request(endpoint, 'POST', urllib.urlencode(params), headers=headers)
+        
+        print "Response %s" % response.status
+#         results = json.loads(content)
+#         print "\n".join([result['type']['value'] for result in results['results']['bindings']])
+        return (response, content)
+    
     def execute_query(self, query, repository):
+        ''' '''
         params = { 'query': query }
         headers = {
           'content-type': 'application/x-www-form-urlencoded',
           'accept': 'application/sparql-results+json'
         }
         endpoint = "%s/%s/statements" % (self.server_uri, repository)
+        print endpoint
         (response, content) = httplib2.Http().request(endpoint, 'POST', 
                                                       urlencode(params),
                                                       headers=headers)
         return (response, ast.literal_eval(content))
 
     def execute_update(self, query, repository):
+        ''' '''
         params = {'update': query}
         headers = {
           'content-type': 'application/x-www-form-urlencoded',
@@ -289,12 +312,13 @@ class OpenRdfClient(object):
         return(response)
       
     def delete_triples_by_types(self, repository, types):
-        
+        ''' '''
         for rdf_type in types:
             query = 'DELETE ?s WHERE {?s ?p ?o FILTER(?s = <%s>)}' % rdf_type
             self.execute_update(query, repository)
 
     def upload_repo_from_file(self, filename, repository):
+        ''' '''
         base_fn = os.path.basename(filename)
 
         assert base_fn.endswith('ttl')
@@ -327,6 +351,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
                                    delete=True)
 
     def get_orphaned_analyzers(self):
+        ''' '''
         profiles = self.get_profiles()
         configured = []
         for profile in profiles.itervalues():
@@ -412,7 +437,95 @@ class RecognizeOpenRdfClient(OpenRdfClient):
                               target_repository=self.config_repository)
 
     def check_config_repo(self):
+        ''' '''
         repositories = self.get_repositories()
 
         if not self.config_repository in repositories:
             print('warning config repo "%s" does not exist') % self.config_repository
+        
+    def create_template(self, entity, entity_type, language):
+        ''' '''
+        if entity_type.lower()=='person':
+            first_name, surname = object.split('/')[-1].split('_')
+            tuples = [
+            '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person> .'.format(entity),
+            '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .'.format(entity),
+            '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .'.format(entity),
+            '{} <http://de.dbpedia.org/property/name> "{}, {}"@{} .'.format(entity, surname, first_name, language),
+            '{} <http://xmlns.com/foaf/0.1/givenName> "{}"@{} .'.format(entity, first_name, language),
+            '{} <http://xmlns.com/foaf/0.1/surname> "{}"@{} .'.format(entity, surname, language),
+            '{} <http://www.w3.org/2000/01/rdf-schema#label> "{} {}"@{} . '.format(entity, first_name, surname, language)
+            ]
+        return '\n'.join(tuples)
+        
+    def add_entity_to_repository(self, repository, label, type, language=None):
+        '''
+        http://de.dbpedia.org/page/Matthias_Strolz?output=text%2Fplain
+        '''
+        import urllib2
+        import urllib
+        
+#         language=None
+        base_url = 'http://dbpedia.org/page/'
+        if language:
+            base_url = 'http://{}.dbpedia.org/page/'.format(language)
+        format_suffix = '?output=text%2Fplain'
+        
+        label = label.replace(' ', '_')
+
+        entity = ''.join([base_url, label])
+        entity = entity.format(entity.replace('page', 'resource'))
+        
+#         content = self.create_template(entity, type, language)
+        
+        (result, content) = self.check_exists(entity, repository)
+        print result
+        if result.status==200 and len(content):
+            print 'Skipping: {} already exists in repository {}'.format(entity, repository)
+        else:
+            url = ''.join([base_url, label, format_suffix])
+        
+            print url 
+            context = ''
+            data = requests.get(url)
+            content = data.content
+            if not len(content):
+                content = self.create_template(entity, type, language)
+            print content
+#             self.upload_statement(content, context, repository)
+
+        
+if __name__ == '__main__':
+    
+    server_uri = 'http://gecko6.wu.ac.at:8080'
+    repository = 'dbp.de.people.1403'
+    client = RecognizeOpenRdfClient(server_uri=server_uri)
+    
+    type = 'person'
+    language = 'de'
+    names = ['Hans Niessl',
+        'Johann Tschürtz',
+        'Peter Kaiser',
+        'Beate Prettner',
+        'Gabriele Schaunig-Kandut',
+        'Johanna Mikl-Leitner',
+        'Stephan Pernkopf',
+        'Karin Renner',
+        'Thomas Stelzer',
+        'Michael Strugl',
+        'Manfred Haimbuchner',
+        'Wilfried Haslauer',
+        'Astrid Rössler',
+        'Christian Stöckl',
+        'Hermann Schützenhöfer',
+        'Michael Schickhofer',
+        'Günther Platter',
+        'Josef Geisler',
+        'Ingrid Felipe',
+        'Markus Wallner',
+        'Karlheinz Rüdisser',
+        'Michael Häupl',
+        'Maria Vassilakou',
+        'Johann Gudenus']
+    for name in names:
+        client.add_entity_to_repository(repository, name, type, language)
