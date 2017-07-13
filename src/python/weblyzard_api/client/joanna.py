@@ -94,23 +94,31 @@ class Joanna(object):
         '''
         request_url = "get_hashes/{}/{}".format(sourceId, portalName)
         return self.multiRestclient.request(request_url)
-    
+
+    def get_hash_size(self, sourceId, portalName):
+        ''' Return the hashes for a specific source and portal
+        '''
+        request_url = "hashes_size/{}/{}".format(sourceId, portalName)
+        return self.multiRestclient.request(request_url)
+
+
+
     def clean_hashes(self):
         ''' Make a request to clean old nilsimsa hashes
         '''
         request_url = "clean_hashes"
         return self.multiRestclient.request(request_url)
-    
-    def similar_document(self, sourceId, nilsimsa, portalName, 
+
+    def similar_document(self, sourceId, nilsimsa, portalName,
                          daysBack=None):
-        ''' Get the similarity of a single document. 
-        Expected response: Boolean True or False 
+        ''' Get the similarity of a single document.
+        Expected response: Boolean True or False
         '''
         if daysBack is None:
             daysBack = 20
         request_url = "is_similar/{}/{}/{}/{}".format(
                     sourceId, portalName, nilsimsa, daysBack)
-        
+
         result = self.multiRestclient.request(
                 request_url, return_plain=True)
         if result == "LOADED":
@@ -119,7 +127,7 @@ class Joanna(object):
         else:
             return result
 
-    def similar_documents(self, sourceId, portalName, nilsimsaList,
+    def similar_documents(self, sourceId, portalName, contentIds_nilsimsa_dict,
                           daysBack=20):
         """ Uses PostRequest instead of the eWRT MultiRESTClient 
          for finer control of the connection codes for retries
@@ -130,20 +138,30 @@ class Joanna(object):
         if daysBack is None:
             daysBack = DAYS_BACK_DEFAULT
             
-        if not (sourceId or nilsimsaList):
+        if not (sourceId or contentIds_nilsimsa_dict):
             logger.error("Arguments missing")
             return
-        if isinstance(nilsimsaList, basestring):
+        if isinstance(contentIds_nilsimsa_dict, basestring):
             logger.error("Expected list. Please use single_document")
             raise ValueError('Expected a list')
 
+        # Added feature to send the content_ids to the server which requires a dictionary
+        # For backwards compatibility, use a default content_id of 0's
+        # to transform a list (previous) to a dict (new)
+        if isinstance(contentIds_nilsimsa_dict, list):
+            sample_content_id = "0000000000000000000"
+            contentIds_nilsimsa_dict = {sample_content_id: item
+                                        for item in contentIds_nilsimsa_dict}
+
         request_url = "batchIsSimilar/{}/{}/{}".format(
                                     portalName, sourceId, daysBack)
-        req = PostRequest(self.url + '/' + request_url, nilsimsaList)
+
+        req = PostRequest(self.url + '/' + request_url, contentIds_nilsimsa_dict)
         logger.debug('Trying to request: %s', req.url)
 
         attempts = 0
         conn_code = -1
+
 
         while attempts < max_retry_attempts and conn_code != 204:
             conn = req.request()
@@ -154,12 +172,16 @@ class Joanna(object):
                 if data == "LOADED":
                     logger.info("Nilsimsas loaded from db. \
                     Sending request again for results..")
+                elif data == "LOADING":
+                    logger.info("Nilsimsas loading from db. \
+                    Sending request again for results..")
+                    sleep(2)
                 else:
                     attempts = max_retry_attempts
                     return json.loads(data)
             elif conn.code == 204:
-                logger.info('No content found attempts %d', attempts)
                 data = conn.read()
+                logger.info('No content found attempts {} {}', attempts, data)
             elif conn.code == 400:
                 logger.error('Bad request.. 404 error')
                 data = conn.read()
@@ -189,4 +211,3 @@ class Joanna(object):
             rand_str = "".join([str(randint(0, 1)) for _ in xrange(256)])
             docs_to_send.append(rand_str)
         return docs_to_send
-    
