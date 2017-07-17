@@ -1,6 +1,8 @@
 package com.weblyzard.api.client;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 public class TestClientBase {
@@ -19,13 +21,13 @@ public class TestClientBase {
 		
 		Socket s = null;
 		
-		String host = basicClient.getTarget().getUri().getHost();
-		int port = basicClient.getTarget().getUri().getPort();
+		String host = basicClient.getBaseTarget().getUri().getHost();
+		int port = basicClient.getBaseTarget().getUri().getPort();
 		
 		try {
 			s = new Socket(host, port);
 			return true;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			logger.info("service is not available :"+host+":"+port);
 			return false;
 		} finally {
