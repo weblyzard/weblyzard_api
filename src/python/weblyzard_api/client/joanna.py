@@ -142,16 +142,11 @@ class Joanna(object):
             logger.error("Arguments missing")
             return
         if isinstance(contentIds_nilsimsa_dict, basestring):
-            logger.error("Expected list. Please use single_document")
-            raise ValueError('Expected a list')
-
-        # Added feature to send the content_ids to the server which requires a dictionary
-        # For backwards compatibility, use a default content_id of 0's
-        # to transform a list (previous) to a dict (new)
+            logger.error("Expected dict. Please use single_document")
+            raise ValueError('Expected a dictionary, got a string')
         if isinstance(contentIds_nilsimsa_dict, list):
-            sample_content_id = "0000000000000000000"
-            contentIds_nilsimsa_dict = {sample_content_id: item
-                                        for item in contentIds_nilsimsa_dict}
+            logger.error("Expected dict. Got a list.")
+            raise ValueError('Expected a dictionary, got a list.')
 
         request_url = "batchIsSimilar/{}/{}/{}".format(
                                     portalName, sourceId, daysBack)
