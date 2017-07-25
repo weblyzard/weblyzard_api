@@ -446,7 +446,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
     def create_template(self, entity, entity_type, language):
         ''' '''
         if entity_type.lower()=='person':
-            first_name, surname = object.split('/')[-1].split('_')
+            first_name, surname = entity.split('/')[-1].split('_')
             tuples = [
             '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person> .'.format(entity),
             '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .'.format(entity),
@@ -458,14 +458,13 @@ class RecognizeOpenRdfClient(OpenRdfClient):
             ]
         return '\n'.join(tuples)
         
-    def add_entity_to_repository(self, repository, label, type, language=None):
+    def add_dbpedia_entity_to_repository(self, repository, label, entity_type, 
+                                         language=None):
         '''
         http://de.dbpedia.org/page/Matthias_Strolz?output=text%2Fplain
         '''
-        import urllib2
-        import urllib
-        
-#         language=None
+
+
         base_url = 'http://dbpedia.org/page/'
         if language:
             base_url = 'http://{}.dbpedia.org/page/'.format(language)
@@ -490,7 +489,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
             data = requests.get(url)
             content = data.content
             if not len(content):
-                content = self.create_template(entity, type, language)
+                content = self.create_template(entity, entity_type, language)
             print content
 #             self.upload_statement(content, context, repository)
 
@@ -501,31 +500,33 @@ if __name__ == '__main__':
     repository = 'dbp.de.people.1403'
     client = RecognizeOpenRdfClient(server_uri=server_uri)
     
-    type = 'person'
+    entity_type = 'person'
     language = 'de'
-    names = ['Hans Niessl',
-        'Johann Tschürtz',
-        'Peter Kaiser',
-        'Beate Prettner',
-        'Gabriele Schaunig-Kandut',
-        'Johanna Mikl-Leitner',
-        'Stephan Pernkopf',
-        'Karin Renner',
-        'Thomas Stelzer',
-        'Michael Strugl',
-        'Manfred Haimbuchner',
-        'Wilfried Haslauer',
-        'Astrid Rössler',
-        'Christian Stöckl',
-        'Hermann Schützenhöfer',
-        'Michael Schickhofer',
-        'Günther Platter',
-        'Josef Geisler',
-        'Ingrid Felipe',
-        'Markus Wallner',
-        'Karlheinz Rüdisser',
-        'Michael Häupl',
-        'Maria Vassilakou',
-        'Johann Gudenus']
+    names = ['Peter Pilz',
+             'Hans Niessl',
+             'Johann Tschürtz',
+             'Peter Kaiser',
+             'Beate Prettner',
+             'Gabriele Schaunig-Kandut',
+             'Johanna Mikl-Leitner',
+             'Stephan Pernkopf',
+             'Karin Renner',
+             'Thomas Stelzer',
+             'Michael Strugl',
+             'Manfred Haimbuchner',
+             'Wilfried Haslauer',
+             'Astrid Rössler',
+             'Christian Stöckl',
+             'Hermann Schützenhöfer',
+             'Michael Schickhofer',
+             'Günther Platter',
+             'Josef Geisler',
+             'Ingrid Felipe',
+             'Markus Wallner',
+             'Karlheinz Rüdisser',
+             'Michael Häupl',
+             'Maria Vassilakou',
+             'Johann Gudenus']
     for name in names:
-        client.add_entity_to_repository(repository, name, type, language)
+        client.add_dbpedia_entity_to_repository(repository, name, 
+                                                entity_type, language)
