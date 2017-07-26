@@ -75,7 +75,7 @@ class TestJesajaNeks(unittest.TestCase):
         'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', # com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm
         'min_token_count'                : 1,
         'skip_underrepresented_keywords' : False,
-        'use_neks'                       : True,
+        'ground_annotations'            : True,
         'stoplists'                      : [],
     }
 
@@ -117,14 +117,16 @@ class TestJesajaNeks(unittest.TestCase):
     def test_nek_annotation(self):
         ''' test nek annotations '''
         xml_content = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247">
+                            <wl:sentence> Did you hear about Obama? This is a really good story.</wl:sentence>
                             <wl:sentence wl:dependency="1:advmod -1:ROOT 1:advmod 1:advmod 1:adpmod 6:det 4:adpobj 6:adpmod 7:adpobj 10:compmod 8:appos 1:p" wl:id="312ea95b45c50be0c5dd4a215d5adaaf" wl:pos="ADV VVFIN ADV ADV APPR ART NN APPR NN NE NE $." wl:token="0,2 3,12 13,17 18,24 25,28 29,34 35,44 45,48 49,61 62,68 69,74 74,75"><![CDATA[So geschehen auch jüngst bei einem Interview mit US-Präsident Barack Obama.]]></wl:sentence>
-                            <wl:annotation wl:sentence="0" wl:annotationType="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
+                            <wl:annotation wl:sentence="1" wl:annotationType="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
                          </wl:page>'''
         if self.service_is_online:
             result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME, 
                                                          [xml_content])
             assert len(result)
-
+#            from pprint import pprint
+#            pprint(result)
             assert '1243661964' in result
             assert len(result['1243661964'])
             

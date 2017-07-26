@@ -320,11 +320,8 @@ class XMLContent(object):
         attributes, sentences, title_annotations, body_annotations, features, \
             relations = parser.parse(xml_content, remove_duplicates)
         
-        if 'title' in attributes:
-            titles = [Sentence(value=attributes['title'], is_title=True)]
-        else: 
-            titles = []
-        
+
+        titles = []
         for sentence in sentences:
             sent_obj = Sentence(**sentence) 
             
@@ -333,6 +330,10 @@ class XMLContent(object):
             else: 
                 sentence_objects.append(sent_obj)
                 
+        if len(titles)==0 and 'title' in attributes:
+            #fall back titles from attributes
+            titles = [Sentence(value=attributes['title'], is_title=True)]
+
         for annotation in body_annotations:
             annotation_obj = Annotation(**annotation) 
             annotation_objects.append(annotation_obj)

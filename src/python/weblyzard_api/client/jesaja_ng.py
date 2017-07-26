@@ -115,6 +115,12 @@ class JesajaNg(MultiRESTClient):
         available_completed_shards = self.request('list_shards/complete/{}'.format(matview_id))
         return len(available_completed_shards[matview_id]) > 0
 
+    def remove_matview_profile(self, matview_id):
+        if not self.has_matview(matview_id):
+            print('No profile %s found' %  matview_id)
+            return
+        return self.request('remove_profile/{}/{}'.format(matview_id))
+
     def get_corpus_size(self, matview_id):
         available_completed_shards = self.request('list_shards/complete/{}'.format(matview_id))
         total = 0
