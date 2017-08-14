@@ -60,6 +60,55 @@ class WlSearchRestApiClient(object):
             return json.loads(r.content)['result']
         return r
     
+class WlStatisticsRestApiClient(object):
+    
+    API_VERSION = 1.0
+    
+    def __init__(self, base_url):
+        '''
+        Sets the base url for the API endpoint.
+
+        :param base_url: The base URL without version number.
+        :type base_url: str
+        '''
+        self.base_url = '/'.join([base_url, str(self.API_VERSION)])
+        
+    def add_observation(self, repository_name, observation):
+        '''
+        Adds the document to the given portal.
+
+        :param repository_name: The repository to add the observation to.
+        :type repository_name: str
+        :param observation: The observation to add. Either as JSON structure \
+                or as dict corresponding to the JSON format.
+        :type observation: str or dict
+        :returns: The id of the added observation.
+        :rtype: int
+        '''
+        if isinstance(observation, dict):
+            observation = json.dumps(observation)
+        r = requests.post('/'.join([self.base_url, 
+                                    'observations', 
+                                    repository_name]),
+                          data=observation,
+                          headers={'Content-Type': 'application/json'})
+        return r.json()
+    
+    def retrieve_observation(self, repository_name, observation_id):
+        '''
+        Retrieve the observation with id from portal_name.
+
+        :param repository_name: The repository of the observation
+        :type repository_name: str
+        :param observation_id: The observation identifier/content_id.
+        :type observation_id: int
+        :rtype: str
+        '''
+        r = requests.get('/'.join([self.base_url, 'observations', 
+                                   repository_name, 
+                                   str(observation_id)]))
+        return r.json()
+
 class WlDocumentRestApiClient(object):
     '''
     The client for the WL Document REST API.
