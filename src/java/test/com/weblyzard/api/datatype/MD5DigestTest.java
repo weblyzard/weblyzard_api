@@ -48,9 +48,9 @@ public class MD5DigestTest {
         final MD5Digest mid = MD5Digest.fromHexDigest("38338baad6b2c8864e969803250d2391");
         final MD5Digest larger1 = MD5Digest.fromHexDigest("38338baad6b2c8864e969803250d2392");
 
-        // tests
-        assertTrue(mid.equals(mid));
-        assertTrue(larger1.equals(larger1));
+        // test equals
+        assertTrue(mid.equals(MD5Digest.fromHexDigest("38338baad6b2c8864e969803250d2391")));
+        assertTrue(larger1.equals(MD5Digest.fromHexDigest("38338baad6b2c8864e969803250d2392")));
         assertFalse(mid.equals(larger1));
 
         assertFalse(mid.equals(null));
