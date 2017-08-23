@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 @JsonSerialize(using = MD5DigestSerializer.class)
 @JsonDeserialize(using = MD5DigestDeserializer.class)
 public class MD5Digest extends XmlAdapter<String, MD5Digest>
-        implements Serializable, Comparator<MD5Digest> {
+        implements Serializable, Comparator<MD5Digest>, Comparable<MD5Digest> {
 
     private static final long serialVersionUID = 1L;
 
@@ -113,5 +113,10 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
             return -1;
         }
         return 0;
+    }
+
+    @Override
+    public int compareTo(MD5Digest o) {
+        return compare(this, o);
     }
 }
