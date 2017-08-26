@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 
@@ -20,6 +21,7 @@ import org.eclipse.persistence.oxm.annotations.XmlCDATA;
  */
 @Data
 @Accessors(chain = true)
+@NoArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Sentence implements Serializable {
     private static final long serialVersionUID = 1L;

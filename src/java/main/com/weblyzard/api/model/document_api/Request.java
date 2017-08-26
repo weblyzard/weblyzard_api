@@ -2,10 +2,12 @@ package com.weblyzard.api.model.document_api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
+@NoArgsConstructor
 public class Request {
 
     @JsonProperty("repository_id")

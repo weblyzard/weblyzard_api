@@ -82,21 +82,27 @@ public class JairoClientIT extends TestClientBase {
 
         jairoClient.addProfile(mockImagineProfile, mockJairoProfileName);
         List<Annotation> annotations =
-                new ArrayList<>(
-                        Arrays.asList(
+                Arrays.asList(
+                        (Annotation)
                                 new Annotation()
-                                        .setKey("<http://dbpedia.org/resource/Aurora_(singer)>")));
+                                        .setKey("<http://dbpedia.org/resource/Aurora_(singer)>"));
         List<Annotation> result = jairoClient.extendAnnotations(mockJairoProfileName, annotations);
         assertTrue(result.size() > 0);
 
         annotations =
                 Arrays.asList(
-                        new Annotation().setKey("<http://dbpedia.org/resource/Feusisberg>"),
-                        new Annotation().setKey("<http://dbpedia.org/resource/Shani_Tarashaj>"),
-                        new Annotation()
-                                .setKey(
-                                        "<http://dbpedia.org/resource/Grasshopper_Club_Zürich__Shani_Tarashaj__1>"),
-                        new Annotation().setKey("<http://dbpedia.org/resource/Bruno_Schweizer>"));
+                        (Annotation)
+                                new Annotation().setKey("<http://dbpedia.org/resource/Feusisberg>"),
+                        (Annotation)
+                                new Annotation()
+                                        .setKey("<http://dbpedia.org/resource/Shani_Tarashaj>"),
+                        (Annotation)
+                                new Annotation()
+                                        .setKey(
+                                                "<http://dbpedia.org/resource/Grasshopper_Club_Zürich__Shani_Tarashaj__1>"),
+                        (Annotation)
+                                new Annotation()
+                                        .setKey("<http://dbpedia.org/resource/Bruno_Schweizer>"));
         result = jairoClient.extendAnnotations(mockJairoProfileName, annotations);
         assertTrue(result != null);
     }
