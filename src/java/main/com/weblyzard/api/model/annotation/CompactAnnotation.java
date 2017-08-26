@@ -40,7 +40,7 @@ public class CompactAnnotation extends Annotation {
 
     @JsonProperty("entities")
     @XmlElement(name = "entities", namespace = Document.NS_WEBLYZARD)
-    public List<AnnotationSurface> entities = new ArrayList<>();
+    private List<AnnotationSurface> entities = new ArrayList<>();
 
     public CompactAnnotation(Annotation annotation) {
         super(

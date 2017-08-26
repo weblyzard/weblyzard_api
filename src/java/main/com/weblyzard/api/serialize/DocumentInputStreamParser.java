@@ -23,6 +23,8 @@ public class DocumentInputStreamParser {
     // global helpers for json parsing
     private static final JsonFactory jsonFactory = new JsonFactory();
 
+    private DocumentInputStreamParser() {}
+
     /**
      * parses an input stream to a list of documents
      *

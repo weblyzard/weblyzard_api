@@ -13,12 +13,12 @@ import javax.ws.rs.core.Response;
 
 public class JairoClient extends BasicClient {
 
-    private static final String template_profileName = "profileName";
+    private static final String TEMPLATE_PROFILE_NAME = "profileName";
 
     private static final String EXTEND_ANNOTATIONS =
-            "/jairo/rest/extend_annotations/{" + template_profileName + "}";
+            "/jairo/rest/extend_annotations/{" + TEMPLATE_PROFILE_NAME + "}";
     private static final String ADD_PROFILE =
-            "/jairo/rest/add_profile/{" + template_profileName + "}";
+            "/jairo/rest/add_profile/{" + TEMPLATE_PROFILE_NAME + "}";
     private static final String LIST_PROFILES = "/jairo/rest/list_profiles";
     private static final String LIST_RDF_PREFIXES = "/jairo/rest/list_rdf_prefixes";
     private static final String ADD_RDF_PREFIX = "/jairo/rest/add_rdf_prefix";
@@ -27,12 +27,12 @@ public class JairoClient extends BasicClient {
         super();
     }
 
-    public JairoClient(String weblyzard_url) {
-        super(weblyzard_url);
+    public JairoClient(String weblyzardUrl) {
+        super(weblyzardUrl);
     }
 
-    public JairoClient(String weblyzard_url, String username, String password) {
-        super(weblyzard_url, username, password);
+    public JairoClient(String weblyzardUrl, String username, String password) {
+        super(weblyzardUrl, username, password);
     }
 
     public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)
@@ -40,7 +40,7 @@ public class JairoClient extends BasicClient {
 
         Response response =
                 super.getTarget(EXTEND_ANNOTATIONS)
-                        .resolveTemplate(template_profileName, profileName)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.json(annotations));
 
@@ -54,7 +54,7 @@ public class JairoClient extends BasicClient {
 
         Response response =
                 super.getTarget(ADD_PROFILE)
-                        .resolveTemplate(template_profileName, profileName)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.json(profile));
 

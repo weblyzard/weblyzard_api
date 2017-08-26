@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -21,10 +22,11 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonSerialize(using = AnnotationSerializer.class)
-public class Annotation implements Serializable {
+public class Annotation extends EntityDescriptor implements Serializable {
 
     /**
      * field to add custom fields to an annotation
@@ -32,20 +34,14 @@ public class Annotation implements Serializable {
      * <p>The custom Serializer {@link AnnotationSerializer} writes the keys of this map as fields
      * to the json annotation objects
      */
-    public Map<String, ArrayList<String>> header = new HashMap<>();
+    @XmlAttribute(name = "header", namespace = Document.NS_WEBLYZARD)
+    private Map<String, ArrayList<String>> header = new HashMap<>();
 
     /** field to store types when annotation is extended with jairo service */
     private List<String> type = new ArrayList<>();
 
-    /** unique identifier of the annotation */
-    @XmlAttribute(name = "key", namespace = Document.NS_WEBLYZARD)
-    private String key;
-
     @XmlAttribute(name = "surfaceForm", namespace = Document.NS_WEBLYZARD)
     private String surfaceForm;
-
-    @XmlAttribute(name = "preferredName", namespace = Document.NS_WEBLYZARD)
-    private String preferredName;
 
     @XmlAttribute(name = "start", namespace = Document.NS_WEBLYZARD)
     private int start;
@@ -63,9 +59,6 @@ public class Annotation implements Serializable {
     @XmlJavaTypeAdapter(MD5Digest.class)
     private MD5Digest md5sum;
 
-    @XmlAttribute(name = "annotationType", namespace = Document.NS_WEBLYZARD, required = false)
-    private String annotationType;
-
     public Annotation(String surfaceForm, int start, int end, int sentence, MD5Digest md5sum) {
         this.surfaceForm = surfaceForm;
         this.start = start;
@@ -79,7 +72,7 @@ public class Annotation implements Serializable {
         this.start = start;
         this.end = end;
         this.sentence = sentence;
-        this.annotationType = annotationType;
+        setAnnotationType(annotationType);
     }
 
     public Annotation(String surfaceForm, int start, int end, int sentence) {
@@ -99,7 +92,7 @@ public class Annotation implements Serializable {
         this.surfaceForm = surfaceForm;
         this.start = start;
         this.end = end;
-        this.annotationType = annotationType;
+        setAnnotationType(annotationType);
     }
 
     public Annotation(
@@ -110,7 +103,7 @@ public class Annotation implements Serializable {
             MD5Digest md5sum,
             String annotationType) {
         this(surfaceForm, start, end, sentence, md5sum);
-        this.annotationType = annotationType;
+        setAnnotationType(annotationType);
     }
 
     public Annotation(
@@ -123,8 +116,8 @@ public class Annotation implements Serializable {
             MD5Digest md5sum,
             String annotationType) {
         this(surfaceForm, start, end, sentence, md5sum, annotationType);
-        this.key = key;
-        this.preferredName = preferredName;
+        setKey(key);
+        setPreferredName(preferredName);
     }
 
     public Annotation(
@@ -136,8 +129,8 @@ public class Annotation implements Serializable {
             int sentence,
             String annotationType) {
         this(surfaceForm, start, end, annotationType);
-        this.key = key;
-        this.preferredName = preferredName;
+        setKey(key);
+        setPreferredName(preferredName);
         this.sentence = sentence;
     }
 }

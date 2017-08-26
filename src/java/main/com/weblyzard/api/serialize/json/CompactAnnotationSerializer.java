@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CompactAnnotationSerializer extends StdSerializer<CompactAnnotation> {
 
     public static final String ANNOTATION_HEADER_FIELDNAME = "header";
 
-    public static final List<String> IGNORE_FIELDS =
+    protected static final List<String> IGNORE_FIELDS =
             Arrays.asList(
                     "serialVersionUID",
                     "significance",
@@ -62,7 +64,7 @@ public class CompactAnnotationSerializer extends StdSerializer<CompactAnnotation
                     field.setAccessible(true);
                     jsonGenerator.writeObjectField(field.getName(), field.get(annotation));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    log.warn("Cannot serialize CompactAnnotation: {}", e.getLocalizedMessage());
                 }
             } else {
                 // add the enriched fields

@@ -13,6 +13,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * A compact annotation. This is similar to the standard annotation but with extra properties rather
@@ -20,6 +23,9 @@ import javax.xml.bind.annotation.XmlElement;
  *
  * @author Max Goebel <goebel@weblyzard.com>
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonSerialize(using = CompactAnnotationSerializer.class)
 @JsonIgnoreProperties({
@@ -93,7 +99,7 @@ public class NamedEntityAnnotation extends CompactAnnotation {
         this.confidence = confidence;
         this.score = score;
         this.scoreName = scoreName;
-        this.entities = new ArrayList<>();
+        this.setEntities(new ArrayList<>());
         this.properties = new HashMap<>();
         if (end > start)
             addSurface(new AnnotationSurface(start, end, sentence, md5sum, surfaceForm));
@@ -128,81 +134,13 @@ public class NamedEntityAnnotation extends CompactAnnotation {
      * @return
      */
     public boolean overlaps(NamedEntityAnnotation a) {
-        if (a.getMd5sum() == getMd5sum()) {
-            if ((getStart() >= a.getStart() && getStart() < a.getEnd())
-                    || (a.getStart() >= getStart() && a.getEnd() < getEnd())) {
-                return true;
-            }
-        }
-        return false;
+        return (a.getMd5sum() == getMd5sum())
+                && ((getStart() >= a.getStart() && getStart() < a.getEnd())
+                        || (a.getStart() >= getStart() && a.getEnd() < getEnd()));
     }
 
     @JsonIgnore
     public int getLength() {
         return this.getEnd() - this.getStart();
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
-
-    //	public List<AnnotationSurface> getEntities() {
-    //		return entities;
-    //	}
-    //
-    //	public void setEntities(List<AnnotationSurface> entities) {
-    //		this.entities = entities;
-    //	}
-
-    public String getEntityType() {
-        return entityType;
-    }
-
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
-    }
-
-    public String getProfileName() {
-        return profileName;
-    }
-
-    public void setProfileName(String profileName) {
-        this.profileName = profileName;
-    }
-
-    public double getConfidence() {
-        return confidence;
-    }
-
-    public void setConfidence(double confidence) {
-        this.confidence = confidence;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
-    }
-
-    public String getScoreName() {
-        return scoreName;
-    }
-
-    public void setScoreName(String scoreName) {
-        this.scoreName = scoreName;
-    }
-
-    public boolean isGrounded() {
-        return grounded;
-    }
-
-    public void setGrounded(boolean grounded) {
-        this.grounded = grounded;
     }
 }

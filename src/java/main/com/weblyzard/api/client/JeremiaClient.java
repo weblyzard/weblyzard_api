@@ -17,12 +17,12 @@ public class JeremiaClient extends BasicClient {
         super();
     }
 
-    public JeremiaClient(String weblyzard_url) {
-        super(weblyzard_url);
+    public JeremiaClient(String weblyzardUrl) {
+        super(weblyzardUrl);
     }
 
-    public JeremiaClient(String weblyzard_url, String username, String password) {
-        super(weblyzard_url, username, password);
+    public JeremiaClient(String weblyzardUrl, String username, String password) {
+        super(weblyzardUrl, username, password);
     }
 
     public XmlDocument submitDocumentRaw(Document data) throws WebApplicationException {

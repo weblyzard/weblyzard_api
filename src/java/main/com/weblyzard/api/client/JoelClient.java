@@ -29,12 +29,12 @@ public class JoelClient extends BasicClient {
         super();
     }
 
-    public JoelClient(String weblyzard_url) {
-        super(weblyzard_url);
+    public JoelClient(String weblyzardUrl) {
+        super(weblyzardUrl);
     }
 
-    public JoelClient(String weblyzard_url, String username, String password) {
-        super(weblyzard_url, username, password);
+    public JoelClient(String weblyzardUrl, String username, String password) {
+        super(weblyzardUrl, username, password);
     }
 
     public Response addDocuments(List<Document> documents)

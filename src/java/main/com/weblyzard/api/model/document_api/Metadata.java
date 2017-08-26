@@ -10,8 +10,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class Metadata {
 
-    public String author;
+    private String author;
 
     @JsonProperty("published_date")
-    public String publishedDate;
+    private String publishedDate;
 }

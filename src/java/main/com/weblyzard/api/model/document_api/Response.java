@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 public class Response {
 
     @JsonProperty("_id")
-    public String id;
+    private String id;
 
-    public boolean created;
+    private boolean created;
 }

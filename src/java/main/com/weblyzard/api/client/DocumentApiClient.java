@@ -18,12 +18,12 @@ public class DocumentApiClient extends BasicClient {
         super();
     }
 
-    public DocumentApiClient(String weblyzard_url) {
-        super(weblyzard_url);
+    public DocumentApiClient(String weblyzardUrl) {
+        super(weblyzardUrl);
     }
 
-    public DocumentApiClient(String weblyzard_url, String username, String password) {
-        super(weblyzard_url, username, password);
+    public DocumentApiClient(String weblyzardUrl, String username, String password) {
+        super(weblyzardUrl, username, password);
     }
 
     public Response insertNewDocument(Request request) {

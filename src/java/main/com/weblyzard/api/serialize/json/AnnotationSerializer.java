@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.weblyzard.api.model.annotation.Annotation;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Norman Suesstrunk
@@ -16,9 +17,10 @@ import java.lang.reflect.Field;
  *     <p>Possibilities: - https://lewdawson.com/advanced-java-json-deserialization/ -
  *     https://github.com/lewisdawson/java-jackson-serialize-example
  */
+@Slf4j
 public class AnnotationSerializer extends StdSerializer<Annotation> {
 
-    public static String ANNOTATION_HEADER_FIELDNAME = "header";
+    public static final String ANNOTATION_HEADER_FIELDNAME = "header";
 
     public AnnotationSerializer() {
         this(null);
@@ -51,12 +53,11 @@ public class AnnotationSerializer extends StdSerializer<Annotation> {
                     field.setAccessible(true);
                     jsonGenerator.writeObjectField(field.getName(), field.get(annotation));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    log.warn("Cannot serialize Annotation: {}", e.getLocalizedMessage());
                 }
             } else {
                 // add the enriched fields
                 for (String key : annotation.getHeader().keySet()) {
-                    // System.out.println("Writing the map field: "+key);
                     jsonGenerator.writeObjectField(key, annotation.getHeader().get(key));
                 }
             }

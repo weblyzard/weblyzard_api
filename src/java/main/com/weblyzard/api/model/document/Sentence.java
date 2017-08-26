@@ -24,6 +24,8 @@ import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 public class Sentence implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private static final String HTML_ENTITY_QUOT = "&quot;";
+
     @JsonProperty("md5sum")
     @XmlAttribute(name = "id", namespace = Document.NS_WEBLYZARD)
     @XmlJavaTypeAdapter(MD5Digest.class)
@@ -73,26 +75,23 @@ public class Sentence implements Serializable {
     }
 
     public String getText() {
-        return text.replace("&quot;", "\"");
+        return text.replace(HTML_ENTITY_QUOT, "\"");
     }
 
     public Sentence setText(String text) {
         // required to allow marshalling of the XML document (!)
-        this.text = text.replace("\"", "&quot;");
+        this.text = text.replace("\"", HTML_ENTITY_QUOT);
         return this;
     }
 
     public Sentence setPos(String pos) {
         // required for handling double quotes in POS tags.
-        this.pos = pos.replace("\"", "&quot;");
+        this.pos = pos.replace("\"", HTML_ENTITY_QUOT);
         return this;
     }
 
     public String getPos() {
-        if (pos != null) {
-            return pos.replace("&quot;", "\"");
-        }
-        return pos;
+        return pos != null ? pos.replace(HTML_ENTITY_QUOT, "\"") : pos;
     }
 
     public Boolean isTitle() {

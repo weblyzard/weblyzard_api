@@ -15,29 +15,29 @@ import javax.xml.bind.JAXBException;
 
 public class JesajaClient extends BasicClient {
 
-    private static final String template_matview = "matview";
+    private static final String TEMPLATE_MATVIEW = "matview";
 
     private static final String GET_KEYWORDS_SERVICE_URL =
-            "/jesaja/rest/get_keywords/{" + template_matview + "}";
+            "/jesaja/rest/get_keywords/{" + TEMPLATE_MATVIEW + "}";
     private static final String SET_REFERENCE_CORPUS_SERVICE_URL =
-            "/jesaja/rest/add_csv/{" + template_matview + "}";
+            "/jesaja/rest/add_csv/{" + TEMPLATE_MATVIEW + "}";
     private static final String ADD_DOCUMENTS_SERVICE_URL =
-            "/jesaja/rest/add_documents/{" + template_matview + "}";
+            "/jesaja/rest/add_documents/{" + TEMPLATE_MATVIEW + "}";
     private static final String GET_NEK_ANNOTATIONS_SERVICE_URL =
-            "/jesaja/rest/get_nek_annotations/{" + template_matview + "}";
+            "/jesaja/rest/get_nek_annotations/{" + TEMPLATE_MATVIEW + "}";
     private static final String ROTATE_SHARD_SERVICE_URL =
-            "/jesaja/rest/rotate_shard/{" + template_matview + "}";
+            "/jesaja/rest/rotate_shard/{" + TEMPLATE_MATVIEW + "}";
 
     public JesajaClient() {
         super();
     }
 
-    public JesajaClient(String weblyzard_url) {
-        super(weblyzard_url);
+    public JesajaClient(String weblyzardUrl) {
+        super(weblyzardUrl);
     }
 
-    public JesajaClient(String weblyzard_url, String username, String password) {
-        super(weblyzard_url, username, password);
+    public JesajaClient(String weblyzardUrl, String username, String password) {
+        super(weblyzardUrl, username, password);
     }
 
     public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
@@ -45,7 +45,7 @@ public class JesajaClient extends BasicClient {
 
         Response response =
                 super.getTarget(SET_REFERENCE_CORPUS_SERVICE_URL)
-                        .resolveTemplate(template_matview, matviewId)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.json(corpusMapping));
 
@@ -63,7 +63,7 @@ public class JesajaClient extends BasicClient {
 
         Response response =
                 super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
-                        .resolveTemplate(template_matview, matviewId)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.json(xml));
 
@@ -81,7 +81,7 @@ public class JesajaClient extends BasicClient {
 
         Response response =
                 super.getTarget(GET_KEYWORDS_SERVICE_URL)
-                        .resolveTemplate(template_matview, matviewId)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.json(xml));
 
@@ -101,7 +101,7 @@ public class JesajaClient extends BasicClient {
 
         Response response =
                 super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)
-                        .resolveTemplate(template_matview, matviewId)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.json(xml));
 
@@ -115,7 +115,7 @@ public class JesajaClient extends BasicClient {
 
         Response response =
                 super.getTarget(ROTATE_SHARD_SERVICE_URL)
-                        .resolveTemplate(template_matview, matviewId)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .get();
 

@@ -48,12 +48,11 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
 
     @Override
     public boolean equals(Object o) {
-        try {
-            MD5Digest m = (MD5Digest) o;
-            return low == m.low && high == m.high;
-        } catch (ClassCastException | NullPointerException e) {
+        if (o == null || !(o instanceof MD5Digest)) {
             return false;
         }
+        MD5Digest m = (MD5Digest) o;
+        return low == m.low && high == m.high;
     }
 
     @Override

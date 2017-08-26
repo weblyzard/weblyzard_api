@@ -40,11 +40,11 @@ public abstract class BasicClient {
     /**
      * Constructor using environment variables with a custom url.
      *
-     * @param weblyzard_url the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
+     * @param weblyzardUrl the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
      */
-    public BasicClient(String weblyzard_url) {
+    public BasicClient(String weblyzardUrl) {
         this(
-                weblyzard_url,
+                weblyzardUrl,
                 System.getenv(ENV_WEBLYZARD_API_USER),
                 System.getenv(ENV_WEBLYZARD_API_PASS));
     }
@@ -52,11 +52,11 @@ public abstract class BasicClient {
     /**
      * Constructor using a custom url, username and password.
      *
-     * @param weblyzard_url the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
+     * @param weblyzardUrl the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
      * @param username may be null
      * @param password may be null
      */
-    public BasicClient(String weblyzard_url, String username, String password) {
+    public BasicClient(String weblyzardUrl, String username, String password) {
 
         ClientConfig config = new ClientConfig();
 
@@ -80,7 +80,7 @@ public abstract class BasicClient {
 
         this.baseTarget =
                 ClientBuilder.newClient(config)
-                        .target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
+                        .target(weblyzardUrl == null ? FALLBACK_WEBLYZARD_API_URL : weblyzardUrl);
     }
 
     public WebTarget getTarget(String urlTemplate) {

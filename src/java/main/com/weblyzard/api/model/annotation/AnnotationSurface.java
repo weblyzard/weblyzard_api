@@ -1,6 +1,7 @@
 package com.weblyzard.api.model.annotation;
 
 import com.weblyzard.api.datatype.MD5Digest;
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
@@ -14,7 +15,9 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AnnotationSurface {
+public class AnnotationSurface implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int sentence = 0;
     private int start;
