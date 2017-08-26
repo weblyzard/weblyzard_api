@@ -1,5 +1,2 @@
-/**
- * Joel clustering model classes.
- */
-
+/** Joel clustering model classes. */
 package com.weblyzard.api.joel;

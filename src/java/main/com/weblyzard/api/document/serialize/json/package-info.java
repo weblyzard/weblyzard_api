@@ -1,5 +1,2 @@
-/**
- * Custom JSON serializers and deserializers.
- */
-
+/** Custom JSON serializers and deserializers. */
 package com.weblyzard.api.document.serialize.json;

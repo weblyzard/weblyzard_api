@@ -4,8 +4,8 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Enables empty attributes for boolean values that are false
- * @author http://stackoverflow.com/questions/6552740/jaxb-suppress-boolean-attribute-if-false
  *
+ * @author http://stackoverflow.com/questions/6552740/jaxb-suppress-boolean-attribute-if-false
  */
 public class BooleanAdapter extends XmlAdapter<Boolean, Boolean> {
 
@@ -16,10 +16,9 @@ public class BooleanAdapter extends XmlAdapter<Boolean, Boolean> {
 
     @Override
     public Boolean marshal(Boolean v) throws Exception {
-        if(Boolean.TRUE.equals(v)) {
+        if (Boolean.TRUE.equals(v)) {
             return v;
         }
         return null;
     }
-
 }
