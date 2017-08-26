@@ -83,12 +83,12 @@ public abstract class BasicClient {
                         .target(weblyzard_url == null ? FALLBACK_WEBLYZARD_API_URL : weblyzard_url);
     }
 
-    protected WebTarget getTarget(String urlTemplate) {
+    public WebTarget getTarget(String urlTemplate) {
         this.webTargets.putIfAbsent(urlTemplate, this.baseTarget.path(urlTemplate));
         return this.webTargets.get(urlTemplate);
     }
 
-    protected WebTarget getBaseTarget() {
+    public WebTarget getBaseTarget() {
         return this.baseTarget;
     }
 

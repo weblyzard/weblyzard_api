@@ -2,8 +2,8 @@ package com.weblyzard.api.datatype;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.weblyzard.api.document.serialize.json.MD5DigestDeserializer;
-import com.weblyzard.api.document.serialize.json.MD5DigestSerializer;
+import com.weblyzard.api.serialize.json.MD5DigestDeserializer;
+import com.weblyzard.api.serialize.json.MD5DigestSerializer;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

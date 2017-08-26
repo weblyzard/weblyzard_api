@@ -1,7 +1,7 @@
 package com.weblyzard.api.client;
 
-import com.weblyzard.api.joel.ClusterResult;
 import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.joel.ClusterResult;
 import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.ClientErrorException;

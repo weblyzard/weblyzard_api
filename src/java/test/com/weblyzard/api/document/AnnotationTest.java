@@ -3,7 +3,7 @@ package com.weblyzard.api.document;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import com.weblyzard.api.document.annotation.Annotation;
+import com.weblyzard.api.model.annotation.Annotation;
 import java.util.Arrays;
 import org.junit.Test;
 

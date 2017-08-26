@@ -1,7 +1,7 @@
 package com.weblyzard.api.client;
 
 import com.weblyzard.api.model.document.Document;
-import com.weblyzard.api.recognyze.RecognyzeResult;
+import com.weblyzard.api.model.recognyze.RecognyzeResult;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;

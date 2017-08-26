@@ -183,6 +183,21 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
 			</plugin>
+
+			<!--  Integration testing -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.20</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<sourceDirectory>src/java/main</sourceDirectory>
 		<testSourceDirectory>src/java/test</testSourceDirectory>

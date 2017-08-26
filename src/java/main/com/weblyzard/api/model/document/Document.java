@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.weblyzard.api.document.annotation.Annotation;
-import com.weblyzard.api.document.serialize.json.DocumentHeaderDeserializer;
-import com.weblyzard.api.document.serialize.json.DocumentHeaderSerializer;
+import com.weblyzard.api.model.annotation.Annotation;
+import com.weblyzard.api.serialize.json.DocumentHeaderDeserializer;
+import com.weblyzard.api.serialize.json.DocumentHeaderSerializer;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 import lombok.Data;
+import lombok.experimental.Accessors;
 /**
  * The {@link Document} and {@link Sentence} model classes used to represent documents.
  *
@@ -40,6 +41,7 @@ import lombok.Data;
  * @author weichselbraun@weblyzard.com
  */
 @Data
+@Accessors(chain = true)
 @XmlRootElement(name = "page", namespace = Document.NS_WEBLYZARD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)

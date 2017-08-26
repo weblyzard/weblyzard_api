@@ -1,8 +1,8 @@
 package com.weblyzard.api.client;
 
-import com.weblyzard.api.document.annotation.Annotation;
-import com.weblyzard.api.jairo.Profile;
-import com.weblyzard.api.jairo.RDFPrefix;
+import com.weblyzard.api.model.annotation.Annotation;
+import com.weblyzard.api.model.jairo.Profile;
+import com.weblyzard.api.model.jairo.RDFPrefix;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.WebApplicationException;

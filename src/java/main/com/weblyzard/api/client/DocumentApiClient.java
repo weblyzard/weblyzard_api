@@ -1,7 +1,7 @@
 package com.weblyzard.api.client;
 
-import com.weblyzard.api.document_api.Request;
-import com.weblyzard.api.document_api.Response;
+import com.weblyzard.api.model.document_api.Request;
+import com.weblyzard.api.model.document_api.Response;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
