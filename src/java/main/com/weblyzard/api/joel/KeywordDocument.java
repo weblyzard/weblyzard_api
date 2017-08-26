@@ -1,57 +1,44 @@
 package com.weblyzard.api.joel;
 
+import com.weblyzard.api.model.document.Document;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.weblyzard.api.document.Document;
+import lombok.Data;
+import lombok.NonNull;
 
 /**
- * 
  * @author norman.suesstrunk@htwchur.ch
  * @author albert.weichselbraun@htwchur.ch
- *
  */
-
+@Data
 public class KeywordDocument implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	public final static String FIELD_KEYWORDS = "tokens";
-	public final static String FIELD_SENTENCES = "sentences";
-	
-	private Document document; 
-	
-	private List<String> keywords; 
-	
-	public KeywordDocument() {}
-	
-	public KeywordDocument(Document document) {
-		this.document = document; 
-		initKeywordsFromDocument(); 
-	}
+    private static final long serialVersionUID = 1L;
 
-	private void initKeywordsFromDocument() {
-		if (document.getHeader() != null) {
-			this.keywords = Arrays
-					.asList(document.getHeader().get(com.weblyzard.api.document.Document.WL_KEYWORD_ATTR).split(";"))
-					.stream().map(s -> s.trim()).collect(Collectors.toList());
+    public static final String FIELD_KEYWORDS = "tokens";
+    public static final String FIELD_SENTENCES = "sentences";
 
-		} else {
-			this.keywords = new ArrayList<>();
-		}
-	}
-	
-	public void setKeywords(List<String> keywords) {
-		this.keywords = keywords; 
-	}
+    private @NonNull Document document;
+    private List<String> keywords;
 
-	public List<String> getKeywords() {
-		return keywords;
-	}
+    public KeywordDocument(Document document) {
+        this.document = document;
+        initKeywordsFromDocument();
+    }
 
-	public Document getDocument() {
-		return document; 
-	}
+    private void initKeywordsFromDocument() {
+        if (document.getHeader() != null) {
+            this.keywords =
+                    Arrays.asList(document.getHeader().get(Document.WL_KEYWORD_ATTR).split(";"))
+                            .stream()
+                            .map(String::trim)
+                            .collect(Collectors.toList());
+
+        } else {
+            this.keywords = new ArrayList<>();
+        }
+    }
 }

@@ -1,40 +1,13 @@
 package com.weblyzard.api.recognyze;
 
 import java.util.Set;
+import lombok.Data;
 
+@Data
 public class RecognyzeResult {
 
-	public String key;
-	public Set<SurfaceForm> surfaceForms;
-	public String entityType;
-	public double confidence;
-
-
-
-	public RecognyzeResult setConfidence(double confidence) {
-		this.confidence = confidence;
-		return this;
-	}
-
-
-
-	public RecognyzeResult setEntityType(String entityType) {
-		this.entityType = entityType;
-		return this;
-	}
-
-
-
-	public RecognyzeResult setKey(String key) {
-		this.key = key;
-		return this;
-	}
-
-
-
-	public RecognyzeResult setSurfaceForms(Set<SurfaceForm> surfaceForms) {
-		this.surfaceForms = surfaceForms;
-		return this;
-	}
-
+    private String key;
+    private Set<SurfaceForm> surfaceForms;
+    private String entityType;
+    private double confidence;
 }

@@ -1,27 +1,13 @@
 package com.weblyzard.api.document_api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+@Data
 public class Response {
 
-	public boolean created;
-	public String _id;
+    @JsonProperty("_id")
+    public String id;
 
-
-
-	public Response() {
-	}
-
-
-
-	public Response setCreated(boolean created) {
-		this.created = created;
-		return this;
-	}
-
-
-
-	public Response set_id(String _id) {
-		this._id = _id;
-		return this;
-	}
-
+    public boolean created;
 }

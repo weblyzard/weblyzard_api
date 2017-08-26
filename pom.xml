@@ -47,8 +47,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jersey2.version>2.24</jersey2.version>
-		<jaxrs.version>2.0.1</jaxrs.version>
+		<jersey2.version>2.25.1</jersey2.version>
+		<jaxrs.version>2.1</jaxrs.version>
 	</properties>
 
 	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency 
@@ -264,11 +264,17 @@
 		</dependency>
 
 		<!-- apache commons lang -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.5</version>
-		</dependency>
 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.18</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
 	</dependencies>
 </project>
