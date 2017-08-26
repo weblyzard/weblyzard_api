@@ -1,6 +1,5 @@
 package com.weblyzard.api.model.annotation;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.model.document.Document;
@@ -25,25 +24,17 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties({
-    "sentence",
-    "start",
-    "end",
-    "surfaceForm",
-    "scoreName",
-    "grounded",
-    "md5sum"
-})
-public class CompactAnnotation extends Annotation {
+public class CompactAnnotation extends EntityDescriptor {
 
+    @SuppressWarnings("unused")
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("entities")
     @XmlElement(name = "entities", namespace = Document.NS_WEBLYZARD)
     private List<AnnotationSurface> entities = new ArrayList<>();
 
-    public CompactAnnotation(Annotation annotation) {
-        super(
+    public CompactAnnotation(final Annotation annotation) {
+        this(
                 annotation.getKey(),
                 annotation.getSurfaceForm(),
                 annotation.getPreferredName(),
@@ -52,14 +43,6 @@ public class CompactAnnotation extends Annotation {
                 annotation.getSentence(),
                 annotation.getMd5sum(),
                 annotation.getAnnotationType());
-        if (getEnd() > getStart())
-            addSurface(
-                    new AnnotationSurface(
-                            getStart(),
-                            getEnd(),
-                            annotation.getSentence(),
-                            annotation.getMd5sum(),
-                            getSurfaceForm()));
     }
 
     public CompactAnnotation(
@@ -71,7 +54,8 @@ public class CompactAnnotation extends Annotation {
             int sentence,
             MD5Digest md5sum,
             String annotationType) {
-        super(key, surfaceForm, preferredName, start, end, sentence, md5sum, annotationType);
+        super(key, preferredName, annotationType);
+        addSurface(new AnnotationSurface(start, end, sentence, md5sum, surfaceForm));
     }
 
     public void addSurface(AnnotationSurface entity) {

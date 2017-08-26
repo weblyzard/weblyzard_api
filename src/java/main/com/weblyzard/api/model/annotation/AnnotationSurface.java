@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * The surfaced annotation
+ * A mention of one entity (i.e. its position and surface form)
  *
  * @author goebel@weblyzard.com
  */

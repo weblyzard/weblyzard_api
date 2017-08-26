@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CompactAnnotationSerializer extends StdSerializer<CompactAnnotation> {
 
-    public static final String ANNOTATION_HEADER_FIELDNAME = "header";
-
     protected static final List<String> IGNORE_FIELDS =
             Arrays.asList(
                     "serialVersionUID",
@@ -59,19 +57,11 @@ public class CompactAnnotationSerializer extends StdSerializer<CompactAnnotation
             if (IGNORE_FIELDS.contains(field.getName())) {
                 continue;
             }
-            if (!field.getName().equals(ANNOTATION_HEADER_FIELDNAME)) {
-                try {
-                    field.setAccessible(true);
-                    jsonGenerator.writeObjectField(field.getName(), field.get(annotation));
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    log.warn("Cannot serialize CompactAnnotation: {}", e.getLocalizedMessage());
-                }
-            } else {
-                // add the enriched fields
-                for (String key : annotation.getHeader().keySet()) {
-                    // System.out.println("Writing the map field: "+key);
-                    jsonGenerator.writeObjectField(key, annotation.getHeader().get(key));
-                }
+            try {
+                field.setAccessible(true);
+                jsonGenerator.writeObjectField(field.getName(), field.get(annotation));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                log.warn("Cannot serialize CompactAnnotation: {}", e.getLocalizedMessage());
             }
         }
         jsonGenerator.writeEndObject();
