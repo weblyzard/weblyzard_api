@@ -1,10 +1,10 @@
 package com.weblyzard.api.client;
 
+import com.weblyzard.api.model.document.Document;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import javax.json.JsonObject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
@@ -13,115 +13,115 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 
-import com.weblyzard.api.document.Document;
-
 public class JesajaClient extends BasicClient {
-	
-	private static final String template_matview = "matview";
 
-	private static final String GET_KEYWORDS_SERVICE_URL = "/jesaja/rest/get_keywords/{"+ template_matview + "}";
-	private static final String SET_REFERENCE_CORPUS_SERVICE_URL = "/jesaja/rest/add_csv/{"+ template_matview + "}";
-	private static final String ADD_DOCUMENTS_SERVICE_URL = "/jesaja/rest/add_documents/{"+ template_matview + "}";
-	private static final String GET_NEK_ANNOTATIONS_SERVICE_URL = "/jesaja/rest/get_nek_annotations/{"+ template_matview + "}";
-	private static final String ROTATE_SHARD_SERVICE_URL = "/jesaja/rest/rotate_shard/{"+ template_matview + "}";
+    private static final String TEMPLATE_MATVIEW = "matview";
 
-	public JesajaClient() {
-		super();
-	}
+    private static final String GET_KEYWORDS_SERVICE_URL =
+            "/jesaja/rest/get_keywords/{" + TEMPLATE_MATVIEW + "}";
+    private static final String SET_REFERENCE_CORPUS_SERVICE_URL =
+            "/jesaja/rest/add_csv/{" + TEMPLATE_MATVIEW + "}";
+    private static final String ADD_DOCUMENTS_SERVICE_URL =
+            "/jesaja/rest/add_documents/{" + TEMPLATE_MATVIEW + "}";
+    private static final String GET_NEK_ANNOTATIONS_SERVICE_URL =
+            "/jesaja/rest/get_nek_annotations/{" + TEMPLATE_MATVIEW + "}";
+    private static final String ROTATE_SHARD_SERVICE_URL =
+            "/jesaja/rest/rotate_shard/{" + TEMPLATE_MATVIEW + "}";
 
-	public JesajaClient(String weblyzard_url) {
-		super(weblyzard_url);
-	}
+    public JesajaClient() {
+        super();
+    }
 
-	public JesajaClient(String weblyzard_url, String username, String password) {
-		super(weblyzard_url, username, password);
-	}
+    public JesajaClient(String weblyzardUrl) {
+        super(weblyzardUrl);
+    }
 
-	public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
-			throws WebApplicationException {
+    public JesajaClient(String weblyzardUrl, String username, String password) {
+        super(weblyzardUrl, username, password);
+    }
 
-		Response response = super.getTarget(SET_REFERENCE_CORPUS_SERVICE_URL)
-				.resolveTemplate(template_matview, matviewId)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(corpusMapping));
+    public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
+            throws WebApplicationException {
 
-		super.checkResponseStatus(response);
-		response.close();
+        Response response =
+                super.getTarget(SET_REFERENCE_CORPUS_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(corpusMapping));
 
-		return response;
-	}
+        super.checkResponseStatus(response);
+        response.close();
 
+        return response;
+    }
 
+    public Response addDocuments(String matviewId, List<Document> documents)
+            throws WebApplicationException, JAXBException {
 
-	public Response addDocuments(String matviewId, List<Document> documents)
-			throws WebApplicationException, JAXBException {
+        List<String> xml = new ArrayList<>();
+        for (Document document : documents) xml.add(Document.getXmlRepresentation(document));
 
-		List<String> xml = new ArrayList<>();
-		for (Document document : documents)
-			xml.add(Document.getXmlRepresentation(document));
+        Response response =
+                super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(xml));
 
-		Response response = super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
-				.resolveTemplate(template_matview, matviewId)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
+        super.checkResponseStatus(response);
+        response.close();
 
-		super.checkResponseStatus(response);
-		response.close();
+        return response;
+    }
 
-		return response;
-	}
+    public Map<String, Map<String, Double>> getKeywords(String matviewId, List<Document> documents)
+            throws WebApplicationException, JAXBException {
 
+        List<String> xml = new ArrayList<>();
+        for (Document document : documents) xml.add(Document.getXmlRepresentation(document));
 
+        Response response =
+                super.getTarget(GET_KEYWORDS_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(xml));
 
-	public Map<String, Map<String, Double>> getKeywords(String matviewId, List<Document> documents)
-			throws WebApplicationException, JAXBException {
+        super.checkResponseStatus(response);
+        Map<String, Map<String, Double>> result =
+                response.readEntity(new GenericType<Map<String, Map<String, Double>>>() {});
+        response.close();
 
-		List<String> xml = new ArrayList<>();
-		for (Document document : documents)
-			xml.add(Document.getXmlRepresentation(document));
+        return result == null ? Collections.emptyMap() : result;
+    }
 
-		Response response = super.getTarget(GET_KEYWORDS_SERVICE_URL)
-				.resolveTemplate(template_matview, matviewId)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
+    public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
+            throws WebApplicationException, JAXBException {
 
-		super.checkResponseStatus(response);
-		Map<String, Map<String, Double>> result = response
-				.readEntity(new GenericType<Map<String, Map<String, Double>>>() {
-				});
-		response.close();
+        List<String> xml = new ArrayList<>();
+        for (Document document : documents) xml.add(Document.getXmlRepresentation(document));
 
-		return result == null ? Collections.emptyMap() : result;
-	}
+        Response response =
+                super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(xml));
 
+        super.checkResponseStatus(response);
+        JsonObject result = response.readEntity(JsonObject.class);
+        response.close();
+        return result;
+    }
 
+    public int rotateShard(String matviewId) throws WebApplicationException, JAXBException {
 
-	public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
-			throws WebApplicationException, JAXBException {
+        Response response =
+                super.getTarget(ROTATE_SHARD_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get();
 
-		List<String> xml = new ArrayList<>();
-		for (Document document : documents)
-			xml.add(Document.getXmlRepresentation(document));
-
-		Response response = super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)
-				.resolveTemplate(template_matview, matviewId)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(xml));
-
-		super.checkResponseStatus(response);
-		JsonObject result = response.readEntity(JsonObject.class);
-		response.close();
-		return result;
-	}
-
-
-
-	public int rotateShard(String matviewId) throws WebApplicationException, JAXBException {
-
-		Response response = super.getTarget(ROTATE_SHARD_SERVICE_URL)
-				.resolveTemplate(template_matview, matviewId)
-				.request(MediaType.APPLICATION_JSON_TYPE).get();
-
-		super.checkResponseStatus(response);
-		int result = response.readEntity(Integer.class);
-		response.close();
-		return result;
-	}
-
+        super.checkResponseStatus(response);
+        int result = response.readEntity(Integer.class);
+        response.close();
+        return result;
+    }
 }
