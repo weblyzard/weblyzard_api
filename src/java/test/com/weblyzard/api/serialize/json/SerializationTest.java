@@ -7,7 +7,7 @@ import com.weblyzard.api.model.document.Sentence;
 import java.io.IOException;
 import org.junit.Test;
 
-public class MD5DigestDeserializerTest {
+public class SerializationTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -18,8 +18,20 @@ public class MD5DigestDeserializerTest {
                         "McChain (former US presidente candidate) stated that he would strongly support such actions.",
                         "0,7 8,9 9,15 16,18 19,29 30,39 39,40 41,47 48,52 53,55 56,61 62,70 71,78 79,83 84,91 91,92",
                         "NNP ( JJ NNP NN NN ) VBD IN PRP MD RB VB JJ NNS .");
-        String json = mapper.writeValueAsString(sentence);
 
+        // test sentence id/md5sum (MD5Digest)
+        testSerialization(sentence);
+
+        // test isTitle attribute (BooleanAdapter)
+        sentence.setTitle(false);
+        testSerialization(sentence);
+
+        sentence.setTitle(true);
+        testSerialization(sentence);
+    }
+
+    private void testSerialization(Sentence sentence) throws IOException {
+        String json = mapper.writeValueAsString(sentence);
         Sentence deserializedSentence = mapper.readValue(json, Sentence.class);
         assertEquals(sentence, deserializedSentence);
     }
