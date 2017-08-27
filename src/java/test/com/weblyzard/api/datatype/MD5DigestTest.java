@@ -136,4 +136,10 @@ public class MD5DigestTest {
         assertFalse(mid.equals(null));
         assertFalse(mid.equals("test"));
     }
+
+    @Test
+    public void testToString() {
+        final MD5Digest digest = MD5Digest.fromHexDigest("0b4591090d210426dbaae959fc5d5df4");
+        assertEquals("0b4591090d210426dbaae959fc5d5df4", digest.toString());
+    }
 }

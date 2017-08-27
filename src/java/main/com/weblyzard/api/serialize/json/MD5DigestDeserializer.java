@@ -22,6 +22,6 @@ public class MD5DigestDeserializer extends StdDeserializer<MD5Digest> {
     @Override
     public MD5Digest deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
-        return MD5Digest.fromText(p.getValueAsString());
+        return MD5Digest.fromHexDigest(p.getValueAsString());
     }
 }

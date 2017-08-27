@@ -70,7 +70,7 @@ public class Document implements Serializable {
     /** attributes required for the annotation handling */
     @JsonProperty("body_annotation")
     @XmlElement(name = "body_annotation", namespace = Document.NS_WEBLYZARD)
-    private List<Annotation> bodyAnnotation;
+    private List<Annotation> bodyAnnotations;
 
     @JsonProperty("title_annotation")
     @XmlElement(name = "title_annotation", namespace = Document.NS_WEBLYZARD)
@@ -121,7 +121,7 @@ public class Document implements Serializable {
     }
 
     public List<Annotation> getBodyAnnotations() {
-        return bodyAnnotation != null ? bodyAnnotation : Collections.<Annotation>emptyList();
+        return bodyAnnotations != null ? bodyAnnotations : Collections.<Annotation>emptyList();
     }
 
     public List<Annotation> getTitleAnnotations() {

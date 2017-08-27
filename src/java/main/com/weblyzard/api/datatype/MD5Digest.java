@@ -71,13 +71,13 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
     }
 
     @Override
-    public MD5Digest unmarshal(String v) throws Exception {
-        return (v == null || v == "") ? null : MD5Digest.fromHexDigest(v);
+    public MD5Digest unmarshal(String s) throws Exception {
+        return (s == null || s == "") ? null : MD5Digest.fromHexDigest(s);
     }
 
     @Override
-    public String marshal(MD5Digest v) throws Exception {
-        return v == null ? "" : v.toString();
+    public String marshal(MD5Digest digest) throws Exception {
+        return digest == null ? "" : digest.toString();
     }
 
     /*

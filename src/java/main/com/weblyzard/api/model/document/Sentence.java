@@ -46,7 +46,7 @@ public class Sentence implements Serializable {
     @JsonProperty("is_title")
     @XmlAttribute(name = "is_title", namespace = Document.NS_WEBLYZARD)
     @XmlJavaTypeAdapter(BooleanAdapter.class)
-    private Boolean isTitle;
+    private boolean title;
 
     @JsonProperty("text")
     @XmlValue
@@ -94,9 +94,5 @@ public class Sentence implements Serializable {
 
     public String getPos() {
         return pos != null ? pos.replace(HTML_ENTITY_QUOT, "\"") : pos;
-    }
-
-    public Boolean isTitle() {
-        return Boolean.TRUE.equals(isTitle);
     }
 }
