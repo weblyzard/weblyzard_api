@@ -2,8 +2,8 @@ package com.weblyzard.api.datatype;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.weblyzard.api.document.serialize.json.MD5DigestDeserializer;
-import com.weblyzard.api.document.serialize.json.MD5DigestSerializer;
+import com.weblyzard.api.serialize.json.MD5DigestDeserializer;
+import com.weblyzard.api.serialize.json.MD5DigestSerializer;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,7 +23,8 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
 
     private static final long serialVersionUID = 1L;
 
-    private long low, high;
+    private long low;
+    private long high;
 
     public MD5Digest(byte[] m) {
         high = fromBytes(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]);
@@ -48,12 +49,11 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
 
     @Override
     public boolean equals(Object o) {
-        try {
-            MD5Digest m = (MD5Digest) o;
-            return low == m.low && high == m.high;
-        } catch (ClassCastException | NullPointerException e) {
+        if (o == null || !(o instanceof MD5Digest)) {
             return false;
         }
+        MD5Digest m = (MD5Digest) o;
+        return low == m.low && high == m.high;
     }
 
     @Override
@@ -72,13 +72,13 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
     }
 
     @Override
-    public MD5Digest unmarshal(String v) throws Exception {
-        return (v == null || v == "") ? null : MD5Digest.fromHexDigest(v);
+    public MD5Digest unmarshal(String s) throws Exception {
+        return (s == null || s == "") ? null : MD5Digest.fromHexDigest(s);
     }
 
     @Override
-    public String marshal(MD5Digest v) throws Exception {
-        return v == null ? "" : v.toString();
+    public String marshal(MD5Digest digest) throws Exception {
+        return digest == null ? "" : digest.toString();
     }
 
     /*

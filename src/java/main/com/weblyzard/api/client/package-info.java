@@ -1,5 +1,2 @@
-/**
- * Client classes to access webLyzard REST services.
- */
-
+/** Client classes to access webLyzard REST services. */
 package com.weblyzard.api.client;
