@@ -1,16 +1,16 @@
 package com.weblyzard.api.model.annotation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.model.document.Document;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -23,6 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CompactAnnotation extends EntityDescriptor {
 
@@ -31,34 +32,33 @@ public class CompactAnnotation extends EntityDescriptor {
 
     @JsonProperty("entities")
     @XmlElement(name = "entities", namespace = Document.NS_WEBLYZARD)
-    private List<AnnotationSurface> entities = new ArrayList<>();
+    private Set<AnnotationSurface> entities = new HashSet<>();
 
-    public CompactAnnotation(final Annotation annotation) {
-        this(
-                annotation.getKey(),
-                annotation.getSurfaceForm(),
-                annotation.getPreferredName(),
-                annotation.getStart(),
-                annotation.getEnd(),
-                annotation.getSentence(),
-                annotation.getMd5sum(),
-                annotation.getAnnotationType());
+    public CompactAnnotation(final String key) {
+        super(key);
     }
 
-    public CompactAnnotation(
-            String key,
-            String surfaceForm,
-            String preferredName,
-            int start,
-            int end,
-            int sentence,
-            MD5Digest md5sum,
-            String annotationType) {
-        super(key, preferredName, annotationType);
-        addSurface(new AnnotationSurface(start, end, sentence, md5sum, surfaceForm));
+    public CompactAnnotation(final Annotation a) {
+        super(a.getKey());
+        setPreferredName(a.getPreferredName())
+                .setEntityType(a.getEntityType())
+                .setEntityMetadata(a.getEntityMetadata())
+                .compactAnnotation()
+                .addSurface(
+                        new AnnotationSurface(
+                                a.getStart(),
+                                a.getEnd(),
+                                a.getSentence(),
+                                a.getMd5sum(),
+                                a.getSurfaceForm()));
     }
 
-    public void addSurface(AnnotationSurface entity) {
+    public static CompactAnnotation build(String key) {
+        return new CompactAnnotation(key);
+    }
+
+    public CompactAnnotation addSurface(AnnotationSurface entity) {
         if (!entities.contains(entity)) entities.add(entity);
+        return this;
     }
 }

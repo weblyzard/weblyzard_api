@@ -6,6 +6,8 @@ import jersey.repackaged.com.google.common.collect.Lists;
 
 public class JsonSerializerHelper {
 
+    private JsonSerializerHelper() {}
+
     public static Iterable<Field> getFieldsUpTo(Class<?> startClass, Class<?> exclusiveParent) {
 
         List<Field> currentClassFields = Lists.newArrayList(startClass.getDeclaredFields());

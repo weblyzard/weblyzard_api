@@ -1,14 +1,8 @@
 package com.weblyzard.api.model.annotation;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.model.document.Document;
-import com.weblyzard.api.serialize.json.AnnotationSerializer;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,6 +10,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /** @author norman.suesstrunk@htwchur.ch */
@@ -24,21 +19,10 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @SuppressWarnings("serial")
+@ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonSerialize(using = AnnotationSerializer.class)
+// @JsonSerialize(using = AnnotationSerializer.class)
 public class Annotation extends EntityDescriptor implements Serializable {
-
-    /**
-     * field to add custom fields to an annotation
-     *
-     * <p>The custom Serializer {@link AnnotationSerializer} writes the keys of this map as fields
-     * to the json annotation objects
-     */
-    @XmlAttribute(name = "header", namespace = Document.NS_WEBLYZARD)
-    private Map<String, ArrayList<String>> header = new HashMap<>();
-
-    /** field to store types when annotation is extended with jairo service */
-    private List<String> type = new ArrayList<>();
 
     @XmlAttribute(name = "surfaceForm", namespace = Document.NS_WEBLYZARD)
     private String surfaceForm;
@@ -59,78 +43,14 @@ public class Annotation extends EntityDescriptor implements Serializable {
     @XmlJavaTypeAdapter(MD5Digest.class)
     private MD5Digest md5sum;
 
-    public Annotation(String surfaceForm, int start, int end, int sentence, MD5Digest md5sum) {
-        this.surfaceForm = surfaceForm;
-        this.start = start;
-        this.end = end;
-        this.sentence = sentence;
-        this.md5sum = md5sum;
+    @XmlAttribute(name = "confidence", namespace = Document.NS_WEBLYZARD)
+    private double confidence;
+
+    public Annotation(String key) {
+        super(key);
     }
 
-    public Annotation(String surfaceForm, int start, int end, int sentence, String annotationType) {
-        this.surfaceForm = surfaceForm;
-        this.start = start;
-        this.end = end;
-        this.sentence = sentence;
-        setAnnotationType(annotationType);
-    }
-
-    public Annotation(String surfaceForm, int start, int end, int sentence) {
-        this.surfaceForm = surfaceForm;
-        this.start = start;
-        this.end = end;
-        this.sentence = sentence;
-    }
-
-    public Annotation(String surfaceForm, int start, int end) {
-        this.surfaceForm = surfaceForm;
-        this.start = start;
-        this.end = end;
-    }
-
-    public Annotation(String surfaceForm, int start, int end, String annotationType) {
-        this.surfaceForm = surfaceForm;
-        this.start = start;
-        this.end = end;
-        setAnnotationType(annotationType);
-    }
-
-    public Annotation(
-            String surfaceForm,
-            int start,
-            int end,
-            int sentence,
-            MD5Digest md5sum,
-            String annotationType) {
-        this(surfaceForm, start, end, sentence, md5sum);
-        setAnnotationType(annotationType);
-    }
-
-    public Annotation(
-            String key,
-            String surfaceForm,
-            String preferredName,
-            int start,
-            int end,
-            int sentence,
-            MD5Digest md5sum,
-            String annotationType) {
-        this(surfaceForm, start, end, sentence, md5sum, annotationType);
-        setKey(key);
-        setPreferredName(preferredName);
-    }
-
-    public Annotation(
-            String key,
-            String surfaceForm,
-            String preferredName,
-            int start,
-            int end,
-            int sentence,
-            String annotationType) {
-        this(surfaceForm, start, end, annotationType);
-        setKey(key);
-        setPreferredName(preferredName);
-        this.sentence = sentence;
+    public static Annotation build(String key) {
+        return new Annotation(key);
     }
 }

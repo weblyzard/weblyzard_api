@@ -10,10 +10,10 @@ import com.weblyzard.api.model.jairo.Profile;
 import com.weblyzard.api.model.jairo.RDFPrefix;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import jersey.repackaged.com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -120,22 +120,19 @@ public class JairoClientIT extends TestClientBase {
         mockImagineProfile.addType("?type", "type");
 
         // init the annotations
-        mockImagineAnnotations = new ArrayList<>();
-        mockImagineAnnotations.add(
-                new Annotation(
-                        "<http://dbpedia.org/resourceVevey>", null, null, 0, 0, 0, null, null));
-        mockImagineAnnotations.add(
-                new Annotation(
-                        "<http://dbpedia.org/resource/Sarnen>", null, null, 0, 0, 0, null, null));
-        mockImagineAnnotations.add(
-                new Annotation(
-                        "<http://dbpedia.org/resource/Die_(musician)>",
-                        null,
-                        null,
-                        0,
-                        0,
-                        0,
-                        null,
-                        null));
+        mockImagineAnnotations =
+                ImmutableList.of(
+                        Annotation.build("<http://dbpedia.org/resourceVevey>")
+                                .setStart(0)
+                                .setEnd(0)
+                                .setSentence(0),
+                        Annotation.build("<http://dbpedia.org/resource/Sarnen>")
+                                .setStart(0)
+                                .setEnd(0)
+                                .setSentence((0)),
+                        Annotation.build("<http://dbpedia.org/resource/Die_(musician)>")
+                                .setStart(0)
+                                .setEnd(0)
+                                .setSentence((0)));
     }
 }

@@ -18,8 +18,7 @@ import java.io.IOException;
 public class DocumentHeaderSerializer extends StdKeySerializer {
 
     private static final long serialVersionUID = 1L;
-
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)

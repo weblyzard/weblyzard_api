@@ -30,8 +30,8 @@ public class JosephClient extends BasicClient {
     private static final String FORGET_SERVICE_URL =
             "/joseph/rest/forget/{" + TEMPLATE_PROFILE_NAME + "}/{" + TEMPLATE_CATEGORY + "}";
 
-    private static final String param_limit = "limit";
-    private static final String param_withFeatures = "full";
+    private static final String PARAM_LIMIT = "limit";
+    private static final String PARAM_WITH_FEATURES = "full";
 
     public JosephClient() {
         super();
@@ -143,8 +143,8 @@ public class JosephClient extends BasicClient {
         Response response =
                 super.getTarget(CLASSIFY_SERVICE_URL)
                         .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
-                        .queryParam(param_limit, limit)
-                        .queryParam(param_withFeatures, withFeatures)
+                        .queryParam(PARAM_LIMIT, limit)
+                        .queryParam(PARAM_WITH_FEATURES, withFeatures)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.json(request));
 

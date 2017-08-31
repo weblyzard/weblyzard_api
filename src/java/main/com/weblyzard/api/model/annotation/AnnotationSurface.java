@@ -26,6 +26,7 @@ public class AnnotationSurface implements Serializable {
     private int end;
     private String surfaceForm;
     private MD5Digest md5sum;
+    private double confidence;
 
     public AnnotationSurface(
             int start, int end, int sentence, MD5Digest md5sum, String surfaceForm) {

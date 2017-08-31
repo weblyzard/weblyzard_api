@@ -23,7 +23,8 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
 
     private static final long serialVersionUID = 1L;
 
-    private long low, high;
+    private long low;
+    private long high;
 
     public MD5Digest(byte[] m) {
         high = fromBytes(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]);
