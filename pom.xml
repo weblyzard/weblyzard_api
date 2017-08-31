@@ -122,6 +122,12 @@
 				<version>2.4</version>
 			</extension>
 		</extensions>
+		        <testResources>
+            <testResource>
+                <directory>src/java/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -290,6 +296,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>23.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
