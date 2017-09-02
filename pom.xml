@@ -4,7 +4,7 @@
 
 	<groupId>com.weblyzard.api</groupId>
 	<artifactId>weblyzard-api</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>com.weblyzard.api.weblyzard-api</name>
@@ -122,12 +122,18 @@
 				<version>2.4</version>
 			</extension>
 		</extensions>
-		        <testResources>
-            <testResource>
-                <directory>src/java/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
+		<resources>
+		  <resource>
+		      <directory>src/resources/main</directory>
+		      <filtering>true</filtering>
+		  </resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/resources/test</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -147,8 +153,8 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
 				<configuration>
-      				<additionalparam>-Xdoclint:none</additionalparam>
-    			</configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -190,7 +196,7 @@
 				<version>2.12.4</version>
 			</plugin>
 
-			<!--  Integration testing -->
+			<!-- Integration testing -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
