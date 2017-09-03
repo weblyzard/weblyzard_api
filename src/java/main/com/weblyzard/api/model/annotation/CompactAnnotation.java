@@ -50,7 +50,8 @@ public class CompactAnnotation extends EntityDescriptor {
                                 a.getEnd(),
                                 a.getSentence(),
                                 a.getMd5sum(),
-                                a.getSurfaceForm()));
+                                a.getSurfaceForm(),
+                                a.getConfidence()));
     }
 
     public static CompactAnnotation build(String key) {

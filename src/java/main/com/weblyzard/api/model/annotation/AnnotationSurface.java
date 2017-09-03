@@ -4,6 +4,7 @@ import com.weblyzard.api.datatype.MD5Digest;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -16,24 +17,16 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
+@AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AnnotationSurface implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int sentence = 0;
     private int start;
     private int end;
-    private String surfaceForm;
+    private int sentence;
     private MD5Digest md5sum;
+    private String surfaceForm;
     private double confidence;
-
-    public AnnotationSurface(
-            int start, int end, int sentence, MD5Digest md5sum, String surfaceForm) {
-        this.start = start;
-        this.end = end;
-        this.sentence = sentence;
-        this.md5sum = md5sum;
-        this.surfaceForm = surfaceForm;
-    }
 }
