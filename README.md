@@ -1,4 +1,5 @@
 # The webLyzard API
+Java-API: [![Build Status](https://www.travis-ci.org/weblyzard/streaming-sparql.png?branch=master)](https://www.travis-ci.org/weblyzard/streaming-sparql)
 
 Provides access to all webLyzard Web services through a python and java library.
 
