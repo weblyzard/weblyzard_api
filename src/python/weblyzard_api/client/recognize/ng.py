@@ -46,7 +46,7 @@ class Recognize(MultiRESTClient):
                         limit=40)
             pprint(result)
     '''
-    URL_PATH = 'Recognize/rest'
+    URL_PATH = 'recognize/rest/'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'lang': 'xml:lang',
                          'sentences' : 'sentence',
@@ -86,7 +86,7 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         '''
-        return self.request(path='searchText',
+        return self.request(path='search_text/raw',
                             parameters=text,
                             query_parameters={'profileName' : profile_name,
                                               'limit': limit})
