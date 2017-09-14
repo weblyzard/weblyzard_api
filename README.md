@@ -1,11 +1,12 @@
 # The webLyzard API
+[![Build Status](https://www.travis-ci.org/weblyzard/weblyzard_api.png?branch=master)](https://www.travis-ci.org/weblyzard/weblyzard_api) (Java API)
 
 Provides access to all webLyzard Web services through a python and java library.
 
 Full Documentation is available at 
 
 * Python: http://weblyzard-api.readthedocs.org/en/latest/
-* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.0.7/
+* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.1.0.1/
 
 
 ## Configuration
@@ -73,6 +74,7 @@ Example scripts are available in the `example` directory.
   + docstring explaining what the method does
   + a unit test demonstrating the method's usage in the wild.
 + commits must pass all unit tests
++ verify code quality for merge requests (`mvn sonar:sonar`)
 
 To activate the java client debugging (logging requests / responses etc) set the environment variable **ENV_WEBLYZARD_API_DEBUG** to true: 
 
@@ -100,10 +102,5 @@ Deploying to the public mavencentral:
 ```
 mvn deploy -Denvironment=mavencentral
 ```
-
-
- javadoc.io/doc/com.weblyzard.api/weblyzard-api
-
- 
 
 
