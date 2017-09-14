@@ -36,20 +36,20 @@ class WlSearchRestApiClient(object):
             auth_token = self.auth_token
         if not isinstance(sources, list):
             sources = [sources]
-        query = '''"bool" : {
+        query = '''{"bool" : {
                           "must" : [
                             {
                               "date" : {
-                                "gte":"{}",
-                                "lte":"{}"
+                                "gte":"%s",
+                                "lte":"%s"
                               }
                             },<<term_query>>
                           ]
-                        }
-        '''.format(start_date, end_date)
+                        }}
+        ''' % (start_date, end_date)
         if len(term_query)>0:
-            term_query = ',{}'.format(term_query)
-        query = query.replace(',<<term_query>>',term_query)
+            term_query = ',%s' % term_query
+        query = query.replace(',<<term_query>>', term_query)
         query = json.loads(query)
         data = dict(sources=sources, query=query, count=num_keywords,
                     associations=num_associations)
