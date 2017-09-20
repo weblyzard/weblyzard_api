@@ -51,118 +51,119 @@ import lombok.experimental.Accessors;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Document implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  public static final String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
-  public static final String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
+    private static final long serialVersionUID = 1L;
+    public static final String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
+    public static final String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
 
-  /** The Attribute used to encode document keywords */
-  public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
+    /** The Attribute used to encode document keywords */
+    public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 
-  @JsonDeserialize(keyUsing = DocumentHeaderDeserializer.class)
-  @JsonSerialize(keyUsing = DocumentHeaderSerializer.class)
-  @XmlAnyAttribute
-  private Map<QName, String> header = new HashMap<>();
+    @JsonDeserialize(keyUsing = DocumentHeaderDeserializer.class)
+    @JsonSerialize(keyUsing = DocumentHeaderSerializer.class)
+    @XmlAnyAttribute
+    private Map<QName, String> header = new HashMap<>();
 
-  @XmlElement(name = "title", namespace = Document.NS_WEBLYZARD)
-  private String title;
+    @XmlElement(name = "title", namespace = Document.NS_WEBLYZARD)
+    private String title;
 
-  @XmlElement(name = "body")
-  private String body;
+    @XmlElement(name = "body")
+    private String body;
 
-  /** attributes required for the annotation handling */
-  @JsonProperty("body_annotation")
-  @XmlElement(name = "body_annotation", namespace = Document.NS_WEBLYZARD)
-  private List<Annotation> bodyAnnotations;
+    /** attributes required for the annotation handling */
+    @JsonProperty("body_annotation")
+    @XmlElement(name = "body_annotation", namespace = Document.NS_WEBLYZARD)
+    private List<Annotation> bodyAnnotations;
 
-  @JsonProperty("title_annotation")
-  @XmlElement(name = "title_annotation", namespace = Document.NS_WEBLYZARD)
-  private List<Annotation> titleAnnotations;
+    @JsonProperty("title_annotation")
+    @XmlElement(name = "title_annotation", namespace = Document.NS_WEBLYZARD)
+    private List<Annotation> titleAnnotations;
 
-  /** Elements used in the output (and input) */
-  @JsonProperty("sentences")
-  @XmlElement(name = "sentence", namespace = Document.NS_WEBLYZARD)
-  private List<Sentence> sentences;
+    /** Elements used in the output (and input) */
+    @JsonProperty("sentences")
+    @XmlElement(name = "sentence", namespace = Document.NS_WEBLYZARD)
+    private List<Sentence> sentences;
 
-  @XmlAttribute(name = "id", namespace = Document.NS_WEBLYZARD)
-  private String id;
+    @XmlAttribute(name = "id", namespace = Document.NS_WEBLYZARD)
+    private String id;
 
-  @XmlAttribute(name = "format", namespace = Document.NS_DUBLIN_CORE)
-  private String format;
+    @XmlAttribute(name = "format", namespace = Document.NS_DUBLIN_CORE)
+    private String format;
 
-  @JsonProperty("lang")
-  @XmlAttribute(name = "lang", namespace = javax.xml.XMLConstants.XML_NS_URI)
-  private String lang;
+    @JsonProperty("lang")
+    @XmlAttribute(name = "lang", namespace = javax.xml.XMLConstants.XML_NS_URI)
+    private String lang;
 
-  @XmlAttribute(namespace = Document.NS_WEBLYZARD)
-  private String nilsimsa;
+    @XmlAttribute(namespace = Document.NS_WEBLYZARD)
+    private String nilsimsa;
 
-  /**
-   * This field contains all annotations after titleAnnotations and bodyAnnotations have been
-   * merged. (i.e. after the document's finalization)
-   */
-  @Setter(AccessLevel.NONE)
-  @JsonProperty("annotations")
-  @XmlElement(name = "annotation", namespace = Document.NS_WEBLYZARD)
-  private List<Annotation> annotations;
+    /**
+     * This field contains all annotations after titleAnnotations and bodyAnnotations have been
+     * merged. (i.e. after the document's finalization)
+     */
+    @Setter(AccessLevel.PROTECTED)
+    @JsonProperty("annotations")
+    @XmlElement(name = "annotation", namespace = Document.NS_WEBLYZARD)
+    private List<Annotation> annotations;
 
-  /** @param body the {@link Document}'s body */
-  public Document(String body) {
-    this.title = "";
-    this.body = body;
-  }
+    /** @param body the {@link Document}'s body */
+    public Document(String body) {
+        this.title = "";
+        this.body = body;
+    }
 
-  /**
-   * @param title the {@link Document}'s title
-   * @param body the {@link Document}'s body
-   * @param header a Map of optional meta data to store with the document
-   */
-  public Document(String title, String body, Map<QName, String> header) {
-    this.title = title;
-    this.body = body;
-    this.header = header;
-  }
+    /**
+     * @param title the {@link Document}'s title
+     * @param body the {@link Document}'s body
+     * @param header a Map of optional meta data to store with the document
+     */
+    public Document(String title, String body, Map<QName, String> header) {
+        this.title = title;
+        this.body = body;
+        this.header = header;
+    }
 
-  public Object clone() throws CloneNotSupportedException {
-    return super.clone();
-  }
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
-  public List<Annotation> getBodyAnnotations() {
-    return bodyAnnotations != null ? bodyAnnotations : Collections.<Annotation>emptyList();
-  }
+    public List<Annotation> getBodyAnnotations() {
+        return bodyAnnotations != null ? bodyAnnotations : Collections.<Annotation>emptyList();
+    }
 
-  public List<Annotation> getTitleAnnotations() {
-    return titleAnnotations != null ? titleAnnotations : Collections.<Annotation>emptyList();
-  }
+    public List<Annotation> getTitleAnnotations() {
+        return titleAnnotations != null ? titleAnnotations : Collections.<Annotation>emptyList();
+    }
 
-  /**
-   * Converts a {@link Document} to the corresponding webLyzard XML representation
-   *
-   * @param document The {@link Document} object to convert.
-   * @return An XML representation of the given {@link Document} object.
-   * @throws JAXBException
-   */
-  public static String getXmlRepresentation(Document document) throws JAXBException {
-    StringWriter stringWriter = new StringWriter();
-    JAXBElement<Document> jaxbElement =
-        new JAXBElement<>(new QName(Document.NS_WEBLYZARD, "page", "wl"), Document.class, document);
-    JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-    Marshaller xmlMarshaller = jaxbContext.createMarshaller();
-    xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-    xmlMarshaller.marshal(jaxbElement, stringWriter);
-    return stringWriter.toString();
-  }
+    /**
+     * Converts a {@link Document} to the corresponding webLyzard XML representation
+     *
+     * @param document The {@link Document} object to convert.
+     * @return An XML representation of the given {@link Document} object.
+     * @throws JAXBException
+     */
+    public static String getXmlRepresentation(Document document) throws JAXBException {
+        StringWriter stringWriter = new StringWriter();
+        JAXBElement<Document> jaxbElement =
+                new JAXBElement<>(
+                        new QName(Document.NS_WEBLYZARD, "page", "wl"), Document.class, document);
+        JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
+        Marshaller xmlMarshaller = jaxbContext.createMarshaller();
+        xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        xmlMarshaller.marshal(jaxbElement, stringWriter);
+        return stringWriter.toString();
+    }
 
-  /**
-   * Converts a webLyzard XML Document to a {@link Document}.
-   *
-   * @param xmlString The webLyzard XML document to unmarshall
-   * @return The {@link Document} instance corresponding to the xmlString
-   * @throws JAXBException
-   */
-  public static Document unmarshallDocumentXmlString(String xmlString) throws JAXBException {
-    JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-    StringReader reader = new StringReader(xmlString);
-    return (Document) unmarshaller.unmarshal(reader);
-  }
+    /**
+     * Converts a webLyzard XML Document to a {@link Document}.
+     *
+     * @param xmlString The webLyzard XML document to unmarshall
+     * @return The {@link Document} instance corresponding to the xmlString
+     * @throws JAXBException
+     */
+    public static Document unmarshallDocumentXmlString(String xmlString) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        StringReader reader = new StringReader(xmlString);
+        return (Document) unmarshaller.unmarshal(reader);
+    }
 }
