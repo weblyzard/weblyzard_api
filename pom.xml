@@ -123,10 +123,10 @@
 			</extension>
 		</extensions>
 		<resources>
-		  <resource>
-		      <directory>src/resources/main</directory>
-		      <filtering>true</filtering>
-		  </resource>
+			<resource>
+				<directory>src/resources/main</directory>
+				<filtering>true</filtering>
+			</resource>
 		</resources>
 		<testResources>
 			<testResource>
@@ -249,23 +249,16 @@
 			<version>1.0.4</version>
 		</dependency>
 
-                <!-- jackson -->
-                <dependency>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-databind</artifactId>
-                        <version>2.9.1</version>
-                </dependency>
-                <dependency>
-                        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                        <artifactId>jackson-jaxrs-json-provider</artifactId>
-                        <version>2.9.1</version>
-                </dependency>
 
-		<!-- JAX-RS & json -->
 		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>${jaxrs.version}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+			<version>2.9.1</version>
 		</dependency>
 
 		<!-- jersey -->
@@ -289,8 +282,18 @@
 			<artifactId>jersey-media-jaxb </artifactId>
 			<version>${jersey2.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
 
-		<!-- apache commons lang -->
+		<!-- JAX-RS & json -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${jaxrs.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -311,3 +314,4 @@
 		</dependency>
 	</dependencies>
 </project>
+
