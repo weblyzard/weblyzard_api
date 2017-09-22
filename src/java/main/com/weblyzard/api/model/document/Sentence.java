@@ -88,7 +88,9 @@ public class Sentence implements Serializable {
 
     public Sentence setPos(String pos) {
         // required for handling double quotes in POS tags.
-        this.pos = pos.replace("\"", HTML_ENTITY_QUOT);
+    	if(pos!=null){
+    		this.pos = pos.replace("\"", HTML_ENTITY_QUOT);
+    	}
         return this;
     }
 
