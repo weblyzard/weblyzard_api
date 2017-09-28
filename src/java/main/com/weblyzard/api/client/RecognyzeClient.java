@@ -17,11 +17,11 @@ public class RecognyzeClient extends BasicClient {
     private static final String TEMPLATE_PROFILE_NAME = "profileName";
 
     private static final String ADD_PROFILE_SERVICE_URL =
-            "/Recognize/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
-    private static final String SEARCH_TEXT_SERVICE_URL = "/Recognize/rest/searchText";
-    private static final String SEARCH_DOCUMENT_SERVICE_URL = "/Recognize/rest/searchDocument";
-    private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/Recognize/rest/searchDocuments";
-    private static final String STATUS_SERVICE_URL = "/Recognize/rest/status";
+            "/recognize/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String SEARCH_TEXT_SERVICE_URL = "/recognize/rest/searchText";
+    private static final String SEARCH_DOCUMENT_SERVICE_URL = "/recognize/rest/searchDocument";
+    private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/recognize/rest/searchDocuments";
+    private static final String STATUS_SERVICE_URL = "/recognize/rest/status";
 
     private static final String PARAM_PROFILE_NAME = "profileName";
     private static final String PARAM_LIMIT = "limit";
