@@ -211,6 +211,25 @@
 					</execution>
 				</executions>
 			</plugin>
+
+            <!-- force common style and code validation settings -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <additionalConfig>
+                        <file>
+                             <name>.settings/org.eclipse.jdt.core.prefs</name>
+                             <url>https://raw.githubusercontent.com/weblyzard/eclipse-settings/master/settings/org.eclipse.jdt.core.prefs</url>
+                        </file>
+                        <file>
+                             <name>.settings/org.eclipse.jdt.ui.prefs</name>
+                             <url>https://raw.githubusercontent.com/weblyzard/eclipse-settings/master/settings/org.eclipse.jdt.ui.prefs</url>
+                        </file>
+                     </additionalConfig>
+                </configuration>
+            </plugin>
 		</plugins>
 		<sourceDirectory>src/java/main</sourceDirectory>
 		<testSourceDirectory>src/java/test</testSourceDirectory>
