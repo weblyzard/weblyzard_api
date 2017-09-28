@@ -4,7 +4,7 @@
 
 	<groupId>com.weblyzard.api</groupId>
 	<artifactId>weblyzard-api</artifactId>
-	<version>0.1.0.5</version>
+	<version>0.1.0.6</version>
 	<packaging>jar</packaging>
 
 	<name>com.weblyzard.api.weblyzard-api</name>
@@ -49,7 +49,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jersey2.version>2.26</jersey2.version>
-		<jaxrs.version>2.1</jaxrs.version>
 	</properties>
 
 	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency 
@@ -212,38 +211,30 @@
 				</executions>
 			</plugin>
 
-            <!-- force common style and code validation settings -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.10</version>
-                <configuration>
-                    <additionalConfig>
-                        <file>
-                             <name>.settings/org.eclipse.jdt.core.prefs</name>
-                             <url>https://raw.githubusercontent.com/weblyzard/eclipse-settings/master/settings/org.eclipse.jdt.core.prefs</url>
-                        </file>
-                        <file>
-                             <name>.settings/org.eclipse.jdt.ui.prefs</name>
-                             <url>https://raw.githubusercontent.com/weblyzard/eclipse-settings/master/settings/org.eclipse.jdt.ui.prefs</url>
-                        </file>
-                     </additionalConfig>
-                </configuration>
-            </plugin>
+			<!-- force common style and code validation settings -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<additionalConfig>
+						<file>
+							<name>.settings/org.eclipse.jdt.core.prefs</name>
+							<url>https://raw.githubusercontent.com/weblyzard/eclipse-settings/master/settings/org.eclipse.jdt.core.prefs</url>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.jdt.ui.prefs</name>
+							<url>https://raw.githubusercontent.com/weblyzard/eclipse-settings/master/settings/org.eclipse.jdt.ui.prefs</url>
+						</file>
+					</additionalConfig>
+				</configuration>
+			</plugin>
 		</plugins>
 		<sourceDirectory>src/java/main</sourceDirectory>
 		<testSourceDirectory>src/java/test</testSourceDirectory>
 	</build>
 
 	<dependencies>
-
-		<!-- junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
 
 		<!-- eclipse persistence -->
 		<dependency>
@@ -252,69 +243,24 @@
 			<version>2.6.2</version>
 		</dependency>
 
-		<!-- javax -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>javax.json</artifactId>
-			<version>1.0.4</version>
-		</dependency>
-
-
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.9.1</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			<version>2.9.1</version>
-		</dependency>
+		<!-- <dependency> <groupId>com.fasterxml.jackson.jaxrs</groupId> <artifactId>jackson-jaxrs-json-provider</artifactId> 
+			<version>2.9.1</version> </dependency> -->
 
 		<!-- jersey -->
-		<dependency>
-			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-servlet</artifactId>
-			<version>${jersey2.version}</version>
-		</dependency>
+		<!-- <dependency> <groupId>org.glassfish.jersey.containers</groupId> <artifactId>jersey-container-servlet</artifactId> 
+			<version>${jersey2.version}</version> </dependency> -->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey2.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>${jersey2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-jaxb </artifactId>
-			<version>${jersey2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.inject</groupId>
-			<artifactId>jersey-hk2</artifactId>
-			<version>${jersey2.version}</version>
-		</dependency>
 
 		<!-- JAX-RS & json -->
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>${jaxrs.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -326,6 +272,16 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
 		</dependency>
+
+
+		<!-- test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
