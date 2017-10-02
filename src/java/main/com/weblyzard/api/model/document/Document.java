@@ -3,10 +3,8 @@ package com.weblyzard.api.model.document;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.weblyzard.api.model.annotation.Annotation;
 import com.weblyzard.api.serialize.json.DocumentHeaderDeserializer;
-import com.weblyzard.api.serialize.json.DocumentHeaderSerializer;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -59,7 +57,6 @@ public class Document implements Serializable {
     public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 
     @JsonDeserialize(keyUsing = DocumentHeaderDeserializer.class)
-    @JsonSerialize(keyUsing = DocumentHeaderSerializer.class)
     @XmlAnyAttribute
     private Map<QName, String> header = new HashMap<>();
 
