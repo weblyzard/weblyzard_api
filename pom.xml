@@ -4,7 +4,7 @@
 
 	<groupId>com.weblyzard.api</groupId>
 	<artifactId>weblyzard-api</artifactId>
-	<version>0.1.0.6</version>
+	<version>0.1.0.7</version>
 	<packaging>jar</packaging>
 
 	<name>com.weblyzard.api.weblyzard-api</name>
@@ -48,7 +48,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<jersey2.version>2.26</jersey2.version>
+		<jersey2.version>2.25.1</jersey2.version>
 	</properties>
 
 	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency 
