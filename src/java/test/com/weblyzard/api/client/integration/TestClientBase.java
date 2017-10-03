@@ -18,23 +18,14 @@ public class TestClientBase {
      */
     public boolean weblyzardServiceAvailable(BasicClient basicClient) {
 
-        Socket s = null;
-
         String host = basicClient.getBaseTarget().getUri().getHost();
         int port = basicClient.getBaseTarget().getUri().getPort();
 
-        try {
-            s = new Socket(host, port);
+        try (Socket s = new Socket(host, port)){
             return true;
         } catch (IOException e) {
             logger.info("service is not available :" + host + ":" + port);
             return false;
-        } finally {
-            if (s != null)
-                try {
-                    s.close();
-                } catch (Exception e) {
-                }
         }
     }
 }
