@@ -79,7 +79,7 @@ Example scripts are available in the `example` directory.
 To activate the java client debugging (logging requests / responses etc) set the environment variable **ENV_WEBLYZARD_API_DEBUG** to true: 
 
 ```
-export WEBLYZARD_API_PASS="true"
+export WEBLYZARD_API_DEBUG="true"
 ```
 
 ## Deploying the maven artifacts 
