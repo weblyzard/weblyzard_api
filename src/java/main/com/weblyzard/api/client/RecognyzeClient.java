@@ -1,8 +1,7 @@
 package com.weblyzard.api.client;
 
-import com.weblyzard.api.model.document.Document;
-import com.weblyzard.api.model.recognyze.RecognyzeResult;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.WebApplicationException;
@@ -10,6 +9,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import com.weblyzard.api.model.document.Document;
 
 /** @author philipp.kuntschik@htwchur.ch */
 public class RecognyzeClient extends BasicClient {
@@ -18,9 +18,8 @@ public class RecognyzeClient extends BasicClient {
 
     private static final String ADD_PROFILE_SERVICE_URL =
             "/recognize/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
-    private static final String SEARCH_TEXT_SERVICE_URL = "/recognize/rest/searchText";
-    private static final String SEARCH_DOCUMENT_SERVICE_URL = "/recognize/rest/searchDocument";
-    private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/recognize/rest/searchDocuments";
+    private static final String SEARCH_DOCUMENT_SERVICE_URL = "/recognize/rest/search_document";
+    private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/recognize/rest/search_documents";
     private static final String STATUS_SERVICE_URL = "/recognize/rest/status";
 
     private static final String PARAM_PROFILE_NAME = "profileName";
@@ -40,11 +39,9 @@ public class RecognyzeClient extends BasicClient {
 
     public boolean loadProfile(String profileName) throws WebApplicationException {
 
-        Response response =
-                super.getTarget(ADD_PROFILE_SERVICE_URL)
-                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .get();
+        Response response = super.getTarget(ADD_PROFILE_SERVICE_URL)
+                .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                .request(MediaType.APPLICATION_JSON_TYPE).get();
 
         super.checkResponseStatus(response);
         boolean result = response.readEntity(Boolean.class);
@@ -53,75 +50,44 @@ public class RecognyzeClient extends BasicClient {
         return result;
     }
 
-    public Set<RecognyzeResult> searchText(String profileName, String data)
-            throws WebApplicationException {
-        return this.searchText(profileName, data, 0);
-    }
-
-    public Set<RecognyzeResult> searchText(String profileName, String data, int limit)
-            throws WebApplicationException {
-
-        Response response =
-                super.getTarget(SEARCH_TEXT_SERVICE_URL)
-                        .queryParam(PARAM_PROFILE_NAME, profileName)
-                        .queryParam(PARAM_LIMIT, limit)
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.json(data));
-
-        super.checkResponseStatus(response);
-        Set<RecognyzeResult> result =
-                response.readEntity(new GenericType<Set<RecognyzeResult>>() {});
-        response.close();
-
-        return result == null ? Collections.emptySet() : result;
-    }
-
-    public Set<RecognyzeResult> searchDocument(String profileName, Document data)
+    public Document searchDocument(String profileName, Document data)
             throws WebApplicationException {
 
         return this.searchDocument(profileName, data, 0);
     }
 
-    public Set<RecognyzeResult> searchDocument(String profileName, Document data, int limit)
+    public Document searchDocument(String profileName, Document data, int limit)
             throws WebApplicationException {
 
-        Response response =
-                super.getTarget(SEARCH_DOCUMENT_SERVICE_URL)
-                        .queryParam(PARAM_PROFILE_NAME, profileName)
-                        .queryParam(PARAM_LIMIT, limit)
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.json(data));
+        Response response = super.getTarget(SEARCH_DOCUMENT_SERVICE_URL)
+                .queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
         super.checkResponseStatus(response);
-        Set<RecognyzeResult> result =
-                response.readEntity(new GenericType<Set<RecognyzeResult>>() {});
+        Document result = response.readEntity(Document.class);
         response.close();
 
-        return result == null ? Collections.emptySet() : result;
+        return result;
     }
 
-    public Map<String, Set<RecognyzeResult>> searchDocuments(String profileName, Set<Document> data)
+    public List<Document> searchDocuments(String profileName, Set<Document> data)
             throws WebApplicationException {
 
         return this.searchDocuments(profileName, data, 0);
     }
 
-    public Map<String, Set<RecognyzeResult>> searchDocuments(
-            String profileName, Set<Document> data, int limit) throws WebApplicationException {
+    public List<Document> searchDocuments(String profileName, Set<Document> data, int limit)
+            throws WebApplicationException {
 
-        Response response =
-                super.getTarget(SEARCH_DOCUMENTS_SERVICE_URL)
-                        .queryParam(PARAM_PROFILE_NAME, profileName)
-                        .queryParam(PARAM_LIMIT, limit)
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.json(data));
+        Response response = super.getTarget(SEARCH_DOCUMENTS_SERVICE_URL)
+                .queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
         super.checkResponseStatus(response);
-        Map<String, Set<RecognyzeResult>> result =
-                response.readEntity(new GenericType<Map<String, Set<RecognyzeResult>>>() {});
+        List<Document> result = response.readEntity(new GenericType<List<Document>>() {});
         response.close();
 
-        return result == null ? Collections.emptyMap() : result;
+        return result == null ? Collections.emptyList() : result;
     }
 
     public Map<String, Object> status() throws WebApplicationException {
