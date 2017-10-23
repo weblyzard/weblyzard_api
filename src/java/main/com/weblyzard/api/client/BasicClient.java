@@ -17,9 +17,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public abstract class BasicClient {
 
     private static final String ENV_WEBLYZARD_API_URL = "WEBLYZARD_API_URL";
