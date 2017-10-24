@@ -26,10 +26,10 @@ public class RecognyzeClientIT extends TestClientBase {
     private static final String PSALMS_DOCS_WEBLYZARDFORMAT =
             "resources/reference/weblyzard-example.xml";
 
-    private Document loadDocument() throws JAXBException, IOException {
+    private static Document loadDocument() throws JAXBException, IOException {
         File xmlFile = new File(RecognyzeClientIT.class.getClassLoader()
                 .getResource(PSALMS_DOCS_WEBLYZARDFORMAT).getFile());
-        Document document = Document.unmarshallDocumentXmlString(
+        Document document = Document.fromXml(
                 Files.readLines(xmlFile, Charsets.UTF_8).stream().collect(Collectors.joining()));
         return document;
     }
