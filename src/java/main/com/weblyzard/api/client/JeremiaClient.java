@@ -27,10 +27,8 @@ public class JeremiaClient extends BasicClient {
 
     public XmlDocument submitDocumentRaw(Document data) throws WebApplicationException {
 
-        Response response =
-                super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL)
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.json(data));
+        Response response = super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL)
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
         super.checkResponseStatus(response);
         XmlDocument result = response.readEntity(XmlDocument.class);
@@ -41,6 +39,8 @@ public class JeremiaClient extends BasicClient {
 
     public Document submitDocument(Document data) throws WebApplicationException, JAXBException {
         XmlDocument response = submitDocumentRaw(data);
+        if (response.getXmlContent() == null)
+            return null;
         return Document.unmarshallDocumentXmlString(response.getXmlContent());
     }
 }

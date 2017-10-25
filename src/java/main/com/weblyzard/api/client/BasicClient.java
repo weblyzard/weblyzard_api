@@ -10,10 +10,10 @@ import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -35,7 +35,6 @@ public abstract class BasicClient {
     /** Constructor using environment variables. */
     public BasicClient() {
         this(System.getenv(ENV_WEBLYZARD_API_URL));
-        ClientBuilder.newClient();
     }
 
     /**
@@ -71,7 +70,7 @@ public abstract class BasicClient {
                     .build());
         }
 
-        this.baseTarget = ClientBuilder.newClient(config)
+        this.baseTarget = JerseyClientBuilder.createClient(config)
                 .target(weblyzardUrl == null ? FALLBACK_WEBLYZARD_API_URL : weblyzardUrl)
                 .register(new JacksonJsonProvider());
     }
