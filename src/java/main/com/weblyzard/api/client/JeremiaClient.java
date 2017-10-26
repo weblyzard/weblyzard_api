@@ -41,6 +41,6 @@ public class JeremiaClient extends BasicClient {
     public Document submitDocument(MirrorDocument data)
             throws WebApplicationException, JAXBException {
         XmlDocument response = submitDocumentRaw(data);
-        return Document.fromXml(response.getXmlContent());
+        return response.getXmlContent() == null ? null : Document.fromXml(response.getXmlContent());
     }
 }
