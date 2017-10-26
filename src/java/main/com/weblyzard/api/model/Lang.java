@@ -4,7 +4,7 @@ import java.util.Optional;
 
 /** @author Norman Suesstrunk */
 public enum Lang {
-    DE, EN, FR, CS, ES, IT, AF, AR, BG, BN, DA, EL, ET, FA, FI, GU, HE, HI, HR, HU, ID, IS, JA, KN, KO, LT, LV, MK, ML, MR, NE, NL, NO, PA, PL, PT, RO, RU, SK, SL, SO, SQ, SV, SW, TA, TE, TH, TL, TR, UK, UR, VI;
+    ANY, DE, EN, FR, CS, ES, IT, AF, AR, BG, BN, DA, EL, ET, FA, FI, GU, HE, HI, HR, HU, ID, IS, JA, KN, KO, LT, LV, MK, ML, MR, NE, NL, NO, PA, PL, PT, RO, RU, SK, SL, SO, SQ, SV, SW, TA, TE, TH, TL, TR, UK, UR, VI;
 
     /**
      * @param lang
