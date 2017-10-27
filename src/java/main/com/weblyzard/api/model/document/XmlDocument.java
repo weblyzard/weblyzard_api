@@ -35,6 +35,6 @@ public class XmlDocument {
         contentId = document.getId();
         nilsimsa = document.getNilsimsa();
         this.annotation = annotation;
-        xmlContent = Document.getXmlRepresentation(document);
+        xmlContent = Document.toXml(document);
     }
 }

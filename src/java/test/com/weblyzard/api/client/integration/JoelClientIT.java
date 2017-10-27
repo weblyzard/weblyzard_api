@@ -5,15 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.weblyzard.api.client.JoelClient;
-import com.weblyzard.api.model.document.Document;
-import com.weblyzard.api.model.joel.ClusterResult;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +12,15 @@ import javax.ws.rs.ClientErrorException;
 import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.weblyzard.api.client.JoelClient;
+import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.Sentence;
+import com.weblyzard.api.model.joel.ClusterResult;
 
 /** @author norman.suesstrunk@htwchur.ch */
 public class JoelClientIT extends TestClientBase {
@@ -59,10 +59,10 @@ public class JoelClientIT extends TestClientBase {
     public void testDocumentHeaderBadRequest() {
         assumeTrue(weblyzardServiceAvailable(joelClient));
         try {
-            joelClient.addDocuments(Arrays.asList(new Document[] {new Document("Test")}));
+            joelClient.addDocuments(Arrays.asList(new Document[] {
+                    new Document().setSentences(Arrays.asList(new Sentence("Test")))}));
         } catch (ClientErrorException clientErrorException) {
-            assertThat(
-                    clientErrorException.getMessage(),
+            assertThat(clientErrorException.getMessage(),
                     is(JoelClient.NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE));
         } catch (JAXBException jaxbException) {
             jaxbException.printStackTrace();
@@ -76,8 +76,7 @@ public class JoelClientIT extends TestClientBase {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             return objectMapper.readValue(
-                    JoelClientIT.class
-                            .getClassLoader()
+                    JoelClientIT.class.getClassLoader()
                             .getResourceAsStream(PSALMS_DOCS_WEBLYZARDFORMAT_JSON),
                     new TypeReference<List<Document>>() {});
         } catch (JsonParseException e1) {
