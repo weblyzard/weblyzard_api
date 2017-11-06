@@ -45,8 +45,9 @@ def upload_profile(profile_fn, service_url, config_repository):
     else:
         profile_fns = [profile_fn]
 
-    print('Found %s profiles, uploading to %s' % (len(profile_fns), service_url))
-    print profile_fns
+    print('Found {} profiles, uploading to {}'.format(len(profile_fns), 
+                                                      service_url))
+    print(profile_fns)
     for p_fns in profile_fns:
         profile_name = p_fns.split(os.sep)[-1].replace('.ttl', '')
         profile_definition = open(p_fns).read()

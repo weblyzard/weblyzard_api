@@ -59,7 +59,7 @@ class XMLParser(object):
         else:
             try:
                 return json.dumps(value)
-            except Exception, e:
+            except Exception as e:
                 logger.error('could not encode %s: %s' % (value, e))
                 return
 
@@ -95,7 +95,7 @@ class XMLParser(object):
                 invert_mapping = None
             attributes = cls.load_attributes(root.attrib,
                                              mapping=invert_mapping)
-        except Exception, e:
+        except Exception as e:
             attributes = {}
 
         sentences = cls.load_sentences(root, remove_duplicates=remove_duplicates)
@@ -207,7 +207,7 @@ class XMLParser(object):
                 value = str(value)
             elif isinstance(value, list) or isinstance(value, dict):
                 value = json.dumps(value, cls=DatesToStrings)
-        except Exception, e:
+        except Exception as e:
             logger.error('could not encode %s: %s' % (value, e))
             value = str(value)      
         return value
@@ -327,7 +327,7 @@ class XMLParser(object):
                                          nsmap=cls.DOCUMENT_NAMESPACES)
             try:
                 sent_elem.text = etree.CDATA(value)
-            except Exception, e:
+            except Exception as e:
                 print('Skipping bad cdata: %s (%s)' % (value, e))
                 continue
             
@@ -369,7 +369,7 @@ class XMLParser(object):
                                                  '{%s}annotation' % cls.get_default_ns(),
                                                  attrib=annotation_attributes,
                                                  nsmap=cls.DOCUMENT_NAMESPACES)
-                            except Exception, e:
+                            except Exception as e:
                                 continue
                
         # feature mappings if specified             
@@ -392,7 +392,7 @@ class XMLParser(object):
                                                      nsmap=cls.DOCUMENT_NAMESPACES)
                         feat_elem.text = etree.CDATA(value)
         
-                    except Exception, e:
+                    except Exception as e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
 
@@ -416,7 +416,7 @@ class XMLParser(object):
                                                     nsmap=cls.DOCUMENT_NAMESPACES)
                         rel_elem.text = etree.CDATA(value)
                         
-                    except Exception, e:
+                    except Exception as e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
         

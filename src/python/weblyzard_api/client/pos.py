@@ -30,7 +30,7 @@ class POSTest(unittest.TestCase):
     
     def test_POS(self):
         p = POS()
-        print p.pos_tagging('Guten Tag Herr Mayer!', 'de')
+        print(p.pos_tagging('Guten Tag Herr Mayer!', 'de'))
         
 
 if __name__ == '__main__':

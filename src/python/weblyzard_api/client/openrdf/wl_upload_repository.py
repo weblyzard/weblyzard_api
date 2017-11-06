@@ -39,15 +39,15 @@ def upload_directory(src_directory, repository=None, graph_name=None,
 
     client = OpenRdfClient(server_url)
     available_repositories = client.get_repositories()
-    print 'Reading directory %s' % src_directory
+    print('Reading directory {}'.format(src_directory))
     for fname in get_files(src_directory=src_directory, file_ext=file_ext):
         extension = os.path.splitext(fname)[-1]
 
         if not extension.lower() in ['.ttl', '.nt']:
-            print 'Skipping file: %s' % fname
+            print('Skipping file: {}'.format(fname))
             continue
 
-        print 'Processing file: %s' % fname
+        print('Processing file: {}'.format(fname))
 
         if not repository and not graph_name:
 #             if extension=='.ttl':
@@ -63,7 +63,7 @@ def upload_directory(src_directory, repository=None, graph_name=None,
             graph_name = repository.split('.')[0]
 
         if repository in available_repositories:
-            print 'uploading %s to repository %s' % (fname, repository)
+            print('uploading {} to repository {}'.format(fname, repository))
             lines = open(fname).readlines()
             for chunk in chunks(lines, chunk_size):
                 success = False
@@ -73,15 +73,16 @@ def upload_directory(src_directory, repository=None, graph_name=None,
                         chunk = '\n'.join(chunk)
                         client.upload_statement(chunk, graph_name, repository)
                         success = True
-                    except Exception, e:
-                        print e
+                    except Exception as e:
+                        print(e)
                         retry += 1
                         
                 if not success:
                     print('Could not upload chunk, skipping...')
         else:
-            print '%s does not exist on machine %s, please add...' % (repository,
-                                                                      server_url)
+            print('{} does not exist on machine {}, please add...'.format(
+                                                                repository,
+                                                                server_url))
 
 if __name__ == '__main__':
     from argparse import ArgumentParser

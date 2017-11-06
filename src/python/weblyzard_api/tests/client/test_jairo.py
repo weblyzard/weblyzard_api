@@ -13,7 +13,7 @@ class JairoTest(unittest.TestCase):
         
     def test_service(self):
         ''' test status of the Jairo service. '''
-        print self.client.status()
+        print(self.client.status())
         assert 'processedDocuments' in self.client.status()
         
     def test_set_profile(self):
@@ -42,7 +42,7 @@ class JairoTest(unittest.TestCase):
                               ]
         result = self.client.extend_annotations(profile_name='test_profile', 
                                                 annotations=input_annotations)
-        print result
+        print(result)
         assert len(result) == 2
      
 if __name__ == '__main__':

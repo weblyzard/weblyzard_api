@@ -221,7 +221,7 @@ class Jesaja(MultiRESTClient):
         :param name: name of the stopword list
         :param stoplist: a list of stopwords for the keyword computation
         '''
-        return self.request('add_or_update_stoplist/%s' % name, stoplist) 
+        return self.request('set_stoplist/%s' % name, stoplist) 
 
     def list_stoplists(self):
         '''

@@ -170,7 +170,7 @@ class TestClassifier(unittest.TestCase):
         for _search_agent, classes in result.items():
             assert len(classes) == num_results
 
-        print result
+        print(result)
 
 
 
@@ -184,6 +184,6 @@ if __name__ == '__main__':
         with open(fname) as f:
             j = load(f)
 
-        print Classifier().classify_v2('COMET', weblyzard_xml=j['xml_document'],
+        result = Classifier().classify_v2('COMET', weblyzard_xml=j['xml_document'],
             search_agents=j['searchAgents'], num_results=j['numOfResults'])
-
+        print(result)
