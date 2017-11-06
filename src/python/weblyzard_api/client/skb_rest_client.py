@@ -24,13 +24,23 @@ class SKBRESTClient():
 
     def translate(self, **kwargs):
         response = requests.get('%s/%s' % (self.url, self.TRANSLATION_PATH), params=kwargs)
-        return(response.text, kwargs['target'])
+        if response.status_code < 400:
+            return(response.text, kwargs['target'])
+        else:
+            return None
 
     def title_translate(self, **kwargs):
         response = requests.get('%s/%s' % (self.url, self.TITLE_TRANSLATION_PATH), params=kwargs)
-        return(response.text, kwargs['target'])
+        if response.status_code < 400:
+            return(response.text, kwargs['target'])
+        else:
+            return None
     
     def save_doc_kw_skb(self, kwargs):
-        return(requests.post('%s/%s' % (self.url, self.KEYWORD_PATH),
+        response = requests.post('%s/%s' % (self.url, self.KEYWORD_PATH),
                              data=json.dumps(kwargs),
-                             headers={'Content-Type': 'application/json'}).text)
+                             headers={'Content-Type': 'application/json'})
+        if response.status_code < 400:
+            return response.text
+        else:
+            return None
