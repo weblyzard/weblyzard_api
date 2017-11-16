@@ -220,16 +220,12 @@ class WlDocumentRestApiClient(object):
         assert isinstance(analyzer_steps, list)
         if isinstance(document, dict):
             document = json.dumps(document)
-        print document
-        print type(document)
         r = requests.post('/'.join([self.base_url,
                                     'annotate',
                                     '+'.join(analyzer_steps)]),
                           data=document,
                           headers={'Content-Type': 'application/json'})
-        print r.url
-        print r.content
-        return r.json()
+        return(r.json())
 
     def check_document(self, document):
         '''

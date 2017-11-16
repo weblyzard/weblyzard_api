@@ -36,7 +36,7 @@ class JesajaNgTest(unittest.TestCase):
         '''
         Setup Jesaja Keyword Server
         '''
-        self.jesaja = JesajaNg(url='http://localhost:8081/jesaja/rest/')
+        self.jesaja = JesajaNg(url='http://localhost:8080/jesaja/rest/')
         self.service_is_online = self.jesaja.is_online()
 
         if self.service_is_online:
@@ -77,17 +77,18 @@ class JesajaNgTest(unittest.TestCase):
     def test_get_neks(self):
      
         xml_documents = ['''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="495692737" xml:lang="en" wl:nilsimsa="5bb001c8a610a105b1120bb9c4889d33c62b19e1493245cc2f252a83e270646b" title="Keystone report leaves environmental, energy, safety debates far from settled" source_id="12830" jonas_type="http" description="WASHINGTON &amp;mdash; The State Department minimized the climate change impact of building the Keystone XL pipeline in its final environmental review issued on Friday, a key finding as President Barack Obama decides whether to approve the controversial project. Olivier Douliery | Abaca Press/MCT Activists engage in civil disobedience Wednesday, February 13, 2013 at the White House in Washington, D.C., in hopes of pressuring President Barack Obama to reject the Keystone XL oil sands pipeline. http://media.mcclatchydc.com/smedia/2014/01/31/17/06/SoIRM.La.91.jpg &quot; style=&quot;border-left:2px solid #dddddd; padding-left:5px;max-width:100%;&quot;&gt; More News Read more Politics However, the review leaves the..." feed_url="http://rss.wn.com/english/keyword/" original_request_url="http://article.wn.com/view/2014/02/01/Keystone_report_leaves_environmental_energy_safety_debates_f_1/" content_type="text/html">
-                            <wl:sentence wl:pos="NN NN NN" wl:significance="0.0" wl:id="f30f3372bd5ecbebf8dc9ed6a37ea620" wl:token="0,6 7,12 13,19"><![CDATA[Energy Obama Barack]]></wl:sentence>
+                            <wl:sentence wl:pos="NN NN NN" wl:significance="0.0" wl:id="f30f3372bd5ecbebf8dc9ed6a37ea620" wl:token="0,6 7,14 15,18"><![CDATA[Energy Twitter Dog]]></wl:sentence>
                             <wl:annotation
-                                wl:annotationType="PersonEntity"
-                                wl:key="some.url.com"
-                                wl:surfaceForm="Obama"
+                                wl:annotationType="OrganizationEntity"
+                                wl:key="http://dbpedia.org/resource/Twitter"
+                                wl:preferredName="Twitter Inc."
+                                wl:surfaceForm="Twitter"
                                 wl:start="0"
                                 wl:end="10"
                                 wl:mdR5sum="0c8cb136073a20a932f2d6748204ce9b">
                             </wl:annotation></wl:page>''']
 # 
-        matview_name = 'climate2_media'
+        matview_name = 'international_media'
         if self.service_is_online:
             result = self.jesaja.get_keyword_annotations(matview_name, xml_documents)
             assert len(result)

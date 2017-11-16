@@ -13,7 +13,7 @@ class XML2013(XMLParser):
     DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE,
                            'dc': 'http://purl.org/dc/elements/1.1/',
                            'xml': 'http://www.w3.org/XML/1998/namespace',
-#                            'sioc': 'http://rdfs.org/sioc/ns#',
+                           'sioc': 'http://rdfs.org/sioc/ns#',
 #                            'skos': 'http://www.w3.org/2004/02/skos/core#',
 #                            'foaf': 'http://xmlns.com/foaf/0.1/',
                            'ma': 'http://www.w3.org/ns/ma-ont#'}
@@ -43,6 +43,11 @@ class XML2013(XMLParser):
                     'location': '{%s}location' % DOCUMENT_NAMESPACES['wl'],
                     'duration': '{%s}duration' % DOCUMENT_NAMESPACES['wl'], #YT, vimeo/daily
                     'mediacriticism': '{%s}mediacriticism' % DOCUMENT_NAMESPACES['wl'], #to be migrated to features, eventually
+                    
+                    #DOCUMENT RELATIONS (CID<->CID only)
+                    'reply_of': '{%s}reply_of' % DOCUMENT_NAMESPACES['sioc'], #reference to direct parent
+                    'has_reply': '{%s}has_reply' % DOCUMENT_NAMESPACES['sioc'], #reference to direct descendants
+                    'references': '{%s}references' % DOCUMENT_NAMESPACES['dc'], #reference to container document
                     
                     #INVID
                     'media_url': '{%s}locator' % DOCUMENT_NAMESPACES['ma'],

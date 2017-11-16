@@ -129,14 +129,16 @@ class SentimentAnalysisTest(TestCase):
         sa = self._prepare_sentiment_analysis()
         doc_list = ['Schwimmen ist gut fuer die Knochen', 'Jujitsu ist schlecht fuer die Knochen']
         result = sa.parse_document_list( doc_list, self.TEST_LANG )
-        print 'list', result
+        print('list', result)
         self.assertEqual(len(result), 2)
          
     def test_negation(self):
         sa = self._prepare_sentiment_analysis()
         sa.update_negation({'nicht':'nicht', 'kein': 'kein'}, self.TEST_LANG)
-        print sa.parse_document("Schwimmen ist kein gut fuer die Knochen", self.TEST_LANG)
-        sent, cnt_pos, cnt_neg, _, _ =   sa.parse_document("Schwimmen ist nicht gut fuer die Knochen", self.TEST_LANG)
+        print(sa.parse_document("Schwimmen ist kein gut fuer die Knochen", 
+                                self.TEST_LANG))
+        sent, cnt_pos, cnt_neg, _, _ =   sa.parse_document("Schwimmen ist nicht gut fuer die Knochen", 
+                                                           self.TEST_LANG)
         self.assertEqual(sent, -1.0)
         self.assertEqual(cnt_pos, 1)
         self.assertEqual(cnt_neg, 0)
@@ -152,19 +154,19 @@ class SentimentAnalysisTest(TestCase):
 
         frDict = dict(posDict.items() + negDict.items())
         #frDict = {'cristalline': 1, 'tristement':-1}
-        print lang, 'lexicon size:', len(frDict)
+        print(lang, 'lexicon size:', len(frDict))
         negations = {'ne':'ne', 'n\'':'n\''}
     
         frsa = SentimentAnalysis()
-        print 'update lexicon', frsa.update_lexicon(frDict, lang)
-        print 'update negations', frsa.update_negation(negations, lang)
+        print('update lexicon', frsa.update_lexicon(frDict, lang))
+        print('update negations', frsa.update_negation(negations, lang))
         text = "Il est cristalline et septique. Mais pas tristement"
         #text = "Schwimmen ist nicht gut fuer die Knochen"
         #text = "Schwimmen ist cristalline fuer die Knochen"
         #text = "Il est gut abc"
         #result =  frsa.parse_document("Schwimmen ist nicht gut fuer die Knochen", self.TEST_LANG)
         result =  frsa.parse_document(text, lang)
-        print 'french:', result
+        print('french:', result)
         
         # pos
         sent, cnt_pos, cnt_neg, _, _ =  frsa.parse_document('C\'est aimable', 'fr')
@@ -183,7 +185,7 @@ class SentimentAnalysisTest(TestCase):
 
         sent, cnt_pos, cnt_neg, _, _ =  frsa.parse_document('Ce n\'est pas aimable', 'fr')
         sent, cnt_pos, cnt_neg, _, _ =  frsa.parse_document('Ce ne aimable', 'fr')        
-        print "pos negation", sent, cnt_pos, cnt_neg
+        print("pos negation", sent, cnt_pos, cnt_neg)
         self.assertEqual(sent, -1.0)
         self.assertEqual(cnt_pos, 1)
         self.assertEqual(cnt_neg, 0)

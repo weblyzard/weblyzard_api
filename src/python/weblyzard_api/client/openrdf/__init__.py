@@ -144,8 +144,8 @@ class OpenRdfClient(object):
                     self.delete_statements(self.config_repository,
                                            subj=subject_uri,
                                            delete=True)
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    print(e)
 
     def update_profile(self, profile_name, profile_definition):
         ''' Updates the given profile on the server '''
@@ -153,7 +153,6 @@ class OpenRdfClient(object):
         profiles = self.get_profiles()
 
         if profile_name in profiles:
-            print profile_name
             subject_uri = profiles[profile_name]
 
             # TODO: check why we need to fix this????
@@ -171,7 +170,8 @@ class OpenRdfClient(object):
         repositories = self.get_repositories()
 
         if not self.config_repository in repositories:
-            print 'warning config repo "%s" does not exist' % self.config_repository
+            print('warning config repo "{}" does not exist'.format(
+                                                    self.config_repository))
 
     def request(self, function, data=None, params=None, delete=False,
                 content_type='applicatoni/rdf+json',
@@ -182,7 +182,7 @@ class OpenRdfClient(object):
         :returns: result of the server
         :rtype: json encoded dict
         '''
-        print '%s/%s' % (self.server_uri, function)
+        print('{}/{}'.format(self.server_uri, function))
 
         if data:
             method = 'POST'
@@ -197,7 +197,7 @@ class OpenRdfClient(object):
             if params:
                 function = '%s?%s' % (function, params)
 
-        print method, '%s/%s' % (self.server_uri, function)
+        print(method, '%{}/{}'.format(self.server_uri, function))
 
         r = requests.request(method,
                              '%s/%s' % (self.server_uri, function),
@@ -210,14 +210,14 @@ class OpenRdfClient(object):
 
         try:
             return json.loads(r.text) if r.text else r.text
-        except Exception, e:
-            print text
+        except Exception as e:
+            print(text)
             return text
 
     def get_repo_size(self, repo_id):
         ''' '''
         result = self.request('repositories/%s/size' % repo_id)
-        print 'get_repo_size', result
+        print('get_repo_size', result)
 
     def get_repositories(self):
         ''' '''
@@ -257,7 +257,7 @@ class OpenRdfClient(object):
 
     def upload_statement(self, content, context, target_repository):
         ''' '''
-        print ('uploading to {}'.format(target_repository))
+        print('uploading to {}'.format(target_repository))
         params = 'context=%s' % context
         function = 'repositories/%s/statements' % target_repository
 
@@ -269,17 +269,18 @@ class OpenRdfClient(object):
         query = 'describe <{}>'.format(object.replace('page', 'resource'))
         endpoint = "{}/repositories/{}" .format(self.server_uri,repository)
         
-        print "POSTing SPARQL query to %s" % (endpoint)
+        print("POSTing SPARQL query to {}".format(endpoint))
         params = { 'query': query }
         headers = { 
           'content-type': 'application/x-www-form-urlencoded', 
 #           'accept': 'application/sparql-results+json' 
         }
-        (response, content) = httplib2.Http().request(endpoint, 'POST', urllib.urlencode(params), headers=headers)
+        (response, content) = httplib2.Http().request(endpoint, 
+                                                      'POST', 
+                                                      urllib.urlencode(params), 
+                                                      headers=headers)
         
-        print "Response %s" % response.status
-#         results = json.loads(content)
-#         print "\n".join([result['type']['value'] for result in results['results']['bindings']])
+        print("Response %s" % response.status)
         return (response, content)
     
     def execute_query(self, query, repository):
@@ -289,8 +290,8 @@ class OpenRdfClient(object):
           'content-type': 'application/x-www-form-urlencoded',
           'accept': 'application/sparql-results+json'
         }
-        endpoint = "%s/%s/statements" % (self.server_uri, repository)
-        print endpoint
+        endpoint = "{}/{}/statements".format(self.server_uri, repository)
+        print(endpoint)
         (response, content) = httplib2.Http().request(endpoint, 'POST', 
                                                       urlencode(params),
                                                       headers=headers)
@@ -478,25 +479,23 @@ class RecognizeOpenRdfClient(OpenRdfClient):
 #         content = self.create_template(entity, type, language)
         
         (result, content) = self.check_exists(entity, repository)
-        print result
+        print(result)
         if result.status==200 and len(content):
-            print 'Skipping: {} already exists in repository {}'.format(entity, repository)
+            print('Skipping: {} already exists in repository {}'.format(
+                                                        entity, repository))
         else:
             url = ''.join([base_url, label, format_suffix])
-        
-            print url 
+
             context = ''
             data = requests.get(url)
             content = data.content
             if not len(content):
                 content = self.create_template(entity, entity_type, language)
-            print content
-#             self.upload_statement(content, context, repository)
 
         
 if __name__ == '__main__':
     
-    server_uri = 'http://gecko6.wu.ac.at:8080'
+    server_uri = ''
     repository = 'dbp.de.people.1403'
     client = RecognizeOpenRdfClient(server_uri=server_uri)
     

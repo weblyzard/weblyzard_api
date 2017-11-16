@@ -87,8 +87,8 @@ class Sentence(object):
                 m = hashlib.md5()
                 m.update(value.encode('utf-8') if isinstance(value, unicode) else str(value))
                 md5sum = m.hexdigest()
-            except Exception, e: 
-                print e
+            except Exception as e: 
+                print(e)
                 
         self.md5sum = md5sum
         self.pos = pos

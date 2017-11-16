@@ -73,14 +73,14 @@ def get_tokens(sentence):
 
 if __name__ == '__main__':
 
-    print "Reading corpus..."
+    print("Reading corpus...")
     CORPUS_PATH = os_join(dirname(__file__), '../corpus', '*.txt.gz')
     corpus_documents = read_corpus_files(CORPUS_PATH)
 
-    print "Pre-processing corpus..."
+    print("Pre-processing corpus...")
     xml_corpus_documents = get_weblyzard_xml_documents(corpus_documents)
 
-    print "Configuring keyword service..."
+    print("Configuring keyword service...")
     jesaja = Jesaja()
     jesaja.set_stoplist(STOPLIST_NAME, [stopword.strip() for stopword in GzipFile(STOPLIST_FILE)])
     jesaja.set_keyword_profile(PROFILE_NAME, PROFILE)
@@ -88,14 +88,14 @@ if __name__ == '__main__':
 
     # check whether we have already shards available for the given matview
     if not jesaja.has_corpus(matview_id=MATVIEW_NAME):
-        print "Uploading reference corpus..."
+        print("Uploading reference corpus...")
         # we try to rotate the corpus shards until enough documents have been
         # uploaded
         while jesaja.rotate_shard(MATVIEW_NAME) == 0:
-            print " Adding corpus..."
+            print(" Adding corpus...")
             jesaja.add_documents(MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
 
-    print "Computing keywords..."
+    print("Computing keywords...")
     result = jesaja.get_keywords(MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
 
     for content_id, xml_document in xml_corpus_documents.items():
