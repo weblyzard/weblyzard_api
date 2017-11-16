@@ -42,4 +42,4 @@ class XML2005(XMLParser):
         if not 'title' in attributes: 
             attributes['title'] = ' '.join([t.value for t in titles])
                 
-        return attributes, sentences
+        return attributes, titles + sentences
