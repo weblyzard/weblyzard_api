@@ -45,7 +45,7 @@ class JesajaTest(unittest.TestCase):
      
             with GzipFile(self.SAMPLE_DATA_FILE) as f:
                 sample_corpus = load(f)
-                print 'Loaded corpus with %d entries' % (len(sample_corpus))
+                print('Loaded corpus with %d entries' % (len(sample_corpus)))
      
             self.jesaja.add_stoplist('testList', 
                                      ('the', 'from', 'there', 'here') )
@@ -62,11 +62,11 @@ class JesajaTest(unittest.TestCase):
             self.jesaja.finalize_corpora()
             size_default = self.jesaja.get_corpus_size(self.PROFILE_NAME)
             size_stoplist = self.jesaja.get_corpus_size(self.STOPLIST_PROFILE_NAME)
-            print 'Corpus "default" - corpus size : ', size_default
-            print 'Corpus "stoplist" - corpus size: ', size_stoplist
+            print('Corpus "default" - corpus size : ', size_default)
+            print('Corpus "stoplist" - corpus size: ', size_stoplist)
      
         else: 
-            print 'WARNING: Webservice is offline --> not executing all tests!!'
+            print('WARNING: Webservice is offline --> not executing all tests!!')
             
     def test_server_is_online(self):
         ''' tests if the server is online ''' 
@@ -80,15 +80,15 @@ class JesajaTest(unittest.TestCase):
                               'pos_tags' : {'c000': 'JJ NN TO DT NN',
                                             'c001': 'WRB NNS PRP'} }
                     }
-            print self.jesaja.get_keywords(self.PROFILE_NAME, docs)
+            print(self.jesaja.get_keywords(self.PROFILE_NAME, docs))
  
     def test_loglevel(self):
         if self.service_is_online:
-            print self.jesaja.change_log_level('severe')
+            print(self.jesaja.change_log_level('severe'))
  
     def test_meminfo(self):
         if self.service_is_online:
-            print self.jesaja.meminfo()
+            print(self.jesaja.meminfo())
  
     def test_profile_list(self):
         if self.service_is_online:

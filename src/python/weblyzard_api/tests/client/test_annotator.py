@@ -46,10 +46,10 @@ class AnnotatorTest(unittest.TestCase):
         </wl:page>"""}, 
         {'content_id': '23', 'content': """Das Huhn sagt hallo zum Fuchs"""  }]
         d = Annotator( WEBLYZARD_ANNOTATOR_URL )
-        print d.annotate_xml( annotation_profile, 
+        print(d.annotate_xml( annotation_profile, 
                               TEST_XML_DOCUMENT_LIST,
                               'wl:sentences', 
-                              True )
+                              True))
         
     
     def test_text_document_annotation(self):
@@ -58,7 +58,7 @@ class AnnotatorTest(unittest.TestCase):
                               {'content_id': "2", 'content': 'i have met jasna at the pool.'} ]
         
         d = Annotator( WEBLYZARD_ANNOTATOR_URL )
-        print d.annotate_text(annotation_profile, TEST_DOCUMENT_LIST)
+        print(d.annotate_text(annotation_profile, TEST_DOCUMENT_LIST))
 
 
 if __name__ == '__main__':

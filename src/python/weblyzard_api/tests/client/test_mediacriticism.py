@@ -23,7 +23,7 @@ class TestMediaCriticism(unittest.TestCase):
         # 2. step: send processed document to the classifier
         media_criticism = MediaCriticism()
         for num, document in enumerate(self.EXAMPLE_DOCUMENTS):
-            print "Testing the %d document" % (num+1)
+            print("Testing the %d document" % (num+1))
             is_relevant, mediacriticism_score, num_entities = media_criticism.check_domain_relevance(document['doc'])
             assert is_relevant == document['is_relevant']
             if document['is_mediacriticism']:
