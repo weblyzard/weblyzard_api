@@ -36,9 +36,9 @@ class PostRequest(object):
         req.add_data(self.data)
         try:
             conn = opener.open(req)
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             conn = e
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             logger.error("Connection refused.. %s", e)
             raise e
         return conn
