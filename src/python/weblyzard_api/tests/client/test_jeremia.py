@@ -20,7 +20,7 @@ class JeremiaTest(unittest.TestCase):
 
     def test_single_document_processing(self):
         j = Jeremia()
-        print 'submitting document...'
+        print('submitting document...')
         document_annotated = j.submit_document(self.DOCS[1])
         self.assertTrue(document_annotated != "")
 
@@ -47,11 +47,11 @@ class JeremiaTest(unittest.TestCase):
             return
 
 
-        print 'submitting document with annotations...'
+        print('submitting document with annotations...')
         result = j.submit_document(DOC)
 
         # check: all annotations have been preserved
-        print result
+        print(result)
         assert len(result['annotation']) == 4
 
         # check: annotations
@@ -81,12 +81,12 @@ class JeremiaTest(unittest.TestCase):
 
         for doc in j.submit_documents(self.DOCS[:1]):
             # extract sentences
-            print doc
+            print(doc)
             xml_obj = XMLContent(doc['xml_content'])
             sentences = [s.sentence for s in xml_obj.sentences]
-            print doc['xml_content']
+            print(doc['xml_content'])
             assert 'wl:is_title' in doc['xml_content']
-            print sentences
+            print(sentences)
 
             # TODO: check sentence splitting in jeremia!
             # self.assertEqual(len(sentences), 3)
@@ -101,7 +101,7 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia()
         for doc in j.submit_documents(DOCS):
             xml = XMLContent(doc['xml_content'])
-            print doc['xml_content']
+            print(doc['xml_content'])
             assert xml.sentences[0].sentence != None
 
     def test_illegal_input_args(self):
@@ -260,6 +260,6 @@ if __name__ == '__main__':
         j = Jeremia()
         docs['body_annotation'] = [{'start':0, 'end': 3, 'key': 'test annotation'}]
         l = j.submit_document(docs)
-        print l
+        print(l)
     else:
         unittest.main()

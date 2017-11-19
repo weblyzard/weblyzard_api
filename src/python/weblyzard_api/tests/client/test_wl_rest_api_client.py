@@ -78,7 +78,7 @@ class TestWlDocumentRestApiClient(unittest.TestCase):
     def setUp(self):
         #TODO Change this to the running instance
         self.client = WlDocumentRestApiClient("http://localhost:5001")
-        print "+++ INFO: Sending requests to %s +++" % self.client.base_url
+        print("+++ INFO: Sending requests to %s +++" % self.client.base_url)
      
     def compare_with_base(self, base_dict, extended_dict):
         '''
@@ -185,7 +185,7 @@ class TestWlDocumentRestApiClient(unittest.TestCase):
         }
         result = self.client.annotate_document(test_document_en, ['sem_orient_ng'])
         assert result['meta_data']['polarity'] in [1.0, 'positive']
-        print result['meta_data']['polarity']
+        print(result['meta_data']['polarity'])
         assert result['language_id'] == 'en'
         result = self.client.annotate_document(test_document_fr, ['sem_orient_ng'])
         assert result['meta_data']['polarity'] in [-1.0, 'negative']
@@ -224,7 +224,7 @@ class TestWlDocumentRestApiClient(unittest.TestCase):
         read1_response = self.client.retrieve_document(portal_name=portal_name,
                                                        content_id=content_id)
         assert isinstance(read1_response, dict)
-        print read1_response
+        print(read1_response)
         assert read1_response['_id'] == content_id
         assert read1_response['repository_id'] == 'repository'
         assert read1_response['title'] == 'document title'
@@ -238,7 +238,7 @@ class TestWlDocumentRestApiClient(unittest.TestCase):
                                                        content_id=content_id,
                                                        document=updated_document)
         assert isinstance(updated_response, dict)
-        print updated_response
+        print(updated_response)
         assert updated_response['created'] == False
         assert updated_response['_id'] == content_id
         assert 'title' not in updated_response
@@ -247,7 +247,7 @@ class TestWlDocumentRestApiClient(unittest.TestCase):
         read2_response = self.client.retrieve_document(portal_name=portal_name,
                                                        content_id=content_id)
         assert isinstance(read2_response, dict)
-        print read2_response
+        print(read2_response)
         assert read2_response['_id'] == content_id
         assert read2_response['repository_id'] == 'repository'
         assert read2_response['title'] == 'updated document title'
@@ -257,7 +257,7 @@ class TestWlDocumentRestApiClient(unittest.TestCase):
         delete_response = self.client.delete_document(portal_name=portal_name,
                                                       content_id=content_id)
         assert isinstance(delete_response, dict)
-        print delete_response
+        print(delete_response)
         assert delete_response['_id'] == content_id
         assert delete_response['deleted'] == True
         assert len(delete_response) == 2
@@ -265,7 +265,7 @@ class TestWlDocumentRestApiClient(unittest.TestCase):
         # READ and fail
         read3_response = self.client.retrieve_document(portal_name=portal_name,
                                                        content_id=content_id)
-        print read3_response
+        print(read3_response)
         assert False
 
 if __name__ == '__main__':
