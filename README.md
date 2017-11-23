@@ -57,6 +57,10 @@ The following interfaces are currently available for `weblyzard_api`:
 
 ## Python API 
 
+### dependencies
+
+The following two dependencies might need to be installed manually: libxml and libxslt.
+
 ### running test for jeremia 
 
 weblyzard_api/tests/python/client$ python test_jeremia.py "Ehre sei Gott!"
