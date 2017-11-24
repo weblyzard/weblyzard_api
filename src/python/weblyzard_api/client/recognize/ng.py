@@ -46,7 +46,7 @@ class Recognize(MultiRESTClient):
                         limit=40)
             pprint(result)
     '''
-    URL_PATH = 'recognize/rest/'
+    URL_PATH = '/recognize/rest/'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'lang': 'xml:lang',
                          'sentences' : 'sentence',
@@ -66,6 +66,12 @@ class Recognize(MultiRESTClient):
                                  default_timeout=default_timeout)
         self.profile_cache = []
 
+    def status(self):
+        '''
+        :returns: the status of the Recognize web service.
+        '''
+        return self.request(path='status')
+    
     def load_profile(self, profile_name):
         ''' pre-loads the given profile
 
@@ -75,7 +81,16 @@ class Recognize(MultiRESTClient):
             return
 
         self.profile_cache.append(profile_name)                 #only try to add once
-        return self.request(path='add_profile/{}'.format(profile_name))
+        return self.request(path='load_profile/{}'.format(profile_name))
+    
+    def list_profiles(self):
+        ''' :returns: a list of all pre-loaded profiles
+            .. code-block:: python
+            >>> r=Recognize()
+            >>> r.list_profiles()
+            [u"MAXIMUM.COVERAGE",u"JOBCOCKPIT"]
+        '''
+        return self.request('list_profiles')
 
     def search_text(self, profile_name, text, limit):
         '''
@@ -86,7 +101,7 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         '''
-        return self.request(path='search_text/raw',
+        return self.request(path='search_text',
                             parameters=text,
                             query_parameters={'profileName' : profile_name,
                                               'limit': limit})
@@ -113,10 +128,4 @@ class Recognize(MultiRESTClient):
         :rtype: the tagged text
         '''
         raise NotImplementedError
-
-    def status(self):
-        '''
-        :returns: the status of the Recognize web service.
-        '''
-        return self.request(path='status')
 
