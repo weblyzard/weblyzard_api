@@ -92,7 +92,7 @@ class Recognize(MultiRESTClient):
         '''
         return self.request('list_profiles')
 
-    def search_text(self, profile_name, text, limit):
+    def search_text(self, profile_name, lang, text):
         '''
         Search text for entities specified in the given profiles.
 
@@ -101,10 +101,13 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         '''
+        content_type = 'application/json; charset=utf-8'
+
         return self.request(path='search_text',
                             parameters=text,
+                            content_type=content_type,
                             query_parameters={'profileName' : profile_name,
-                                              'limit': limit})
+                                              'lang': lang})
 
 
     def search_document(self, profile_name, document, limit):
@@ -116,7 +119,40 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         '''
-        raise NotImplementedError
+        #assert output_format in self.OUTPUT_FORMATS
+        if not document:
+            return
+
+        content_type = 'application/json'
+        
+        if 'content_id' in document:
+            search_command = 'search_xmldocument'
+        elif 'id' in document:
+            search_command = 'search_xmldocument'
+        else:
+            raise ValueError("Unsupported input format.")
+        
+        print(search_command)
+        
+        return self.request(path='search_xmldocument',
+                            parameters=document,
+                            content_type=content_type,
+                            query_parameters={'profileName' : profile_name,
+                                              #'rescore': max_entities,
+                                              #'buckets': buckets,
+                                              'limit': limit,
+                                              #'wt': output_format,
+                                              #'debug': debug
+                                              })
+    
+    '''
+            Response response =
+                super.getTarget(SEARCH_DOCUMENT_SERVICE_URL)
+                        .queryParam(PARAM_PROFILE_NAME, profileName)
+                        .queryParam(PARAM_LIMIT, limit)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(data));
+    '''
 
     def search_documents(self, profile_name, document_list, limit):
         '''
