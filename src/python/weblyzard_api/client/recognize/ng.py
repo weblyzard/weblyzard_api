@@ -145,6 +145,44 @@ class Recognize(MultiRESTClient):
 
     
 
+    def search_document(self, profile_name, document, limit=0):
+        '''
+        :param profile_name: profile name
+        :param document: a single document to analyze (see example documents \
+            below)
+        :param limit: only return that many results
+        :param content_type: the needed content_type
+
+        .. note:: Example document
+
+           .. code-block:: python
+   
+              # option 1: document dictionary
+              {'content_id': 12, 
+               'content': u'the text to analyze'}
+
+              # option 2: weblyzardXML
+              XMLContent('<?xml version="1.0"...').as_list()
+
+        '''
+        if not document:
+            return
+        
+        #content_type = 'application/xml; text/xml; application/json'
+        content_type = 'application/json'
+        
+        search_command = 'search_document'
+        
+        return self.request(path='search_document',
+                            parameters=document,
+                            content_type=content_type,
+                            query_parameters={'profileName' : profile_name,
+                                              'limit': limit
+                                              #'rescore': max_entities,
+                                              #'buckets': buckets,
+                                              #'wt': output_format,
+                                              #'debug': debug
+                                              }) 
     
     def search_xmldocument(self, profile_name, document, limit):
         '''
