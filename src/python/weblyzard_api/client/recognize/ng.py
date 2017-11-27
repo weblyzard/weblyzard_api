@@ -101,7 +101,7 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         '''
-        content_type = 'application/json; charset=utf-8'
+        content_type = 'application/json'
 
         return self.request(path='search_text',
                             parameters=text,
@@ -110,7 +110,7 @@ class Recognize(MultiRESTClient):
                                               'lang': lang})
 
 
-    def search_document(self, profile_name, document, limit):
+    def search_document(self, profile_name, document):
         '''
         Search the given document for entities specified in the given profiles.
 
@@ -123,7 +123,7 @@ class Recognize(MultiRESTClient):
         if not document:
             return
 
-        content_type = 'application/json'
+        content_type = 'application/json; charset=utf-8'
         
         if 'content_id' in document:
             search_command = 'search_xmldocument'
@@ -137,10 +137,9 @@ class Recognize(MultiRESTClient):
         return self.request(path='search_xmldocument',
                             parameters=document,
                             content_type=content_type,
-                            query_parameters={'profileName' : profile_name,
+                            query_parameters={'profileName' : profile_name
                                               #'rescore': max_entities,
                                               #'buckets': buckets,
-                                              'limit': limit,
                                               #'wt': output_format,
                                               #'debug': debug
                                               })
