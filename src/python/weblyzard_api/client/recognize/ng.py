@@ -46,6 +46,7 @@ class Recognize(MultiRESTClient):
                         limit=40)
             pprint(result)
     '''
+    OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
     URL_PATH = '/recognize/rest/'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'lang': 'xml:lang',
@@ -65,6 +66,38 @@ class Recognize(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
         self.profile_cache = []
+    
+    
+    @classmethod
+    def convert_document(cls, xml, version='0.4'):
+        ''' converts an XML String to a document dictionary necessary for \
+            transmitting the document to Recognize.
+
+        :param xml: weblyzard_xml representation of the document
+        :returns: the converted document
+        :rtype: dict
+
+        .. note::
+            non-sentences are ignored and titles are added based on the
+            XmlContent's interpretation of the document.
+        '''
+        if not isinstance(xml, XMLContent):
+            xml = XMLContent(xml)
+
+        try:
+            if float(version[0:3])>=0.5:#.startswith('0.5'):
+                return xml.get_xml_document(xml_version=2013).strip()
+        except Exception as e:
+            LOGGER.warn('Could not parse version: %s' % version)
+        return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
+                           ignore_non_sentence=False,
+                           add_titles_to_sentences=True)
+    
+    def get_xml_document(self, document):
+        ''' :returns: the correct XML representation required by the Recognize \
+            service'''
+        print(document)
+        return document.xml_content.as_dict(self.ATTRIBUTE_MAPPING)
 
     def status(self):
         '''
@@ -110,7 +143,10 @@ class Recognize(MultiRESTClient):
                                               'lang': lang})
 
 
-    def search_document(self, profile_name, document):
+    
+
+    
+    def search_xmldocument(self, profile_name, document, limit):
         '''
         Search the given document for entities specified in the given profiles.
 
@@ -123,35 +159,21 @@ class Recognize(MultiRESTClient):
         if not document:
             return
 
-        content_type = 'application/json; charset=utf-8'
+        content_type = 'application/json'
         
-        if 'content_id' in document:
-            search_command = 'search_xmldocument'
-        elif 'id' in document:
-            search_command = 'search_xmldocument'
-        else:
-            raise ValueError("Unsupported input format.")
-        
-        print(search_command)
+        search_command = 'search_xmldocument'
         
         return self.request(path='search_xmldocument',
                             parameters=document,
                             content_type=content_type,
-                            query_parameters={'profileName' : profile_name
+                            query_parameters={'profileName' : profile_name,
+                                              'limit': limit
                                               #'rescore': max_entities,
                                               #'buckets': buckets,
                                               #'wt': output_format,
                                               #'debug': debug
                                               })
     
-    '''
-            Response response =
-                super.getTarget(SEARCH_DOCUMENT_SERVICE_URL)
-                        .queryParam(PARAM_PROFILE_NAME, profileName)
-                        .queryParam(PARAM_LIMIT, limit)
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.json(data));
-    '''
 
     def search_documents(self, profile_name, document_list, limit):
         '''
