@@ -151,7 +151,6 @@ class Recognize(MultiRESTClient):
         :param document: a single document to analyze (see example documents \
             below)
         :param limit: only return that many results
-        :param content_type: the needed content_type
 
         .. note:: Example document
 
@@ -163,7 +162,6 @@ class Recognize(MultiRESTClient):
 
               # option 2: weblyzardXML
               XMLContent('<?xml version="1.0"...').as_list()
-
         '''
         if not document:
             return
@@ -187,11 +185,25 @@ class Recognize(MultiRESTClient):
     def search_xmldocument(self, profile_name, document, limit):
         '''
         Search the given document for entities specified in the given profiles.
+        This should only be called with Jeremia results.
+        
+        .. note:: Example document
+
+           .. code-block:: python     
+                test_doc = {'id': 111,
+                            'body': 'Management Directive\nBill Gates\n Java Programmer',
+                            'title': 'Hello President! ',
+                            'format': 'text/html',
+                            'header': {}}
+                
+                jeremia_client = Jeremia()
+                jresult = jeremia_client.submit_document(test_doc2)
+                newresult = r.search_xmldocument(profile_name=profile, document=jresult, limit=0)   
+
 
         :param profile_name: the profile to search in
         :param document: the document to search in
         :param limit: maximum number of results to return
-        :rtype: the tagged text
         '''
         #assert output_format in self.OUTPUT_FORMATS
         if not document:
