@@ -33,13 +33,6 @@ if __name__ == '__main__':
     
     client = OpenRdfClient(server_uri)
     
-    #results = client.run_query(repository_name, query)
-    #
-    #for result in results: 
-    #    print result
-    
-    #client.update_profile(profile_name=None, profile_definition=None)
-    
     
     '''
             DELETE DATA

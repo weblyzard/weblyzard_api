@@ -10,7 +10,7 @@ import json
 import requests
 
 
-class SKBRESTClient():
+class SKBRESTClient(object):
     
     TRANSLATION_PATH = '1.0/skb/translation?'
     TITLE_TRANSLATION_PATH = '1.0/skb/title_translation?'
