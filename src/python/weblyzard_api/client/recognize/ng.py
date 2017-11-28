@@ -21,8 +21,9 @@ class Recognize(MultiRESTClient):
      1. pre-load the recognize profiles you need using the :func:`load_profile` call.
      2. submit the text or documents to analyze using one of the following calls:
 
-        * :func:`search_document` or :func:`search_documents` for document dictionaries.
+        * :func:`search_xmldocument` for jeremia documents.
         * :func:`search_text` for plain text.
+        * :func:`search_document` for document dictionaries.
 
     .. note:: Example usage
 
@@ -43,8 +44,13 @@ class Recognize(MultiRESTClient):
             client = Recognize(url)
             result = client.search_text(profile_name,
                         text,
+                        lang='en',
                         limit=40)
             pprint(result)
+            
+    It is basically recommended to use search_xmldocument with jeremia results, 
+    as search_text was disabled.
+    
     '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
     URL_PATH = '/recognize/rest/'
