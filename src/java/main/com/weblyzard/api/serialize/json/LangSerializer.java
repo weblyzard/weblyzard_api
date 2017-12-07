@@ -15,12 +15,12 @@ public class LangSerializer extends StdSerializer<Lang> {
     protected LangSerializer(Class<Lang> t) {
         super(t);
     }
-
-    private static final long serialVersionUID = 1L;
-
+    
     @Override
     public void serialize(Lang value, JsonGenerator generator, SerializerProvider provider)
             throws IOException {
         generator.writeString(value.toString());
     }
+   
+    private static final long serialVersionUID = 1L;
 }
