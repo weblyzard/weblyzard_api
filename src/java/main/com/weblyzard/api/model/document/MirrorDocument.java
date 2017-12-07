@@ -7,9 +7,11 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.weblyzard.api.model.Lang;
 import com.weblyzard.api.model.annotation.Annotation;
 import com.weblyzard.api.serialize.json.LangDeserializer;
+import com.weblyzard.api.serialize.json.LangSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -35,6 +37,7 @@ public class MirrorDocument implements Serializable {
     /** the document's content type (e.g. `text/html`) */
     private String format;
     @JsonDeserialize(using = LangDeserializer.class)
+    @JsonSerialize(using = LangSerializer.class)
     private Lang lang;
 
     /** arbitrary header metadata */
