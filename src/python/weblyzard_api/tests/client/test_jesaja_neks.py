@@ -93,7 +93,7 @@ class TestJesajaNeks(unittest.TestCase):
 
             with GzipFile(self.SAMPLE_DATA_FILE) as f:
                 sample_corpus = load(f)
-                print 'Loaded corpus with %d entries' % (len(sample_corpus))
+                print('Loaded corpus with %d entries' % (len(sample_corpus)))
 
             self.jesaja.set_stoplist('testList',
                                      ('the', 'from', 'there', 'here') )
@@ -112,7 +112,7 @@ class TestJesajaNeks(unittest.TestCase):
 #                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
                     self.jesaja.add_documents(matview_id=self.MATVIEW_NAME, xml_documents=xml_documents)
         else:
-            print 'WARNING: Webservice is offline --> not executing all tests!!'
+            print('WARNING: Webservice is offline --> not executing all tests!!')
             
     def test_nek_annotation(self):
         ''' test nek annotations '''

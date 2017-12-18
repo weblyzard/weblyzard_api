@@ -21,7 +21,7 @@ class TestXMLParser(unittest.TestCase):
         with open(test_data_path) as f:
             xml_content = load(f)
             xml_string = xml_content.get_xml_document()
-            print (xml_string)
+            print(xml_string)
             assert xml_string
 
 #     def test_incomplete_xml_parsing(self):

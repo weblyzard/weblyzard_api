@@ -22,26 +22,26 @@ def check_arguments(args):
     if args.host_url:
         jo = Joanna(url=args.host_url)
     else:
-        print 'host url required..'
+        print('host url required..')
         return
     if args.status:
         status = jo.status()
-        print 'status {}'.format(status)
+        print('status {}'.format(status))
     elif args.api_version:
         version = jo.version()
-        print 'version: {}'.format(version)
+        print('version: {}'.format(version))
     elif args.get_hashes:
         if None in (args.sourceId, args.portal_db):
-            print "SourceId and portal_db required.."
+            print("SourceId and portal_db required..")
         else:
             hashes = jo.get_hashes(args.sourceId, args.portal_db)
-            print hashes
+            print(hashes)
     elif args.clean_hashes:
         clean = jo.clean_hashes()
-        print 'Hashes cleaned {}'.format(clean)
+        print('Hashes cleaned {}'.format(clean))
     elif args.reload:
         if None in (args.sourceId, args.portal_db):
-            print 'invalid arguments. Requires sourceId and portal_db'
+            print('invalid arguments. Requires sourceId and portal_db')
             return
         if args.repeat_test:
             for i in xrange(args.repeat_test):
@@ -49,41 +49,41 @@ def check_arguments(args):
                     args.sourceId, args.portal_db, 
                     daysBack=args.days_back)
                 sleep(random()*10)
-                print "Iteration {} Reloaded: {}".format(i, reloaded)
+                print("Iteration {} Reloaded: {}".format(i, reloaded))
         else:
             reloaded = jo.reload_source_nilsimsa(
                    args.sourceId, args.portal_db, daysBack=args.days_back)
-            print "Reloaded: {}".format(reloaded)
+            print("Reloaded: {}".format(reloaded))
     elif args.send_document:
         if None in (args.sourceId, args.nilsimsa, args.portal_db):
-            print 'invalid arguments. Requires sourceId, \
-            portal_db and nilsimsa list..'
+            print('invalid arguments. Requires sourceId, \
+            portal_db and nilsimsa list..')
             return
         else:
             if args.days_back is None:
-                print 'Using days back default {}'.format(
-                                                    DAYS_BACK_DEFAULT)
+                print('Using days back default {}'.format(
+                                                    DAYS_BACK_DEFAULT))
             result = jo.similar_document(
                         args.sourceId, args.nilsimsa, args.portal_db)
-            print "Result {}".format(result)
+            print("Result {}".format(result))
     elif args.batch_document:
         if None in (args.sourceId, args.nilsimsa_list, args.portal_db):
-            print 'invalid arguments. Requires sourceId, \
-            nilsimsa list and portal_db..'
+            print('invalid arguments. Requires sourceId, \
+            nilsimsa list and portal_db..')
             return
         else:
             if args.days_back is None:
-                print 'Using days back default {}'.format(
-                                                    DAYS_BACK_DEFAULT)
+                print('Using days back default {}'.format(
+                                                    DAYS_BACK_DEFAULT))
             result = jo.similar_documents(
                     args.sourceId, args.portal_db, args.nilsimsa_list, 
                     daysBack=args.days_back)
-            print "Result {}".format(result)
+            print("Result {}".format(result))
     elif args.nilsimsa_list and args.batch_document is False:
-        print 'need to specify --batch-document with nilsimsa-list'
+        print('need to specify --batch-document with nilsimsa-list')
     
     elif args.nilsimsa and args.send_document is False:
-        print 'need to specify --send-document with a nilsimsa'
+        print('need to specify --send-document with a nilsimsa')
 
 
 def main():

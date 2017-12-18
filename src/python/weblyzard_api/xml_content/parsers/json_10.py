@@ -14,11 +14,13 @@ from datetime import datetime
 from weblyzard_api.xml_content import Sentence, XMLContent
 from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
 
+
 class MissingContentException(Exception):
     '''
     Exception class thrown if a JSON document misses required fields.
     '''
     pass
+
 
 class MissingFieldException(Exception):
     '''
@@ -26,16 +28,20 @@ class MissingFieldException(Exception):
     '''
     pass
 
+
 class UnsupportedValueException(Exception):
     '''
     Exception class thrown if a JSON document contains an unsupported value.
     '''
-    pass 
+    pass
+
+
 class UnexpectedFieldException(Exception):
     '''
     Exception class thrown if a JSON document contains an unexpected field.
     '''
     pass
+
 
 class MalformedJSONException(Exception):
     '''
@@ -78,7 +84,7 @@ class JSONParserBase(object):
     @classmethod
     def from_api_dict(cls, api_dict):
         raise NotImplementedError
-    
+
     @classmethod
     def _missing_fields(cls, api_dict):
         '''
@@ -127,7 +133,7 @@ class JSONParserBase(object):
         '''
         Checks if the api_dict has all required fields and if there
         are unexpected and unallowed keys. 
- 
+
         :param api_dict: The dict to check.
         :type api_dict: dict
         :param strict: If set to true, an UnexpectedFieldException is raised \
@@ -136,13 +142,13 @@ class JSONParserBase(object):
         '''
         missing_fields = cls._missing_fields(api_dict)
         if missing_fields is not None:
-            raise MissingFieldException("Missing field(s) %s" % 
-                    ', '.join(missing_fields))
+            raise MissingFieldException("Missing field(s) %s" %
+                                        ', '.join(missing_fields))
         if strict:
             unexpected_fields = cls._unexpected_fields(api_dict)
             if unexpected_fields is not None:
                 raise UnexpectedFieldException("Got unexpected field(s): %s" %
-                        ', '.join(unexpected_fields))
+                                               ', '.join(unexpected_fields))
 
     @classmethod
     def _validate_document(cls, json_document, strict=True):
@@ -150,23 +156,23 @@ class JSONParserBase(object):
         cls._check_document_format(json_document, strict)
         if 'content' in json_document and 'content_type' not in json_document:
             raise MissingFieldException(
-                    "When field 'content' is set, 'content_type' must be set, too.")
+                "When field 'content' is set, 'content_type' must be set, too.")
         elif 'content_type' in json_document and 'content' not in json_document:
             raise MissingFieldException(
-                    "When field 'content_type' is set, 'content' must be set, too.")
+                "When field 'content_type' is set, 'content' must be set, too.")
         elif 'content' not in json_document and 'content_type' not in json_document and\
                 'sentences' not in json_document:
             raise MissingFieldException(
-                    "Either 'sentences' or 'content' and 'content_type' must be set.")
+                "Either 'sentences' or 'content' and 'content_type' must be set.")
         if 'content' in json_document and 'sentences' in json_document:
             raise MalformedJSONException(
-                    "If 'sentences' is set, 'content' must not be set.")
+                "If 'sentences' is set, 'content' must not be set.")
         if 'content_type' in json_document and not json_document['content_type'] in cls.SUPPORTED_CONTENT_TYPES:
-            raise UnsupportedValueException("content_type %s is not supported. Supported are %s" % 
-                                            (json_document['content_type'], 
+            raise UnsupportedValueException("content_type %s is not supported. Supported are %s" %
+                                            (json_document['content_type'],
                                              cls.SUPPORTED_CONTENT_TYPES))
         meta_data = json_document.get('meta_data', {})
-        
+
         valid_from = None
         if 'published_date' in meta_data:
             try:
@@ -176,8 +182,10 @@ class JSONParserBase(object):
                 raise MissingFieldException(
                     "Could not process published_date: %s" % meta_data['published_date'])
             if not isinstance(valid_from, datetime):
-                raise UnsupportedValueException('Field published_date set but not parseable')
-            
+                raise UnsupportedValueException(
+                    'Field published_date set but not parseable')
+
+
 class JSON10ParserXMLContent(JSONParserBase):
     '''
     This class is the parser class for JSON documents conforming to
@@ -185,9 +193,8 @@ class JSON10ParserXMLContent(JSONParserBase):
     '''
     FIELDS_REQUIRED = ['uri', 'title']
     FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations'] \
-            + XML2013.ATTR_MAPPING.keys()
+        + XML2013.ATTR_MAPPING.keys()
     API_VERSION = 1.0
-
 
     @classmethod
     def from_api_dict(cls, api_dict):
@@ -204,20 +211,20 @@ class JSON10ParserXMLContent(JSONParserBase):
         # This basically creates an empty XMLContent object
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
-        xml_content.update_attributes({key:value for key, value in api_dict.iteritems() if 
-                                       key not in ('sentences', 'annotations', 
-                                                   'language_id', 'features', 
+        xml_content.update_attributes({key: value for key, value in api_dict.iteritems() if
+                                       key not in ('sentences', 'annotations',
+                                                   'language_id', 'features',
                                                    'relations', 'content')})
         # parse sentences
-        sentences = [JSON10ParserSentence.from_api_dict(sentence_dict) for 
+        sentences = [JSON10ParserSentence.from_api_dict(sentence_dict) for
                      sentence_dict in api_dict.get('sentences', [])]
         xml_content.sentences = sentences
-        
+
         # parse annotations
-        annotations = [JSON10ParserAnnotation.from_api_dict(annotation_dict) for 
+        annotations = [JSON10ParserAnnotation.from_api_dict(annotation_dict) for
                        annotation_dict in api_dict.get('annotations', [])]
         xml_content.body_annotations = annotations
-        
+
         # add relations and features
         xml_content.relations = api_dict.get('relations', {})
         xml_content.features = api_dict.get('features', {})
@@ -230,7 +237,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         if 'title' in api_dict:
             for sentence in sentences:
                 if sentence.is_title and sentence.value != api_dict['title']:
-                    raise MalformedJSONException('The sentence marked with "is_title": "True" must '+
+                    raise MalformedJSONException('The sentence marked with "is_title": "True" must ' +
                                                  'match the "title" attribute.')
         else:
             for sentence in sentences:
@@ -272,13 +279,15 @@ class JSON10ParserSentence(JSONParserBase):
             dependency=api_dict.get('dep_tree', None))
         return sentence
 
+
 class JSON10ParserAnnotation(JSONParserBase):
     '''
     This class is the parser class for JSON annotations conforming to
     the Weblyzard API 1.0 definition.
     '''
     FIELDS_REQUIRED = ['start', 'end', 'surface_form', 'annotation_type']
-    FIELDS_OPTIONAL = ['key', 'sentence', 'display_name', 'polarity', 'properties']
+    FIELDS_OPTIONAL = ['key', 'sentence',
+                       'display_name', 'polarity', 'properties']
     API_VERSION = 1.0
 
     @classmethod
@@ -346,7 +355,7 @@ class JSON10ParserAnnotation(JSONParserBase):
             cls._check_document_format(annotation)
             result.setdefault(annotation['annotation_type'], [])
             result.setdefault(annotation['annotation_type'], []).append(
-                              JSON10ParserAnnotation.from_api_dict(annotation))
+                JSON10ParserAnnotation.from_api_dict(annotation))
         return result
 
     @classmethod

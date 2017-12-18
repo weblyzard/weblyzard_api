@@ -73,13 +73,13 @@ class JoannaTest(unittest.TestCase):
         batch_results = self.joanna.similar_documents(
                         self.source_id, self.test_db, 
                         docs, 20)
-        print "Batch results {}".format(batch_results)
+        print("Batch results {}".format(batch_results))
         self.rand_strings = self.joanna.rand_strings(self.docs)
 
         docs = self.joanna.rand_strings(30)
         batch_results = self.joanna.similar_documents(
                         self.source_id, self.test_db, docs, 20)
-        print "Batch results {}".format(batch_results)
+        print("Batch results {}".format(batch_results))
 
 if __name__ == '__main__':    
     unittest.main()

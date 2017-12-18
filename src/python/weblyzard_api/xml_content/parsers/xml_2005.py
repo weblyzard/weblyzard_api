@@ -7,8 +7,9 @@ Created on 07.04.2014
 '''
 from weblyzard_api.xml_content.parsers import XMLParser
 
+
 class XML2005(XMLParser):
-    
+
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2005'
     DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE}
     ATTR_MAPPING = {'content_id': 'content_id',
@@ -30,16 +31,16 @@ class XML2005(XMLParser):
                         'token': 'token',
                         'significance': 'significance',
                         'is_title': 'is_title',
-                        'sem_orient': 'sem_orient'} 
+                        'sem_orient': 'sem_orient'}
     FEATURE_MAPPING = {}
     RELATION_MAPPING = {}
-    
+
     VERSION = 2005
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
-        
-        if not 'title' in attributes: 
+
+        if not 'title' in attributes:
             attributes['title'] = ' '.join([t.value for t in titles])
-                
+
         return attributes, titles + sentences

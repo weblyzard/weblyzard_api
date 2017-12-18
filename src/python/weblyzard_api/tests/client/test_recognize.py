@@ -40,7 +40,7 @@ class TestRecognize(unittest.TestCase):
         self.client = Recognize(url)
         self.service_is_online = self.client.is_online()
         if not self.service_is_online:
-            print 'WARNING: Webservice is offline --> not executing all tests!!'
+            print('WARNING: Webservice is offline --> not executing all tests!!')
             self.IS_ONLINE = False
             return
              
@@ -50,47 +50,15 @@ class TestRecognize(unittest.TestCase):
                 self.available_profiles.append(profile)
   
         version = self.client.get_version()
-        print version
+        print(version)
         self.all_profiles = self.client.list_profiles()
         self.DOCS = [Recognize.convert_document(xml, version=version) for xml in self.DOCS_XML]
 
-#     def test_text_adrian(self):
-#    
-#         from pprint import pprint
-#         print "start"
-#         profile_names=['de.organization.ng', 'de.people.ng', 'de.geo.500000.ng']
-#         text = 'Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
-#         self.client.add_profile('en.organization.ng')
-#            
-#         result = self.client.search_text(profile_names,
-#                                     text,
-#                                     output_format='compact',
-#                                     max_entities=40,
-#                                     buckets=40,
-#                                     limit=40)
-#         pprint(result)
-#         assert len(result)
-#         print "end"
- 
- 
-#     def test_text_date_time(self):
-#         from pprint import pprint
-#         print "start"
-#         profile_names=['extras.com.weblyzard.backend.recognize.extras.DateTimeProfile']
-#         text = '12.10.2012: Climate Change is real. Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
-#         result = self.client.search_text(profile_names,
-#                                          text,
-#                                          output_format='compact',
-#                                          max_entities=40,
-#                                          buckets=40,
-#                                          limit=40)
-#         pprint(result)
-#         assert len(result)
-#         print "end"
+
          
     def test_text_gemet(self):
         from pprint import pprint
-        print "start"
+        print("start")
         profile_names=['en.gemet']
         text = 'Climate Change is real. Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
         result = self.client.search_text(profile_names,
@@ -101,65 +69,19 @@ class TestRecognize(unittest.TestCase):
                                          limit=40)
         pprint(result)
         assert len(result)
-        print "end"
-# 
-#     def test_missing_profiles(self):
-#         self.missing_profiles = []
-#    
-#         if self.IS_ONLINE and self.service_is_online:
-#             if len(self.available_profiles) == len(self.TESTED_PROFILES):
-#                 print "All profiles are available on the current server"
-#             else:
-#                 for profile in self.TESTED_PROFILES:
-#                     if profile not in self.available_profiles:
-#                         self.missing_profiles.append(profile)
-#                 print "Missing profiles: ", self.missing_profiles
-#         assert len(self.missing_profiles)==0
-    
-#     def test_entity_lyzard(self):
-#         docs = [{'content_id': '12', 'content': u'Franz Klammer fährt Ski'},
-#                 {'content_id': '13', 'content' :u'Peter Müller macht Politik'}]
-#    
-#         required_profile = 'de.people.ng'
-#         if required_profile not in self.available_profiles:
-#             print "Profile %s not available!" % required_profile
-#             return
-#         #we test if we can add profiles and if a German profile works
-#         if self.IS_ONLINE and self.service_is_online:
-#             print self.client.list_profiles()
-#             self.client.add_profile('de.people.ng')
-#             print self.client.search_documents('de.people.ng', docs)
-#              
+        print("end")
+
     def test_search_xml(self):
         ''' '''
         if self.IS_ONLINE and self.service_is_online:
             self.client.add_profile('en.geo.500000.ng')
             result = self.client.search_documents('en.geo.500000.ng', self.DOCS)
-            print 'xmlsearch::::', result
-#  
-#     def test_focus_search(self):
-#         required_profile = 'de.people.ng'
-#         if required_profile not in self.available_profiles:
-#             print "Profile %s not available!" % required_profile
-#             return
-#           
-#         if self.IS_ONLINE and self.service_is_online:
-#             pn = 'extras.com.weblyzard.backend.recognize.extras.DataTypeProfile'
-#             result = self.client.get_focus(['de.people.ng', pn],
-#                                            self.DOCS, max_results=3)
-#    
-#             # annotated two documents
-#             assert len(result) == len(self.DOCS)
-#    
-#             for res in result.itervalues():
-#                 print ':::', res
-#                 assert u'focus' in res
-#                 assert u'annotations' in res
-   
+            print('xmlsearch::::', result)
+
     def test_geo(self):
         required_profile = 'en.geo.500000.ng'
         if required_profile not in self.available_profiles:
-            print "Profile %s not available!" % required_profile
+            print("Profile %s not available!" % required_profile)
             return
         text = u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'
         geodocs = [{'content_id': '11',
@@ -169,16 +91,17 @@ class TestRecognize(unittest.TestCase):
         if self.IS_ONLINE and self.service_is_online:
             profile_name = 'en.geo.500000.ng'
           
-            print self.client.list_configured_profiles()
-            print self.client.add_profile(profile_name, force=True)
+            print(self.client.list_configured_profiles())
+            print(self.client.add_profile(profile_name, force=True))
          
-            print 'list_configured_profiles', self.client.list_configured_profiles()
+            print('list_configured_profiles', 
+                  self.client.list_configured_profiles())
 #             self.client.add_profile('Cities.10000.en')
          
 #             self.client.search_documents(profile_names=profile_name,
 #                                          doc_list=geodocs, debug=True,
 #                                          output_format='standard')
-            print 'list_profiles', self.client.list_profiles()
+            print('list_profiles', self.client.list_profiles())
 #             self.client.add_profile('Cities.10000.en', geodocs)
 #             self.client.add_profile('Cities.10000.en')
             result = self.client.search_text(profile_name, text, output_format='compact')
