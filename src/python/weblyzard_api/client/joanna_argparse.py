@@ -8,7 +8,7 @@ import logging
 from random import random
 from time import sleep
 from weblyzard_api.client.joanna import Joanna
-
+import random
 logger = logging.getLogger('weblyzard_api.client.joanna_argparse')
 
 DAYS_BACK_DEFAULT = 20
@@ -75,8 +75,11 @@ def check_arguments(args):
             if args.days_back is None:
                 print 'Using days back default {}'.format(
                                                     DAYS_BACK_DEFAULT)
+
+            nilsimsa_dict = {str(random_content_id()): i for i in args.nilsimsa_list}
+            print "Sending similar documents {}".format(nilsimsa_dict)
             result = jo.similar_documents(
-                    args.sourceId, args.portal_db, args.nilsimsa_list, 
+                    args.sourceId, args.portal_db, nilsimsa_dict,
                     daysBack=args.days_back)
             print "Result {}".format(result)
     elif args.nilsimsa_list and args.batch_document is False:
@@ -85,6 +88,8 @@ def check_arguments(args):
     elif args.nilsimsa and args.send_document is False:
         print 'need to specify --send-document with a nilsimsa'
 
+def random_content_id():
+    return random.randrange(4653808699414123826, 5653808699414123826)
 
 def main():
     ''' Parser for argparse. Define the command line arguments
