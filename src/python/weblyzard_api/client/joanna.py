@@ -24,7 +24,7 @@ class PostRequest(object):
     '''
     def __init__(self, url, data):
         self.url = url
-        self.data = json.dumps(data)
+        self.data = json.dumps({"hashes": data})
         self.headers = [{"Content-Type": "application/json"}]
     
     def request(self):
