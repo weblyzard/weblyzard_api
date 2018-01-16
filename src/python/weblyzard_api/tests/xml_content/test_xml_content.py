@@ -85,10 +85,10 @@ class TestXMLContent(unittest.TestCase):
                  
         xml = XMLContent(xml_content)
          
-        print xml.get_xml_document()
+        print(xml.get_xml_document())
              
         for sentence in xml.sentences:
-            print sentence.md5sum, sentence.value, sentence.significance
+            print(sentence.md5sum, sentence.value, sentence.significance)
                      
         xml.sentences = sentences
                  
@@ -273,8 +273,8 @@ class TestXMLContent(unittest.TestCase):
         xml_test_obj = XMLContent(xml_content=new_xml_obj.get_xml_document())
         assert xml_test_obj.xml_version == 2013
                  
-        print new_xml_obj.get_xml_document()
-        print new_xml_obj.get_xml_document(xml_version=2005)
+        print(new_xml_obj.get_xml_document())
+        print(new_xml_obj.get_xml_document(xml_version=2005))
                  
         xml_converted = xml_test_obj.get_xml_document(xml_version=2005)
                  
@@ -314,10 +314,10 @@ class TestXMLContent(unittest.TestCase):
      
         result = xml_obj.as_dict(mapping=attr_mapping)
      
-        print 'result: '
+        print('result: ')
         pprint(result)
      
-        print 'expected result'
+        print('expected result')
         pprint(expected_result)
         assert result == expected_result
              
@@ -359,7 +359,7 @@ class TestXMLContent(unittest.TestCase):
         for sentence in xml.sentences:
             for token, reference_token in zip(sentence.tokens, 
                                               self.sentence_tokens[sentence.md5sum]):
-                print token, reference_token
+                print(token, reference_token)
                 self.assertEqual(token, reference_token)
    
     def test_token_to_pos_mapping(self):
@@ -367,7 +367,7 @@ class TestXMLContent(unittest.TestCase):
             to the number of available tokens '''
         xml = XMLContent(self.xml_content2)
         for sentences in xml.sentences:
-            print self.xml_content2
+            print(self.xml_content2)
             self.assertEqual(len(sentences.pos_tags_list), len(list(sentences.tokens)))
    
     def test_dictionary_export(self):
@@ -381,7 +381,7 @@ class TestXMLContent(unittest.TestCase):
                         token='0,15 16,23 24,26 27,32 33,45 46,52 52,53 54,58 59,69 70,83 83,84')
            
         result = list(sent.tokens)
-        print result
+        print(result)
         assert result == [u'Horuck-Aktionen', u'bringen', u'da', u'wenig', 
                           u'ökonomischen', u'Anreiz', u',', u'aber', u'vielleicht', 
                           u'Wählerstimmen', u'.']

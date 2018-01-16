@@ -3,7 +3,8 @@
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-import unittest 
+import unittest
+
 from weblyzard_api.client.domain_specificity import DomainSpecificity
 
 class TestDomainSpecificity(unittest.TestCase):        
@@ -12,7 +13,7 @@ class TestDomainSpecificity(unittest.TestCase):
         self.client = DomainSpecificity()
         self.service_is_online = self.jesaja.is_online()
         if not self.service_is_online: 
-            print 'WARNING: Webservice is offline --> not executing all tests!!'
+            print('WARNING: Webservice is offline --> not executing all tests!!')
             
     def test_domain_specificity(self):
         if not self.service_is_online: 
@@ -43,16 +44,16 @@ class TestDomainSpecificity(unittest.TestCase):
                                'title': 'Jasna knows Ana.', 
                                'content': 'I have met jasna at the pool.'}]
         
-        print self.client.get_domain_specificity(domain_specificity_profile, 
-                                       TEST_DOCUMENT_LIST)
-        print self.client.get_domain_specificity(domain_specificity_profile, 
+        print(self.client.get_domain_specificity(domain_specificity_profile, 
+                                       TEST_DOCUMENT_LIST))
+        print(self.client.get_domain_specificity(domain_specificity_profile, 
                                                  TEST_DOCUMENT_LIST, 
-                                                 is_case_sensitive=False)
+                                                 is_case_sensitive=False))
    
     def test_meminfo(self):
         if not self.service_is_online: 
             return 
-        print self.client.meminfo()
+        print(self.client.meminfo())
 
 if __name__ == '__main__':
     unittest.main()
