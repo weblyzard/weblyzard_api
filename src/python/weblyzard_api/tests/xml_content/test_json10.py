@@ -5,8 +5,8 @@ import pytest
 import unittest
 
 from weblyzard_api.xml_content.parsers.json_10 import (JSON10ParserSentence,
-                                                       MalformedJSONException, 
-                                                       JSON10ParserXMLContent, 
+                                                       MalformedJSONException,
+                                                       JSON10ParserXMLContent,
                                                        UnexpectedFieldException,
                                                        MissingFieldException)
 from weblyzard_api.xml_content import Sentence, XMLContent
