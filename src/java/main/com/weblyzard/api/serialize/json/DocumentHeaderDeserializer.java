@@ -3,7 +3,6 @@ package com.weblyzard.api.serialize.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weblyzard.api.model.document.Document;
 import java.io.IOException;
 import javax.xml.namespace.QName;
@@ -17,11 +16,9 @@ import javax.xml.namespace.QName;
  */
 public class DocumentHeaderDeserializer extends KeyDeserializer {
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     @Override
     public Object deserializeKey(String key, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
-        return mapper.readValue(key, QName.class);
+        return QName.valueOf(key);
     }
 }

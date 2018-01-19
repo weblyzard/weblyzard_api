@@ -34,7 +34,7 @@ public class DocumentJsonTest {
 
         // init mock objects
         referenceDocument =
-                Document.unmarshallDocumentXmlString(
+                Document.fromXml(
                         Resources.toString(WEBLYZARD_EXAMPLE_XML, Charsets.UTF_8));
 
         referenceKeywordQName =

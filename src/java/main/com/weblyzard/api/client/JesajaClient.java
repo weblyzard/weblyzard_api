@@ -59,7 +59,7 @@ public class JesajaClient extends BasicClient {
             throws WebApplicationException, JAXBException {
 
         List<String> xml = new ArrayList<>();
-        for (Document document : documents) xml.add(Document.getXmlRepresentation(document));
+        for (Document document : documents) xml.add(Document.toXml(document));
 
         Response response =
                 super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
@@ -77,7 +77,7 @@ public class JesajaClient extends BasicClient {
             throws WebApplicationException, JAXBException {
 
         List<String> xml = new ArrayList<>();
-        for (Document document : documents) xml.add(Document.getXmlRepresentation(document));
+        for (Document document : documents) xml.add(Document.toXml(document));
 
         Response response =
                 super.getTarget(GET_KEYWORDS_SERVICE_URL)
@@ -97,7 +97,7 @@ public class JesajaClient extends BasicClient {
             throws WebApplicationException, JAXBException {
 
         List<String> xml = new ArrayList<>();
-        for (Document document : documents) xml.add(Document.getXmlRepresentation(document));
+        for (Document document : documents) xml.add(Document.toXml(document));
 
         Response response =
                 super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)

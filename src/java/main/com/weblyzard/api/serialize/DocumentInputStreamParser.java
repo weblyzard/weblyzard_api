@@ -35,7 +35,7 @@ public class DocumentInputStreamParser {
         List<Document> documentList = new ArrayList<>();
         try (JsonParser jp = jsonFactory.createParser(stream)) {
             jp.nextToken();
-            Document d = Document.unmarshallDocumentXmlString(jp.getValueAsString());
+            Document d = Document.fromXml(jp.getValueAsString());
             if (d != null) {
                 documentList.add(d);
             }
@@ -62,7 +62,7 @@ public class DocumentInputStreamParser {
             // read START_ARRAY
             jp.nextToken();
             while (jp.nextToken() == JsonToken.VALUE_STRING) {
-                Document d = Document.unmarshallDocumentXmlString(jp.getValueAsString());
+                Document d = Document.fromXml(jp.getValueAsString());
                 if (d != null) {
                     documentList.add(d);
                 }

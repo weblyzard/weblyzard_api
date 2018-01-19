@@ -42,7 +42,7 @@ class PostRequest(object):
             logger.error("Connection refused.. %s", e)
             raise e
         return conn
-        
+
 
 class Joanna(object):
     """
@@ -121,6 +121,7 @@ class Joanna(object):
 
         result = self.multiRestclient.request(
                 request_url, return_plain=True)
+
         if result == "LOADED":
             result = self.multiRestclient.request(
                     request_url, return_plain=True)
@@ -173,7 +174,11 @@ class Joanna(object):
                     sleep(2)
                 else:
                     attempts = max_retry_attempts
-                    return json.loads(data)
+                    json_data = json.loads(data)
+                    for content_id, h in contentIds_nilsimsa_dict.iteritems():
+                        if h not in json_data:
+                            json_data[h] = 'true'
+                    return json_data
             elif conn.code == 204:
                 data = conn.read()
                 logger.info('No content found attempts {} {}', attempts, data)

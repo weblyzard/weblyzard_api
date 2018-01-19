@@ -3,19 +3,36 @@ package com.weblyzard.api.client.integration;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-
-import com.weblyzard.api.client.RecognyzeClient;
-import com.weblyzard.api.model.document.Document;
-import com.weblyzard.api.model.recognyze.RecognyzeResult;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.weblyzard.api.client.RecognyzeClient;
+import com.weblyzard.api.model.annotation.Annotation;
+import com.weblyzard.api.model.document.Document;
 
 public class RecognyzeClientIT extends TestClientBase {
 
-    private static final String profile = "graphfullen2";
+    private static final String profile = "JOBCOCKPIT";
+
+    private static final String PSALMS_DOCS_WEBLYZARDFORMAT =
+            "resources/reference/weblyzard-example.xml";
+
+    private static Document loadDocument() throws JAXBException, IOException {
+        File xmlFile = new File(RecognyzeClientIT.class.getClassLoader()
+                .getResource(PSALMS_DOCS_WEBLYZARDFORMAT).getFile());
+        Document document = Document.fromXml(
+                Files.readLines(xmlFile, Charsets.UTF_8).stream().collect(Collectors.joining()));
+        return document;
+    }
 
     private RecognyzeClient recognizeClient;
 
@@ -28,14 +45,12 @@ public class RecognyzeClientIT extends TestClientBase {
     }
 
     @Test
-    public void testText() {
+    public void testSearchDocument() throws JAXBException, IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
-        String request =
-                "Fast Track's Karen Bowerman asks what the changes in penguin"
-                        + " population could mean for the rest of us in the event of climate change.";
 
-        Set<RecognyzeResult> result = recognizeClient.searchText(profile, request);
+        Document request = loadDocument();
 
+        List<Annotation> result = recognizeClient.searchDocument(profile, request).getAnnotations();
         // TODO: validate that the resultset is not empty (compose a small test
         // profile, find a nice sentence to test)
         assertNotNull(result);
@@ -43,54 +58,30 @@ public class RecognyzeClientIT extends TestClientBase {
     }
 
     @Test
-    public void testSearchDocument() {
-        assumeTrue(weblyzardServiceAvailable(recognizeClient));
-        Document request =
-                new Document(
-                        "Fast Track's Karen Bowerman asks what the changes in penguin population"
-                                + " could mean for the rest of us in the event of climate change.");
-
-        Set<RecognyzeResult> result = recognizeClient.searchDocument(profile, request);
-        // TODO: validate that the resultset is not empty (compose a small test
-        // profile, find a nice sentence to test)
-        assertNotNull(result);
-        assertTrue(result.size() >= 1);
-    }
-
-    @Test
-    public void testSearchDocuments() {
+    public void testSearchDocuments() throws JAXBException, IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
         Set<Document> request = new HashSet<>();
-        Document document =
-                new Document(
-                        "Fast Track's Karen Bowerman asks what the changes in penguin population"
-                                + " could mean for the rest of us in the event of climate change.");
+        Document document = loadDocument();
         document.setId("1");
         request.add(document);
-        Map<String, Set<RecognyzeResult>> result =
-                recognizeClient.searchDocuments(profile, request);
+        List<Document> result = recognizeClient.searchDocuments(profile, request);
         // TODO: validate that the resultset is not empty (compose a small test
         // profile, find a nice sentence to test)
         assertNotNull(result);
         assertTrue(result.size() >= 1);
-        assertTrue(result.get("1").size() >= 1);
     }
 
     @Test
-    public void testSearchDocumentsWithoutId() {
+    public void testSearchDocumentsWithoutId() throws JAXBException, IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
         Set<Document> request = new HashSet<>();
-        request.add(
-                new Document(
-                        "Fast Track's Karen Bowerman asks what the changes in penguin population"
-                                + " could mean for the rest of us in the event of climate change."));
+        request.add(loadDocument());
 
-        Map<String, Set<RecognyzeResult>> result =
-                recognizeClient.searchDocuments(profile, request);
+        List<Document> result = recognizeClient.searchDocuments(profile, request);
         // TODO: validate that the resultset is not empty (compose a small test
         // profile, find a nice sentence to test)
         assertNotNull(result);
-        assertTrue(result.size() == 0);
+        assertTrue(result.size() > 0);
     }
 
     @Test

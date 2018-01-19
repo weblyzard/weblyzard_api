@@ -10,12 +10,13 @@ import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 public abstract class BasicClient {
 
@@ -34,7 +35,6 @@ public abstract class BasicClient {
     /** Constructor using environment variables. */
     public BasicClient() {
         this(System.getenv(ENV_WEBLYZARD_API_URL));
-        ClientBuilder.newClient();
     }
 
     /**
@@ -43,9 +43,7 @@ public abstract class BasicClient {
      * @param weblyzardUrl the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
      */
     public BasicClient(String weblyzardUrl) {
-        this(
-                weblyzardUrl,
-                System.getenv(ENV_WEBLYZARD_API_USER),
+        this(weblyzardUrl, System.getenv(ENV_WEBLYZARD_API_USER),
                 System.getenv(ENV_WEBLYZARD_API_PASS));
     }
 
@@ -63,24 +61,18 @@ public abstract class BasicClient {
         if (Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))) {
             // https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
             // -> Example 21.1. Logging on client-side
-            config.register(
-                    new LoggingFeature(
-                            logger,
-                            Level.SEVERE,
-                            LoggingFeature.Verbosity.PAYLOAD_TEXT,
-                            LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+            config.register(new LoggingFeature(logger, Level.SEVERE,
+                    LoggingFeature.Verbosity.PAYLOAD_TEXT, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
         }
 
         if (username != null && password != null) {
-            config.register(
-                    HttpAuthenticationFeature.basicBuilder()
-                            .credentials(username, password)
-                            .build());
+            config.register(HttpAuthenticationFeature.basicBuilder().credentials(username, password)
+                    .build());
         }
 
-        this.baseTarget =
-                ClientBuilder.newClient(config)
-                        .target(weblyzardUrl == null ? FALLBACK_WEBLYZARD_API_URL : weblyzardUrl);
+        this.baseTarget = JerseyClientBuilder.createClient(config)
+                .target(weblyzardUrl == null ? FALLBACK_WEBLYZARD_API_URL : weblyzardUrl)
+                .register(new JacksonJsonProvider());
     }
 
     public WebTarget getTarget(String urlTemplate) {
