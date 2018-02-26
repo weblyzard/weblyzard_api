@@ -55,6 +55,8 @@ class XML2013(XMLParser):
                     # DOCUMENT RELATIONS (CID<->CID only)
                     # reference to direct parent
                     'reply_of': '{%s}reply_of' % DOCUMENT_NAMESPACES['sioc'],
+                    # reference to top-level parent (ancestor)
+                    'has_container': '{%s}has_container' % DOCUMENT_NAMESPACES['sioc'],
                     # reference to direct descendants
                     'has_reply': '{%s}has_reply' % DOCUMENT_NAMESPACES['sioc'],
                     # reference to other document
