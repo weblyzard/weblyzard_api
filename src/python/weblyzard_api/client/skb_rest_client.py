@@ -10,7 +10,7 @@ import json
 import requests
 
 
-class SKBRESTClient():
+class SKBRESTClient(object):
     
     TRANSLATION_PATH = '1.0/skb/translation?'
     TITLE_TRANSLATION_PATH = '1.0/skb/title_translation?'
@@ -24,13 +24,43 @@ class SKBRESTClient():
 
     def translate(self, **kwargs):
         response = requests.get('%s/%s' % (self.url, self.TRANSLATION_PATH), params=kwargs)
-        return(response.text, kwargs['target'])
+        if response.status_code < 400:
+            return(response.text, kwargs['target'])
+        else:
+            return None
 
     def title_translate(self, **kwargs):
         response = requests.get('%s/%s' % (self.url, self.TITLE_TRANSLATION_PATH), params=kwargs)
-        return(response.text, kwargs['target'])
+        if response.status_code < 400:
+            return(response.text, kwargs['target'])
+        else:
+            return None
     
     def save_doc_kw_skb(self, kwargs):
-        return(requests.post('%s/%s' % (self.url, self.KEYWORD_PATH),
+        response = requests.post('%s/%s' % (self.url, self.KEYWORD_PATH),
                              data=json.dumps(kwargs),
-                             headers={'Content-Type': 'application/json'}).text)
+                             headers={'Content-Type': 'application/json'})
+        if response.status_code < 400:
+            return response.text
+        else:
+            return None
+
+
+class SKBSentimentDictionary(dict):
+    SENTIMENT_PATH = '1.0/skb/sentiment_dict'
+
+    def __init__(self, url, language, emotion='polarity'):
+        self.url = '{}/{}'.format(url,
+                                  self.SENTIMENT_PATH)
+        res = requests.get(self.url,
+                           params={'lang': language,
+                                   'emotion': emotion})
+        if res.status_code < 400:
+            response = json.loads(res.text)
+            data = {}
+            for document in response:
+                data[(document['term'], document['pos'])] = (document['value'],
+                                                             document['definition'])
+            dict.__init__(self, data)
+        else:
+            dict.__init__(self, {})
