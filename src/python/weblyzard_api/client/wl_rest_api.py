@@ -13,7 +13,7 @@ import requests
 
 class WlComputeRestApiClient(object):
 
-    API_VERSION = 1.0
+    API_VERSION = 0.1
 
     ENDPOINT_STATUS = 'status'
 
