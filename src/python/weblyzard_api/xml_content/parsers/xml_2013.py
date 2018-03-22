@@ -34,6 +34,7 @@ class XML2013(XMLParser):
         'uri': '{%s}identifier' % DOCUMENT_NAMESPACES['dc'],
         'license': '{%s}license' % DOCUMENT_NAMESPACES['dc'],
         'creator': '{%s}creator' % DOCUMENT_NAMESPACES['dc'],
+        'author': '{%s}creator' % DOCUMENT_NAMESPACES['dc'],
         'publisher': '{%s}publisher' % DOCUMENT_NAMESPACES['dc'],
         'keywords': '{%s}subject' % DOCUMENT_NAMESPACES['dc'],
         'title': '{%s}title' % DOCUMENT_NAMESPACES['dc'],
