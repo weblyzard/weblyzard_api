@@ -43,6 +43,7 @@ class XML2013(XMLParser):
         'content_id': '{%s}id' % DOCUMENT_NAMESPACES['wl'],
         'jonas_type': '{%s}jonas_type' % DOCUMENT_NAMESPACES['wl'],
         'thumbnail': '{%s}thumbnail' % DOCUMENT_NAMESPACES['wl'],
+        'description': '{%s}description' % DOCUMENT_NAMESPACES['wl'],
         'is_sensitive': '{%s}is_sensitive' % DOCUMENT_NAMESPACES['wl'],
 
         # FB, YT
