@@ -4,7 +4,7 @@
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
 
-from eWRT.ws.rest import MultiRESTClient 
+from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.xml_content import XMLContent
 from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
@@ -16,25 +16,25 @@ class Jesaja(MultiRESTClient):
 
     Jesaja extracts associations (i.e. keywords) from text documents.
     '''
-    
+
     VALID_CORPUS_FORMATS = ('xml', 'csv')
     URL_PATH = 'jesaja/rest'
-    ATTRIBUTE_MAPPING = {'content_id': 'id', 
-                         'title': 'title', 
+    ATTRIBUTE_MAPPING = {'content_id': 'id',
+                         'title': 'title',
                          'sentences': 'sentence',
                          'body_annotations': 'body_annotation',
                          'lang': 'xml:lang',
                          'sentences_map': {'pos': 'pos',
-                                           'token': 'token', 
+                                           'token': 'token',
                                            'value': 'value',
                                            'md5sum': 'id'},
-                         'annotations_map': {'start':'start',
-                                             'end':'end',
-                                             'key':'key',
-                                             'surfaceForm':'surfaceForm'
+                         'annotations_map': {'start': 'start',
+                                             'end': 'end',
+                                             'key': 'key',
+                                             'surfaceForm': 'surfaceForm'
                                              }}
-    
-    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
@@ -43,7 +43,7 @@ class Jesaja(MultiRESTClient):
         '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
-        
+
     @classmethod
     def get_documents(cls, xml_content_dict):
         ''' 
@@ -65,14 +65,14 @@ class Jesaja(MultiRESTClient):
         '''
         if isinstance(xml, dict):
             return xml
-        
+
         if not isinstance(xml, XMLContent):
             xml = XMLContent(xml)
-        
+
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
-                           ignore_non_sentence=True, 
+                           ignore_non_sentence=True,
                            add_titles_to_sentences=True)
-    
+
     def add_profile(self, profile_name, keyword_calculation_profile):
         ''' Add a keyword profile to the server
 
@@ -86,25 +86,30 @@ class Jesaja(MultiRESTClient):
 
                 { 
                     'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
+                    'required_pos_tags'              : [],
                     'corpus_name'                    : reference_corpus_name,
                     'min_phrase_significance'        : 2.0,
                     'num_keywords'                   : 5,
+                    'skip_underrepresented_keywords' : True,
                     'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', 
                     'min_token_count'                : 5,
-                    'skip_underrepresented_keywords' : True,
+                    'min_ngram_length'               : 1,
+                    'max_ngram_length'               : 3,
                     'stoplists'                      : [],
+                    'groundAnnotations'              : False,
+
                 }
 
         .. note:: ``Available keyword_algorithms``
 
             * ``com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm``
             * ``com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm``
-            
+
         '''
         return self.request('add_or_refresh_profile/%s' % profile_name,
                             keyword_calculation_profile)
 
-    def add_or_update_corpus(self, corpus_name, corpus_format, corpus, 
+    def add_or_update_corpus(self, corpus_name, corpus_format, corpus,
                              profile_name=None, skip_profile_check=False):
         ''' 
         Adds/updates a corpus at Jesaja.
@@ -123,16 +128,16 @@ class Jesaja(MultiRESTClient):
 
                 # xml_content: the content in the weblyzard xml format
                 corpus = [ xml_content, ... ]  
-                 
+
         .. attention:: uploading documents (corpus_format = doc, wlxml) \
             requires a call to finalize_corpora to trigger the corpus generation!         
         '''
         assert corpus_format in self.VALID_CORPUS_FORMATS
         path = None
-        
-        if not profile_name: 
+
+        if not profile_name:
             profile_name = corpus_name
-        
+
         # convert the wlxml format to doc, if required
         if corpus_format == 'xml':
             if profile_name is None:
@@ -140,9 +145,9 @@ class Jesaja(MultiRESTClient):
             elif not skip_profile_check and not self.has_profile(profile_name):
                 raise ValueError, 'profile "%s" missing!' % (profile_name)
 
-            corpus = self.get_documents(corpus)    
-            path = 'add_or_refresh_corpus/doc/%s/%s' % (corpus_name, 
-                                                        profile_name) 
+            corpus = self.get_documents(corpus)
+            path = 'add_or_refresh_corpus/doc/%s/%s' % (corpus_name,
+                                                        profile_name)
         # handle csv corpora
         elif corpus_format == 'csv':
             path = 'add_or_refresh_corpus/csv/%s' % corpus_name
@@ -150,12 +155,12 @@ class Jesaja(MultiRESTClient):
             raise Exception('Format "doc" not supported anymore')
         else:
             raise ValueError, "Unsupported format."
-        
+
         return self.request(path, corpus)
 
     def get_keywords_xml(self, profile_name, documents):
         ''' converts each document to a dictionary and calculates the \
-            keywords''' 
+            keywords'''
         documents = self.get_documents(documents)
         return self.get_keywords(profile_name, documents)
 
@@ -191,7 +196,8 @@ class Jesaja(MultiRESTClient):
                 ]
         '''
         if not self.has_profile(profile_name):
-            raise Exception('Cannot compute keywords - unknown profile %s' % profile_name)
+            raise Exception(
+                'Cannot compute keywords - unknown profile %s' % profile_name)
         return self.request('get_keywords/%s' % profile_name, documents)
 
     def has_profile(self, profile_name):
@@ -207,28 +213,28 @@ class Jesaja(MultiRESTClient):
         return self.request('get_cached_corpora')
 
     def get_corpus_size(self, profile_name):
-        return self.request('get_corpus_size/%s' % profile_name) 
+        return self.request('get_corpus_size/%s' % profile_name)
 
     def add_or_update_stoplist(self, name, stoplist):
         '''
         .. deprecated:: 0.1
            Use: :func:`add_stoplist` instead.
         '''
-        return self.add_stoplist(name, stoplist) 
+        return self.add_stoplist(name, stoplist)
 
     def add_stoplist(self, name, stoplist):
         '''
         :param name: name of the stopword list
         :param stoplist: a list of stopwords for the keyword computation
         '''
-        return self.request('set_stoplist/%s' % name, stoplist) 
+        return self.request('set_stoplist/%s' % name, stoplist)
 
     def list_stoplists(self):
         '''
         :returns: a list of all available stopword lists.
         '''
         return self.request('list_stoplists')
-    
+
     def change_log_level(self, level):
         '''
         Changes the log level of the keyword service
@@ -248,10 +254,8 @@ class Jesaja(MultiRESTClient):
         return self.request('finalize_corpora', return_plain=True)
 
     def finalize_profile(self, profile_name):
-        return self.request('finalize_profile/%s' % profile_name, 
+        return self.request('finalize_profile/%s' % profile_name,
                             return_plain=True)
 
     def meminfo(self):
         return self.request('meminfo')
-
-

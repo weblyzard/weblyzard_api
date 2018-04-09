@@ -41,12 +41,17 @@ class JesajaNg(MultiRESTClient):
 
                 {
                     'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
+                    'required_pos_tags'              : [],
+                    'corpus_name'                    : reference_corpus_name,
                     'min_phrase_significance'        : 2.0,
                     'num_keywords'                   : 5,
-                    'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
-                    'min_token_count'                : 5,
                     'skip_underrepresented_keywords' : True,
+                    'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', 
+                    'min_token_count'                : 5,
+                    'min_ngram_length'               : 1,
+                    'max_ngram_length'               : 3,
                     'stoplists'                      : [],
+                    'groundAnnotations'              : False,
                 }
 
         .. note:: ``Available keyword_algorithms``

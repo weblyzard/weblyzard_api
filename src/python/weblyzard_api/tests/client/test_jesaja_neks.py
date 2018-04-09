@@ -17,7 +17,7 @@ from weblyzard_api.tests.test_helper import get_full_path
 
 
 class TestJesajaNeks(unittest.TestCase):
-    
+
     xml_content = '''
 <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247"> <wl:sentence wl:id="060ed6ac1243488b7bb613218a559443" wl:is_title="true"><![CDATA[Journalismus - Social Media für die Nachrichtenverbreitung]]></wl:sentence>
   <wl:sentence wl:dependency="10:adpmod 0:adpobj 1:adpmod 2:adpobj 10:auxpass 10:nsubjpass 10:adpmod 9:det 9:amod 6:adpobj -1:ROOT" wl:id="bbe56bd8da7d00c4c4631db3c21434b3" wl:pos="APPRART NN APPR NE VAFIN NN APPR ART ADJA NN VVPP" wl:significance="6474.394537668186" wl:token="0,4 5,25 26,28 29,36 37,43 44,54 55,58 59,62 63,72 73,86 87,98"><![CDATA[Beim Journalismusfestival in Perugia werden Reaktionen auf die geänderte Mediennutzung präsentiert]]></wl:sentence>
@@ -60,23 +60,26 @@ class TestJesajaNeks(unittest.TestCase):
   <wl:annotation wl:sentence="12" wl:annotationType="GeoEntity" wl:end="34" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="21" wl:surfaceForm="San Francisco"/>
   <wl:annotation wl:sentence="24" wl:annotationType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="84" wl:surfaceForm="New York"/>
 </wl:page>
-''' 
-    
+'''
+
     PROFILE_NAME = 'default'
     STOPLIST_PROFILE_NAME = 'stoplist'
-    CORPUS_NAME  = 'test_corpus'
+    CORPUS_NAME = 'test_corpus'
     MATVIEW_NAME = 'unittest'
     SAMPLE_DATA_FILE = get_full_path('xml_documents.pickle.gz')
 
     PROFILE = {
-        'valid_pos_tags'                 : ['NN', 'NNP', 'NNS'],#['NN', 'P', 'ADJ'],
-        'min_phrase_significance'        : 2.0,
-        'num_keywords'                   : 5,
-        'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', # com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm
-        'min_token_count'                : 1,
-        'skip_underrepresented_keywords' : False,
-        'ground_annotations'            : True,
-        'stoplists'                      : [],
+        'valid_pos_tags': ['NN', 'NNP', 'NNS'],  # ['NN', 'P', 'ADJ'],
+        'required_pos_tags': [],
+        'min_phrase_significance': 2.0,
+        'num_keywords': 5,
+        'keyword_algorithm': 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
+        'min_token_count': 1,
+        'min_ngram_length': 1,
+        'max_ngram_length': 3,
+        'skip_underrepresented_keywords': False,
+        'ground_annotations': True,
+        'stoplists': [],
     }
 
     def setUp(self):
@@ -96,24 +99,27 @@ class TestJesajaNeks(unittest.TestCase):
                 print('Loaded corpus with %d entries' % (len(sample_corpus)))
 
             self.jesaja.set_stoplist('testList',
-                                     ('the', 'from', 'there', 'here') )
+                                     ('the', 'from', 'there', 'here'))
             self.jesaja.set_stoplist('anotherList',
                                      ('you', 'he', 'she', 'it', 'them'))
             self.jesaja.set_keyword_profile(self.PROFILE_NAME, self.PROFILE)
-            self.jesaja.set_keyword_profile(self.STOPLIST_PROFILE_NAME, STOPLIST_PROFILE)
-            self.jesaja.set_matview_profile(self.MATVIEW_NAME, self.PROFILE_NAME)
+            self.jesaja.set_keyword_profile(
+                self.STOPLIST_PROFILE_NAME, STOPLIST_PROFILE)
+            self.jesaja.set_matview_profile(
+                self.MATVIEW_NAME, self.PROFILE_NAME)
 
             xml_documents = [self.xml_content]
-        
+
             # create the reference corpus
             if not self.jesaja.has_corpus(matview_id=self.MATVIEW_NAME):
                 while self.jesaja.rotate_shard(matview_id=self.MATVIEW_NAME) == 0:
-#                     csv_corpus = {'keystone':25, 'energy': 123, 'ana': 12, 'tom': 22, 'petra': 3, 'clima':5, 'Shihab': 12, 'Kirche':10}
-#                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
-                    self.jesaja.add_documents(matview_id=self.MATVIEW_NAME, xml_documents=xml_documents)
+                    #                     csv_corpus = {'keystone':25, 'energy': 123, 'ana': 12, 'tom': 22, 'petra': 3, 'clima':5, 'Shihab': 12, 'Kirche':10}
+                    #                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
+                    self.jesaja.add_documents(
+                        matview_id=self.MATVIEW_NAME, xml_documents=xml_documents)
         else:
             print('WARNING: Webservice is offline --> not executing all tests!!')
-            
+
     def test_nek_annotation(self):
         ''' test nek annotations '''
         xml_content = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247">
@@ -122,13 +128,14 @@ class TestJesajaNeks(unittest.TestCase):
                             <wl:annotation wl:sentence="1" wl:annotationType="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
                          </wl:page>'''
         if self.service_is_online:
-            result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME, 
+            result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME,
                                                          [xml_content])
             assert len(result)
 #            from pprint import pprint
 #            pprint(result)
             assert '1243661964' in result
             assert len(result['1243661964'])
-            
+
+
 if __name__ == '__main__':
     unittest.main()
