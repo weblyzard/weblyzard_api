@@ -1,13 +1,13 @@
 package com.weblyzard.api.service;
 
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 
 public interface AnnotationService {
     
     /**
-     * Annotates the given {@link Document} by extending the list of Annotations returned by
-     * {@link Document#getAnnotations()}.
+     * Annotates the given {@link LegacyDocument} by extending the list of Annotations returned by
+     * {@link LegacyDocument#getAnnotations()}.
      */
-    public Document annotateDocument(final Document document);
+    public LegacyDocument annotateDocument(final LegacyDocument document);
 
 }

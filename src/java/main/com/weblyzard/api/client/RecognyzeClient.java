@@ -10,7 +10,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.weblyzard.api.model.annotation.Annotation;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.XmlDocument;
 
 /** @author philipp.kuntschik@htwchur.ch */
@@ -74,13 +74,13 @@ public class RecognyzeClient extends BasicClient {
         return result;
     }
 
-    public Document searchDocument(String profileName, Document data)
+    public LegacyDocument searchDocument(String profileName, LegacyDocument data)
             throws WebApplicationException {
 
         return this.searchDocument(profileName, data, 0);
     }
 
-    public Document searchDocument(String profileName, Document data, int limit)
+    public LegacyDocument searchDocument(String profileName, LegacyDocument data, int limit)
             throws WebApplicationException {
 
         Response response = super.getTarget(SEARCH_DOCUMENT_SERVICE_URL)
@@ -88,19 +88,19 @@ public class RecognyzeClient extends BasicClient {
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
         super.checkResponseStatus(response);
-        Document result = response.readEntity(Document.class);
+        LegacyDocument result = response.readEntity(LegacyDocument.class);
         response.close();
 
         return result;
     }
 
-    public List<Document> searchDocuments(String profileName, Set<Document> data)
+    public List<LegacyDocument> searchDocuments(String profileName, Set<LegacyDocument> data)
             throws WebApplicationException {
 
         return this.searchDocuments(profileName, data, 0);
     }
 
-    public List<Document> searchDocuments(String profileName, Set<Document> data, int limit)
+    public List<LegacyDocument> searchDocuments(String profileName, Set<LegacyDocument> data, int limit)
             throws WebApplicationException {
 
         Response response = super.getTarget(SEARCH_DOCUMENTS_SERVICE_URL)
@@ -108,7 +108,7 @@ public class RecognyzeClient extends BasicClient {
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
         super.checkResponseStatus(response);
-        List<Document> result = response.readEntity(new GenericType<List<Document>>() {});
+        List<LegacyDocument> result = response.readEntity(new GenericType<List<LegacyDocument>>() {});
         response.close();
 
         return result == null ? Collections.emptyList() : result;

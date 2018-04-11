@@ -31,23 +31,25 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * The {@link Document} class used to represent documents.
+ * The {@link LegacyDocument} and {@link Sentence} model classes used to represent documents.
  *
  * <p>
- * The {@link Document} class also supports arbitrary meta data which is stored in the <code>
+ * The {@link LegacyDocument} class also supports arbitrary meta data which is stored in the <code>
  * header</code> instance variable.
  *
- * TODO: - Handling of titles
+ * <p>
+ * The static helper function {@link LegacyDocument#toXml(LegacyDocument)} and {@link LegacyDocument#fromXml(String)}
+ * translate between {@link LegacyDocument} objects and the corresponding XML representations.
  *
  * @author weichselbraun@weblyzard.com
  */
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@XmlRootElement(name = "page", namespace = Document.NS_WEBLYZARD)
+@XmlRootElement(name = "page", namespace = LegacyDocument.NS_WEBLYZARD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Document implements Serializable {
+public class LegacyDocument implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public static final String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
@@ -56,10 +58,10 @@ public class Document implements Serializable {
     /** The Attribute used to encode document keywords */
     public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 
-    @XmlAttribute(name = "id", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "id", namespace = LegacyDocument.NS_WEBLYZARD)
     private String id;
 
-    @XmlAttribute(name = "format", namespace = Document.NS_DUBLIN_CORE)
+    @XmlAttribute(name = "format", namespace = LegacyDocument.NS_DUBLIN_CORE)
     private String format;
 
     @JsonProperty("lang")
@@ -67,77 +69,43 @@ public class Document implements Serializable {
     @XmlJavaTypeAdapter(LangAdapter.class)
     private Lang lang;
 
-    @XmlAttribute(namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(namespace = LegacyDocument.NS_WEBLYZARD)
     private String nilsimsa;
 
     @JsonDeserialize(keyUsing = DocumentHeaderDeserializer.class)
     @XmlAnyAttribute
     private Map<QName, String> header = new HashMap<>();
 
-    @XmlElement(name = "title", namespace = Document.NS_DUBLIN_CORE)
-    private Sentence title;
-
-    /** A list of ranges for all sentences within the document */
+    /** Elements used in the output (and input) */
     @JsonProperty("sentences")
-    @XmlElement(name = "sentences", namespace = Document.NS_WEBLYZARD)
-    private List<StringRange> sentenceIndices;
-
-    /** A list of ranges for all lines in the document */
-    @JsonProperty("lines")
-    @XmlElement(name = "lines", namespace = Document.NS_WEBLYZARD)
-    private List<StringRange> lineIndices;
-
-
-    /** A list of ranges for all document tokens. */
-    @JsonProperty("tokens")
-    @XmlElement(name = "tokens", namespace = Document.NS_WEBLYZARD)
-    private List<StringRange> tokenIndices;
-
-    /** A list of all POS tags within the document */
-    @JsonProperty("pos")
-    @XmlElement(name = "pos", namespace = Document.NS_WEBLYZARD)
-    private List<String> pos;
-
-    /** A list of all dependencies within the document */
-    @JsonProperty("dependencies")
-    @XmlElement(name = "dependencies", namespace = Document.NS_WEBLYZARD)
-    private List<Dependency> dependencies;
+    @XmlElement(name = "sentence", namespace = LegacyDocument.NS_WEBLYZARD)
+    private List<Sentence> sentences;
 
     /**
      * This field contains all annotations after titleAnnotations and bodyAnnotations have been
      * merged. (i.e. after the document's finalization)
      */
     @JsonProperty("annotations")
-    @XmlElement(name = "annotation", namespace = Document.NS_WEBLYZARD)
+    @XmlElement(name = "annotation", namespace = LegacyDocument.NS_WEBLYZARD)
     private List<Annotation> annotations;
 
-    public Document(Document d) {
-        Document document = new Document();
-        document.id = d.id;
-        document.format = d.format;
-        document.lang = d.lang;
-        document.nilsimsa = d.nilsimsa;
-        document.header = d.header;
-        document.title = d.title;
-        document.sentenceIndices = d.sentenceIndices;
-        document.lineIndices = d.lineIndices;
-        document.tokenIndices = d.tokenIndices;
-        document.pos = d.pos;
-        document.dependencies = d.dependencies;
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     /**
-     * Converts a {@link Document} to the corresponding webLyzard XML representation
+     * Converts a {@link LegacyDocument} to the corresponding webLyzard XML representation
      *
-     * @param document The {@link Document} object to convert.
-     * @return An XML representation of the given {@link Document} object.
+     * @param document The {@link LegacyDocument} object to convert.
+     * @return An XML representation of the given {@link LegacyDocument} object.
      * @throws JAXBException
      */
-    public static String toJson(Document document) throws JAXBException {
+    public static String toXml(LegacyDocument document) throws JAXBException {
         StringWriter stringWriter = new StringWriter();
-        JAXBElement<Document> jaxbElement = new JAXBElement<>(
-                new QName(Document.NS_WEBLYZARD, "page", "wl"), Document.class, document);
-        JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
+        JAXBElement<LegacyDocument> jaxbElement = new JAXBElement<>(
+                new QName(LegacyDocument.NS_WEBLYZARD, "page", "wl"), LegacyDocument.class, document);
+        JAXBContext jaxbContext = JAXBContext.newInstance(LegacyDocument.class);
         Marshaller xmlMarshaller = jaxbContext.createMarshaller();
         xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         xmlMarshaller.marshal(jaxbElement, stringWriter);
@@ -145,16 +113,16 @@ public class Document implements Serializable {
     }
 
     /**
-     * Converts a webLyzard XML Document to a {@link Document}.
+     * Converts a webLyzard XML Document to a {@link LegacyDocument}.
      *
      * @param xmlString The webLyzard XML document to unmarshall
-     * @return The {@link Document} instance corresponding to the xmlString
+     * @return The {@link LegacyDocument} instance corresponding to the xmlString
      * @throws JAXBException
      */
-    public static Document fromJson(String xmlString) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
+    public static LegacyDocument fromXml(String xmlString) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(LegacyDocument.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         StringReader reader = new StringReader(xmlString);
-        return (Document) unmarshaller.unmarshal(reader);
+        return (LegacyDocument) unmarshaller.unmarshal(reader);
     }
 }

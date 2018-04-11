@@ -1,6 +1,6 @@
 package com.weblyzard.api.client;
 
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.recognyze.RecognyzeResult;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
@@ -87,7 +87,7 @@ public class JosephClient extends BasicClient {
         return result;
     }
 
-    public boolean train(String profileName, Document document, String category) {
+    public boolean train(String profileName, LegacyDocument document, String category) {
         Response response =
                 super.getTarget(TRAIN_SERVICE_URL)
                         .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
@@ -102,7 +102,7 @@ public class JosephClient extends BasicClient {
         return result;
     }
 
-    public boolean retrain(String profileName, Document document, String category) {
+    public boolean retrain(String profileName, LegacyDocument document, String category) {
         Response response =
                 super.getTarget(RETRAIN_SERVICE_URL)
                         .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
@@ -117,7 +117,7 @@ public class JosephClient extends BasicClient {
         return result;
     }
 
-    public boolean forget(String profileName, Document document, String category) {
+    public boolean forget(String profileName, LegacyDocument document, String category) {
         Response response =
                 super.getTarget(FORGET_SERVICE_URL)
                         .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
@@ -132,12 +132,12 @@ public class JosephClient extends BasicClient {
         return result;
     }
 
-    public List<RecognyzeResult> classify(String profileName, Document request) {
+    public List<RecognyzeResult> classify(String profileName, LegacyDocument request) {
         return this.classify(profileName, request, 0, false);
     }
 
     public List<RecognyzeResult> classify(
-            String profileName, Document request, int limit, boolean withFeatures)
+            String profileName, LegacyDocument request, int limit, boolean withFeatures)
             throws WebApplicationException {
 
         Response response =

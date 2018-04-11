@@ -5,7 +5,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.MirrorDocument;
 import com.weblyzard.api.model.document.XmlDocument;
 
@@ -38,9 +38,9 @@ public class JeremiaClient extends BasicClient {
         return result;
     }
 
-    public Document submitDocument(MirrorDocument data)
+    public LegacyDocument submitDocument(MirrorDocument data)
             throws WebApplicationException, JAXBException {
         XmlDocument response = submitDocumentRaw(data);
-        return response.getXmlContent() == null ? null : Document.fromXml(response.getXmlContent());
+        return response.getXmlContent() == null ? null : LegacyDocument.fromXml(response.getXmlContent());
     }
 }

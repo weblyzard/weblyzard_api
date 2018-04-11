@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.weblyzard.api.client.JeremiaClient;
 import com.weblyzard.api.model.Lang;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.MirrorDocument;
 
 public class JeremiaClientIT extends TestClientBase {
@@ -25,7 +25,7 @@ public class JeremiaClientIT extends TestClientBase {
         MirrorDocument request = new MirrorDocument().setBody(
                 "Fast Track's Karen Bowerman asks what the changes in penguin population could mealenn for the rest of us in the event of climate change.")
                 .setLang(Lang.EN);
-        Document response1 = jeremiaClient.submitDocument(request);
+        LegacyDocument response1 = jeremiaClient.submitDocument(request);
         assertNotNull(response1);
     }
 }

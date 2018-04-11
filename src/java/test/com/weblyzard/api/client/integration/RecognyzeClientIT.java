@@ -17,7 +17,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.weblyzard.api.client.RecognyzeClient;
 import com.weblyzard.api.model.annotation.Annotation;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 
 public class RecognyzeClientIT extends TestClientBase {
 
@@ -26,10 +26,10 @@ public class RecognyzeClientIT extends TestClientBase {
     private static final String PSALMS_DOCS_WEBLYZARDFORMAT =
             "resources/reference/weblyzard-example.xml";
 
-    private static Document loadDocument() throws JAXBException, IOException {
+    private static LegacyDocument loadDocument() throws JAXBException, IOException {
         File xmlFile = new File(RecognyzeClientIT.class.getClassLoader()
                 .getResource(PSALMS_DOCS_WEBLYZARDFORMAT).getFile());
-        Document document = Document.fromXml(
+        LegacyDocument document = LegacyDocument.fromXml(
                 Files.readLines(xmlFile, Charsets.UTF_8).stream().collect(Collectors.joining()));
         return document;
     }
@@ -48,7 +48,7 @@ public class RecognyzeClientIT extends TestClientBase {
     public void testSearchDocument() throws JAXBException, IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
 
-        Document request = loadDocument();
+        LegacyDocument request = loadDocument();
 
         List<Annotation> result = recognizeClient.searchDocument(profile, request).getAnnotations();
         // TODO: validate that the resultset is not empty (compose a small test
@@ -60,11 +60,11 @@ public class RecognyzeClientIT extends TestClientBase {
     @Test
     public void testSearchDocuments() throws JAXBException, IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
-        Set<Document> request = new HashSet<>();
-        Document document = loadDocument();
+        Set<LegacyDocument> request = new HashSet<>();
+        LegacyDocument document = loadDocument();
         document.setId("1");
         request.add(document);
-        List<Document> result = recognizeClient.searchDocuments(profile, request);
+        List<LegacyDocument> result = recognizeClient.searchDocuments(profile, request);
         // TODO: validate that the resultset is not empty (compose a small test
         // profile, find a nice sentence to test)
         assertNotNull(result);
@@ -74,10 +74,10 @@ public class RecognyzeClientIT extends TestClientBase {
     @Test
     public void testSearchDocumentsWithoutId() throws JAXBException, IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
-        Set<Document> request = new HashSet<>();
+        Set<LegacyDocument> request = new HashSet<>();
         request.add(loadDocument());
 
-        List<Document> result = recognizeClient.searchDocuments(profile, request);
+        List<LegacyDocument> result = recognizeClient.searchDocuments(profile, request);
         // TODO: validate that the resultset is not empty (compose a small test
         // profile, find a nice sentence to test)
         assertNotNull(result);

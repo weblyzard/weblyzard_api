@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.weblyzard.api.client.JosephClient;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import java.io.IOException;
 import java.util.List;
 import org.junit.Before;
@@ -20,7 +20,7 @@ public class JosephClientIT extends TestClientBase {
     private static final String PSALMS_DOCS_WEBLYZARDFORMAT_JSON =
             "resources/psalms-docs-weblyzardformat.json";
 
-    public List<Document> psalmDocs;
+    public List<LegacyDocument> psalmDocs;
 
     private JosephClient client;
 
@@ -41,7 +41,7 @@ public class JosephClientIT extends TestClientBase {
         psalmDocs.stream().forEach(document -> client.train("smc", document, "category"));
     }
 
-    public List<Document> readWeblyzardDocuments() {
+    public List<LegacyDocument> readWeblyzardDocuments() {
         try {
 
             logger.info(JoelClientIT.class.getClassLoader().getResource(".").getPath());
@@ -51,7 +51,7 @@ public class JosephClientIT extends TestClientBase {
                     JoelClientIT.class
                             .getClassLoader()
                             .getResourceAsStream(PSALMS_DOCS_WEBLYZARDFORMAT_JSON),
-                    new TypeReference<List<Document>>() {});
+                    new TypeReference<List<LegacyDocument>>() {});
         } catch (JsonParseException e1) {
             e1.printStackTrace();
         } catch (JsonMappingException e1) {
