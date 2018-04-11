@@ -1,16 +1,9 @@
 package com.weblyzard.api.model.document;
 
 import java.io.Serializable;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
@@ -77,6 +70,9 @@ public class Document implements Serializable {
     @XmlElement(name = "title", namespace = Document.NS_DUBLIN_CORE)
     private Sentence title;
 
+    @XmlElement(name = "content", namespace = Document.NS_WEBLYZARD)
+    private String content;
+
     /** A list of ranges for all sentences within the document */
     @JsonProperty("sentences")
     @XmlElement(name = "sentences", namespace = Document.NS_WEBLYZARD)
@@ -126,35 +122,4 @@ public class Document implements Serializable {
         document.dependencies = d.dependencies;
     }
 
-    /**
-     * Converts a {@link Document} to the corresponding webLyzard XML representation
-     *
-     * @param document The {@link Document} object to convert.
-     * @return An XML representation of the given {@link Document} object.
-     * @throws JAXBException
-     */
-    public static String toJson(Document document) throws JAXBException {
-        StringWriter stringWriter = new StringWriter();
-        JAXBElement<Document> jaxbElement = new JAXBElement<>(
-                new QName(Document.NS_WEBLYZARD, "page", "wl"), Document.class, document);
-        JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-        Marshaller xmlMarshaller = jaxbContext.createMarshaller();
-        xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        xmlMarshaller.marshal(jaxbElement, stringWriter);
-        return stringWriter.toString();
-    }
-
-    /**
-     * Converts a webLyzard XML Document to a {@link Document}.
-     *
-     * @param xmlString The webLyzard XML document to unmarshall
-     * @return The {@link Document} instance corresponding to the xmlString
-     * @throws JAXBException
-     */
-    public static Document fromJson(String xmlString) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        StringReader reader = new StringReader(xmlString);
-        return (Document) unmarshaller.unmarshal(reader);
-    }
 }
