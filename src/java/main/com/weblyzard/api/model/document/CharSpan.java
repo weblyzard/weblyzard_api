@@ -1,6 +1,8 @@
 package com.weblyzard.api.model.document;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A string range within a document
@@ -8,10 +10,12 @@ import lombok.Value;
  * @author Albert Weichselbraun
  *
  */
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CharSpan {
-    private final int start;
-    private final int end;
+    private int start;
+    private int end;
 
     /**
      * @return the substring within the given range
