@@ -110,14 +110,14 @@ class Joanna(object):
         return self.multiRestclient.request(request_url)
 
     def similar_document(self, sourceId, nilsimsa, portalName,
-                         daysBack=None):
+                         daysBack=None, nilsimsa_threshold=5):
         ''' Get the similarity of a single document.
         Expected response: Boolean True or False
         '''
         if daysBack is None:
             daysBack = 20
-        request_url = "is_similar/{}/{}/{}/{}".format(
-                    sourceId, portalName, nilsimsa, daysBack)
+        request_url = "is_similar/{}/{}/{}/{}/{}".format(
+                    sourceId, portalName, nilsimsa, daysBack, nilsimsa_threshold)
 
         result = self.multiRestclient.request(
                 request_url, return_plain=True)
@@ -129,7 +129,7 @@ class Joanna(object):
             return result
 
     def similar_documents(self, sourceId, portalName, contentIds_nilsimsa_dict,
-                          daysBack=20):
+                          daysBack=20, nilsimsa_threshold=5):
         """ Uses PostRequest instead of the eWRT MultiRESTClient 
          for finer control of the connection codes for retries
              result: {hash:boolean, ..}
@@ -149,8 +149,8 @@ class Joanna(object):
             logger.error("Expected dict. Got a list.")
             raise ValueError('Expected a dictionary, got a list.')
 
-        request_url = "batchIsSimilar/{}/{}/{}".format(
-                                    portalName, sourceId, daysBack)
+        request_url = "batchIsSimilar/{}/{}/{}/{}".format(
+                                    portalName, sourceId, daysBack, nilsimsa_threshold)
 
         req = PostRequest(self.url + '/' + request_url, contentIds_nilsimsa_dict)
         logger.debug('Trying to request: %s', req.url)
