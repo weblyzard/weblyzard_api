@@ -10,6 +10,8 @@ import lombok.Value;
  */
 @Value
 public class Dependency {
+
     private final int parent;
     private final String label;
+
 }

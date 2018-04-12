@@ -9,7 +9,7 @@ import lombok.Value;
  *
  */
 @Value
-public class StringRange {
+public class CharSpan {
     private final int start;
     private final int end;
 

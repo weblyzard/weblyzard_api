@@ -30,26 +30,25 @@ import lombok.experimental.Accessors;
  * The {@link Document} class also supports arbitrary meta data which is stored in the <code>
  * header</code> instance variable.
  *
- * TODO: - Handling of titles
- *
- * @author weichselbraun@weblyzard.com
+ * @author Albert Weichselbraun
  */
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@XmlRootElement(name = "page", namespace = Document.NS_WEBLYZARD)
+@XmlRootElement(name = "page", namespace = Document.NS_WEBLYZARD_2018)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Document implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
+    public static final String NS_WEBLYZARD_2013 = "http://www.weblyzard.com/wl/2013#";
+    public static final String NS_WEBLYZARD_2018 = "http://www.weblyzard.com/wl/2018#";
     public static final String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
 
     /** The Attribute used to encode document keywords */
     public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 
-    @XmlAttribute(name = "id", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "id", namespace = Document.NS_WEBLYZARD_2013)
     private String id;
 
     @XmlAttribute(name = "format", namespace = Document.NS_DUBLIN_CORE)
@@ -60,43 +59,28 @@ public class Document implements Serializable {
     @XmlJavaTypeAdapter(LangAdapter.class)
     private Lang lang;
 
-    @XmlAttribute(namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(namespace = Document.NS_WEBLYZARD_2013)
     private String nilsimsa;
 
     @JsonDeserialize(keyUsing = DocumentHeaderDeserializer.class)
     @XmlAnyAttribute
     private Map<QName, String> header = new HashMap<>();
 
-    @XmlElement(name = "title", namespace = Document.NS_DUBLIN_CORE)
-    private Sentence title;
-
-    @XmlElement(name = "content", namespace = Document.NS_WEBLYZARD)
+    @XmlElement(name = "content", namespace = Document.NS_WEBLYZARD_2018)
     private String content;
 
-    /** A list of ranges for all sentences within the document */
-    @JsonProperty("sentences")
-    @XmlElement(name = "sentences", namespace = Document.NS_WEBLYZARD)
-    private List<StringRange> sentenceIndices;
-
-    /** A list of ranges for all lines in the document */
-    @JsonProperty("lines")
-    @XmlElement(name = "lines", namespace = Document.NS_WEBLYZARD)
-    private List<StringRange> lineIndices;
-
-
-    /** A list of ranges for all document tokens. */
-    @JsonProperty("tokens")
-    @XmlElement(name = "tokens", namespace = Document.NS_WEBLYZARD)
-    private List<StringRange> tokenIndices;
+    /** Document {@link DocumentPartition} such as title, body, sentences, lines, etc. */
+    @XmlElement(name = "partitions", namespace = Document.NS_WEBLYZARD_2018)
+    private Map<DocumentPartition, List<CharSpan>> partitions;
 
     /** A list of all POS tags within the document */
     @JsonProperty("pos")
-    @XmlElement(name = "pos", namespace = Document.NS_WEBLYZARD)
+    @XmlElement(name = "pos", namespace = Document.NS_WEBLYZARD_2018)
     private List<String> pos;
 
     /** A list of all dependencies within the document */
     @JsonProperty("dependencies")
-    @XmlElement(name = "dependencies", namespace = Document.NS_WEBLYZARD)
+    @XmlElement(name = "dependencies", namespace = Document.NS_WEBLYZARD_2018)
     private List<Dependency> dependencies;
 
     /**
@@ -104,7 +88,7 @@ public class Document implements Serializable {
      * merged. (i.e. after the document's finalization)
      */
     @JsonProperty("annotations")
-    @XmlElement(name = "annotation", namespace = Document.NS_WEBLYZARD)
+    @XmlElement(name = "annotation", namespace = Document.NS_WEBLYZARD_2013)
     private List<Annotation> annotations;
 
     public Document(Document d) {
@@ -114,10 +98,7 @@ public class Document implements Serializable {
         document.lang = d.lang;
         document.nilsimsa = d.nilsimsa;
         document.header = d.header;
-        document.title = d.title;
-        document.sentenceIndices = d.sentenceIndices;
-        document.lineIndices = d.lineIndices;
-        document.tokenIndices = d.tokenIndices;
+        document.partitions = partitions;
         document.pos = d.pos;
         document.dependencies = d.dependencies;
     }
