@@ -3,12 +3,11 @@ Created on Oct 30, 2015
 
 @author: lucas
 '''
+import json
 import logging
 import urllib2
-import json
-
-from time import sleep
 from random import random, randint
+from time import sleep
 
 from eWRT.ws.rest import MultiRESTClient
 
@@ -22,11 +21,12 @@ class PostRequest(object):
     ''' Make a post request and return the connection without
     reading the data. Allows for finer handling of error codes
     '''
+
     def __init__(self, url, data):
         self.url = url
         self.data = json.dumps({"hashes": data})
         self.headers = [{"Content-Type": "application/json"}]
-    
+
     def request(self):
         handler = urllib2.HTTPHandler()
         opener = urllib2.build_opener(handler)
@@ -83,7 +83,7 @@ class Joanna(object):
     Example usage:
         jo = Joanna(url="http://localhost:8080")
     """
-    
+
     def __init__(self, url, default_timeout=None):
         self.url = url
         self.default_timeout = default_timeout
@@ -101,8 +101,6 @@ class Joanna(object):
         request_url = "hashes_size/{}/{}".format(sourceId, portalName)
         return self.multiRestclient.request(request_url)
 
-
-
     def clean_hashes(self):
         ''' Make a request to clean old nilsimsa hashes
         '''
@@ -110,26 +108,26 @@ class Joanna(object):
         return self.multiRestclient.request(request_url)
 
     def similar_document(self, sourceId, nilsimsa, portalName,
-                         daysBack=None):
+                         daysBack=None, nilsimsa_threshold=5):
         ''' Get the similarity of a single document.
         Expected response: Boolean True or False
         '''
         if daysBack is None:
             daysBack = 20
-        request_url = "is_similar/{}/{}/{}/{}".format(
-                    sourceId, portalName, nilsimsa, daysBack)
+        request_url = "is_similar/{}/{}/{}/{}/{}".format(
+            sourceId, portalName, nilsimsa, daysBack, nilsimsa_threshold)
 
         result = self.multiRestclient.request(
-                request_url, return_plain=True)
+            request_url, return_plain=True)
 
         if result == "LOADED":
             result = self.multiRestclient.request(
-                    request_url, return_plain=True)
+                request_url, return_plain=True)
         else:
             return result
 
     def similar_documents(self, sourceId, portalName, contentIds_nilsimsa_dict,
-                          daysBack=20):
+                          daysBack=20, nilsimsa_threshold=5):
         """ Uses PostRequest instead of the eWRT MultiRESTClient 
          for finer control of the connection codes for retries
              result: {hash:boolean, ..}
@@ -138,7 +136,7 @@ class Joanna(object):
         max_retry_attempts = DEFAULT_MAX_RETRY_ATTEMPTS
         if daysBack is None:
             daysBack = DAYS_BACK_DEFAULT
-            
+
         if not (sourceId or contentIds_nilsimsa_dict):
             logger.error("Arguments missing")
             return
@@ -149,15 +147,13 @@ class Joanna(object):
             logger.error("Expected dict. Got a list.")
             raise ValueError('Expected a dictionary, got a list.')
 
-        request_url = "batchIsSimilar/{}/{}/{}".format(
-                                    portalName, sourceId, daysBack)
+        request_url = "batchIsSimilar/{}/{}/{}/{}".format(
+            portalName, sourceId, daysBack, nilsimsa_threshold)
 
         req = PostRequest(self.url + '/' + request_url, contentIds_nilsimsa_dict)
-        logger.debug('Trying to request: %s', req.url)
 
         attempts = 0
         conn_code = -1
-
 
         while attempts < max_retry_attempts and conn_code != 204:
             conn = req.request()
@@ -192,19 +188,19 @@ class Joanna(object):
                     'Server failure: attempts %d %s', attempts, data)
             sleep(max_retry_delay * random())
             attempts += 1
-            
+
     def reload_source_nilsimsa(self, sourceId, portal_db, daysBack=20):
         if daysBack is None:
             daysBack = DAYS_BACK_DEFAULT
         request = "load/{}/{}/{}".format(portal_db, sourceId, daysBack)
         return self.multiRestclient.request(request, return_plain=True)
-    
+
     def status(self):
         return self.multiRestclient.request('status', return_plain=True)
 
     def version(self):
         return self.multiRestclient.request('version', return_plain=True)
-    
+
     def rand_strings(self, num_docs):
         docs_to_send = []
         for _ in xrange(num_docs):
