@@ -9,18 +9,17 @@ import java.util.Map;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.base.Splitter;
 import com.weblyzard.api.model.Lang;
 import com.weblyzard.api.model.document.CharSpan;
 import com.weblyzard.api.model.document.Dependency;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.document.DocumentPartition;
+import com.weblyzard.api.model.document.TokenCharSpan;
 
 public class DocumentSerializationTest {
 
     private static final ObjectMapper mapper =
             new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    private static final Splitter SPACE_SPLITTER = Splitter.on(' ');
 
     @Test
     public void test() throws IOException {
@@ -33,38 +32,40 @@ public class DocumentSerializationTest {
         partitions.put(DocumentPartition.SENTENCE,
                 Arrays.asList(new CharSpan(0, 20), new CharSpan(21, 51), new CharSpan(52, 106)));
         partitions.put(DocumentPartition.TOKEN,
-                Arrays.asList(new CharSpan(0, 1), new CharSpan(2, 13), new CharSpan(14, 18),
-                        new CharSpan(18, 20), new CharSpan(21, 25), new CharSpan(26, 28),
-                        new CharSpan(29, 36), new CharSpan(36, 37), new CharSpan(37, 42),
-                        new CharSpan(43, 25), new CharSpan(46, 50), new CharSpan(50, 51),
-                        new CharSpan(52, 54), new CharSpan(55, 59), new CharSpan(60, 63),
-                        new CharSpan(64, 68), new CharSpan(68, 69), new CharSpan(70, 72),
-                        new CharSpan(73, 77), new CharSpan(78, 81), new CharSpan(82, 87),
-                        new CharSpan(87, 88), new CharSpan(89, 91), new CharSpan(92, 94),
-                        new CharSpan(95, 98), new CharSpan(99, 104), new CharSpan(104, 105)));
+                Arrays.asList(new TokenCharSpan(0, 1, "CD", new Dependency(2, "NMOD")), 
+                        new TokenCharSpan(2, 13, "NNP", new Dependency(2, "NMOD")), 
+                        new TokenCharSpan(14, 18, "CD", new Dependency(3, "NMOD")),
+                        new TokenCharSpan(18, 20, "CD", new Dependency(-1, "ROOT")), 
+                        new TokenCharSpan(21, 25, "NN", new Dependency(5, "SBJ")), 
+                        new TokenCharSpan(26, 28, "VBZ", new Dependency(-1, "ROOT")),
+                        new TokenCharSpan(29, 36, "NN", new Dependency(5, "PRD")), 
+                        new TokenCharSpan(36, 37, ",", new Dependency(5, "P")), 
+                        new TokenCharSpan(37, 42, "NN", new Dependency(5, "PRD")),
+                        new TokenCharSpan(43, 25, "VBZ", new Dependency(5, "CONJ")), 
+                        new TokenCharSpan(46, 50, "NN", new Dependency(9, "PRD")), 
+                        new TokenCharSpan(50, 51, ".", new Dependency(5, "P")),
+                        new TokenCharSpan(52, 54, "PRP", new Dependency(12, "SBJ")), 
+                        new TokenCharSpan(55, 59, "VBZ", new Dependency(-1, "ROOT")), 
+                        new TokenCharSpan(60, 63, "RB", new Dependency(12, "ADV")),
+                        new TokenCharSpan(64, 68, "VB", new Dependency(12, "VC")), 
+                        new TokenCharSpan(68, 69, ",", new Dependency(17, "P")), 
+                        new TokenCharSpan(70, 72, "PRP", new Dependency(17, "SBJ")),
+                        new TokenCharSpan(73, 77, "VBZ", new Dependency(12, "PRD")), 
+                        new TokenCharSpan(78, 81, "RB", new Dependency(17, "ADV")), 
+                        new TokenCharSpan(82, 87, "VB", new Dependency(17, "VC")),
+                        new TokenCharSpan(87, 88, ",", new Dependency(22, "P")), 
+                        new TokenCharSpan(89, 91, "PRP", new Dependency(22, "SBJ")), 
+                        new TokenCharSpan(92, 94, "VBZ", new Dependency(12, "PRD")),
+                        new TokenCharSpan(95, 98, "RB", new Dependency(22, "ADV")), 
+                        new TokenCharSpan(99, 104, "JJ", new Dependency(22, "PRD")), 
+                        new TokenCharSpan(104, 105, ".", new Dependency(12, "P"))));
 
         final Document document = new Document().setId("007").setFormat("text/html")
                 .setLang(Lang.EN)
                 .setNilsimsa("1404e487721ca21e08c2141155621022f39a991640a419064123b812a30f2acc")
                 .setContent(
                         "1 Corinthians 13:4-7\nLove is patient, love is kind. It does not envy, it does not boast, it is\nnot proud.")
-                .setPartitions(partitions)
-                .setPos(SPACE_SPLITTER.splitToList(
-                        "CD NNP CD CD NN VBZ NN , NN VBZ NN . PRP VBZ RB VB , PRP VBZ RB VB , PRP VBZ RB JJ ."))
-                .setDependencies(Arrays.asList(new Dependency(2, "NMOD"), new Dependency(2, "NMOD"),
-                        new Dependency(3, "NMOD"), new Dependency(-1, "ROOT"),
-                        new Dependency(5, "SBJ"), new Dependency(-1, "ROOT"),
-                        new Dependency(5, "PRD"), new Dependency(5, "P"), new Dependency(5, "PRD"),
-                        new Dependency(5, "CONJ"), new Dependency(9, "PRD"), new Dependency(5, "P"),
-                        new Dependency(12, "SBJ"), new Dependency(-1, "ROOT"),
-                        new Dependency(12, "ADV"), new Dependency(12, "VC"),
-                        new Dependency(17, "P"), new Dependency(17, "SBJ"),
-                        new Dependency(12, "PRD"), new Dependency(17, "ADV"),
-                        new Dependency(17, "VC"), new Dependency(22, "P"),
-                        new Dependency(22, "SBJ"), new Dependency(12, "PRD"),
-                        new Dependency(22, "ADV"), new Dependency(22, "PRD"),
-                        new Dependency(12, "P")));
-
+                .setPartitions(partitions);
 
         // test sentence id/md5sum (MD5Digest)
         testSerialization(document);

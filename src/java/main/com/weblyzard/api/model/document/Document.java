@@ -49,14 +49,6 @@ public class Document implements Serializable {
     /** Document {@link DocumentPartition} such as title, body, sentences, lines, etc. */
     private Map<DocumentPartition, List<CharSpan>> partitions;
 
-    /** A list of all POS tags within the document */
-    @JsonProperty("pos")
-    private List<String> pos;
-
-    /** A list of all dependencies within the document */
-    @JsonProperty("dependencies")
-    private List<Dependency> dependencies;
-
     /**
      * This field contains all annotations after titleAnnotations and bodyAnnotations have been
      * merged. (i.e. after the document's finalization)
@@ -72,8 +64,6 @@ public class Document implements Serializable {
         document.nilsimsa = d.nilsimsa;
         document.header = d.header;
         document.partitions = partitions;
-        document.pos = d.pos;
-        document.dependencies = d.dependencies;
     }
 
 }
