@@ -50,7 +50,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jersey2.version>2.25.1</jersey2.version>
-		<jaxb.version>2.3.0</jaxb.version>
+		<jaxb.version>2.2.12</jaxb.version>
 	</properties>
 
 	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency 
