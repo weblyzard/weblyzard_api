@@ -50,17 +50,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jersey2.version>2.25.1</jersey2.version>
-		<jaxb.version>2.2.12</jaxb.version>
+		<jaxb.version>2.3.0</jaxb.version>
 	</properties>
-
-	<!-- needed at the moment for weblyzard.lib.string -> remove when this dependency 
-		is openly mavenized -->
-	<repositories>
-		<repository>
-			<id>code.semanticlab.net</id>
-			<url>dav:http://code.semanticlab.net/deploy/</url>
-		</repository>
-	</repositories>
 
 	<!-- profiles for the maven deployments -->
 	<profiles>
