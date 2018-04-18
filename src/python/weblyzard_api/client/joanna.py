@@ -134,6 +134,7 @@ class Joanna(object):
         """
         max_retry_delay = DEFAULT_MAX_RETRY_DELAY
         max_retry_attempts = DEFAULT_MAX_RETRY_ATTEMPTS
+        nilsimsa_threshold = int(nilsimsa_threshold)
         if daysBack is None:
             daysBack = DAYS_BACK_DEFAULT
 
