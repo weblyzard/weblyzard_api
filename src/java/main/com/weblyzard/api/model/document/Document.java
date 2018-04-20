@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.weblyzard.api.model.Lang;
 import com.weblyzard.api.model.annotation.Annotation;
+import com.weblyzard.api.model.document.partition.CharSpan;
+import com.weblyzard.api.model.document.partition.DocumentPartition;
 import com.weblyzard.api.serialize.json.DocumentHeaderDeserializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;

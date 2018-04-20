@@ -1,4 +1,4 @@
-package com.weblyzard.api.model.document;
+package com.weblyzard.api.model.document.partition;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
