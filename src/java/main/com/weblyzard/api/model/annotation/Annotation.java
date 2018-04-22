@@ -54,4 +54,5 @@ public class Annotation extends EntityDescriptor implements Serializable, Span {
     public static Annotation build(String key) {
         return new Annotation(key);
     }
+
 }

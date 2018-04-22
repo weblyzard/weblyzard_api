@@ -17,4 +17,8 @@ public interface Span {
      * @return the {@link Span}s end position
      */
     public int getEnd();
+
+    public Span setStart(int start);
+
+    public Span setEnd(int end);
 }

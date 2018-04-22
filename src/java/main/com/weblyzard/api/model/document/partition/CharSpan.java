@@ -9,6 +9,7 @@ import com.weblyzard.api.model.Span;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * A string range within a document
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY)
