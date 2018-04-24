@@ -49,7 +49,7 @@ public class Document implements Serializable {
     private String content;
 
     /** Document {@link DocumentPartition} such as title, body, sentences, lines, etc. */
-    private Map<DocumentPartition, List<CharSpan>> partitions;
+    private Map<DocumentPartition, List<? extends CharSpan>> partitions;
 
     /**
      * This field contains all annotations after titleAnnotations and bodyAnnotations have been

@@ -24,7 +24,7 @@ public class DocumentSerializationTest {
 
     @Test
     public void test() throws IOException {
-        final Map<DocumentPartition, List<CharSpan>> partitions =
+        final Map<DocumentPartition, List<? extends CharSpan>> partitions =
                 new EnumMap<>(DocumentPartition.class);
         partitions.put(DocumentPartition.TITLE, List.of(new CharSpan(0, 20)));
         partitions.put(DocumentPartition.BODY, List.of(new CharSpan(21, 104)));
