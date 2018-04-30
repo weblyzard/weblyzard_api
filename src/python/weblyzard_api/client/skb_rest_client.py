@@ -59,8 +59,7 @@ class SKBSentimentDictionary(dict):
             response = json.loads(res.text)
             data = {}
             for document in response:
-                data[(document['term'], document['pos'])] = (document['value'],
-                                                             document['definition'])
+                data[(document['term'], document['pos'])] = document['value']
             dict.__init__(self, data)
         else:
             dict.__init__(self, {})
