@@ -27,7 +27,6 @@ from lxml import etree
 from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
 from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
 from weblyzard_api.xml_content.parsers.xml_deprecated import XMLDeprecated
-from django.db.backends.dummy.base import ignore
 
 SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
                        'pos', 'token', 'dependency')
