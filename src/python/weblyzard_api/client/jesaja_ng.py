@@ -95,7 +95,6 @@ class JesajaNg(MultiRESTClient):
         :param matview_id: the matview id for which the keywords are computed
         :param xml_documents:
             a list of weblyzard_xml documents [ xml_content, ... ]
-
         '''
         if not self.has_matview(matview_id):
             raise Exception(

@@ -151,7 +151,8 @@ class Joanna(object):
         request_url = "batchIsSimilar/{}/{}/{}/{}".format(
             portalName, sourceId, daysBack, nilsimsa_threshold)
 
-        req = PostRequest(self.url + '/' + request_url, contentIds_nilsimsa_dict)
+        req = PostRequest(self.url + '/' + request_url,
+                          contentIds_nilsimsa_dict)
 
         attempts = 0
         conn_code = -1

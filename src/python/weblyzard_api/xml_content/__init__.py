@@ -355,6 +355,7 @@ class XMLContent(object):
     def get_xml_document(self, header_fields='all',
                          sentence_attributes=SENTENCE_ATTRIBUTES,
                          annotations=None,
+                         ignore_title=False,
                          xml_version=XML2013.VERSION):
         '''
         :param header_fields: the header_fields to include
@@ -373,7 +374,11 @@ class XMLContent(object):
         if not hasattr(self, 'relations'):
             self.relations = {}
 
-        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
+        titles = self.titles
+        if ignore_title:
+            titles = []
+
+        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=titles,
                                                                  attributes=self.attributes,
                                                                  sentences=self.sentences,
                                                                  annotations=annotations,
