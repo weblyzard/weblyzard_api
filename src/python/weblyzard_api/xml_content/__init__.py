@@ -27,6 +27,7 @@ from lxml import etree
 from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
 from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
 from weblyzard_api.xml_content.parsers.xml_deprecated import XMLDeprecated
+from django.db.backends.dummy.base import ignore
 
 SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
                        'pos', 'token', 'dependency')
@@ -355,6 +356,7 @@ class XMLContent(object):
     def get_xml_document(self, header_fields='all',
                          sentence_attributes=SENTENCE_ATTRIBUTES,
                          annotations=None,
+                         ignore_title=False,
                          xml_version=XML2013.VERSION):
         '''
         :param header_fields: the header_fields to include
@@ -373,7 +375,11 @@ class XMLContent(object):
         if not hasattr(self, 'relations'):
             self.relations = {}
 
-        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
+        titles = self.titles
+        if ignore_title:
+            titles = []
+
+        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=titles,
                                                                  attributes=self.attributes,
                                                                  sentences=self.sentences,
                                                                  annotations=annotations,
