@@ -12,7 +12,7 @@ from weblyzard_api.client.recognize.ng import Recognize
 
 class TestRecognizeNg(unittest.TestCase):
 
-    SERVICE_URL = 'http://gecko9.wu.ac.at:8086/rest'
+    SERVICE_URL = 'localhost:8086/rest'
     PROFILE_NAME = 'wl_dbpedia_en'
     DOCUMENTS = [{"id": "18",
                   "format": None,
