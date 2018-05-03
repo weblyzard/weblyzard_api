@@ -65,7 +65,7 @@ class TestRecognizeNg(unittest.TestCase):
         text = 'Vienna is the capital of Austria, Berlin is the capital of Germany. Linz also is in Austria'
         result = self.client.search_text(
             self.PROFILE_NAME, lang='en', text=text)
-        assert len(result) == 5
+        assert len(result) == 6
 
     def test_annotate_document(self):
         for document in self.DOCUMENTS:
