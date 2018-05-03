@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.model.Lang;
+import com.weblyzard.api.model.Span;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.document.partition.CharSpan;
 import com.weblyzard.api.model.document.partition.Dependency;
@@ -24,7 +25,7 @@ public class DocumentSerializationTest {
 
     @Test
     public void test() throws IOException {
-        final Map<DocumentPartition, List<? extends CharSpan>> partitions =
+        final Map<DocumentPartition, List<Span>> partitions =
                 new EnumMap<>(DocumentPartition.class);
         partitions.put(DocumentPartition.TITLE, List.of(new CharSpan(0, 20)));
         partitions.put(DocumentPartition.BODY, List.of(new CharSpan(21, 104)));

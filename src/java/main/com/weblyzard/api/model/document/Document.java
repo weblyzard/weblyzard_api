@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.weblyzard.api.model.Lang;
+import com.weblyzard.api.model.Span;
 import com.weblyzard.api.model.annotation.Annotation;
-import com.weblyzard.api.model.document.partition.CharSpan;
 import com.weblyzard.api.model.document.partition.DocumentPartition;
 import com.weblyzard.api.serialize.json.DocumentHeaderDeserializer;
 import lombok.Data;
@@ -29,6 +31,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
+@JsonInclude(content = Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Document implements Serializable {
 
@@ -49,7 +52,7 @@ public class Document implements Serializable {
     private String content;
 
     /** Document {@link DocumentPartition} such as title, body, sentences, lines, etc. */
-    private Map<DocumentPartition, List<? extends CharSpan>> partitions;
+    private Map<DocumentPartition, List<Span>> partitions;
 
     /**
      * This field contains all annotations after titleAnnotations and bodyAnnotations have been

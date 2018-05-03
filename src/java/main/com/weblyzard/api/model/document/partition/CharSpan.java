@@ -1,10 +1,5 @@
 package com.weblyzard.api.model.document.partition;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.weblyzard.api.model.Span;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,8 +16,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonTypeInfo(use = Id.NAME, include = As.PROPERTY)
-@JsonSubTypes({@Type(value = TokenCharSpan.class), @Type(value = SentenceCharSpan.class)})
 public class CharSpan implements Span {
     private int start;
     private int end;
