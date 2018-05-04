@@ -18,6 +18,7 @@ from datetime import date, datetime
 
 logger = logging.getLogger('weblyzard_api.xml_content.parsers')
 
+
 class DatesToStrings(json.JSONEncoder):
     def _encode(self, obj):
         if isinstance(obj, dict):
@@ -59,7 +60,7 @@ class XMLParser(object):
         else:
             try:
                 return json.dumps(value)
-            except Exception, e:
+            except Exception as e:
                 logger.error('could not encode %s: %s' % (value, e))
                 return
 
@@ -79,7 +80,8 @@ class XMLParser(object):
         return 'xmlns:wl="%s"' % cls.SUPPORTED_NAMESPACE in xml_content
 
         # if xml_content:
-        # return any([ns in xml_content for ns in cls.get_supported_namespaces()])
+        # return any([ns in xml_content for ns in
+        # cls.get_supported_namespaces()])
 
     @classmethod
     def parse(cls, xml_content, remove_duplicates=True):
@@ -90,18 +92,19 @@ class XMLParser(object):
         try:
             if cls.ATTR_MAPPING:
                 invert_mapping = dict(zip(cls.ATTR_MAPPING.values(),
-                    cls.ATTR_MAPPING.keys()))
+                                          cls.ATTR_MAPPING.keys()))
             else:
                 invert_mapping = None
             attributes = cls.load_attributes(root.attrib,
                                              mapping=invert_mapping)
-        except Exception, e:
+        except Exception as e:
             attributes = {}
 
-        sentences = cls.load_sentences(root, remove_duplicates=remove_duplicates)
-        title_sentence_ids = [sentence['md5sum'] for sentence in sentences \
+        sentences = cls.load_sentences(
+            root, remove_duplicates=remove_duplicates)
+        title_sentence_ids = [sentence['md5sum'] for sentence in sentences
                               if 'is_title' in sentence and sentence['is_title']]
-        
+
         title_annotations = []
         body_annotations = []
         for annotation in cls.load_annotations(root):
@@ -109,9 +112,9 @@ class XMLParser(object):
                 title_annotations.append(annotation)
             else:
                 body_annotations.append(annotation)
-        
+
         features = cls.load_features(root)
-        relations = cls.load_relations(root)      
+        relations = cls.load_relations(root)
         return attributes, sentences, title_annotations, body_annotations, features, relations
 
     @classmethod
@@ -134,13 +137,12 @@ class XMLParser(object):
         ''' '''
         annotations = []
         for annotation_element in root.iterfind('{%s}annotation' % cls.get_default_ns(),
-                                          namespaces=cls.DOCUMENT_NAMESPACES):
+                                                namespaces=cls.DOCUMENT_NAMESPACES):
             annotations.append(cls.load_attributes(annotation_element.attrib,
                                                    mapping=cls.ANNOTATION_MAPPING))
 
         return annotations
 
-    
     @classmethod
     def load_sentences(cls, root, remove_duplicates=True):
         ''' '''
@@ -161,7 +163,8 @@ class XMLParser(object):
                 sent_attributes['md5sum'] = sent_id
                 del sent_attributes['id']
             else:
-                sent_id = hashlib.md5(sent_element.text.encode('utf-8')).hexdigest()
+                sent_id = hashlib.md5(
+                    sent_element.text.encode('utf-8')).hexdigest()
                 sent_attributes['md5sum'] = sent_id
 
             if not sent_id in seen_sentences:
@@ -175,29 +178,27 @@ class XMLParser(object):
     @classmethod
     def cast_item(cls, item):
         ''' '''
-        if item.lower()=='true':
+        if item.lower() == 'true':
             return True
-        elif item.lower()=='false':
+        elif item.lower() == 'false':
             return False
-        
+
         try:
             return int(item)
         except Exception:
             pass
-        
+
         try:
             return float(item)
         except Exception:
             pass
-        
+
         try:
             return json.loads(item)
         except Exception:
             pass
         return item
-        
 
-        
     @classmethod
     def get_xml_value(cls, value):
         ''' '''
@@ -207,11 +208,11 @@ class XMLParser(object):
                 value = str(value)
             elif isinstance(value, list) or isinstance(value, dict):
                 value = json.dumps(value, cls=DatesToStrings)
-        except Exception, e:
+        except Exception as e:
             logger.error('could not encode %s: %s' % (value, e))
-            value = str(value)      
+            value = str(value)
         return value
-    
+
     @classmethod
     def load_features(cls, root):
         ''' '''
@@ -222,28 +223,34 @@ class XMLParser(object):
                                                   mapping=cls.FEATURE_MAPPING)
             if 'key' in feat_attributes and feat_attributes['key'] in features:
                 if not isinstance(features[feat_attributes['key']], list):
-                    features[feat_attributes['key']] = [features[feat_attributes['key']]]
+                    features[feat_attributes['key']] = [
+                        features[feat_attributes['key']]]
                 if feat_element.text is not None:
-                    features[feat_attributes['key']].append(cls.cast_item(feat_element.text.strip()))
+                    features[feat_attributes['key']].append(
+                        cls.cast_item(feat_element.text.strip()))
             elif feat_element.text is not None:
-                features[feat_attributes['key']] = cls.cast_item(feat_element.text.strip())
+                features[feat_attributes['key']] = cls.cast_item(
+                    feat_element.text.strip())
         return features
-    
+
     @classmethod
     def load_relations(cls, root):
         ''' '''
         relations = {}
         for rel_element in root.iterfind('{%s}relation' % cls.get_default_ns(),
-                                          namespaces=cls.DOCUMENT_NAMESPACES):
+                                         namespaces=cls.DOCUMENT_NAMESPACES):
             rel_attributes = cls.load_attributes(rel_element.attrib,
-                                                  mapping=cls.RELATION_MAPPING)
+                                                 mapping=cls.RELATION_MAPPING)
             if 'key' in rel_attributes and rel_attributes['key'] in relations:
                 if not isinstance(relations[rel_attributes['key']], list):
-                    relations[rel_attributes['key']] = [relations[rel_attributes['key']]]
+                    relations[rel_attributes['key']] = [
+                        relations[rel_attributes['key']]]
                 if rel_element.text is not None:
-                    relations[rel_attributes['key']].append(cls.cast_item(rel_element.text.strip()))
+                    relations[rel_attributes['key']].append(
+                        cls.cast_item(rel_element.text.strip()))
             elif rel_element.text is not None:
-                relations[rel_attributes['key']] = cls.cast_item(rel_element.text.strip())
+                relations[rel_attributes['key']] = cls.cast_item(
+                    rel_element.text.strip())
         return relations
 
     @classmethod
@@ -271,18 +278,18 @@ class XMLParser(object):
                 continue
             result[key] = val
         return result
-    
+
     @classmethod
-    def map_by_annotationtype(cls, itemlist): 
+    def map_by_annotationtype(cls, itemlist):
         result = {}
         for item in itemlist:
             if not item['annotationType'] in result:
                 result[item['annotationType']] = []
             result[item['annotationType']].append(item)
         return result
-    
+
     @classmethod
-    def dump_xml(cls, titles, attributes, sentences, annotations=[], 
+    def dump_xml(cls, titles, attributes, sentences, annotations=[],
                  features={}, relations={}):
         ''' returns a webLyzard XML document '''
 
@@ -305,7 +312,7 @@ class XMLParser(object):
 
         if cls.SENTENCE_MAPPING:
             sent_mapping = dict(zip(cls.SENTENCE_MAPPING.values(),
-                cls.SENTENCE_MAPPING.keys()))
+                                    cls.SENTENCE_MAPPING.keys()))
         else:
             sent_mapping = None
 
@@ -327,13 +334,13 @@ class XMLParser(object):
                                          nsmap=cls.DOCUMENT_NAMESPACES)
             try:
                 sent_elem.text = etree.CDATA(value)
-            except Exception, e:
+            except Exception as e:
                 print('Skipping bad cdata: %s (%s)' % (value, e))
                 continue
-            
+
         if cls.ANNOTATION_MAPPING:
             annotation_mapping = dict(zip(cls.ANNOTATION_MAPPING.values(),
-                                    cls.ANNOTATION_MAPPING.keys()))
+                                          cls.ANNOTATION_MAPPING.keys()))
         else:
             annotation_mapping = None
 
@@ -343,13 +350,13 @@ class XMLParser(object):
 
             # add all annotations as body annotations
             for a_type, a_items in annotations.iteritems():
-                
-                if a_items is None or len(a_items)==0:
+
+                if a_items is None or len(a_items) == 0:
                     continue
-                
-                for annotation in a_items:    
+
+                for annotation in a_items:
                     if not isinstance(annotation, dict):
-                        continue   
+                        continue
                     assert isinstance(annotation, dict), 'dict required'
                     if 'entities' in annotation:
                         for entity in annotation['entities']:
@@ -360,19 +367,19 @@ class XMLParser(object):
                             if not isinstance(preferred_name, unicode):
                                 preferred_name = preferred_name.decode('utf-8')
                             entity['preferredName'] = preferred_name
-    
+
                             annotation_attributes = cls.dump_xml_attributes(entity,
                                                                             mapping=annotation_mapping)
-                            
+
                             try:
                                 etree.SubElement(root,
                                                  '{%s}annotation' % cls.get_default_ns(),
                                                  attrib=annotation_attributes,
                                                  nsmap=cls.DOCUMENT_NAMESPACES)
-                            except Exception, e:
+                            except Exception as e:
                                 continue
-               
-        # feature mappings if specified             
+
+        # feature mappings if specified
         if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
             feature_mapping = dict(zip(cls.FEATURE_MAPPING.values(),
                                        cls.FEATURE_MAPPING.keys()))
@@ -382,44 +389,46 @@ class XMLParser(object):
                                                              mapping=feature_mapping)
                 if not isinstance(items, list):
                     items = [items]
-                
+
                 for value in items:
                     try:
                         value = cls.get_xml_value(value)
                         feat_elem = etree.SubElement(root,
-                                                     '{%s}feature' % cls.get_default_ns(),
+                                                     '{%s}feature' % cls.get_default_ns(
+                                                     ),
                                                      attrib=feature_attributes,
                                                      nsmap=cls.DOCUMENT_NAMESPACES)
                         feat_elem.text = etree.CDATA(value)
-        
-                    except Exception, e:
+
+                    except Exception as e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
 
-        # relation mappings, if specified            
+        # relation mappings, if specified
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             relation_mapping = dict(zip(cls.RELATION_MAPPING.values(),
-                                       cls.RELATION_MAPPING.keys()))
+                                        cls.RELATION_MAPPING.keys()))
 
             for key, items in relations.iteritems():
                 rel_attributes = cls.dump_xml_attributes({'key': key},
                                                          mapping=relation_mapping)
                 if not isinstance(items, list):
                     items = [items]
-                
+
                 for value in items:
                     try:
                         value = cls.get_xml_value(value)
                         rel_elem = etree.SubElement(root,
-                                                    '{%s}relation' % cls.get_default_ns(),
+                                                    '{%s}relation' % cls.get_default_ns(
+                                                    ),
                                                     attrib=rel_attributes,
                                                     nsmap=cls.DOCUMENT_NAMESPACES)
                         rel_elem.text = etree.CDATA(value)
-                        
-                    except Exception, e:
+
+                    except Exception as e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
-        
+
         return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
     @classmethod

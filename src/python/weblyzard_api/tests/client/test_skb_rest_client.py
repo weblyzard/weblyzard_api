@@ -2,21 +2,21 @@
 # -*- coding: utf-8 -*-
 import os
 import unittest
- 
+
 from weblyzard_api.client.skb_rest_client import SKBRESTClient
-# 
-# 
+#
+#
 # class TestSKBRESTClient(unittest.TestCase):
-# 
+#
 #     def test_translations_request(self):
-#         batch = MatviewDocumentsBatch(matview_name='weblyzard_test', 
-#                                       limit=10, 
+#         batch = MatviewDocumentsBatch(matview_name='weblyzard_test',
+#                                       limit=10,
 #                                       with_keywords=False)
-#             
+#
 #         batch.prepare()
 #         config = batch.config
 #         base_url = config.get('service_url', 'translate_title')
-#         client = SKBRESTClient(base_url)        
+#         client = SKBRESTClient(base_url)
 #         expected_translations = {'knall': 'pop', 'falle': 'trap', 'fall': 'case'}
 #         for source in expected_translations:
 #             result = client.translate(client='google',
@@ -25,16 +25,16 @@ from weblyzard_api.client.skb_rest_client import SKBRESTClient
 #                                       target='en')
 #             assert(result[0] == expected_translations[source])
 #             assert(result[1] == 'en')
-# 
+#
 #     def test_title_translations_request(self):
-#         batch = MatviewDocumentsBatch(matview_name='weblyzard_test', 
-#                                       limit=10, 
+#         batch = MatviewDocumentsBatch(matview_name='weblyzard_test',
+#                                       limit=10,
 #                                       with_keywords=False)
-#             
+#
 #         batch.prepare()
 #         config = batch.config
 #         base_url = config.get('service_url', 'translate_title')
-#         client = SKBRESTClient(base_url)        
+#         client = SKBRESTClient(base_url)
 #         expected_translations = {'knall': 'pop', 'falle': 'trap', 'fall': 'case'}
 #         for source in expected_translations:
 #             result = client.title_translate(client='google',
@@ -43,10 +43,11 @@ from weblyzard_api.client.skb_rest_client import SKBRESTClient
 #                                       target='en')
 #             assert(result[0] == expected_translations[source])
 #             assert(result[1] == 'en')
-# 
+#
+
 
 class TestSKBKeywords(unittest.TestCase):
-    
+
     def test_save_keyword(self):
         skb_client = SKBRESTClient(url=os.getenv('WL_SKB_UNITTEST_URL'))
         kw_annotation = {
@@ -70,6 +71,7 @@ class TestSKBKeywords(unittest.TestCase):
             "preferredName": "energy"
         }
         assert(skb_client.save_doc_kw_skb(kw_annotation) == 'Done')
+
 
 if __name__ == '__main__':
     unittest.main()

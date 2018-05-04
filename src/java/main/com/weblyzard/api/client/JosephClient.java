@@ -1,78 +1,158 @@
 package com.weblyzard.api.client;
 
+import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.recognyze.RecognyzeResult;
+import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.weblyzard.api.joseph.ClassifyRequest;
-import com.weblyzard.api.joseph.ClassifyResponse;
-import com.weblyzard.api.joseph.LearnRequest;
-import com.weblyzard.api.joseph.LearnResponse;
-
-/**
- * 
- * @author philipp.kuntschik@htwchur.ch
- *
- */
+/** @author philipp.kuntschik@htwchur.ch */
 public class JosephClient extends BasicClient {
 
-	private static final String CLASSIFY_SERVICE_URL = "/joseph/rest/1/classify/";
-	private static final String CLASSIFY_EXTENDED_SERVICE_URL = "/joseph/rest/enhancedClassify/";
-	private static final String LEARN_SERVICE_URL = "/joseph/rest/learn/";
+    private static final String TEMPLATE_PROFILE_NAME = "profileName";
+    private static final String TEMPLATE_CATEGORY = "category1";
 
-	public JosephClient() {
-		super();
-	}
+    private static final String LOAD_PROFILE_SERVICE_URL =
+            "/joseph/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String UNLOAD_PROFILE_SERVICE_URL =
+            "/joseph/rest/unload_profile/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String CLEAN_PROFILE_SERVICE_URL =
+            "joseph/rest/clean/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String CLASSIFY_SERVICE_URL =
+            "/joseph/rest/classify/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String TRAIN_SERVICE_URL =
+            "/joseph/rest/train/{" + TEMPLATE_PROFILE_NAME + "}/{" + TEMPLATE_CATEGORY + "}";
+    private static final String RETRAIN_SERVICE_URL =
+            "/joseph/rest/retrain/{" + TEMPLATE_PROFILE_NAME + "}/{" + TEMPLATE_CATEGORY + "}";
+    private static final String FORGET_SERVICE_URL =
+            "/joseph/rest/forget/{" + TEMPLATE_PROFILE_NAME + "}/{" + TEMPLATE_CATEGORY + "}";
 
-	public JosephClient(String weblyzard_url) {
-		super(weblyzard_url);
-	}
+    private static final String PARAM_LIMIT = "limit";
+    private static final String PARAM_WITH_FEATURES = "full";
 
-	public JosephClient(String weblyzard_url, String username, String password) {
-		super(weblyzard_url, username, password);
-	}
+    public JosephClient() {
+        super();
+    }
 
+    public JosephClient(String weblyzardUrl) {
+        super(weblyzardUrl);
+    }
 
+    public JosephClient(String weblyzardUrl, String username, String password) {
+        super(weblyzardUrl, username, password);
+    }
 
-	public ClassifyResponse[] classify(String profileName, ClassifyRequest request) throws WebApplicationException{
+    public boolean loadProfile(String profileName) {
+        Response response =
+                super.getTarget(LOAD_PROFILE_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get();
 
-		Response response = super.getTarget().path(CLASSIFY_SERVICE_URL + profileName).request(MediaType.APPLICATION_JSON_TYPE)
-				.post(Entity.json(request));
-		
-		super.checkResponseStatus(response);
-		ClassifyResponse[] result = response.readEntity(ClassifyResponse[].class);
-		response.close();
+        super.checkResponseStatus(response);
+        boolean result = response.readEntity(Boolean.class);
+        response.close();
 
-		return result;
-	}
+        return result;
+    }
 
+    public boolean cleanProfile(String profileName) {
+        Response response =
+                super.getTarget(CLEAN_PROFILE_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get();
 
+        super.checkResponseStatus(response);
+        boolean result = response.readEntity(Boolean.class);
+        response.close();
 
-	public ClassifyResponse[] classifyExtended(String profileName, ClassifyRequest request) throws WebApplicationException{
+        return result;
+    }
 
-		Response response = super.getTarget().path(CLASSIFY_EXTENDED_SERVICE_URL + profileName)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
-		
-		super.checkResponseStatus(response);
-		ClassifyResponse[] result = response.readEntity(ClassifyResponse[].class);
-		response.close();
+    public boolean unloadProfile(String profileName) {
+        Response response =
+                super.getTarget(UNLOAD_PROFILE_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get();
 
-		return result;
-	}
+        super.checkResponseStatus(response);
+        boolean result = response.readEntity(Boolean.class);
+        response.close();
 
+        return result;
+    }
 
+    public boolean train(String profileName, Document document, String category) {
+        Response response =
+                super.getTarget(TRAIN_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                        .resolveTemplate(TEMPLATE_CATEGORY, category)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(document));
 
-	public LearnResponse learn(String profileName, LearnRequest request) throws WebApplicationException{
-		
+        super.checkResponseStatus(response);
+        boolean result = response.readEntity(Boolean.class);
+        response.close();
 
-		Response response = super.getTarget().path(LEARN_SERVICE_URL + profileName)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
-		
-		super.checkResponseStatus(response);
-		LearnResponse result = response.readEntity(LearnResponse.class);
-		response.close();
+        return result;
+    }
 
-		return result;
-	}
+    public boolean retrain(String profileName, Document document, String category) {
+        Response response =
+                super.getTarget(RETRAIN_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                        .resolveTemplate(TEMPLATE_CATEGORY, category)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(document));
+
+        super.checkResponseStatus(response);
+        boolean result = response.readEntity(Boolean.class);
+        response.close();
+
+        return result;
+    }
+
+    public boolean forget(String profileName, Document document, String category) {
+        Response response =
+                super.getTarget(FORGET_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                        .resolveTemplate(TEMPLATE_CATEGORY, category)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(document));
+
+        super.checkResponseStatus(response);
+        boolean result = response.readEntity(Boolean.class);
+        response.close();
+
+        return result;
+    }
+
+    public List<RecognyzeResult> classify(String profileName, Document request) {
+        return this.classify(profileName, request, 0, false);
+    }
+
+    public List<RecognyzeResult> classify(
+            String profileName, Document request, int limit, boolean withFeatures)
+            throws WebApplicationException {
+
+        Response response =
+                super.getTarget(CLASSIFY_SERVICE_URL)
+                        .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                        .queryParam(PARAM_LIMIT, limit)
+                        .queryParam(PARAM_WITH_FEATURES, withFeatures)
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(request));
+
+        super.checkResponseStatus(response);
+        List<RecognyzeResult> result =
+                response.readEntity(new GenericType<List<RecognyzeResult>>() {});
+        response.close();
+
+        return result;
+    }
 }

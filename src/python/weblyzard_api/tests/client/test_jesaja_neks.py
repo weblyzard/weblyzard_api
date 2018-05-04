@@ -17,7 +17,7 @@ from weblyzard_api.tests.test_helper import get_full_path
 
 
 class TestJesajaNeks(unittest.TestCase):
-    
+
     xml_content = '''
 <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247"> <wl:sentence wl:id="060ed6ac1243488b7bb613218a559443" wl:is_title="true"><![CDATA[Journalismus - Social Media für die Nachrichtenverbreitung]]></wl:sentence>
   <wl:sentence wl:dependency="10:adpmod 0:adpobj 1:adpmod 2:adpobj 10:auxpass 10:nsubjpass 10:adpmod 9:det 9:amod 6:adpobj -1:ROOT" wl:id="bbe56bd8da7d00c4c4631db3c21434b3" wl:pos="APPRART NN APPR NE VAFIN NN APPR ART ADJA NN VVPP" wl:significance="6474.394537668186" wl:token="0,4 5,25 26,28 29,36 37,43 44,54 55,58 59,62 63,72 73,86 87,98"><![CDATA[Beim Journalismusfestival in Perugia werden Reaktionen auf die geänderte Mediennutzung präsentiert]]></wl:sentence>
@@ -48,42 +48,46 @@ class TestJesajaNeks(unittest.TestCase):
   <wl:sentence wl:dependency="1:poss 2:adpobj 3:adpmod -1:ROOT 3:dobj 7:det 7:amod 3:nsubj 7:adpmod 11:num 11:amod 8:adpobj 3:acomp 14:p 25:nsubj 14:p 14:p 14:conj 17:p 17:cc 17:conj 14:cc 14:conj 14:cc 14:conj 3:NMOD 25:adpmod 26:adpobj 25:prt 3:NMOD" wl:id="0a126f4c15fbf1eb5b945337af395512" wl:pos="PPOSAT NN APPO VVFIN PRF ART PIDAT NN APPR CARD ADJA NN VVFIN $. NN $[ $, NN $[ KON NN KON NN KON NN VVFIN APPRART NN PTKVZ $." wl:sem_orient="0.34752402342845795" wl:token="0,5 6,13 14,18 19,25 26,30 31,34 35,42 43,54 55,58 59,63 64,73 74,85 86,94 94,95 96,102 102,103 103,104 105,111 111,112 113,116 117,131 132,137 138,146 147,150 151,162 163,171 172,174 175,184 185,188 188,189"><![CDATA[Ihrer Ansicht nach lassen sich die meisten Geschichten mit fünf einfachen Grafiktypen erzählen: Balken-, Linien- und Tortengrafiken sowie Tabellen und Punktwolken reichten im Regelfall aus.]]></wl:sentence>
   <wl:sentence wl:dependency="-1:adpobj 14:adpmod 1:prt 1:p 6:advmod 6:advmod 1:partmod 6:p 6:conj 8:adpmod 9:adpobj 10:cc 10:conj 14:aux 0:NMOD 21:p 21:mark 21:nsubj 21:advmod 21:adpmod 19:adpobj 14:conj 21:aux 14:p" wl:id="f7a5f43c241734b798aeccc3d6b7c115" wl:pos="NE VVFIN PTKVZ $, PWAV ADV ADJD $, NN APPR NN KON NN PTKZU VVINF $, KOUS PDAT ADV APPRART NN VVINF VMFIN $." wl:sem_orient="0.7856742013183862" wl:significance="318.4871872165339" wl:token="0,6 7,12 13,15 15,16 17,21 22,27 28,35 35,36 37,48 49,54 55,76 77,80 81,87 88,90 91,99 99,100 101,105 106,111 112,116 117,120 121,131 132,141 142,149 149,150"><![CDATA[Lorenz regte an, wann immer möglich, Symbolfotos durch Datenvisualisierungen und Charts zu ersetzen, weil diese mehr zur Geschichte beitragen könnten.]]></wl:sentence>
   <wl:sentence wl:dependency="-1:ROOT 0:NMOD 3:p 0:NMOD 5:p 0:NMOD 5:p 9:compmod 9:p 5:appos 5:p" wl:id="1cbf243d9b44558bf5743cb01364ca06" wl:pos="( ITJ $, VVFIN $, VVFIN $, VVPP $, CARD )" wl:token="0,1 1,4 4,5 6,9 9,10 11,14 14,15 16,30 30,31 32,41 41,42"><![CDATA[(afs, fin, pum, derStandard.at, 16.4.2015)]]></wl:sentence>
-  <wl:annotation wl:sentence="20" wl:annotationType="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
-  <wl:annotation wl:sentence="2" wl:annotationType="OrganizationEntity" wl:end="30" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="22" wl:surfaceForm="Facebook"/>
-  <wl:annotation wl:sentence="4" wl:annotationType="OrganizationEntity" wl:end="76" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="68" wl:surfaceForm="Facebook"/>
-  <wl:annotation wl:sentence="14" wl:annotationType="OrganizationEntity" wl:end="31" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="23" wl:surfaceForm="Facebook"/>
-  <wl:annotation wl:sentence="16" wl:annotationType="OrganizationEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="66" wl:surfaceForm="Facebook"/>
-  <wl:annotation wl:sentence="23" wl:annotationType="OrganizationEntity" wl:end="8" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:surfaceForm="Facebook"/>
-  <wl:annotation wl:sentence="12" wl:annotationType="GeoEntity" wl:end="34" wl:key="http://sws.geonames.org/5391959/" wl:preferredName="San Francisco" wl:start="21" wl:surfaceForm="San Francisco"/>
-  <wl:annotation wl:sentence="24" wl:annotationType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/5391959/" wl:preferredName="San Francisco" wl:start="84" wl:surfaceForm="New York"/>
-  <wl:annotation wl:sentence="24" wl:annotationType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/5128638/" wl:preferredName="New York" wl:start="84" wl:surfaceForm="New York"/>
-  <wl:annotation wl:sentence="12" wl:annotationType="GeoEntity" wl:end="34" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="21" wl:surfaceForm="San Francisco"/>
-  <wl:annotation wl:sentence="24" wl:annotationType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="84" wl:surfaceForm="New York"/>
+  <wl:annotation wl:sentence="20" wl:entityType="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
+  <wl:annotation wl:sentence="2" wl:entityType="OrganizationEntity" wl:end="30" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="22" wl:surfaceForm="Facebook"/>
+  <wl:annotation wl:sentence="4" wl:entityType="OrganizationEntity" wl:end="76" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="68" wl:surfaceForm="Facebook"/>
+  <wl:annotation wl:sentence="14" wl:entityType="OrganizationEntity" wl:end="31" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="23" wl:surfaceForm="Facebook"/>
+  <wl:annotation wl:sentence="16" wl:entityType="OrganizationEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:start="66" wl:surfaceForm="Facebook"/>
+  <wl:annotation wl:sentence="23" wl:entityType="OrganizationEntity" wl:end="8" wl:key="http://de.dbpedia.org/resource/Facebook_Inc." wl:preferredName="Facebook Inc." wl:surfaceForm="Facebook"/>
+  <wl:annotation wl:sentence="12" wl:entityType="GeoEntity" wl:end="34" wl:key="http://sws.geonames.org/5391959/" wl:preferredName="San Francisco" wl:start="21" wl:surfaceForm="San Francisco"/>
+  <wl:annotation wl:sentence="24" wl:entityType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/5391959/" wl:preferredName="San Francisco" wl:start="84" wl:surfaceForm="New York"/>
+  <wl:annotation wl:sentence="24" wl:entityType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/5128638/" wl:preferredName="New York" wl:start="84" wl:surfaceForm="New York"/>
+  <wl:annotation wl:sentence="12" wl:entityType="GeoEntity" wl:end="34" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="21" wl:surfaceForm="San Francisco"/>
+  <wl:annotation wl:sentence="24" wl:entityType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="84" wl:surfaceForm="New York"/>
 </wl:page>
-''' 
-    
+'''
+
+    JESAJA_URL = 'http://localhost:63002/rest/'
     PROFILE_NAME = 'default'
     STOPLIST_PROFILE_NAME = 'stoplist'
-    CORPUS_NAME  = 'test_corpus'
+    CORPUS_NAME = 'test_corpus_neks'
     MATVIEW_NAME = 'unittest'
     SAMPLE_DATA_FILE = get_full_path('xml_documents.pickle.gz')
-
+    SAMPLE_DATA_FILE = get_full_path('xml_documents_dach_at_media.pickle.gz')
     PROFILE = {
-        'valid_pos_tags'                 : ['NN', 'NNP', 'NNS'],#['NN', 'P', 'ADJ'],
-        'min_phrase_significance'        : 2.0,
-        'num_keywords'                   : 5,
-        'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', # com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm
-        'min_token_count'                : 1,
-        'skip_underrepresented_keywords' : False,
-        'use_neks'                       : True,
-        'stoplists'                      : [],
+        'valid_pos_tags': ['NN', 'NNP', 'NNS'],  # ['NN', 'P', 'ADJ'],
+        'required_pos_tags': [],
+        'min_phrase_significance': 2.0,
+        'num_keywords': 5,
+        'keyword_algorithm': 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
+        'min_token_count': 1,
+        'min_ngram_length': 1,
+        'max_ngram_length': 3,
+        'skip_underrepresented_keywords': False,
+        'ground_annotations': True,
+        'stoplists': [],
     }
 
     def setUp(self):
         '''
         Setup Jesaja Keyword Server
         '''
-        self.jesaja = JesajaNg(url='http://localhost:8080/jesaja/rest/')
+        self.jesaja = JesajaNg(url=self.JESAJA_URL)
         self.service_is_online = self.jesaja.is_online()
 
         if self.service_is_online:
@@ -93,40 +97,49 @@ class TestJesajaNeks(unittest.TestCase):
 
             with GzipFile(self.SAMPLE_DATA_FILE) as f:
                 sample_corpus = load(f)
-                print 'Loaded corpus with %d entries' % (len(sample_corpus))
+                print('Loaded corpus with %d entries' % (len(sample_corpus)))
 
+#             for doc in sample_corpus:
+#                 print(doc)
             self.jesaja.set_stoplist('testList',
-                                     ('the', 'from', 'there', 'here') )
+                                     ('the', 'from', 'there', 'here'))
             self.jesaja.set_stoplist('anotherList',
                                      ('you', 'he', 'she', 'it', 'them'))
             self.jesaja.set_keyword_profile(self.PROFILE_NAME, self.PROFILE)
-            self.jesaja.set_keyword_profile(self.STOPLIST_PROFILE_NAME, STOPLIST_PROFILE)
-            self.jesaja.set_matview_profile(self.MATVIEW_NAME, self.PROFILE_NAME)
+            self.jesaja.set_keyword_profile(
+                self.STOPLIST_PROFILE_NAME, STOPLIST_PROFILE)
+            self.jesaja.set_matview_profile(
+                self.MATVIEW_NAME, self.PROFILE_NAME)
 
             xml_documents = [self.xml_content]
-        
+
             # create the reference corpus
             if not self.jesaja.has_corpus(matview_id=self.MATVIEW_NAME):
                 while self.jesaja.rotate_shard(matview_id=self.MATVIEW_NAME) == 0:
-#                     csv_corpus = {'keystone':25, 'energy': 123, 'ana': 12, 'tom': 22, 'petra': 3, 'clima':5, 'Shihab': 12, 'Kirche':10}
-#                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
-                    self.jesaja.add_documents(matview_id=self.MATVIEW_NAME, xml_documents=xml_documents)
+                    #                     csv_corpus = {'keystone':25, 'energy': 123, 'ana': 12, 'tom': 22, 'petra': 3, 'clima':5, 'Shihab': 12, 'Kirche':10}
+                    #                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
+                    self.jesaja.add_documents(
+                        matview_id=self.MATVIEW_NAME, xml_documents=xml_documents)
         else:
-            print 'WARNING: Webservice is offline --> not executing all tests!!'
-            
+            print('WARNING: Webservice is offline --> not executing all tests!!')
+
     def test_nek_annotation(self):
         ''' test nek annotations '''
         xml_content = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247">
+                            <wl:sentence> Did you hear about Obama? This is a really good story.</wl:sentence>
                             <wl:sentence wl:dependency="1:advmod -1:ROOT 1:advmod 1:advmod 1:adpmod 6:det 4:adpobj 6:adpmod 7:adpobj 10:compmod 8:appos 1:p" wl:id="312ea95b45c50be0c5dd4a215d5adaaf" wl:pos="ADV VVFIN ADV ADV APPR ART NN APPR NN NE NE $." wl:token="0,2 3,12 13,17 18,24 25,28 29,34 35,44 45,48 49,61 62,68 69,74 74,75"><![CDATA[So geschehen auch jüngst bei einem Interview mit US-Präsident Barack Obama.]]></wl:sentence>
-                            <wl:annotation wl:sentence="0" wl:annotationType="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
+                            <wl:annotation wl:sentence="1" wl:entity_type="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:md5sum="312ea95b45c50be0c5dd4a215d5adaaf" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
                          </wl:page>'''
         if self.service_is_online:
-            result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME, 
+            result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME,
                                                          [xml_content])
             assert len(result)
-
+#            from pprint import pprint
+#            pprint(result)
             assert '1243661964' in result
-            assert len(result['1243661964'])
-            
+            assert len(result['1243661964']) == 1
+            assert result['1243661964'][0]['key'] == 'http://de.dbpedia.org/resource/Barack_Obama'
+
+
 if __name__ == '__main__':
     unittest.main()

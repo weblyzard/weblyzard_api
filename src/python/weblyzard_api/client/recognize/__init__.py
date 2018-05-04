@@ -321,9 +321,10 @@ class Recognize(MultiRESTClient):
         if len(doc_list) and isinstance(doc_list[0], basestring):
             content_type = 'application/xml'
 
-        if 'content_id' in doc_list[0]:
-            search_command = 'searchDocuments'
-        elif 'id' in doc_list[0]:
+#         if 'content_id' in doc_list[0]:
+#             search_command = 'searchDocuments'
+
+        if 'id' in doc_list[0]:
             search_command = 'searchXmlDocuments'
         else:
             raise ValueError("Unsupported input format.")

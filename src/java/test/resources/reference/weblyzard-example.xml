@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wl:page 
+	xmlns:dc="http://purl.org/dc/elements/1.1/" 
+	xmlns:ma="http://www.w3.org/ns/ma-ont#"
+	xmlns:wl="http://www.weblyzard.com/wl/2013#" 
+	dc:format="text/plain" 
+	dc:subject="firmament; kind; evening; darkness; light; herb; earth"
+	xml:lang="en" wl:id="1"
+	wl:nilsimsa="53fb058813d14524f3084878fa855521042a08e1512061bc65002fc14210741d">
+	<wl:sentence
+		wl:dependency="4:TMP 3:NMOD 3:NMOD 0:PMOD -1:ROOT 6:NMOD 4:OBJ 6:COORD 9:NMOD 7:CONJ 4:P"
+		wl:id="0b4591090d210426dbaae959fc5d5df4" wl:pos="IN DT VBG NNP VBD DT NN CC DT NN ."
+		wl:token="0,2 3,6 7,16 17,20 21,28 29,32 33,39 40,43 44,47 48,53 53,54"><![CDATA[In the beginning God created the heaven and the earth.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:NMOD 2:DEP 6:SBJ 2:COORD 5:NMOD 3:CONJ -1:ROOT 6:PRD 7:PMOD 6:P 6:COORD 16:SBJ 16:P 6:NMOD 15:NMOD 16:SBJ 13:CONJ 16:PRD 16:ADV 20:NMOD 18:PMOD 20:NMOD 23:NMOD 21:PMOD 6:P"
+		wl:id="bf0fc60d9a479bae3819920e2953e8b3"
+		wl:pos="NN CD CD CC DT NN VBD IN NN , CC NN : CC NN NN VBD CD IN DT NN IN DT JJ ."
+		wl:token="0,1 1,4 4,5 6,9 10,13 14,19 20,23 24,31 32,36 36,37 38,41 42,46 46,47 48,51 52,60 61,62 62,65 65,66 67,71 72,75 76,80 81,83 84,87 88,92 92,93"><![CDATA[{1:2} And the earth was without form, and void; and darkness [was] upon the face of the deep.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:DEP 2:NMOD 5:SBJ 2:NMOD 3:PMOD -1:ROOT 5:TMP 8:NMOD 6:PMOD 8:NMOD 11:NMOD 9:PMOD 5:P"
+		wl:id="4a31ed78f18436871e314d04e2d57ced" wl:pos="CC DT NN IN NNP VBD IN DT NN IN DT NNS ."
+		wl:token="0,3 4,7 8,14 15,17 18,21 22,27 28,32 33,36 37,41 42,44 45,48 49,55 55,56"><![CDATA[And the Spirit of God moved upon the face of the waters.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:DEP 2:SBJ -1:ROOT 2:P 2:OBJ 4:LOC 4:OPRD 6:PRD 2:P 2:COORD 11:SBJ 9:CONJ 11:PRD 2:P"
+		wl:id="4ed6a10c6526ac952f7a8407d42eb131" wl:pos="CC NNP VBD , VB RB VB JJ : CC EX VBD NN ."
+		wl:token="0,3 4,7 8,12 12,13 14,17 18,23 24,26 27,32 32,33 34,37 38,43 44,47 48,53 53,54"><![CDATA[And God said, Let there be light: and there was light.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:TMP 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 7:NMOD 5:OBJ 7:P 10:SBJ 7:NMOD 12:SBJ 10:OBJ 14:AMOD 12:PRD 5:P 5:COORD 18:SBJ 16:CONJ 20:NMOD 18:OBJ 20:NMOD 23:NMOD 21:PMOD 5:P"
+		wl:id="7bed11eac593eb8cd9a775fe73db02e4"
+		wl:pos="NN CD CD CC NNP VBD DT NN , WDT VBP PRP VBD RB JJ : CC NNP VBD DT NN IN DT NN ."
+		wl:token="0,1 1,4 4,5 6,9 10,13 14,17 18,21 22,27 27,28 29,33 34,35 35,37 38,41 41,42 43,47 47,48 49,52 53,56 57,64 65,68 69,74 75,79 80,83 84,92 92,93"><![CDATA[{1:4} And God saw the light, that [it was] good: and God divided the light from the darkness.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 8:NMOD 8:NMOD 5:OBJ 5:P 5:COORD 12:NMOD 16:DEP 14:SBJ 12:NMOD 14:OBJ 5:P"
+		wl:id="4b6211dfb2c3b3af9ad89e43137e1daa" wl:pos="NN CD CD CC NNP VBD DT JJ NN , CC DT NN PRP VBD NNP ."
+		wl:token="0,1 1,4 4,5 6,9 10,13 14,20 21,24 25,30 31,34 34,35 36,39 40,43 44,52 53,55 56,62 63,68 68,69"><![CDATA[{1:5} And God called the light Day, and the darkness he called Night.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="6:DEP 2:NMOD 6:SBJ 2:COORD 5:NMOD 3:CONJ -1:ROOT 9:NMOD 9:NMOD 6:ADV 6:P"
+		wl:id="8619e5df58fbf150133dcc6641a95f7d" wl:pos="CC DT NN CC DT NN VBD DT JJ NN ."
+		wl:token="0,3 4,7 8,15 16,19 20,23 24,31 32,36 37,40 41,46 47,50 50,51"><![CDATA[And the evening and the morning were the first day.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:DEP 2:SBJ -1:ROOT 2:P 2:OBJ 6:ADV 4:OPRD 8:NMOD 6:PRD 8:LOC 11:NMOD 9:PMOD 11:NMOD 14:NMOD 12:PMOD 2:P 2:COORD 16:CONJ 17:OBJ 17:OPRD 21:NMOD 19:OBJ 19:TMP 24:NMOD 22:PMOD 2:P"
+		wl:id="e3db5513beadd499e2061614749e9073"
+		wl:pos="CC NNP VBD , VB RB VB DT NN IN DT NN IN DT NNS , CC VB PRP VB DT NNS IN DT NNS ."
+		wl:token="0,3 4,7 8,12 12,13 14,17 18,23 24,26 27,28 29,38 39,41 42,45 46,51 52,54 55,58 59,65 65,66 67,70 71,74 75,77 78,84 85,88 89,95 96,100 101,104 105,111 111,112"><![CDATA[And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 7:NMOD 5:OBJ 5:P 5:COORD 9:CONJ 12:NMOD 5:OBJ 14:SBJ 12:NMOD 5:OPRD 15:OBJ 5:LOC 19:NMOD 17:PMOD 19:NMOD 22:NMOD 20:PMOD 24:SBJ 22:NMOD 5:VC 25:OBJ 25:DIR 29:NMOD 27:PMOD 5:P 5:COORD 33:SBJ 31:CONJ 33:PRD 5:P"
+		wl:id="b4ceeb14c182cbeb4dc1dab645572caf"
+		wl:pos="NN CD CD CC NNP VBD DT NN , CC VBN DT NNS WDT VBP VBD CD IN DT NN IN DT NNS WDT VBP VBD CD IN DT NN : CC PRP VBD RB ."
+		wl:token="0,1 1,4 4,5 6,9 10,13 14,18 19,22 23,32 32,33 34,37 38,45 46,49 50,56 57,62 63,64 64,68 68,69 70,75 76,79 80,89 90,94 95,98 99,105 106,111 112,113 113,117 117,118 119,124 125,128 129,138 138,139 140,143 144,146 147,150 151,153 153,154"><![CDATA[{1:7} And God made the firmament, and divided the waters which [were] under the firmament from the waters which [were] above the firmament: and it was so.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 7:NMOD 5:OBJ 5:OPRD 5:P"
+		wl:id="06294018d953238542c4925cc1adfffd" wl:pos="NN CD CD CC NNP VBD DT NN NNP ."
+		wl:token="0,1 1,4 4,5 6,9 10,13 14,20 21,24 25,34 35,41 41,42"><![CDATA[{1:8} And God called the firmament Heaven.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="6:DEP 2:NMOD 6:SBJ 2:COORD 5:NMOD 3:CONJ -1:ROOT 9:NMOD 9:NMOD 6:ADV 6:P"
+		wl:id="636f2d5c41759304a85b746971e8b907" wl:pos="CC DT NN CC DT NN VBD DT JJ NN ."
+		wl:token="0,3 4,7 8,15 16,19 20,23 24,31 32,36 37,40 41,47 48,51 51,52"><![CDATA[And the evening and the morning were the second day.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:DEP 2:SBJ -1:ROOT 2:P 2:OBJ 6:NMOD 4:OBJ 4:LOC 9:NMOD 7:PMOD 4:OPRD 10:VC 13:AMOD 11:OPRD 15:NMOD 11:TMP 4:P 4:COORD 17:CONJ 23:NMOD 23:NMOD 22:NMOD 23:NMOD 24:SBJ 18:OBJ 2:P 2:COORD 28:SBJ 26:CONJ 28:PRD 2:P"
+		wl:id="4fca0d5bc03c23c34d057e80d1d8da96"
+		wl:pos="CC NNP VBD , VB DT NNS IN DT NN VB VBN RB JJ CD NN , CC VB DT JJ NN NN CD VBP : CC PRP VBD RB ."
+		wl:token="0,3 4,7 8,12 12,13 14,17 18,21 22,28 29,34 35,38 39,45 46,48 49,57 58,66 67,71 72,75 76,81 81,82 83,86 87,90 91,94 95,98 99,100 100,104 104,105 106,112 112,113 114,117 118,120 121,124 125,127 127,128"><![CDATA[And God said, Let the waters under the heaven be gathered together unto one place, and let the dry [land] appear: and it was so.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 11:NMOD 11:NMOD 9:NMOD 5:NMOD 11:NMOD 9:APPO 5:P 5:COORD 15:NMOD 16:AMOD 13:CONJ 16:AMOD 19:NMOD 17:PMOD 22:DEP 22:SBJ 26:SBJ 22:P 22:COORD 24:CONJ 5:OBJ 26:OBJ 30:DEP 30:SBJ 27:SUB 32:AMOD 30:PRD 5:P"
+		wl:id="b3186aa92587f06d4396776d2b2258cf"
+		wl:pos="NN CD CD CC NNP VBD DT JJ NN NN CD NNP : CC DT NN RB IN DT NNS VBN PRP NNS : CC NNP VBD IN CD PRP VBD RB JJ ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,21 22,25 26,29 30,31 31,35 35,36 37,42 42,43 44,47 48,51 52,61 62,70 71,73 74,77 78,84 85,91 92,94 95,99 99,100 101,104 105,108 109,112 113,117 118,119 119,121 122,125 125,126 127,131 131,132"><![CDATA[{1:10} And God called the dry [land] Earth; and the gathering together of the waters called he Seas: and God saw that [it was] good.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:P 5:DEP 5:SBJ -1:ROOT 5:P 5:OBJ 9:NMOD 7:OBJ 7:OPRD 7:ADV 7:OBJ 34:P 17:NMOD 17:NMOD 17:NMOD 5:NMOD 17:P 17:COORD 19:COORD 20:CONJ 24:NMOD 24:NMOD 21:OBJ 24:APPO 25:OBJ 25:TMP 29:NMOD 27:PMOD 25:P 33:NMOD 33:NMOD 34:SBJ 25:NMOD 34:PMOD 34:LOC 36:PMOD 45:P 5:NMOD 41:NMOD 39:PMOD 39:P 39:COORD 45:SBJ 43:CONJ 45:PRD 5:P"
+		wl:id="306c93be55e99abbb1fb5c1375f80df0"
+		wl:pos="NN CD CD CC NNP VBD , VB DT NN VB RB NN , DT NN VBG NN , NN CC VBP DT NN NN VBG NN IN PRP$ NN , WP$ NN NN VBZ CD IN PRP , IN DT NN : CC PRP VBD RB ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,19 19,20 21,24 25,28 29,34 35,40 41,46 47,52 52,53 54,57 58,62 63,71 72,76 76,77 78,79 79,82 82,83 84,87 88,93 94,98 99,107 108,113 114,119 120,123 124,128 128,129 130,135 136,140 141,142 142,144 144,145 146,148 149,155 155,156 157,161 162,165 166,171 171,172 173,176 177,179 180,183 184,186 186,187"><![CDATA[{1:11} And God said, Let the earth bring forth grass, the herb yielding seed, [and] the fruit tree yielding fruit after his kind, whose seed [is] in itself, upon the earth: and it was so.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:NMOD 2:DEP 5:NMOD 2:DEP 5:NMOD 6:SBJ -1:ROOT 6:ADV 6:OBJ 8:P 8:COORD 10:COORD 11:CONJ 15:NMOD 15:NMOD 12:OBJ 6:TMP 18:NMOD 16:PMOD 6:P 6:COORD 24:NMOD 24:NMOD 24:NMOD 40:SBJ 24:P 28:NMOD 28:NMOD 29:SBJ 24:NMOD 29:OBJ 29:LOC 31:PMOD 24:P 40:TMP 36:NMOD 34:PMOD 40:P 39:NAME 40:SBJ 20:CONJ 40:OBJ 44:DEP 44:SBJ 41:SUB 46:AMOD 44:PRD 6:P"
+		wl:id="d9f4f6289d2f7c0ee9c1af4f427e1185"
+		wl:pos="NN CD CD CC DT NN VBD RB NN , NN CC NN NN VBG NN IN PRP$ NN , CC DT NN VBG NN , WP$ NN NN VBD CD IN PRP , IN PRP$ NN : CC NNP VBD IN CD PRP VBD RB JJ ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,20 21,28 29,34 35,40 40,41 42,43 43,46 46,47 48,52 53,61 62,66 67,72 73,76 77,81 81,82 83,86 87,90 91,95 96,104 105,110 110,111 112,117 118,122 123,124 124,127 127,128 129,131 132,138 138,139 140,145 146,149 150,154 154,155 156,159 160,163 164,167 168,172 173,174 174,176 177,180 180,181 182,186 186,187"><![CDATA[{1:12} And the earth brought forth grass, [and] herb yielding seed after his kind, and the tree yielding fruit, whose seed [was] in itself, after his kind: and God saw that [it was] good.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:NMOD 2:DEP 9:SBJ 2:COORD 5:NMOD 3:CONJ 9:DEP 8:NMOD 9:SBJ -1:ROOT 12:NMOD 12:NMOD 9:PRD 9:P"
+		wl:id="f8ffcb8195c1fe2703c18e270e3b7612" wl:pos="NN CD CD CC DT NN CC DT NN VBD DT JJ NN ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,22 23,26 27,30 31,38 39,43 44,47 48,53 54,57 57,58"><![CDATA[{1:13} And the evening and the morning were the third day.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:DEP 2:SBJ -1:ROOT 2:P 2:OBJ 4:LOC 4:OPRD 6:PRD 7:LOC 10:NMOD 8:PMOD 10:NMOD 13:NMOD 11:PMOD 6:EXTR 14:IM 17:NMOD 15:OBJ 15:ADV 20:NMOD 18:PMOD 2:P 2:COORD 22:CONJ 23:OBJ 23:OPRD 25:PRD 26:PMOD 23:P 23:COORD 29:CONJ 30:PMOD 2:P 2:COORD 2:NMOD 34:PMOD 34:P 34:COORD 41:NMOD 41:P 41:DEP 37:CONJ 44:NMOD 44:DEP 41:OBJ 44:OBJ 44:OPRD 46:PRD 47:PMOD 48:LOC 51:NMOD 49:PMOD 51:NMOD 54:NMOD 52:PMOD 64:PRP 55:IM 56:OBJ 56:ADV 60:NMOD 58:PMOD 64:P 64:DEP 64:SBJ 33:CONJ 64:PRD 2:P"
+		wl:id="349c00df2301c27113262e091500ee50"
+		wl:pos="CC NNP VBD , VB RB VB NNS IN DT NN IN DT NN TO VB DT NN IN DT NN : CC VB PRP VB IN NNS , CC IN NNS , CC IN NNS , CC NNS : CD CD NN CC VB PRP VB IN NNS IN DT NN IN DT NN TO VB NN IN DT NN : CC PRP VBD RB ."
+		wl:token="0,3 4,7 8,12 12,13 14,17 18,23 24,26 27,33 34,36 37,40 41,50 51,53 54,57 58,64 65,67 68,74 75,78 79,82 83,87 88,91 92,97 97,98 99,102 103,106 107,111 112,114 115,118 119,124 124,125 126,129 130,133 134,141 141,142 143,146 147,150 151,155 155,156 157,160 161,166 166,167 168,169 169,173 173,174 175,178 179,182 183,187 188,190 191,194 195,201 202,204 205,208 209,218 219,221 222,225 226,232 233,235 236,240 241,246 247,251 252,255 256,261 261,262 263,266 267,269 270,273 274,276 276,277"><![CDATA[And God said, Let there be lights in the firmament of the heaven to divide the day from the night; and let them be for signs, and for seasons, and for days, and years: {1:15} And let them be for lights in the firmament of the heaven to give light upon the earth: and it was so.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 8:NMOD 8:NMOD 5:OBJ 5:P 12:NMOD 12:NMOD 5:OBJ 5:PRP 13:IM 16:NMOD 14:OBJ 5:P 5:COORD 21:NMOD 21:NMOD 22:SBJ 18:CONJ 22:IM 25:NMOD 23:OBJ 5:P -1:ROOT 29:SBJ 27:NMOD 32:NMOD 32:NMOD 29:OBJ 29:ADV 27:P"
+		wl:id="fe94df1c9d81cafd4cb3d518bb9364ad"
+		wl:pos="NN CD CD CC NNP VBD CD JJ NNS : DT JJR NN TO VB DT NN , CC DT JJR NN TO VB DT NN : NN PRP VBD CD DT NNS RB ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,19 20,23 24,29 30,36 36,37 38,41 42,49 50,55 56,58 59,63 64,67 68,71 71,72 73,76 77,80 81,87 88,93 94,96 97,101 102,105 106,111 111,112 113,114 114,116 117,121 121,122 123,126 127,132 133,137 137,138"><![CDATA[{1:16} And God made two great lights; the greater light to rule the day, and the lesser light to rule the night: [he made] the stars also.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="4:NMOD 2:DEP 4:NMOD 4:NMOD 5:SBJ -1:ROOT 5:OBJ 5:LOC 9:NMOD 7:PMOD 9:NMOD 12:NMOD 10:PMOD 5:PRP 13:IM 14:OBJ 14:TMP 18:NMOD 16:PMOD 49:P 21:DEP 49:ADV 21:P 21:COORD 23:CONJ 24:IM 25:ADV 28:NMOD 26:PMOD 26:COORD 29:CONJ 32:NMOD 30:PMOD 49:P 49:DEP 45:PRP 35:IM 38:NMOD 36:OBJ 38:NMOD 41:NMOD 39:PMOD 45:P 44:NAME 45:SBJ 5:NMOD 45:OBJ 49:DEP 49:SBJ 46:SUB 51:AMOD 49:PRD 5:P"
+		wl:id="8cfa8d712faf5f426dc33524be084059"
+		wl:pos="NN CD CD CC NNP VBD PRP IN DT NN IN DT NN TO VB NN IN DT NN , CD CD NN CC TO VB IN DT NN CC IN DT NN , CC TO VB DT NN IN DT NN : CC NNP VBD IN CD PRP VBD RB JJ ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,18 19,23 24,26 27,30 31,40 41,43 44,47 48,54 55,57 58,62 63,68 69,73 74,77 78,83 83,84 85,86 86,90 90,91 92,95 96,98 99,103 104,108 109,112 113,116 117,120 121,125 126,129 130,135 135,136 137,140 141,143 144,150 151,154 155,160 161,165 166,169 170,178 178,179 180,183 184,187 188,191 192,196 197,198 198,200 201,204 204,205 206,210 210,211"><![CDATA[{1:17} And God set them in the firmament of the heaven to give light upon the earth, {1:18} And to rule over the day and over the night, and to divide the light from the darkness: and God saw that [it was] good.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:NMOD 2:DEP 9:SBJ 2:COORD 5:NMOD 3:CONJ 9:DEP 8:NMOD 9:SBJ -1:ROOT 12:NMOD 12:NMOD 9:PRD 9:P"
+		wl:id="bcd83953b93912a4b9e40fd5217d7f88" wl:pos="NN CD CD CC DT NN CC DT NN VBD DT JJ NN ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,22 23,26 27,30 31,38 39,43 44,47 48,54 55,58 58,59"><![CDATA[{1:19} And the evening and the morning were the fourth day.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:P 5:DEP 5:SBJ -1:ROOT 5:P 5:OBJ 9:NMOD 7:OBJ 15:NMOD 15:NMOD 15:NMOD 15:NMOD 15:NMOD 9:APPO 17:SBJ 15:NMOD 17:OBJ 5:P 5:COORD 22:NMOD 20:CONJ 24:NMOD 25:SBJ 5:OBJ 25:VC 26:LOC 29:NMOD 27:PMOD 29:LOC 33:NMOD 33:NMOD 30:PMOD 33:NMOD 34:PMOD 5:P"
+		wl:id="c3c1b2a6d7217e473a33819f698fe37e"
+		wl:pos="NN CD CD CC NNP VBD , VB DT NNS VBP RB RB DT VBG NN WDT VBP NN , CC NN VBP IN NN MD VB IN DT NN IN DT JJ NN IN NN ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,19 19,20 21,24 25,28 29,35 36,41 42,47 48,58 59,62 63,69 70,78 79,83 84,88 89,93 93,94 95,98 99,103 104,105 105,109 109,110 111,114 115,118 119,124 125,128 129,134 135,137 138,141 142,146 147,156 157,159 160,166 166,167"><![CDATA[{1:20} And God said, Let the waters bring forth abundantly the moving creature that hath life, and fowl [that] may fly above the earth in the open firmament of heaven.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:TMP 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 7:NMOD 5:OBJ 5:P 5:COORD 12:NMOD 12:NMOD 37:SBJ 14:SBJ 12:NMOD 14:P 19:OBJ 18:NMOD 19:SBJ 14:NMOD 19:TMP 20:AMOD 12:P 31:PMOD 25:NMOD 23:PMOD 23:P 23:COORD 30:NMOD 30:NMOD 27:CONJ 12:NMOD 33:NMOD 31:PMOD 12:P 12:COORD 35:CONJ 9:CONJ 37:OBJ 41:DEP 41:SBJ 38:SUB 43:AMOD 41:PRD 5:P"
+		wl:id="3551b6d6f7929a004fb9bba2d6587da7"
+		wl:pos="NN CD CD CC NNP VBD JJ NNS , CC DT NN NN WDT VBP , WDT DT NNS VBD RB RB , IN PRP$ NN , CC DT JJ NN IN PRP$ NN : CC NNP VBD IN CD PRP VBD RB JJ ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,22 23,28 29,35 35,36 37,40 41,46 47,53 54,62 63,67 68,74 74,75 76,81 82,85 86,92 93,100 101,106 107,117 117,118 119,124 125,130 131,135 135,136 137,140 141,146 147,153 154,158 159,164 165,168 169,173 173,174 175,178 179,182 183,186 187,191 192,193 193,195 196,199 199,200 201,205 205,206"><![CDATA[{1:21} And God created great whales, and every living creature that moveth, which the waters brought forth abundantly, after their kind, and every winged fowl after his kind: and God saw that [it was] good.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:TMP 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 5:OBJ 5:P 5:ADV 8:P 5:VC 10:PRD 10:P 10:COORD 13:CONJ 5:P 5:COORD 16:CONJ 19:NMOD 17:OBJ 19:LOC 22:NMOD 20:PMOD 5:P 5:COORD 24:CONJ 27:NMOD 25:OBJ 27:LOC 30:NMOD 28:PMOD 5:P"
+		wl:id="d716cf0022e2641310c48d736647d531"
+		wl:pos="NN CD CD CC NNP VBD PRP , VBG , VB JJ , CC VB , CC VB DT NNS IN DT NNS , CC VB NN VB IN DT NN ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,22 23,27 27,28 29,35 35,36 37,39 40,48 48,49 50,53 54,62 62,63 64,67 68,72 73,76 77,83 84,86 87,90 91,95 95,96 97,100 101,104 105,109 110,118 119,121 122,125 126,131 131,132"><![CDATA[{1:22} And God blessed them, saying, Be fruitful, and multiply, and fill the waters in the seas, and let fowl multiply in the earth.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:NMOD 2:DEP 9:SBJ 2:COORD 5:NMOD 3:CONJ 9:DEP 8:NMOD 9:SBJ -1:ROOT 12:NMOD 12:NMOD 9:PRD 9:P"
+		wl:id="47c4ccad0c653f9cea182c81bdcabcdd" wl:pos="NN CD CD CC DT NN CC DT NN VBD DT JJ NN ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,22 23,26 27,30 31,38 39,43 44,47 48,53 54,57 57,58"><![CDATA[{1:23} And the evening and the morning were the fifth day.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:DEP 2:SBJ -1:ROOT 2:P 2:OBJ 6:NMOD 4:OBJ 4:OPRD 7:ADV 11:NMOD 11:NMOD 7:OBJ 4:TMP 14:NMOD 12:PMOD 14:P 14:COORD 16:P 16:COORD 20:NMOD 18:CONJ 16:P 16:COORD 22:CONJ 23:NMOD 26:NMOD 24:PMOD 14:TMP 29:NMOD 27:PMOD 14:P 4:COORD 33:SBJ 31:CONJ 33:PRD 2:P"
+		wl:id="e1c9f3686d53902c6f721cac290ed10e"
+		wl:pos="CC NNP VBD , VB DT NN VB RB DT NN NN IN PRP$ NN , NNS , CC VBG NN , CC NN IN DT NN IN PRP$ NN : CC PRP VBD RB ."
+		wl:token="0,3 4,7 8,12 12,13 14,17 18,21 22,27 28,33 34,39 40,43 44,50 51,59 60,65 66,69 70,74 74,75 76,82 82,83 84,87 88,96 97,102 102,103 104,107 108,113 114,116 117,120 121,126 127,132 133,136 137,141 141,142 143,146 147,149 150,153 154,156 156,157"><![CDATA[And God said, Let the earth bring forth the living creature after his kind, cattle, and creeping thing, and beast of the earth after his kind: and it was so.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 7:NMOD 5:OBJ 7:NMOD 10:NMOD 8:PMOD 5:TMP 13:NMOD 11:PMOD 5:P 5:COORD 17:ADV 25:LOC 19:NMOD 17:PMOD 17:P 17:COORD 23:NMOD 21:CONJ 25:SBJ 15:CONJ 25:ADV 28:NMOD 26:PMOD 25:TMP 31:NMOD 29:PMOD 5:P 5:COORD 35:SBJ 33:CONJ 35:OBJ 39:DEP 39:SBJ 36:SUB 41:AMOD 39:PRD 5:P"
+		wl:id="208acaa47aa3da715035c3572d9af940"
+		wl:pos="NN CD CD CC NNP VBD DT NN IN DT NN IN PRP$ NN , CC NNS IN PRP$ NN , CC DT NN WDT VBP IN DT NN IN PRP$ NN : CC NNP VBD IN CD PRP VBD RB JJ ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,19 20,23 24,29 30,32 33,36 37,42 43,48 49,52 53,57 57,58 59,62 63,69 70,75 76,81 82,86 86,87 88,91 92,97 98,103 104,108 109,117 118,122 123,126 127,132 133,138 139,142 143,147 147,148 149,152 153,156 157,160 161,165 166,167 167,169 170,173 173,174 175,179 179,180"><![CDATA[{1:25} And God made the beast of the earth after his kind, and cattle after their kind, and every thing that creepeth upon the earth after his kind: and God saw that [it was] good.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:DEP 2:SBJ -1:ROOT 2:P 2:VC 4:OBJ 4:OPRD 6:OBJ 6:LOC 10:NMOD 8:PMOD 4:P 4:TMP 14:NMOD 12:PMOD 2:P 2:COORD 16:CONJ 17:OBJ 17:OPRD 19:OBJ 19:TMP 23:NMOD 21:PMOD 23:NMOD 26:NMOD 24:PMOD 2:P 2:COORD 56:NMOD 31:NMOD 29:PMOD 31:NMOD 34:NMOD 32:PMOD 29:P 29:COORD 36:CONJ 39:NMOD 37:PMOD 29:P 29:COORD 41:CONJ 45:NMOD 45:NMOD 42:PMOD 29:P 29:COORD 47:CONJ 51:NMOD 51:NMOD 48:PMOD 53:SBJ 2:NMOD 2:NMOD 56:NMOD 54:PMOD 2:P"
+		wl:id="e73744fd006ff368b9e9b9426d79843c"
+		wl:pos="CC NNP VBD , VB PRP VB NN IN PRP$ NN , IN PRP$ NN : CC VB PRP VB NN IN DT NN IN DT NN , CC IN DT NN IN DT NN , CC IN DT NNS , CC IN PDT DT NN , CC IN DT VBG NN WDT VBP IN DT NN ."
+		wl:token="0,3 4,7 8,12 12,13 14,17 18,20 21,25 26,29 30,32 33,36 37,42 42,43 44,49 50,53 54,62 62,63 64,67 68,71 72,76 77,81 82,90 91,95 96,99 100,104 105,107 108,111 112,115 115,116 117,120 121,125 126,129 130,134 135,137 138,141 142,145 145,146 147,150 151,155 156,159 160,166 166,167 168,171 172,176 177,180 181,184 185,190 190,191 192,195 196,200 201,206 207,215 216,221 222,226 227,235 236,240 241,244 245,250 250,251"><![CDATA[And God said, Let us make man in our image, after our likeness: and let them have dominion over the fish of the sea, and over the fowl of the air, and over the cattle, and over all the earth, and over every creeping thing that creepeth upon the earth.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:P 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 5:OBJ 5:LOC 12:NMOD 12:NMOD 12:NMOD 12:NMOD 7:PMOD 5:P 5:ADV 16:NMOD 14:PMOD 16:NMOD 17:PMOD 5:CONJ 19:SBJ 20:OBJ 5:P 29:DEP 23:COORD 24:CONJ 23:APPO 29:DEP 27:APPO 5:P"
+		wl:id="34f3dea607f5edabb10278abc8f9d730"
+		wl:pos="NN CD CD IN NNP VBD NN IN PRP$ CD JJ NN NN , IN DT NN IN NNP VBD PRP PRP : NN CC JJ VBN PRP PRP ."
+		wl:token="0,1 1,5 5,6 7,9 10,13 14,21 22,25 26,28 29,32 33,34 34,37 37,38 39,44 44,45 46,48 49,52 53,58 59,61 62,65 66,73 74,76 77,80 80,81 82,86 87,90 91,97 98,105 106,108 109,113 113,114"><![CDATA[{1:27} So God created man in his [own] image, in the image of God created he him; male and female created he them.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:TMP 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 5:OBJ 5:P 5:COORD 10:SBJ 8:CONJ 10:COORD 11:OBJ 11:P 11:COORD 14:CONJ 11:P 11:COORD 17:CONJ 11:P 11:COORD 20:CONJ 23:NMOD 21:OBJ 5:P 5:COORD 25:CONJ 26:OBJ 5:P 5:COORD 29:CONJ 30:OBJ 30:TMP 34:NMOD 32:PMOD 34:NMOD 37:NMOD 35:PMOD 5:P 5:COORD 56:NMOD 42:NMOD 40:PMOD 42:NMOD 45:NMOD 43:PMOD 40:P 40:COORD 47:CONJ 51:NMOD 51:NMOD 48:PMOD 53:SBJ 5:NMOD 5:NMOD 56:NMOD 54:PMOD 5:P"
+		wl:id="d8846f48df3c34fce832f8d130a0941e"
+		wl:pos="NN CD CD CC NNP VBD PRP , CC NNP VBD JJ PRP , VB JJ , CC VB , CC VB DT NN , CC VB PRP : CC VBP NN IN DT NN IN DT NN , CC IN DT NN IN DT NN , CC IN DT NN NN WDT VBP IN DT NN ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,22 23,27 27,28 29,32 33,36 37,41 42,46 47,51 51,52 53,55 56,64 64,65 66,69 70,78 78,79 80,83 84,93 94,97 98,103 103,104 105,108 109,115 116,118 118,119 120,123 124,128 129,137 138,142 143,146 147,151 152,154 155,158 159,162 162,163 164,167 168,172 173,176 177,181 182,184 185,188 189,192 192,193 194,197 198,202 203,208 209,215 216,221 222,226 227,233 234,238 239,242 243,248 248,249"><![CDATA[{1:28} And God blessed them, and God said unto them, Be fruitful, and multiply, and replenish the earth, and subdue it: and have dominion over the fish of the sea, and over the fowl of the air, and over every living thing that moveth upon the earth.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:DEP 2:SBJ -1:ROOT 2:P 7:SBJ 7:P 7:SBJ 2:OBJ 7:VC 8:OBJ 13:NMOD 13:NMOD 13:NMOD 8:OBJ 13:P 16:SBJ 13:NMOD 2:OPRD 17:PRD 17:ADV 21:NMOD 19:PMOD 21:NMOD 25:NMOD 25:NMOD 22:PMOD 17:P 17:COORD 29:NMOD 34:TMP 34:P 34:LOC 2:NMOD 34:SBJ 32:NMOD 27:CONJ 38:NMOD 38:NMOD 35:PRD 38:NMOD 41:NMOD 39:PMOD 41:APPO 42:OBJ 2:P 48:TMP 45:PMOD 48:SBJ 2:OBJ 48:VC 49:PRD 50:PMOD 2:P"
+		wl:id="866e88c1cdf604bfd7256450591ecb50"
+		wl:pos="CC NNP VBD , NNP , PRP VBP VBN PRP DT NN NN NN , WDT VBP VBZ CD IN DT NN IN PDT DT NN , CC DT NN , IN DT WDT VBP VBZ CD DT NN IN DT NN VBG NN : TO PRP PRP MD VB IN NN ."
+		wl:token="0,3 4,7 8,12 12,13 14,20 20,21 22,23 24,28 29,34 35,38 39,44 45,49 50,57 58,62 62,63 64,69 70,71 71,73 73,74 75,79 80,83 84,88 89,91 92,95 96,99 100,105 105,106 107,110 111,116 117,121 121,122 123,125 126,129 130,135 136,137 137,139 139,140 141,144 145,150 151,153 154,155 156,160 161,169 170,174 174,175 176,178 179,182 183,185 186,191 192,194 195,198 199,203 203,204"><![CDATA[And God said, Behold, I have given you every herb bearing seed, which [is] upon the face of all the earth, and every tree, in the which [is] the fruit of a tree yielding seed; to you it shall be for meat.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="2:NMOD 2:NMOD 38:SBJ 2:COORD 3:CONJ 6:NMOD 4:PMOD 6:NMOD 9:NMOD 7:PMOD 2:P 2:COORD 11:CONJ 14:NMOD 12:PMOD 14:NMOD 17:NMOD 15:PMOD 2:P 2:COORD 19:CONJ 22:NMOD 20:PMOD 24:SBJ 22:NMOD 24:ADV 27:NMOD 25:PMOD 27:P 32:SBJ 32:ADV 32:SBJ 27:NMOD 34:NMOD 32:PRD 24:P 38:P 38:SBJ -1:ROOT 38:VC 43:NMOD 43:NMOD 43:NMOD 39:OBJ 43:NMOD 44:PMOD 38:P 38:COORD 49:SBJ 47:CONJ 49:PRD 38:P"
+		wl:id="c09270845e9f4c4497043f4d42488de4"
+		wl:pos="NN CD CD CC TO DT NN IN DT NN , CC TO DT NN IN DT NN , CC TO DT NN WDT VBP IN DT NN , WRB RB EX VBZ CD NN , CD PRP VBP VBN CD DT JJ NN IN NN : CC PRP VBD RB ."
+		wl:token="0,1 1,5 5,6 7,10 11,13 14,19 20,25 26,28 29,32 33,38 38,39 40,43 44,46 47,52 53,57 58,60 61,64 65,68 68,69 70,73 74,76 77,82 83,88 89,93 94,102 103,107 108,111 112,117 117,118 119,126 127,128 128,133 134,136 136,137 138,142 142,143 144,145 145,146 147,151 152,157 157,158 159,164 165,170 171,175 176,179 180,184 184,185 186,189 190,192 193,196 197,199 199,200"><![CDATA[{1:30} And to every beast of the earth, and to every fowl of the air, and to every thing that creepeth upon the earth, wherein [there is] life, [I have given] every green herb for meat: and it was so.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="5:TMP 2:DEP 5:SBJ 5:DEP 5:SBJ -1:ROOT 7:NMOD 5:OBJ 7:NMOD 10:SBJ 8:SUB 10:VC 11:P 10:COORD 13:P 13:CONJ 7:P 5:OPRD 19:SBJ 17:OBJ 22:AMOD 22:AMOD 19:PRD 5:P"
+		wl:id="a207315f4d748dd01b6455f239c2c751"
+		wl:pos="NN CD CD CC NNP VBD DT NN IN PRP VBD VBN , CC , VB , VB PRP VBD CD RB JJ ."
+		wl:token="0,1 1,5 5,6 7,10 11,14 15,18 19,24 25,30 31,35 36,38 39,42 43,47 47,48 49,52 52,53 54,60 60,61 62,63 63,65 66,69 69,70 71,75 76,80 80,81"><![CDATA[{1:31} And God saw every thing that he had made, and, behold, [it was] very good.]]></wl:sentence>
+	<wl:sentence
+		wl:dependency="6:DEP 2:NMOD 6:SBJ 2:COORD 5:NMOD 3:CONJ -1:ROOT 9:NMOD 9:NMOD 6:ADV 6:P"
+		wl:id="c9e4dc2acc8ce838c65a375b68c1f2c9" wl:pos="CC DT NN CC DT NN VBD DT JJ NN ."
+		wl:token="0,3 4,7 8,15 16,19 20,23 24,31 32,36 37,40 41,46 47,50 50,51"><![CDATA[And the evening and the morning were the sixth day.]]></wl:sentence>
+</wl:page>

@@ -64,3 +64,4 @@ coverage.xml
 # vim
 .*.swp
 *~
+.idea/

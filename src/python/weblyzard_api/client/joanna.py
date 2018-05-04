@@ -3,12 +3,11 @@ Created on Oct 30, 2015
 
 @author: lucas
 '''
+import json
 import logging
 import urllib2
-import json
-
-from time import sleep
 from random import random, randint
+from time import sleep
 
 from eWRT.ws.rest import MultiRESTClient
 
@@ -22,11 +21,12 @@ class PostRequest(object):
     ''' Make a post request and return the connection without
     reading the data. Allows for finer handling of error codes
     '''
+
     def __init__(self, url, data):
         self.url = url
         self.data = json.dumps({"hashes": data})
         self.headers = [{"Content-Type": "application/json"}]
-    
+
     def request(self):
         handler = urllib2.HTTPHandler()
         opener = urllib2.build_opener(handler)
@@ -36,13 +36,13 @@ class PostRequest(object):
         req.add_data(self.data)
         try:
             conn = opener.open(req)
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             conn = e
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             logger.error("Connection refused.. %s", e)
             raise e
         return conn
-        
+
 
 class Joanna(object):
     """
@@ -83,7 +83,7 @@ class Joanna(object):
     Example usage:
         jo = Joanna(url="http://localhost:8080")
     """
-    
+
     def __init__(self, url, default_timeout=None):
         self.url = url
         self.default_timeout = default_timeout
@@ -94,53 +94,65 @@ class Joanna(object):
         '''
         request_url = "get_hashes/{}/{}".format(sourceId, portalName)
         return self.multiRestclient.request(request_url)
-    
+
+    def get_hash_size(self, sourceId, portalName):
+        ''' Return the hashes for a specific source and portal
+        '''
+        request_url = "hashes_size/{}/{}".format(sourceId, portalName)
+        return self.multiRestclient.request(request_url)
+
     def clean_hashes(self):
         ''' Make a request to clean old nilsimsa hashes
         '''
         request_url = "clean_hashes"
         return self.multiRestclient.request(request_url)
-    
-    def similar_document(self, sourceId, nilsimsa, portalName, 
-                         daysBack=None):
-        ''' Get the similarity of a single document. 
-        Expected response: Boolean True or False 
+
+    def similar_document(self, sourceId, nilsimsa, portalName,
+                         daysBack=None, nilsimsa_threshold=5):
+        ''' Get the similarity of a single document.
+        Expected response: Boolean True or False
         '''
         if daysBack is None:
             daysBack = 20
-        request_url = "is_similar/{}/{}/{}/{}".format(
-                    sourceId, portalName, nilsimsa, daysBack)
-        
+        request_url = "is_similar/{}/{}/{}/{}/{}".format(
+            sourceId, portalName, nilsimsa, daysBack, nilsimsa_threshold)
+
         result = self.multiRestclient.request(
-                request_url, return_plain=True)
+            request_url, return_plain=True)
+
         if result == "LOADED":
             result = self.multiRestclient.request(
-                    request_url, return_plain=True)
+                request_url, return_plain=True)
         else:
             return result
 
-    def similar_documents(self, sourceId, portalName, nilsimsaList,
-                          daysBack=20):
+    def similar_documents(self, sourceId, portalName, contentIds_nilsimsa_dict,
+                          daysBack=20, nilsimsa_threshold=5):
         """ Uses PostRequest instead of the eWRT MultiRESTClient 
          for finer control of the connection codes for retries
              result: {hash:boolean, ..}
         """
         max_retry_delay = DEFAULT_MAX_RETRY_DELAY
         max_retry_attempts = DEFAULT_MAX_RETRY_ATTEMPTS
+        nilsimsa_threshold = int(nilsimsa_threshold)
         if daysBack is None:
             daysBack = DAYS_BACK_DEFAULT
-            
-        if not (sourceId or nilsimsaList):
+
+        if not (sourceId or contentIds_nilsimsa_dict):
             logger.error("Arguments missing")
             return
-        if isinstance(nilsimsaList, basestring):
-            logger.error("Expected list. Please use single_document")
-            raise ValueError('Expected a list')
+        if isinstance(contentIds_nilsimsa_dict, basestring):
+            logger.error("Expected dict. Please use single_document")
+            raise ValueError('Expected a dictionary, got a string')
+        if isinstance(contentIds_nilsimsa_dict, list):
+            logger.error("Expected dict. Got a list.")
+            raise ValueError('Expected a dictionary, got a list.')
 
-        request_url = "batchIsSimilar/{}/{}/{}".format(
-                                    portalName, sourceId, daysBack)
-        req = PostRequest(self.url + '/' + request_url, nilsimsaList)
-        logger.debug('Trying to request: %s', req.url)
+        request_url = "batchIsSimilar/{}/{}/{}/{}".format(
+            portalName, sourceId, daysBack, nilsimsa_threshold)
+
+        req = PostRequest(self.url + '/' + request_url,
+                          contentIds_nilsimsa_dict)
 
         attempts = 0
         conn_code = -1
@@ -154,12 +166,20 @@ class Joanna(object):
                 if data == "LOADED":
                     logger.info("Nilsimsas loaded from db. \
                     Sending request again for results..")
+                elif data == "LOADING":
+                    logger.info("Nilsimsas loading from db. \
+                    Sending request again for results..")
+                    sleep(2)
                 else:
                     attempts = max_retry_attempts
-                    return json.loads(data)
+                    json_data = json.loads(data)
+                    for content_id, h in contentIds_nilsimsa_dict.iteritems():
+                        if h not in json_data:
+                            json_data[h] = 'true'
+                    return json_data
             elif conn.code == 204:
-                logger.info('No content found attempts %d', attempts)
                 data = conn.read()
+                logger.info('No content found attempts {} {}', attempts, data)
             elif conn.code == 400:
                 logger.error('Bad request.. 404 error')
                 data = conn.read()
@@ -170,23 +190,22 @@ class Joanna(object):
                     'Server failure: attempts %d %s', attempts, data)
             sleep(max_retry_delay * random())
             attempts += 1
-            
+
     def reload_source_nilsimsa(self, sourceId, portal_db, daysBack=20):
         if daysBack is None:
             daysBack = DAYS_BACK_DEFAULT
         request = "load/{}/{}/{}".format(portal_db, sourceId, daysBack)
         return self.multiRestclient.request(request, return_plain=True)
-    
+
     def status(self):
         return self.multiRestclient.request('status', return_plain=True)
 
     def version(self):
         return self.multiRestclient.request('version', return_plain=True)
-    
+
     def rand_strings(self, num_docs):
         docs_to_send = []
         for _ in xrange(num_docs):
             rand_str = "".join([str(randint(0, 1)) for _ in xrange(256)])
             docs_to_send.append(rand_str)
         return docs_to_send
-    
