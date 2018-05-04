@@ -38,7 +38,7 @@ class SKBRESTClient(object):
         else:
             return None
 
-def save_doc_kw_skb(self, kwargs):
+    def save_doc_kw_skb(self, kwargs):
         response = requests.post('%s/%s' % (self.url, self.KEYWORD_PATH),
                                  data=json.dumps(kwargs),
                                  headers={'Content-Type': 'application/json'})
