@@ -21,6 +21,7 @@ public class CharSpan implements Span {
     private int end;
 
     /**
+     * @param s input string
      * @return the substring within the given range
      */
     public String getSubstring(String s) {

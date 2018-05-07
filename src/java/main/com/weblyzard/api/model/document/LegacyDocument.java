@@ -38,8 +38,9 @@ import lombok.experimental.Accessors;
  * header</code> instance variable.
  *
  * <p>
- * The static helper function {@link LegacyDocument#toXml(LegacyDocument)} and {@link LegacyDocument#fromXml(String)}
- * translate between {@link LegacyDocument} objects and the corresponding XML representations.
+ * The static helper function {@link LegacyDocument#toXml(LegacyDocument)} and
+ * {@link LegacyDocument#fromXml(String)} translate between {@link LegacyDocument} objects and the
+ * corresponding XML representations.
  *
  * @author weichselbraun@weblyzard.com
  */
@@ -99,12 +100,12 @@ public class LegacyDocument implements Serializable {
      *
      * @param document The {@link LegacyDocument} object to convert.
      * @return An XML representation of the given {@link LegacyDocument} object.
-     * @throws JAXBException
      */
     public static String toXml(LegacyDocument document) throws JAXBException {
         StringWriter stringWriter = new StringWriter();
-        JAXBElement<LegacyDocument> jaxbElement = new JAXBElement<>(
-                new QName(LegacyDocument.NS_WEBLYZARD, "page", "wl"), LegacyDocument.class, document);
+        JAXBElement<LegacyDocument> jaxbElement =
+                new JAXBElement<>(new QName(LegacyDocument.NS_WEBLYZARD, "page", "wl"),
+                        LegacyDocument.class, document);
         JAXBContext jaxbContext = JAXBContext.newInstance(LegacyDocument.class);
         Marshaller xmlMarshaller = jaxbContext.createMarshaller();
         xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -117,7 +118,6 @@ public class LegacyDocument implements Serializable {
      *
      * @param xmlString The webLyzard XML document to unmarshall
      * @return The {@link LegacyDocument} instance corresponding to the xmlString
-     * @throws JAXBException
      */
     public static LegacyDocument fromXml(String xmlString) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(LegacyDocument.class);
