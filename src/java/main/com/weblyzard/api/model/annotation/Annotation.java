@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.weblyzard.api.datatype.MD5Digest;
 import com.weblyzard.api.model.Span;
 import com.weblyzard.api.model.document.LegacyDocument;
@@ -22,7 +24,7 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-// @JsonSerialize(using = AnnotationSerializer.class)
+@JsonTypeInfo(use = Id.NONE)
 public class Annotation extends EntityDescriptor implements Serializable, Span {
 
     @XmlAttribute(name = "surfaceForm", namespace = LegacyDocument.NS_WEBLYZARD)
