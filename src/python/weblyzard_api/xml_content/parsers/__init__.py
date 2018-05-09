@@ -289,6 +289,14 @@ class XMLParser(object):
         return result
 
     @classmethod
+    def get_required_namespaces(cls, attributes):
+        result = []
+        for att in attributes:
+            if att in cls.ATTR_MAPPING:
+                pass
+            cls.DOCUMENT_NAMESPACES
+
+    @classmethod
     def dump_xml(cls, titles, attributes, sentences, annotations=[],
                  features={}, relations={}):
         ''' returns a webLyzard XML document '''
