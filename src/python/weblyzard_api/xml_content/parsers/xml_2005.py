@@ -11,8 +11,7 @@ from weblyzard_api.xml_content.parsers import XMLParser
 class XML2005(XMLParser):
 
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2005'
-    DOCUMENT_NAMESPACES = {None: '',
-                           'wl': SUPPORTED_NAMESPACE}
+    DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE}
     ATTR_MAPPING = {'content_id': ('content_id', None),
                     'source_id': ('source_id', None),
                     'content_type': ('content_type', None),

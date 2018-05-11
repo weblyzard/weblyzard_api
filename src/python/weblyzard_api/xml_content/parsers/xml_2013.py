@@ -12,8 +12,7 @@ class XML2013(XMLParser):
 
     VERSION = 2013
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2013#'
-    DOCUMENT_NAMESPACES = {None: '',
-                           'wl': SUPPORTED_NAMESPACE,
+    DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE,
                            'dc': 'http://purl.org/dc/elements/1.1/',
                            'xml': 'http://www.w3.org/XML/1998/namespace',
                            'sioc': 'http://rdfs.org/sioc/ns#',
@@ -21,12 +20,11 @@ class XML2013(XMLParser):
                            'foaf': 'http://xmlns.com/foaf/0.1/',
                            'ma': 'http://www.w3.org/ns/ma-ont#',
                            'po': 'http://purl.org/ontology/po/',
-                           'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#>',
-                           'rdfs': 'http://www.w3.org/2000/01/rdf-schema#>'}
+                           'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+                           'rdfs': 'http://www.w3.org/2000/01/rdf-schema#'}
 
     ATTR_MAPPING = {
         'lang': ('lang', 'xml'),  # legacy
-
         'language': ('language', 'dc'),
         'content_type': ('format', 'dc'),
         'publication_date': ('issued', 'dc'),
@@ -108,8 +106,8 @@ class XML2013(XMLParser):
         'media_season': ('season', 'po'),
         'media_episode': ('episode', 'po'),
         'broadcaster': ('broadcaster', 'po'),
-        'broadcast_start': ('broadcaster', 'tl'),
-        'broadcast_end': ('broadcaster', 'tl'),
+        #         'broadcast_start': ('broadcaster', 'tl'),
+        #         'broadcast_end': ('broadcaster', 'tl'),
 
         # to be migrated to features, eventually
         'mediacriticism': ('mediacriticism', 'wl'),  # SMC
@@ -252,7 +250,7 @@ class XML2013(XMLParser):
 #                           '{%s}sem_orient' % DOCUMENT_NAMESPACES['wl']: 'sem_orient',
 #                           '{%s}md5sum' % DOCUMENT_NAMESPACES['wl']: 'md5sum'}
     FEATURE_MAPPING = {'key': ('key', 'wl'),
-                       'content': ('key', 'content')}
+                       'content': ('key', 'wl')}
 #                        {%s}key' % DOCUMENT_NAMESPACES['wl']: 'key',
 #                        '{%s}context' % DOCUMENT_NAMESPACES['wl']: 'context'}
     RELATION_MAPPING = {'key': ('key', 'wl')}
