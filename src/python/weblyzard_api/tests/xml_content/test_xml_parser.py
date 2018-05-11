@@ -98,7 +98,7 @@ class TestXML2013(unittest.TestCase):
             wl:sem_orient="0.0" 
             wl:significance="0.0"
             wl:is_title="true">
-                <![CDATA[Freihandelsgespr??che - Erleichterungen für kleine Firmen geplant]]>
+                <![CDATA[Freihandelsgespräche - Erleichterungen für kleine Firmen geplant]]>
         </wl:sentence>
         <wl:annotation
             wl:key="some.url.com"

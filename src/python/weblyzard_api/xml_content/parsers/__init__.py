@@ -33,15 +33,21 @@ class DatesToStrings(json.JSONEncoder):
 
 
 class XMLParser(object):
+
     VERSION = None
     SUPPORTED_NAMESPACE = None
     DOCUMENT_NAMESPACES = None
+
     ATTR_MAPPING = None
     SENTENCE_MAPPING = None
     ANNOTATION_MAPPING = None
     FEATURE_MAPPING = None
     RELATION_MAPPING = None
     DEFAULT_NAMESPACE = 'wl'
+
+    @classmethod
+    def get_default_ns(cls):
+        return cls.SUPPORTED_NAMESPACE
 
     @classmethod
     def remove_control_characters(cls, value):
@@ -61,7 +67,7 @@ class XMLParser(object):
             try:
                 return json.dumps(value)
             except Exception as e:
-                logger.error('could not encode %s: %s' % (value, e))
+                logger.error('could not encode {}: {}'.format(value, e))
                 return
 
     @classmethod
@@ -72,7 +78,8 @@ class XMLParser(object):
                 raise ValueError('deserializing of invalid json values')
             else:
                 return decoded
-        except ValueError as err:
+        except ValueError:
+            # ignore silently (expected behaviour)
             return value
 
     @classmethod
@@ -109,13 +116,13 @@ class XMLParser(object):
             elif isinstance(value, list) or isinstance(value, dict):
                 value = json.dumps(value, cls=DatesToStrings)
         except Exception as e:
-            logger.error('could not encode %s: %s' % (value, e))
+            logger.error('could not encode {}: {}'.format(value, e))
             value = str(value)
         return value
 
     @classmethod
     def is_supported(cls, xml_content):
-        return 'xmlns:wl="%s"' % cls.SUPPORTED_NAMESPACE in xml_content
+        return 'xmlns:wl="{}"'.format(cls.SUPPORTED_NAMESPACE) in xml_content
 
     @classmethod
     def invert_mapping(cls, mapping):
@@ -144,6 +151,8 @@ class XMLParser(object):
             attributes = cls.load_attributes(root.attrib,
                                              mapping=invert_mapping)
         except Exception as e:
+            logger.warn('could not process mapping {}: {}'.format(
+                cls.ATTR_MAPPING, e))
             attributes = {}
 
         sentences = cls.load_sentences(
@@ -465,13 +474,3 @@ class XMLParser(object):
     def pre_xml_dump(cls, titles, attributes, sentences):
         ''' overriding this functions allows to perform custom cleanup tasks'''
         return attributes, sentences
-
-    @classmethod
-    def get_supported_namespaces(cls):
-        if not isinstance(cls.SUPPORTED_NAMESPACES, list):
-            return [cls.SUPPORTED_NAMESPACES]
-        return cls.SUPPORTED_NAMESPACES
-
-    @classmethod
-    def get_default_ns(cls):
-        return cls.SUPPORTED_NAMESPACE
