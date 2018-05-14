@@ -5,7 +5,7 @@ Created on 07.04.2014
 
 @author: heinz-peterlang
 '''
-from weblyzard_api.xml_content.parsers import XMLParser
+from weblyzard_api.model.parsers import XMLParser
 
 
 class XML2013(XMLParser):
