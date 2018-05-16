@@ -4,6 +4,7 @@
 .. moduleauthor:: Max Goebel <goebel@weblyzard.com>
 '''
 from eWRT.ws.rest import MultiRESTClient
+
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 

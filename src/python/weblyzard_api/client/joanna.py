@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 '''
 Created on Oct 30, 2015
 
@@ -204,7 +206,8 @@ class Joanna(object):
         return self.multiRestclient.request('version', return_plain=True)
 
     def rand_strings(self, num_docs):
-        import os,binascii
+        import os
+        import binascii
         docs_to_send = []
         for _ in xrange(num_docs):
             rand_str = str(binascii.b2a_hex(os.urandom(16)))
