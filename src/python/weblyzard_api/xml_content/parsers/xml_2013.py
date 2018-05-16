@@ -122,7 +122,7 @@ class XML2013(XMLParser):
     SENTENCE_MAPPING = {'token': ('token', 'wl'),
                         'sem_orient': ('sem_orient', 'wl'),
                         'significance': ('significance', 'wl'),
-                        'md5sum': ('md5sum', 'wl'),
+                        'md5sum': ('id', 'wl'),
                         'pos': ('pos', 'wl'),
                         'is_title': ('is_title', 'wl'),
                         'dependency': ('dependency', 'wl')}
