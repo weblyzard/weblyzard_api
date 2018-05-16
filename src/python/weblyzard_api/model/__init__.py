@@ -297,11 +297,12 @@ class ContentModel(object):
                               XML2013.VERSION: XML2013,
                               XMLDeprecated.VERSION: XMLDeprecated}
 
-    def __init__(self, id, content, nilsimsa, format='text/html', partitions={}):
-        self.id = id
+    def __init__(self, content_id, content, nilsimsa, content_format='text/html',
+                 partitions={}):
+        self.content_id = content_id
         self.content = content
         self.nilsimsa = nilsimsa
-        self.format = format
+        self.content_format = content_format
         self.partitions = partitions
 
     def get_text_by_span(self, span):

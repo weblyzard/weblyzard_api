@@ -34,11 +34,16 @@ class JSON2018Parser(JSONParserBase):
         partitions = {label: Partition(label=label, spans=[SpanFactory.new_span(span) for span in spans])
                       for label, spans in parsed_content['partitions'].iteritems()}
 
-        id = parsed_content['id']
+        content_id = parsed_content['id']
         nilsimsa = parsed_content['nilsimsa']
         content = parsed_content['content']
+        content_format = parsed_content['format']
 
-        result = ContentModel(id, content, nilsimsa, format, partitions)
+        result = ContentModel(content_id=content_id,
+                              content=content,
+                              nilsimsa=nilsimsa,
+                              content_format=content_format,
+                              partitions=partitions)
         return result
 
 
