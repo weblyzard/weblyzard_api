@@ -331,11 +331,11 @@ class XMLParser(object):
                 _, ns_prefix = cls.ATTR_MAPPING[att]
             if att in cls.SENTENCE_MAPPING:
                 _, ns_prefix = cls.SENTENCE_MAPPING[att]
-            if att in cls.ANNOTATION_MAPPING:
+            if cls.ANNOTATION_MAPPING and att in cls.ANNOTATION_MAPPING:
                 _, ns_prefix = cls.ANNOTATION_MAPPING[att]
-            if att in cls.FEATURE_MAPPING:
+            if cls.FEATURE_MAPPING and att in cls.FEATURE_MAPPING:
                 _, ns_prefix = cls.FEATURE_MAPPING[att]
-            if att in cls.RELATION_MAPPING:
+            if cls.RELATION_MAPPING and att in cls.RELATION_MAPPING:
                 _, ns_prefix = cls.RELATION_MAPPING[att]
             if ns_prefix is not None and ns_prefix in cls.DOCUMENT_NAMESPACES:
                 namespace = cls.DOCUMENT_NAMESPACES[cls.ATTR_MAPPING[att][1]]

@@ -10,7 +10,7 @@ from weblyzard_api.client.jairo import JairoClient
 
 class JairoTest(unittest.TestCase):
 
-    SERVICE_URL = 'localhost:63005'
+    SERVICE_URL = 'localhost:63005/rest'
 
     def setUp(self):
         self.client = JairoClient(url=self.SERVICE_URL)
@@ -25,8 +25,13 @@ class JairoTest(unittest.TestCase):
         ''' test setting a profile on the Jairo service. '''
         profile = {
             "sparqlEndpoint": "http://dbpedia.org/sparql",
-            "types": {"?type": "type"},
-            "query": "SELECT ?type WHERE { <key> rdf:type ?type }"
+            "types": {
+                "?preferredName": "preferredName",
+                "?parentCountry": "parentCountry",
+                "?latitude": "latitude",
+                "?longitude": "longitude"
+            },
+            "query": "PREFIX dbo: <http://dbpedia.org/ontology/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT ?preferredName ?latitude ?longitude ?parentCountry WHERE {  <key> rdfs:label ?preferredName; geo:lat ?latitude; geo:long ?longitude . OPTIONAL { <key>  dbo:country ?parentCountry } .}"
         }
 
         self.client.set_profile(profile_name='test_profile', profile=profile)
