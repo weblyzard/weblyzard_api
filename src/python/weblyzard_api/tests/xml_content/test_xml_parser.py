@@ -98,7 +98,7 @@ class TestXML2013(unittest.TestCase):
             wl:sem_orient="0.0" 
             wl:significance="0.0"
             wl:is_title="true">
-                <![CDATA[Freihandelsgespr??che - Erleichterungen für kleine Firmen geplant]]>
+                <![CDATA[Freihandelsgespräche - Erleichterungen für kleine Firmen geplant]]>
         </wl:sentence>
         <wl:annotation
             wl:key="some.url.com"
@@ -108,8 +108,7 @@ class TestXML2013(unittest.TestCase):
             wl:md5sum="b42bb3f2cb7ed667ba311811823f37cf">
         </wl:annotation></wl:page>'''
 
-        attributes, sentences, title_annotations, body_annotations, features, \
-            relations = XML2013.parse(xml)
+        attributes, sentences, _, _, _, _ = XML2013.parse(xml)
 
         assert len(attributes) == 4
         assert len(sentences) == 1

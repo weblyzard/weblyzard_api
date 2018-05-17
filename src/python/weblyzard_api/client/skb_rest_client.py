@@ -46,3 +46,22 @@ class SKBRESTClient(object):
             return response.text
         else:
             return None
+
+
+class SKBSentimentDictionary(dict):
+    SENTIMENT_PATH = '1.0/skb/sentiment_dict'
+
+    def __init__(self, url, language, emotion='polarity'):
+        self.url = '{}/{}'.format(url,
+                                  self.SENTIMENT_PATH)
+        res = requests.get(self.url,
+                           params={'lang': language,
+                                   'emotion': emotion})
+        if res.status_code < 400:
+            response = json.loads(res.text)
+            data = {}
+            for document in response:
+                data[(document['term'], document['pos'])] = document['value']
+            dict.__init__(self, data)
+        else:
+            dict.__init__(self, {})
