@@ -1,13 +1,7 @@
 package com.weblyzard.api.client;
 
-import com.weblyzard.api.model.annotation.Annotation;
-import com.weblyzard.api.model.jairo.Profile;
-import com.weblyzard.api.model.jairo.RDFPrefix;
-import java.util.List;
-import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
