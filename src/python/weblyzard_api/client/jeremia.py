@@ -1,5 +1,5 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
@@ -23,6 +23,7 @@ logger = logging.getLogger('weblyzard_api.client.jeremia')
 DEFAULT_WAIT_TIME = 20 * 60
 DEFAULT_MAX_RETRY_DELAY = 20
 DEFAULT_MAX_RETRY_ATTEMPTS = 120
+
 
 class Jeremia(MultiRESTClient):
     '''
@@ -103,7 +104,8 @@ class Jeremia(MultiRESTClient):
         if not documents:
             raise ValueError('Cannot process an empty document list')
 
-        request = 'submit_documents/%s/%d' % (source_id, double_sentence_threshold)
+        request = 'submit_documents/%s/%d' % (source_id,
+                                              double_sentence_threshold)
 
         # wait until the web service has available threads for processing
         # the request
@@ -128,7 +130,6 @@ class Jeremia(MultiRESTClient):
         # this access most certainly causes an exception since the
         # requests above have failed.
         return self.request(request, documents)
-
 
     def status(self):
         '''

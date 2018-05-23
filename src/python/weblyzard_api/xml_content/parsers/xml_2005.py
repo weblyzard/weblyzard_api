@@ -10,32 +10,37 @@ from weblyzard_api.xml_content.parsers import XMLParser
 
 class XML2005(XMLParser):
 
-    SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2005'
-    DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE}
-    ATTR_MAPPING = {'content_id': 'content_id',
-                    'source_id': 'source_id',
-                    'content_type': 'content_type',
-                    'title': 'title',
-                    'url': 'url',
-                    'nilsimsa': 'nilsimsa',
-                    'jonas_type': 'jonas_type',
-                    'title_de': 'title_de',
-                    'title_en': 'title_en',
-                    'title_fr': 'title_fr',
-                    'lang': 'lang',
-                    }
-    SENTENCE_MAPPING = {'pos_tags': 'pos',
-                        'md5sum': 'md5sum',
-                        'content_id': 'content_id',
-                        'dependency': 'dependency',
-                        'token': 'token',
-                        'significance': 'significance',
-                        'is_title': 'is_title',
-                        'sem_orient': 'sem_orient'}
-    FEATURE_MAPPING = {}
-    RELATION_MAPPING = {}
-
     VERSION = 2005
+
+    SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2005'
+
+    DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE}
+
+    ATTR_MAPPING = {'content_id': ('content_id', None),
+                    'source_id': ('source_id', None),
+                    'content_type': ('content_type', None),
+                    'title': ('title', None),
+                    'url': ('url', None),
+                    'nilsimsa': ('nilsimsa', None),
+                    'jonas_type': ('jonas_type', None),
+                    'title_de': ('title_de', None),
+                    'title_en': ('title_en', None),
+                    'title_fr': ('title_fr', None),
+                    'lang': ('lang', None),
+                    }
+
+    SENTENCE_MAPPING = {'pos': ('pos_tags', None),
+                        'md5sum': ('md5sum', None),
+                        'content_id': ('content_id', None),
+                        'dependency': ('dependency', None),
+                        'token': ('token', None),
+                        'significance': ('significance', None),
+                        'is_title': ('is_title', None),
+                        'sem_orient': ('sem_orient', None)}
+
+    FEATURE_MAPPING = {}
+
+    RELATION_MAPPING = {}
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):

@@ -1,4 +1,5 @@
-# -*- coding: utf8 -*
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 '''
 .. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
@@ -28,7 +29,6 @@ class JesajaNg(MultiRESTClient):
                                  default_timeout=default_timeout,
                                  use_random_server=use_random_server)
 
-
     def set_keyword_profile(self, profile_name, keyword_calculation_profile):
         ''' Add a keyword profile to the server
 
@@ -42,12 +42,17 @@ class JesajaNg(MultiRESTClient):
 
                 {
                     'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
+                    'required_pos_tags'              : [],
+                    'corpus_name'                    : reference_corpus_name,
                     'min_phrase_significance'        : 2.0,
                     'num_keywords'                   : 5,
-                    'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
-                    'min_token_count'                : 5,
                     'skip_underrepresented_keywords' : True,
+                    'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', 
+                    'min_token_count'                : 5,
+                    'min_ngram_length'               : 1,
+                    'max_ngram_length'               : 3,
                     'stoplists'                      : [],
+                    'groundAnnotations'              : False,
                 }
 
         .. note:: ``Available keyword_algorithms``
@@ -91,12 +96,12 @@ class JesajaNg(MultiRESTClient):
         :param matview_id: the matview id for which the keywords are computed
         :param xml_documents:
             a list of weblyzard_xml documents [ xml_content, ... ]
-
         '''
         if not self.has_matview(matview_id):
-            raise Exception('Cannot compute keywords - unknown matview {}'.format(matview_id))
+            raise Exception(
+                'Cannot compute keywords - unknown matview {}'.format(matview_id))
         return self.request('get_nek_annotations/{}'.format(matview_id), xml_documents)
-    
+
     def get_keywords(self, matview_id, xml_documents):
         '''
         :param matview_id: the matview id for which the keywords are computed
@@ -105,27 +110,30 @@ class JesajaNg(MultiRESTClient):
 
         '''
         if not self.has_matview(matview_id):
-            raise Exception('Cannot compute keywords - unknown matview {}'.format(matview_id))
+            raise Exception(
+                'Cannot compute keywords - unknown matview {}'.format(matview_id))
         return self.request('get_keywords/{}'.format(matview_id), xml_documents)
 
     def has_matview(self, matview_id):
         return matview_id in self.list_matviews()
 
     def has_corpus(self, matview_id):
-        available_completed_shards = self.request('list_shards/complete/{}'.format(matview_id))
+        available_completed_shards = self.request(
+            'list_shards/complete/{}'.format(matview_id))
         return len(available_completed_shards[matview_id]) > 0
 
     def remove_matview_profile(self, matview_id):
         if not self.has_matview(matview_id):
-            print('No profile %s found' %  matview_id)
+            print('No profile {} found'.format(matview_id))
             return
         return self.request('remove_profile/{}/{}'.format(matview_id))
 
     def get_corpus_size(self, matview_id):
-        available_completed_shards = self.request('list_shards/complete/{}'.format(matview_id))
+        available_completed_shards = self.request(
+            'list_shards/complete/{}'.format(matview_id))
         total = 0
         for shard in available_completed_shards[matview_id]:
-            total= total + shard['wordCount']
+            total = total + shard['wordCount']
         return total
 
     def list_profiles(self):
@@ -151,7 +159,8 @@ class JesajaNg(MultiRESTClient):
         '''
         Determines which profile to use for the given matview
         '''
-        return self.request('set_matview_profile/{}/{}'.format(matview_id, profile_name))
+        return self.request('set_matview_profile/{}/{}'.format(matview_id,
+                                                               profile_name))
 
     def list_stoplists(self):
         '''

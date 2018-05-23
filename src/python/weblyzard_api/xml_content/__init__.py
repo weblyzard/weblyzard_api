@@ -355,6 +355,7 @@ class XMLContent(object):
     def get_xml_document(self, header_fields='all',
                          sentence_attributes=SENTENCE_ATTRIBUTES,
                          annotations=None,
+                         ignore_title=False,
                          xml_version=XML2013.VERSION):
         '''
         :param header_fields: the header_fields to include
@@ -373,7 +374,11 @@ class XMLContent(object):
         if not hasattr(self, 'relations'):
             self.relations = {}
 
-        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=self.titles,
+        titles = self.titles
+        if ignore_title:
+            titles = []
+
+        return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(titles=titles,
                                                                  attributes=self.attributes,
                                                                  sentences=self.sentences,
                                                                  annotations=annotations,
@@ -428,14 +433,18 @@ class XMLContent(object):
         for k, v in new_relations.iteritems():
             self.relations[str(k)] = v
 
-    def as_dict(self, mapping=None,
-                ignore_non_sentence=False, add_titles_to_sentences=False):
+    def as_dict(self, mapping=None, ignore_non_sentence=False,
+                ignore_features=False, ignore_relations=False,
+                add_titles_to_sentences=False):
         ''' convert the XML content to a dictionary.
 
         :param mapping: an optional mapping by which to restrict/rename \
             the returned dictionary
         :param ignore_non_sentence: if true, sentences without without POS tags \
             are omitted from the result
+        :param ignore_features: if true, document features do not get serialized
+        :param ignore_relations: if true, document relations do not get serialized
+        :param add_titles_to_sentences: if true, titles are treated as sentences
         '''
         try:
             if mapping is None:
@@ -472,10 +481,10 @@ class XMLContent(object):
                                                                     annotation_mapping)
                     result[annotation_attr_name].append(annotation_attributes)
 
-            if self.features:
+            if not ignore_features and self.features:
                 result['features'] = self.features
 
-            if self.relations:
+            if not ignore_relations and self.relations:
                 result['relations'] = self.relations
 
         except Exception as e:

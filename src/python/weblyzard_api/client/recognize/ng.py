@@ -15,9 +15,10 @@ INTERNAL_PROFILE_PREFIX = 'extras.'
 LOGGER = logging.getLogger('weblyzard_api.client.recognize.ng')
 SUPPORTED_LANGS = ('en', 'fr', 'de')
 
+
 class Recognize(MultiRESTClient):
     '''
-    Provides access to the Recognize Web Service.
+    Provides access to the RecognizeNg Web Service.
 
     **Workflow:**
      1. pre-load the recognize profiles you need using the :func:`load_profile` call.
@@ -26,43 +27,21 @@ class Recognize(MultiRESTClient):
         * :func:`search_xmldocument` for jeremia documents.
         * :func:`search_text` for plain text.
         * :func:`search_document` for document dictionaries.
-
-    .. note:: Example usage
-
-        .. code-block:: python
-
-            from weblyzard_api.client.recognize import Recognize
-            from pprint import pprint
-
-            url = 'http://triple-store.ai.wu.ac.at/recognize/rest/recognize'
-            profile_name = 'en_US'
-            text = 'Microsoft is an American multinational corporation
-                    headquartered in Redmond, Washington, that develops,
-                    manufactures, licenses, supports and sells computer
-                    software, consumer electronics and personal computers
-                    and services. It was was founded by Bill Gates and Paul
-                    Allen on April 4, 1975.'
-
-            client = Recognize(url)
-            result = client.search_text(profile_name,
-                        text,
-                        lang='en',
-                        limit=40)
-            pprint(result)
-            
-    It is basically recommended to use search_xmldocument with jeremia results, 
-    as search_text was disabled.
-    
     '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
     URL_PATH = '/recognize/rest/'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
-                         'lang': 'xml:lang',
-                         'sentences' : 'sentence',
+                         'lang': 'lang',
+                         'format': 'format',
+                         'nilsimsa': 'nilsimsa',
+                         'sentences': 'sentences',
                          'sentences_map': {'pos': 'pos',
                                            'token': 'token',
-                                           'md5sum': 'id',
-                                           'value': 'value'}}
+                                           'significance': 'significance',
+                                           'is_title': 'is_title',
+                                           'md5sum': 'md5sum',
+                                           'value': 'text',
+                                           'dependency': 'dependency'}}
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
@@ -74,8 +53,7 @@ class Recognize(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
         self.profile_cache = []
-    
-    
+
     @classmethod
     def convert_document(cls, xml, version='0.4'):
         ''' converts an XML String to a document dictionary necessary for \
@@ -93,14 +71,16 @@ class Recognize(MultiRESTClient):
             xml = XMLContent(xml)
 
         try:
-            if float(version[0:3])>=0.5:#.startswith('0.5'):
+            if float(version[0:3]) >= 0.5:
                 return xml.get_xml_document(xml_version=2013).strip()
         except Exception as e:
             LOGGER.warn('Could not parse version: %s' % version)
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
+                           ignore_features=True,
+                           ignore_relations=True,
                            ignore_non_sentence=False,
                            add_titles_to_sentences=True)
-    
+
     def get_xml_document(self, document):
         ''' :returns: the correct XML representation required by the Recognize \
             service'''
@@ -112,7 +92,7 @@ class Recognize(MultiRESTClient):
         :returns: the status of the Recognize web service.
         '''
         return self.request(path='status')
-    
+
     def load_profile(self, profile_name):
         ''' pre-loads the given profile
 
@@ -121,9 +101,9 @@ class Recognize(MultiRESTClient):
         if profile_name.startswith(INTERNAL_PROFILE_PREFIX) or profile_name in self.profile_cache:
             return
 
-        self.profile_cache.append(profile_name)                 #only try to add once
+        self.profile_cache.append(profile_name)  # only try to add once
         return self.request(path='load_profile/{}'.format(profile_name))
-    
+
     def list_profiles(self):
         ''' :returns: a list of all pre-loaded profiles
             .. code-block:: python
@@ -147,11 +127,8 @@ class Recognize(MultiRESTClient):
         return self.request(path='search_text',
                             parameters=text,
                             content_type=content_type,
-                            query_parameters={'profileName' : profile_name,
+                            query_parameters={'profileName': profile_name,
                                               'lang': lang})
-
-
-    
 
     def search_document(self, profile_name, document, limit=0):
         '''
@@ -163,7 +140,7 @@ class Recognize(MultiRESTClient):
         .. note:: Example document
 
            .. code-block:: python
-   
+
               # option 1: document dictionary
               {'content_id': 12, 
                'content': u'the text to analyze'}
@@ -173,28 +150,21 @@ class Recognize(MultiRESTClient):
         '''
         if not document:
             return
-        
-        #content_type = 'application/xml; text/xml; application/json'
+
         content_type = 'application/json'
-        
         search_command = 'search_document'
-        
-        return self.request(path='search_document',
+        return self.request(path=search_command,
                             parameters=document,
                             content_type=content_type,
-                            query_parameters={'profileName' : profile_name,
+                            query_parameters={'profileName': profile_name,
                                               'limit': limit
-                                              #'rescore': max_entities,
-                                              #'buckets': buckets,
-                                              #'wt': output_format,
-                                              #'debug': debug
-                                              }) 
-    
+                                              })
+
     def search_xmldocument(self, profile_name, document, limit):
         '''
         Search the given document for entities specified in the given profiles.
         This should only be called with Jeremia results.
-        
+
         .. note:: Example document
 
            .. code-block:: python     
@@ -203,7 +173,7 @@ class Recognize(MultiRESTClient):
                             'title': 'Hello President! ',
                             'format': 'text/html',
                             'header': {}}
-                
+
                 jeremia_client = Jeremia()
                 jresult = jeremia_client.submit_document(test_doc2)
                 newresult = r.search_xmldocument(profile_name=profile, document=jresult, limit=0)   
@@ -218,20 +188,12 @@ class Recognize(MultiRESTClient):
             return
 
         content_type = 'application/json'
-        
-        search_command = 'search_xmldocument'
-        
         return self.request(path='search_xmldocument',
                             parameters=document,
                             content_type=content_type,
-                            query_parameters={'profileName' : profile_name,
+                            query_parameters={'profileName': profile_name,
                                               'limit': limit
-                                              #'rescore': max_entities,
-                                              #'buckets': buckets,
-                                              #'wt': output_format,
-                                              #'debug': debug
                                               })
-    
 
     def search_documents(self, profile_name, document_list, limit):
         '''
@@ -243,4 +205,3 @@ class Recognize(MultiRESTClient):
         :rtype: the tagged text
         '''
         raise NotImplementedError
-
