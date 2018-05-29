@@ -179,8 +179,8 @@
 					<excludes>
 						<exclude>src/java/test/</exclude>
 					</excludes>
-					<source>9</source>
-					<target>9</target>
+					<source>10</source>
+					<target>10</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -267,7 +267,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.20</version>
+			<version>1.16.22</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -288,7 +288,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>25.0-jre</version>
+			<version>25.1-jre</version>
 			<scope>test</scope>
 		</dependency>
 
