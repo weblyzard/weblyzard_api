@@ -9,9 +9,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import com.weblyzard.api.model.annotation.Annotation;
-import com.weblyzard.api.model.document.LegacyDocument;
-import com.weblyzard.api.model.document.XmlDocument;
+import com.weblyzard.api.model.document.Document;
 
 /** @author philipp.kuntschik@htwchur.ch */
 public class RecognyzeClient extends BasicClient {
@@ -22,8 +20,6 @@ public class RecognyzeClient extends BasicClient {
             "/recognize/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
     private static final String SEARCH_DOCUMENT_SERVICE_URL = "/recognize/rest/search_document";
     private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/recognize/rest/search_documents";
-    private static final String SEARCH_XMLDOCUMENT_SERVICE_URL =
-            "/recognize/rest/search_xmldocument";
     private static final String STATUS_SERVICE_URL = "/recognize/rest/status";
 
     private static final String PARAM_PROFILE_NAME = "profileName";
@@ -54,33 +50,13 @@ public class RecognyzeClient extends BasicClient {
         return result;
     }
 
-    public List<Annotation> searchXmlDocument(String profileName, XmlDocument document)
-            throws WebApplicationException {
-        return this.searchXmlDocument(profileName, document, 0);
-    }
-
-
-    public List<Annotation> searchXmlDocument(String profileName, XmlDocument document, int limit)
-            throws WebApplicationException {
-
-        Response response = super.getTarget(SEARCH_XMLDOCUMENT_SERVICE_URL)
-                .queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document));
-
-        super.checkResponseStatus(response);
-        List<Annotation> result = response.readEntity(new GenericType<List<Annotation>>() {});
-        response.close();
-
-        return result;
-    }
-
-    public LegacyDocument searchDocument(String profileName, LegacyDocument data)
+    public Document searchDocument(String profileName, Document data)
             throws WebApplicationException {
 
         return this.searchDocument(profileName, data, 0);
     }
 
-    public LegacyDocument searchDocument(String profileName, LegacyDocument data, int limit)
+    public Document searchDocument(String profileName, Document data, int limit)
             throws WebApplicationException {
 
         Response response = super.getTarget(SEARCH_DOCUMENT_SERVICE_URL)
@@ -88,19 +64,19 @@ public class RecognyzeClient extends BasicClient {
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
         super.checkResponseStatus(response);
-        LegacyDocument result = response.readEntity(LegacyDocument.class);
+        Document result = response.readEntity(Document.class);
         response.close();
 
         return result;
     }
 
-    public List<LegacyDocument> searchDocuments(String profileName, Set<LegacyDocument> data)
+    public List<Document> searchDocuments(String profileName, Set<Document> data)
             throws WebApplicationException {
 
         return this.searchDocuments(profileName, data, 0);
     }
 
-    public List<LegacyDocument> searchDocuments(String profileName, Set<LegacyDocument> data, int limit)
+    public List<Document> searchDocuments(String profileName, Set<Document> data, int limit)
             throws WebApplicationException {
 
         Response response = super.getTarget(SEARCH_DOCUMENTS_SERVICE_URL)
@@ -108,7 +84,7 @@ public class RecognyzeClient extends BasicClient {
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
         super.checkResponseStatus(response);
-        List<LegacyDocument> result = response.readEntity(new GenericType<List<LegacyDocument>>() {});
+        List<Document> result = response.readEntity(new GenericType<List<Document>>() {});
         response.close();
 
         return result == null ? Collections.emptyList() : result;
