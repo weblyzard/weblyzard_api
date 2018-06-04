@@ -77,8 +77,9 @@ class JSONParserBase(object):
         '''
         try:
             api_dict = json.loads(json_string)
-        except Exception:
-            raise MalformedJSONException('JSON could not be parsed')
+        except Exception as e:
+            raise MalformedJSONException(
+                'JSON could not be parsed: {}'.format(e))
         return cls.from_api_dict(api_dict)
 
     @classmethod
@@ -253,7 +254,8 @@ class JSON10ParserSentence(JSONParserBase):
     '''
     FIELDS_REQUIRED = ['id', 'value']
     FIELDS_OPTIONAL = ['is_title', 'pos_list', 'tok_list', 'dep_tree',
-                       'sentence_number', 'paragraph_number', 'polarity']
+                       'sentence_number', 'paragraph_number', 'polarity',
+                       'polarity_class']
     API_VERSION = 1.0
 
     @classmethod
