@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * The {@link LegacyDocument} and {@link Sentence} model classes used to represent documents.
+ * The {@link LegacyDocument} and {@link LegacySentence} model classes used to represent documents.
  *
  * <p>
  * The {@link LegacyDocument} class also supports arbitrary meta data which is stored in the <code>
@@ -80,7 +80,7 @@ public class LegacyDocument implements Serializable {
     /** Elements used in the output (and input) */
     @JsonProperty("sentences")
     @XmlElement(name = "sentence", namespace = LegacyDocument.NS_WEBLYZARD)
-    private List<Sentence> sentences;
+    private List<LegacySentence> sentences;
 
     /**
      * This field contains all annotations after titleAnnotations and bodyAnnotations have been

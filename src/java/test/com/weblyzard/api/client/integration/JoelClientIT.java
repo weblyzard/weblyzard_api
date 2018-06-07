@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.weblyzard.api.client.JoelClient;
 import com.weblyzard.api.model.document.LegacyDocument;
-import com.weblyzard.api.model.document.Sentence;
+import com.weblyzard.api.model.document.LegacySentence;
 import com.weblyzard.api.model.joel.ClusterResult;
 
 /** @author norman.suesstrunk@htwchur.ch */
@@ -60,7 +60,7 @@ public class JoelClientIT extends TestClientBase {
         assumeTrue(weblyzardServiceAvailable(joelClient));
         try {
             joelClient.addDocuments(Arrays.asList(new LegacyDocument[] {
-                    new LegacyDocument().setSentences(Arrays.asList(new Sentence("Test")))}));
+                    new LegacyDocument().setSentences(Arrays.asList(new LegacySentence("Test")))}));
         } catch (ClientErrorException clientErrorException) {
             assertThat(clientErrorException.getMessage(),
                     is(JoelClient.NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE));

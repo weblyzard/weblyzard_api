@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.weblyzard.api.model.document.LegacyDocument;
-import com.weblyzard.api.model.document.Sentence;
+import com.weblyzard.api.model.document.LegacySentence;
 import java.io.IOException;
 import java.net.URL;
 import javax.xml.bind.JAXBException;
@@ -48,9 +48,9 @@ public class DocumentJsonTest {
 
     @Test
     public void testSentenceSerialization() throws IOException {
-        Sentence sentence = referenceDocument.getSentences().get(0);
+        LegacySentence sentence = referenceDocument.getSentences().get(0);
         String sentenceJsonSerialized = mapper.writeValueAsString(sentence);
-        Sentence deserializedSentence = mapper.readValue(sentenceJsonSerialized, Sentence.class);
+        LegacySentence deserializedSentence = mapper.readValue(sentenceJsonSerialized, LegacySentence.class);
         assertEquals(sentence, deserializedSentence);
     }
 
