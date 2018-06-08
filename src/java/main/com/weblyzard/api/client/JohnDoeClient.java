@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 public class JohnDoeClient extends BasicClient {
 	private static final String PROFILE = "profileName";
 	private static final String CONTENT = "content";
-	private static final String ANNON_SERVICE_URL = "/rest/annon";
+	private static final String ANNON_SERVICE_URL = "/johndoe/rest/annon";
 
 	public JohnDoeClient() {
 		super();
