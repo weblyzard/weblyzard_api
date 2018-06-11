@@ -1,6 +1,6 @@
 /**
  * The {@link com.weblyzard.api.model.document.LegacyDocument} and {@link
- * com.weblyzard.api.model.document.LegacySentence} classes used to encapsulate the webLyzardXML format.
+ * com.weblyzard.api.model.document.Sentence} classes used to encapsulate the webLyzardXML format.
  */
 @XmlSchema(
     elementFormDefault = XmlNsForm.QUALIFIED,

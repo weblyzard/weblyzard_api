@@ -8,13 +8,13 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import com.weblyzard.api.model.Lang;
 import com.weblyzard.api.model.document.LegacyDocument;
-import com.weblyzard.api.model.document.LegacySentence;
+import com.weblyzard.api.model.document.Sentence;
 
 public class SerializationTest {
 
     @Test
     public void test() throws IOException, JAXBException {
-        final LegacySentence sentence = new LegacySentence(
+        final Sentence sentence = new Sentence(
                 "McChain (former US presidente candidate) stated that he would strongly support such actions.",
                 "0,7 8,9 9,15 16,18 19,29 30,39 39,40 41,47 48,52 53,55 56,61 62,70 71,78 79,83 84,91 91,92",
                 "NNP ( JJ NNP NN NN ) VBD IN PRP MD RB VB JJ NNS .");

@@ -23,7 +23,7 @@ import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 @Accessors(chain = true)
 @NoArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LegacySentence implements Serializable {
+public class Sentence implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final String HTML_ENTITY_QUOT = "&quot;";
@@ -60,18 +60,18 @@ public class LegacySentence implements Serializable {
     @XmlAttribute(name = "significance", namespace = LegacyDocument.NS_WEBLYZARD)
     private double significance;
 
-    public LegacySentence(String text) {
+    public Sentence(String text) {
         this.text = text;
         id = MD5Digest.fromText(text);
     }
 
-    public LegacySentence(String text, String token, String pos) {
+    public Sentence(String text, String token, String pos) {
         this(text);
         this.token = token;
         this.pos = pos;
     }
 
-    public LegacySentence(String text, String token, String pos, String dependency) {
+    public Sentence(String text, String token, String pos, String dependency) {
         this(text, token, pos);
         this.dependency = dependency;
     }
@@ -80,13 +80,13 @@ public class LegacySentence implements Serializable {
         return text.replace(HTML_ENTITY_QUOT, "\"");
     }
 
-    public LegacySentence setText(String text) {
+    public Sentence setText(String text) {
         // required to allow marshalling of the XML document (!)
         this.text = text.replace("\"", HTML_ENTITY_QUOT);
         return this;
     }
 
-    public LegacySentence setPos(String pos) {
+    public Sentence setPos(String pos) {
         // required for handling double quotes in POS tags.
     	if(pos!=null){
     		this.pos = pos.replace("\"", HTML_ENTITY_QUOT);

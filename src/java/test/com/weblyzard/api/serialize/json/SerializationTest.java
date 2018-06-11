@@ -3,7 +3,7 @@ package com.weblyzard.api.serialize.json;
 import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weblyzard.api.model.document.LegacySentence;
+import com.weblyzard.api.model.document.Sentence;
 import java.io.IOException;
 import org.junit.Test;
 
@@ -13,8 +13,8 @@ public class SerializationTest {
 
   @Test
   public void test() throws IOException {
-    final LegacySentence sentence =
-        new LegacySentence(
+    final Sentence sentence =
+        new Sentence(
             "McChain (former US presidente candidate) stated that he would strongly support such actions.",
             "0,7 8,9 9,15 16,18 19,29 30,39 39,40 41,47 48,52 53,55 56,61 62,70 71,78 79,83 84,91 91,92",
             "NNP ( JJ NNP NN NN ) VBD IN PRP MD RB VB JJ NNS .");
@@ -30,9 +30,9 @@ public class SerializationTest {
     testSerialization(sentence);
   }
 
-  private static void testSerialization(LegacySentence sentence) throws IOException {
+  private static void testSerialization(Sentence sentence) throws IOException {
     String json = mapper.writeValueAsString(sentence);
-    LegacySentence deserializedSentence = mapper.readValue(json, LegacySentence.class);
+    Sentence deserializedSentence = mapper.readValue(json, Sentence.class);
     assertEquals(sentence, deserializedSentence);
   }
 }
