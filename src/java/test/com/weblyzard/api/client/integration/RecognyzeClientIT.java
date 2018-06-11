@@ -9,29 +9,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weblyzard.api.client.RecognyzeClient;
 import com.weblyzard.api.model.annotation.Annotation;
 import com.weblyzard.api.model.document.Document;
 
 public class RecognyzeClientIT extends TestClientBase {
 
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String profile = "JOBCOCKPIT";
 
     private static final String PSALMS_DOCS_WEBLYZARDFORMAT =
-            "resources/reference/weblyzard-example.xml";
+            "resources/reference/weblyzard-example.json";
 
     private static Document loadDocument() throws JAXBException, IOException {
-        File xmlFile = new File(RecognyzeClientIT.class.getClassLoader()
-                .getResource(PSALMS_DOCS_WEBLYZARDFORMAT).getFile());
-        Document document = Document.fromXml(
-                Files.readLines(xmlFile, Charsets.UTF_8).stream().collect(Collectors.joining()));
-        return document;
+        return objectMapper.readValue(new File(PSALMS_DOCS_WEBLYZARDFORMAT), Document.class);
     }
 
     private RecognyzeClient recognizeClient;

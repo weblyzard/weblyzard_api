@@ -4,10 +4,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBException;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.document.MirrorDocument;
-import com.weblyzard.api.model.document.XmlDocument;
 
 /** @author philipp.kuntschik@htwchur.ch */
 public class JeremiaClient extends BasicClient {
@@ -26,21 +24,15 @@ public class JeremiaClient extends BasicClient {
         super(weblyzardUrl, username, password);
     }
 
-    public XmlDocument submitDocumentRaw(MirrorDocument data) throws WebApplicationException {
+    public Document submitDocument(MirrorDocument request) throws WebApplicationException {
 
         Response response = super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 
         super.checkResponseStatus(response);
-        XmlDocument result = response.readEntity(XmlDocument.class);
+        Document result = response.readEntity(Document.class);
         response.close();
 
         return result;
-    }
-
-    public Document submitDocument(MirrorDocument data)
-            throws WebApplicationException, JAXBException {
-        XmlDocument response = submitDocumentRaw(data);
-        return response.getXmlContent() == null ? null : Document.fromXml(response.getXmlContent());
     }
 }

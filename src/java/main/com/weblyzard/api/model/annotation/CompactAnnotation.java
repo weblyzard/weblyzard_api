@@ -1,7 +1,7 @@
 package com.weblyzard.api.model.annotation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,7 +31,7 @@ public class CompactAnnotation extends EntityDescriptor {
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("entities")
-    @XmlElement(name = "entities", namespace = Document.NS_WEBLYZARD)
+    @XmlElement(name = "entities", namespace = LegacyDocument.NS_WEBLYZARD)
     private Set<AnnotationSurface> entities = new HashSet<>();
 
     public CompactAnnotation(final String key) {
