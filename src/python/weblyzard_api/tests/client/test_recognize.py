@@ -28,13 +28,14 @@ class TestRecognize(unittest.TestCase):
             </wl:page>
             ''']
 
-    TESTED_PROFILES = ['de.people.ng', 'en.geo.500000.ng',
+    TESTED_PROFILES = ['de.people.ng', 'en.geo.500000.ng', 'fr.people.ng', 'es.people.ng',
                        'de.geo.500000.ng', 'en.organization.ng', 'en.people.ng']
     IS_ONLINE = True
 
     def setUp(self):
         self.available_profiles = []
         url = 'localhost:8080/Recognize/rest/recognize'
+        url = 'http://gecko6.wu.ac.at:8086/recognize/rest/recognize/'
         self.client = Recognize(url)
         self.service_is_online = self.client.is_online()
         if not self.service_is_online:
@@ -53,44 +54,43 @@ class TestRecognize(unittest.TestCase):
         self.DOCS = [Recognize.convert_document(
             xml, version=version) for xml in self.DOCS_XML]
 
-    def test_text_gemet(self):
-        from pprint import pprint
-        print("start")
-        profile_names = ['en.gemet']
-        text = 'Climate Change is real. Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
-        result = self.client.search_text(profile_names,
-                                         text,
-                                         output_format='compact',
-                                         max_entities=40,
-                                         buckets=40,
-                                         limit=40)
-        pprint(result)
-        assert len(result)
-        print("end")
+#     def test_text_gemet(self):
+#         from pprint import pprint
+#         print("start")
+#         profile_names = ['en.gemet']
+#         text = 'Climate Change is real. Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
+#         result = self.client.search_text(profile_names,
+#                                          text,
+#                                          output_format='compact',
+#                                          max_entities=40,
+#                                          buckets=40,
+#                                          limit=40)
+#         pprint(result)
+#         assert len(result)
+#         print("end")
+#
+#     def test_search_xml(self):
+#         ''' '''
+#         if self.IS_ONLINE and self.service_is_online:
+#             self.client.add_profile('en.geo.500000.ng')
+#             result = self.client.search_documents(
+#                 'en.geo.500000.ng', self.DOCS)
+#             print('xmlsearch::::', result)
 
-    def test_search_xml(self):
-        ''' '''
-        if self.IS_ONLINE and self.service_is_online:
-            self.client.add_profile('en.geo.500000.ng')
-            result = self.client.search_documents(
-                'en.geo.500000.ng', self.DOCS)
-            print('xmlsearch::::', result)
-
-    def test_geo(self):
-        required_profile = 'en.geo.500000.ng'
-        if required_profile not in self.available_profiles:
-            print("Profile %s not available!" % required_profile)
+    def test_custom(self):
+        profile_name = 'de.people.ng'
+        if profile_name not in self.available_profiles:
+            print("Profile %s not available!" % profile_name)
             return
-        text = u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'
-        geodocs = [{'content_id': '11',
-                    'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},
-                   ]
+        text = u'Bill Gates, Achim Steiner, Mark Zuckerberg are some people of interest.  Achim Steiner and Tegegnework Gettu and Abdoulaye Mar Dieye and Lenni Montiel and Haoliang Xu and Susan McDade and Robert Piper andCihan Sultanoğlu are UNEP people.'
+#         geodocs = [{'content_id': '11',
+#                     'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},
+#                    ]
 
         if self.IS_ONLINE and self.service_is_online:
-            profile_name = 'en.geo.500000.ng'
 
             print(self.client.list_configured_profiles())
-            print(self.client.add_profile(profile_name, force=True))
+#             print(self.client.add_profile(profile_name, force=True))
 
             print('list_configured_profiles',
                   self.client.list_configured_profiles())
@@ -103,8 +103,39 @@ class TestRecognize(unittest.TestCase):
 #             self.client.add_profile('Cities.10000.en', geodocs)
 #             self.client.add_profile('Cities.10000.en')
             result = self.client.search_text(
-                profile_name, text, output_format='compact')
+                profile_names=profile_name, text=text, output_format='compact',
+                max_entities=20, buckets=20, limit=20)
             pprint(result)
+
+#     def test_geo(self):
+#         required_profile = 'en.geo.500000.ng'
+#         if required_profile not in self.available_profiles:
+#             print("Profile %s not available!" % required_profile)
+#             return
+#         text = u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'
+#         geodocs = [{'content_id': '11',
+#                     'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},
+#                    ]
+#
+#         if self.IS_ONLINE and self.service_is_online:
+#             profile_name = 'en.geo.500000.ng'
+#
+#             print(self.client.list_configured_profiles())
+#             print(self.client.add_profile(profile_name, force=True))
+#
+#             print('list_configured_profiles',
+#                   self.client.list_configured_profiles())
+# #             self.client.add_profile('Cities.10000.en')
+#
+# #             self.client.search_documents(profile_names=profile_name,
+# #                                          doc_list=geodocs, debug=True,
+# #                                          output_format='standard')
+#             print('list_profiles', self.client.list_profiles())
+# #             self.client.add_profile('Cities.10000.en', geodocs)
+# #             self.client.add_profile('Cities.10000.en')
+#             result = self.client.search_text(
+#                 profile_name, text, output_format='compact')
+#             pprint(result)
 #             first = result['11']
 #             print 'result', len(result), first[0]['preferredName']
 

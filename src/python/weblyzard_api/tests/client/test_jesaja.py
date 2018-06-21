@@ -9,7 +9,7 @@ from gzip import GzipFile
 from cPickle import load
 
 from weblyzard_api.client.jesaja import Jesaja
-from weblyzard_api.xml_content import XMLContent
+from weblyzard_api.model.xml_content import XMLContent
 
 from weblyzard_api.tests.test_helper import get_full_path
 

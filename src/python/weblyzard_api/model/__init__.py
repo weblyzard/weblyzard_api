@@ -41,7 +41,8 @@ class DictObject(object):
         '''
         :returns: a dictionary representation of the sentence object.
         '''
-        return dict((k, v) for k, v in self.__dict__.iteritems() if not k.startswith('_'))
+        return dict((k, v) for k, v in self.__dict__.iteritems()
+                    if not k.startswith('_'))
 
 
 class CharSpan(DictObject):

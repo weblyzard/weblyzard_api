@@ -4,6 +4,7 @@ Part-of-speech (POS) tagging service
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 import unittest
+
 from eWRT.ws.rest import RESTClient
 
 POS_URL = "http://voyager.srv.weblyzard.net/ws"

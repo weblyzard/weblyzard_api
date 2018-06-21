@@ -8,7 +8,7 @@ import unittest
 from sys import argv
 
 from weblyzard_api.client.jeremia import Jeremia
-from weblyzard_api.xml_content import XMLContent
+from weblyzard_api.model.xml_content import XMLContent
 
 
 class JeremiaTest(unittest.TestCase):

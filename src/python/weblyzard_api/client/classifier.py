@@ -9,10 +9,13 @@ Created on Jan 16, 2013
 '''
 import unittest
 
+from sys import argv
+
 from eWRT.ws.rest import MultiRESTClient
 from eWRT.util.module_path import get_resource
-from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
-from sys import argv
+
+from weblyzard_api.client import (
+    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 
 class Classifier(MultiRESTClient):

@@ -6,6 +6,7 @@ Created on Jan 25, 2018
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
 import unittest
+
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
 
