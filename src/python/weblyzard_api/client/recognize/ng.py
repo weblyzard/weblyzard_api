@@ -9,7 +9,7 @@ from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
-from weblyzard_api.xml_content import XMLContent
+from weblyzard_api.model.xml_content import XMLContent
 
 INTERNAL_PROFILE_PREFIX = 'extras.'
 LOGGER = logging.getLogger('weblyzard_api.client.recognize.ng')
