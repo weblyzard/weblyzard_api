@@ -6,7 +6,6 @@ JSON format.
 
     .. moduleauthor:: Fabian Fischer fabian.fischer@modul.ac.at
 '''
-
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers import JSONParserBase
 from weblyzard_api.model.exceptions import MalformedJSONException
@@ -81,7 +80,8 @@ class JSON10ParserSentence(JSONParserBase):
     '''
     FIELDS_REQUIRED = ['id', 'value']
     FIELDS_OPTIONAL = ['is_title', 'pos_list', 'tok_list', 'dep_tree',
-                       'sentence_number', 'paragraph_number', 'polarity']
+                       'sentence_number', 'paragraph_number', 'polarity',
+                       'polarity_class']
     API_VERSION = 1.0
 
     @classmethod
@@ -114,7 +114,8 @@ class JSON10ParserAnnotation(JSONParserBase):
     the Weblyzard API 1.0 definition.
     '''
     FIELDS_REQUIRED = ['start', 'end', 'surface_form', 'annotation_type']
-    FIELDS_OPTIONAL = ['key', 'sentence',
+    FIELDS_OPTIONAL = ['key', 'sentence', 'confidence', 'md5sum', 'entityType',
+                       'score', 'profileName', 'type', 'preferredName', 'surfaceForm',
                        'display_name', 'polarity', 'properties']
     API_VERSION = 1.0
 
@@ -157,6 +158,23 @@ class JSON10ParserAnnotation(JSONParserBase):
         return result
 
     @classmethod
+    def _normalize_compact_form(cls, api_list):
+        result = []
+        for annotation in api_list:
+            if 'entities' in annotation:
+                for entity in annotation['entities']:
+                    new_annotation = dict(annotation)
+                    new_annotation.update(entity)
+                    del new_annotation['entities']
+                    if 'surfaceForm' in new_annotation:
+                        new_annotation['surface_form'] = new_annotation['surfaceForm']
+                        del new_annotation['surfaceForm']
+                    result.append(new_annotation)
+            else:
+                result.append(annotation)
+        return result
+
+    @classmethod
     def from_api_list(cls, api_list):
         '''
         Parses a list of annotations and returns a dict mapping the
@@ -179,6 +197,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         :rtype: dict
         '''
         result = {}
+        api_list = cls._normalize_compact_form(api_list)
         for annotation in api_list:
             cls._check_document_format(annotation)
             result.setdefault(annotation['annotation_type'], [])

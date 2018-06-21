@@ -12,6 +12,7 @@ from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
+
 INTERNAL_PROFILE_PREFIX = 'extras.'
 LOGGER = logging.getLogger('weblyzard_api.client.recognize')
 SUPPORTED_LANGS = ('en', 'fr', 'de')

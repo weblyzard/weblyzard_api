@@ -4,12 +4,14 @@
 
 '''
 import unittest
+import pytest
 
+from weblyzard_api.client.joanna import Joanna
 
 class JoannaTest(unittest.TestCase):
 
     def setUp(self):
-        self.joanna = JoannaTest(url="http://localhost:9000/joanna")
+        self.joanna = Joanna(url="http://localhost:63002/rest")
         self.docs = 10
         self.rand_strings = self.joanna.rand_strings(self.docs)
         self.source_id = 21555
@@ -19,20 +21,47 @@ class JoannaTest(unittest.TestCase):
         self.assertEqual(len(self.rand_strings), 10)
 
     def test_online(self):
-        self.assertEqual(self.joanna.status(), '"ONLINE"')
+        self.assertEqual(self.joanna.status(), 'ONLINE')
+
+    def convert_hashes(self, strings):
+        hashes = {}
+        for i, item in enumerate(strings):
+            hashes[i] = item
+        return hashes
 
     def test_batch_request(self):
         self.rand_strings = self.joanna.rand_strings(self.docs)
+        data = self.convert_hashes(self.rand_strings);
+        # no duplicates
         batch_results = self.joanna.similar_documents(
             self.source_id, self.test_db,
-            self.rand_strings, 20)
+            data, 20)
         for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'false')
+        # all are duplicates
         batch_results = self.joanna.similar_documents(
             self.source_id, self.test_db,
-            self.rand_strings, 20)
+            data, 20)
         for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'true')
+
+    def test_batch_request_same_nilsimsa_on_batch(self):
+        self.rand_strings = self.joanna.rand_strings(self.docs)
+        data = self.convert_hashes(self.rand_strings);
+        data[1] = data[0] # copy a nilsimsa to another document
+        # no duplicates
+        batch_results = self.joanna.similar_documents(
+            self.source_id, self.test_db,
+            data, 20)
+        for _, similar in batch_results.iteritems():
+            self.assertEqual(similar, 'false')
+        # all are duplicates
+        batch_results = self.joanna.similar_documents(
+            self.source_id, self.test_db,
+            data, 20)
+        for _, similar in batch_results.iteritems():
+            self.assertEqual(similar, 'true')
+
 
     def test_single_request(self):
         self.rand_strings = self.joanna.rand_strings(self.docs)
@@ -45,13 +74,15 @@ class JoannaTest(unittest.TestCase):
             self.test_db)
         self.assertEqual(single_result, 'true')
 
+    @pytest.mark.skip(reason='TODO')
     def test_loaded(self):
         loaded_result = self.joanna.reload_source_nilsimsa(
             self.source_id, self.test_db, 20)
         self.assertEqual(loaded_result, 'LOADED')
 
+    @pytest.mark.skip(reason='TODO')
     def test_existing_document(self):
-        ''' Test an existing doc from the database. Note: 
+        ''' Test an existing doc from the database. Note:
         this is expected to fail when the document becomes very old
         '''
         existing_doc = [
@@ -69,6 +100,7 @@ class JoannaTest(unittest.TestCase):
         for _, similar in batch_result.iteritems():
             self.assertEqual(similar, 'true')
 
+    @pytest.mark.skip(reason='TODO')
     def test_batch_rand(self):
         docs = self.rand_strings
         batch_results = self.joanna.similar_documents(

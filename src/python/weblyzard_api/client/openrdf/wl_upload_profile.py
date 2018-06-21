@@ -7,11 +7,13 @@ import urlparse
 
 from weblyzard_api.client.openrdf import RecognizeOpenRdfClient
 
+
 def cleanup_config(service_url, config_repository):
     ''' '''
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
     client.cleanup_config()
+
 
 def remove_all_profiles(service_url, config_repository):
     ''' '''
@@ -19,23 +21,24 @@ def remove_all_profiles(service_url, config_repository):
                                     config_repository=config_repository)
     for profile_name in client.get_profiles():
         client.remove_profile(profile_name)
-        
+
     client.cleanup_config()
-        
+
+
 def remove_profile(profile_name, service_url, config_repository):
     ''' '''
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
     client.remove_profile(profile_name)
 
+
 def upload_profile(profile_fn, service_url, config_repository):
     ''' '''
-
 
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
     available_repositories = client.get_repositories()
-    
+
     profile_fns = []
     if os.path.isdir(profile_fn):
         for root, dirs, files in os.walk(profile_fn):
@@ -45,7 +48,7 @@ def upload_profile(profile_fn, service_url, config_repository):
     else:
         profile_fns = [profile_fn]
 
-    print('Found {} profiles, uploading to {}'.format(len(profile_fns), 
+    print('Found {} profiles, uploading to {}'.format(len(profile_fns),
                                                       service_url))
     print(profile_fns)
     for p_fns in profile_fns:
@@ -56,13 +59,16 @@ def upload_profile(profile_fn, service_url, config_repository):
         if service_url:
             url = urlparse.urlparse(service_url)
             hostname = '%s://%s' % (url.scheme, url.netloc)
-            profile_definition = profile_definition.replace('$HOSTNAME', hostname)
-            repo_name = [line for line in profile_definition.split('\n') if 'dcterms:source' in line][0]
-            repo_name = repo_name.replace('";','').split('/')[-1].strip()
+            profile_definition = profile_definition.replace(
+                '$HOSTNAME', hostname)
+            repo_name = [line for line in profile_definition.split(
+                '\n') if 'dcterms:source' in line][0]
+            repo_name = repo_name.replace('";', '').split('/')[-1].strip()
             if not repo_name in available_repositories:
                 print('Skipping profile %s: bad repository' % profile_name)
                 continue
             client.update_profile(profile_name, profile_definition)
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -73,7 +79,7 @@ if __name__ == '__main__':
     parser.add_argument('--remove-profile', dest='remove',
                         help='location of the profile definition to remove')
     parser.add_argument('--remove-all-profiles', dest='remove_all',
-                        help='removes all profiles from the config repo', 
+                        help='removes all profiles from the config repo',
                         action='store_true',)
     parser.add_argument('--config-repository', dest='config_repo',
                         help='location of the profile definitions')
@@ -97,7 +103,7 @@ if __name__ == '__main__':
     elif args.remove_all:
         remove_all_profiles(service_url=args.service_url,
                             config_repository=args.config_repo)
-        
+
     if args.clean_orphans:
         cleanup_config(service_url=args.service_url,
                        config_repository=args.config_repo)

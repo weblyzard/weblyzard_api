@@ -465,22 +465,27 @@ class XMLParser(object):
     def get_required_namespaces(cls, attributes):
         ''' '''
         result = {}
-        for att in attributes:
-            ns_prefix = None
-            if att in cls.ATTR_MAPPING:
-                _, ns_prefix = cls.ATTR_MAPPING[att]
-            if att in cls.SENTENCE_MAPPING:
-                _, ns_prefix = cls.SENTENCE_MAPPING[att]
-            if att in cls.ANNOTATION_MAPPING:
-                _, ns_prefix = cls.ANNOTATION_MAPPING[att]
-            if att in cls.FEATURE_MAPPING:
-                _, ns_prefix = cls.FEATURE_MAPPING[att]
-            if att in cls.RELATION_MAPPING:
-                _, ns_prefix = cls.RELATION_MAPPING[att]
-            if ns_prefix is not None and ns_prefix in cls.DOCUMENT_NAMESPACES:
-                namespace = cls.DOCUMENT_NAMESPACES[cls.ATTR_MAPPING[att][1]]
-                result[ns_prefix] = namespace
+        try:
+            for att in attributes:
+                ns_prefix = None
+                if att in cls.ATTR_MAPPING:
+                    _, ns_prefix = cls.ATTR_MAPPING[att]
+                elif att in cls.SENTENCE_MAPPING:
+                    _, ns_prefix = cls.SENTENCE_MAPPING[att]
+                elif cls.ANNOTATION_MAPPING and att in cls.ANNOTATION_MAPPING:
+                    _, ns_prefix = cls.ANNOTATION_MAPPING[att]
+                elif cls.FEATURE_MAPPING and att in cls.FEATURE_MAPPING:
+                    _, ns_prefix = cls.FEATURE_MAPPING[att]
+                elif cls.RELATION_MAPPING and att in cls.RELATION_MAPPING:
+                    _, ns_prefix = cls.RELATION_MAPPING[att]
+                elif not att in cls.ATTR_MAPPING:
+                    continue  # skip unknown attributes
 
+                if ns_prefix is not None and ns_prefix in cls.DOCUMENT_NAMESPACES:
+                    namespace = cls.DOCUMENT_NAMESPACES[cls.ATTR_MAPPING[att][1]]
+                    result[ns_prefix] = namespace
+        except Exception as e:
+            pass
         if not 'wl' in result:
             result['wl'] = cls.DOCUMENT_NAMESPACES['wl']
         return result

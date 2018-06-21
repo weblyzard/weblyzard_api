@@ -1,5 +1,5 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
