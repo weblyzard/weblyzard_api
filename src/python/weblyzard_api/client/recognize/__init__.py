@@ -8,7 +8,7 @@ import logging
 from eWRT.access.http import Retrieve
 from eWRT.ws.rest import MultiRESTClient
 
-from weblyzard_api.xml_content import XMLContent
+from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
@@ -16,24 +16,25 @@ INTERNAL_PROFILE_PREFIX = 'extras.'
 LOGGER = logging.getLogger('weblyzard_api.client.recognize')
 SUPPORTED_LANGS = ('en', 'fr', 'de')
 
+
 class Recognize(MultiRESTClient):
     '''
     Provides access to the Recognize Web Service.
-    
+
     **Workflow:**
      1. pre-load the recognize profiles you need using the :func:`add_profile` call.
      2. submit the text or documents to analyze using one of the following calls:
-         
+
         * :func:`search_document` or :func:`search_documents` for document dictionaries.
         * :func:`search_text` for plain text.
-    
+
     .. note:: Example usage
-    
+
         .. code-block:: python
-    
+
             from weblyzard_api.client.recognize import Recognize
             from pprint import pprint
-            
+
             url = 'http://triple-store.ai.wu.ac.at/recognize/rest/recognize'
             profile_names = ['en.organization.ng', 'en.people.ng', 'en.geo.500000.ng']
             text = 'Microsoft is an American multinational corporation 
@@ -42,7 +43,7 @@ class Recognize(MultiRESTClient):
                     software, consumer electronics and personal computers 
                     and services. It was was founded by Bill Gates and Paul
                     Allen on April 4, 1975.'
-            
+
             client = Recognize(url)
             result = client.search_text(profile_names,
                         text,
@@ -56,20 +57,20 @@ class Recognize(MultiRESTClient):
     URL_PATH = 'recognize/rest/recognize'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'lang': 'xml:lang',
-                         'sentences' : 'sentence',
+                         'sentences': 'sentence',
                          'sentences_map': {'pos': 'pos',
                                            'token': 'token',
                                            'md5sum': 'id',
                                            'value': 'value'}}
 
-    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
         '''
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd, 
+        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
         self.profile_cache = []
 
@@ -90,14 +91,14 @@ class Recognize(MultiRESTClient):
             xml = XMLContent(xml)
 
         try:
-            if float(version[0:3])>=0.5:#.startswith('0.5'):
+            if float(version[0:3]) >= 0.5:  # .startswith('0.5'):
                 return xml.get_xml_document(xml_version=2013).strip()
         except Exception as e:
             LOGGER.warn('Could not parse version: %s' % version)
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
                            ignore_non_sentence=False,
                            add_titles_to_sentences=True)
-    
+
     def list_profiles(self):
         ''' :returns: a list of all pre-loaded profiles
 
@@ -121,7 +122,7 @@ class Recognize(MultiRESTClient):
         '''
         if profile_name.startswith(INTERNAL_PROFILE_PREFIX):
             return
-        
+
         profile_exists = profile_name in self.profile_cache and not force
         if not profile_exists:
             profile_exists = profile_name in self.list_profiles() and not force
@@ -130,7 +131,7 @@ class Recognize(MultiRESTClient):
             self.profile_cache.append(profile_name)
 
         if not profile_exists:
-            self.profile_cache.append(profile_name) #only try to add once
+            self.profile_cache.append(profile_name)  # only try to add once
             return self.request('add_profile/%s' % profile_name)
 
     def get_xml_document(self, document):
@@ -149,15 +150,15 @@ class Recognize(MultiRESTClient):
             self.add_profile(profile_name)
         return self.request(path='search',
                             parameters=text,
-                            query_parameters={'profileNames' : profile_names,
+                            query_parameters={'profileNames': profile_names,
                                               'rescore': 1,
                                               'buckets': 1,
                                               'limit': 1,
                                               'wt': 'compact',
                                               'debug': False})
-        
+
     def search_text(self, profile_names, text, debug=False, max_entities=1,
-            buckets=1, limit=1, output_format='minimal'):
+                    buckets=1, limit=1, output_format='minimal'):
         '''
         Search text for entities specified in the given profiles.
 
@@ -181,17 +182,16 @@ class Recognize(MultiRESTClient):
 
         return self.request(path='search',
                             parameters=text,
-                            query_parameters={'profileNames' : profile_names,
+                            query_parameters={'profileNames': profile_names,
                                               'rescore': max_entities,
                                               'buckets': buckets,
                                               'limit': limit,
                                               'wt': output_format,
                                               'debug': debug})
 
-
     def search_document(self, profile_names, document, debug=False,
-                         max_entities=1, buckets=1, limit=1,
-                         output_format='minimal'):
+                        max_entities=1, buckets=1, limit=1,
+                        output_format='minimal'):
         '''
         :param profile_names: a list of profile names
         :param document: a single document to analyze (see example documents \
@@ -208,7 +208,7 @@ class Recognize(MultiRESTClient):
         .. note:: Example document
 
            .. code-block:: python
-   
+
               # option 1: document dictionary
               {'content_id': 12, 
                'content': u'the text to analyze'}
@@ -225,7 +225,6 @@ class Recognize(MultiRESTClient):
             return
         if isinstance(profile_names, basestring):
             profile_names = [profile_names, ]
-
 
         for profile_name in profile_names:
             try:
@@ -247,7 +246,7 @@ class Recognize(MultiRESTClient):
         return self.request(path=search_command,
                             parameters=document,
                             content_type=content_type,
-                            query_parameters={'profileNames' : profile_names,
+                            query_parameters={'profileNames': profile_names,
                                               'rescore': max_entities,
                                               'buckets': buckets,
                                               'limit': limit,
@@ -272,7 +271,7 @@ class Recognize(MultiRESTClient):
         .. note:: Example document
 
            .. code-block:: python
-   
+
               # option 1: list of document dictionaries
               ( {'content_id': 12,
                  'content': u'the text to analyze'})
@@ -287,7 +286,6 @@ class Recognize(MultiRESTClient):
         if isinstance(profile_names, basestring):
             profile_names = (profile_names, )
 
-
         profiles_to_add = []
         for profile_name in profile_names:
             for lang in SUPPORTED_LANGS:
@@ -296,14 +294,14 @@ class Recognize(MultiRESTClient):
 
         remaining = set(profile_names).difference(set(profiles_to_add))
         if len(remaining):
-            #get all required languages from documents
+            # get all required languages from documents
             lang_list = []
             for document in doc_list:
                 if isinstance(document, dict) and 'lang' in document:
                     lang_list.append(document['lang'])
             lang_list = set(lang_list)
 
-            #add required profiles
+            # add required profiles
             if isinstance(profile_names, dict):
                 for lang in lang_list:
                     if lang in profile_names:
@@ -313,7 +311,7 @@ class Recognize(MultiRESTClient):
                 for profile_name in profile_names:
                     profiles_to_add.append(profile_name)
 
-        #add required profiles
+        # add required profiles
         for profile_name in set(profiles_to_add):
             self.add_profile(profile_name)
 
@@ -333,12 +331,12 @@ class Recognize(MultiRESTClient):
                             parameters=doc_list,
                             content_type=content_type,
                             query_parameters={
-                                              'profileNames' : profile_names,
-                                              'rescore': max_entities,
-                                              'buckets': buckets,
-                                              'limit': limit,
-                                              'wt': output_format,
-                                              'debug': debug})
+                                'profileNames': profile_names,
+                                'rescore': max_entities,
+                                'buckets': buckets,
+                                'limit': limit,
+                                'wt': output_format,
+                                'debug': debug})
 
     def get_focus(self, profile_names, doc_list, max_results=1):
         '''
@@ -377,10 +375,8 @@ class Recognize(MultiRESTClient):
         '''
         return self.request(path='status')
 
-
     def get_version(self):
         ''' 
         :returns: the version of the Recognize web service.
         '''
         return self.request(path='version', return_plain=True)
-    

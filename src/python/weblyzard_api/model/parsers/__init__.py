@@ -56,9 +56,9 @@ class JSONParserBase(object):
         :param json_string: The JSON to parse
         :type json_string: str
         :returns: The parsed object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent` or \
+        :rtype: :py:class:`weblyzard_api.model.xml_content.XMLContent` or \
             :py:class:`wl_core.document.Document` or \
-            :py:class:`weblyzard_api.xml_content.Sentence` or\
+            :py:class:`weblyzard_api.model.xml_content.Sentence` or\
             dict.
         '''
         try:

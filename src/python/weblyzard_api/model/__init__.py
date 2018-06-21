@@ -207,7 +207,7 @@ class Sentence(DictObject):
         :returns: the dependencies of the sentence as a list of \
             `LabeledDependency` objects
         :rtype: :py:class:`list` of :py:class:\
-            `weblyzard_api.xml_content.LabeledDependency` objects
+            `weblyzard_api.model.xml_content.LabeledDependency` objects
 
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
@@ -227,13 +227,13 @@ class Sentence(DictObject):
 
     def set_dependency_list(self, dependencies):
         '''
-        Takes a list of :py:class:`weblyzard_api.xml_content.LabeledDependency`
+        Takes a list of :py:class:`weblyzard_api.model.xml_content.LabeledDependency`
 
         :param dependencies: The dependencies to set for this sentence.
         :type dependencies: list
 
         .. note:: The list must contain items of the type \
-            :py:class:`weblyzard_api.xml_content.LabeledDependency`
+            :py:class:`weblyzard_api.model.xml_content.LabeledDependency`
 
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
