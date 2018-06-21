@@ -4,7 +4,9 @@
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
 from eWRT.ws.rest import MultiRESTClient
-from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
+
+from weblyzard_api.client import (
+    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 
 class DomainSpecificity(MultiRESTClient):

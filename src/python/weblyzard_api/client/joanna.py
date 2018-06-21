@@ -8,6 +8,7 @@ Created on Oct 30, 2015
 import json
 import logging
 import urllib2
+
 from random import random, randint
 from time import sleep
 

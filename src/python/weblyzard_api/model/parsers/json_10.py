@@ -6,185 +6,11 @@ JSON format.
 
     .. moduleauthor:: Fabian Fischer fabian.fischer@modul.ac.at
 '''
-
-import json
-
-from datetime import datetime
-
-from weblyzard_api.xml_content import Sentence, XMLContent
-from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
-
-
-class MissingContentException(Exception):
-    '''
-    Exception class thrown if a JSON document misses required fields.
-    '''
-    pass
-
-
-class MissingFieldException(Exception):
-    '''
-    Exception class thrown if a JSON document misses required fields.
-    '''
-    pass
-
-
-class UnsupportedValueException(Exception):
-    '''
-    Exception class thrown if a JSON document contains an unsupported value.
-    '''
-    pass
-
-
-class UnexpectedFieldException(Exception):
-    '''
-    Exception class thrown if a JSON document contains an unexpected field.
-    '''
-    pass
-
-
-class MalformedJSONException(Exception):
-    '''
-    Exception to throw if the json.loads function fails or the JSON is
-    otherwise ill formatted.
-    '''
-    pass
-
-
-class JSONParserBase(object):
-    '''
-    JSON Parser base class.
-    '''
-    #:  Override this constant in the subclasses based on requirements.
-    FIELDS_REQUIRED = []
-    #:  Override this constant in the subclasses based on requirements.
-    FIELDS_OPTIONAL = []
-    #:  Override this constant in the subclasses based on requirements.
-    API_VERSION = None
-
-    @classmethod
-    def from_json_string(cls, json_string):
-        '''
-        Parses a JSON string.
-
-        :param json_string: The JSON to parse
-        :type json_string: str
-        :returns: The parsed object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent` or \
-            :py:class:`wl_core.document.Document` or \
-            :py:class:`weblyzard_api.xml_content.Sentence` or\
-            dict.
-        '''
-        try:
-            api_dict = json.loads(json_string)
-        except Exception as e:
-            raise MalformedJSONException(
-                'JSON could not be parsed: {}'.format(e))
-        return cls.from_api_dict(api_dict)
-
-    @classmethod
-    def from_api_dict(cls, api_dict):
-        raise NotImplementedError
-
-    @classmethod
-    def _missing_fields(cls, api_dict):
-        '''
-        Checks if the given API dict misses a required field.
-
-        :param api_dict: The document to check as dict.
-        :type api_dict: dict
-        :returns: The list of missing fields, None if all present.
-        :rtype: list
-        '''
-        missing_fields = []
-        for key in cls.FIELDS_REQUIRED:
-            if key in api_dict:
-                # check if the fields contain non-null values
-                if api_dict[key] is None or api_dict[key] == '':
-                    missing_fields.append(key)
-            else:
-                missing_fields.append(key)
-        if len(missing_fields) > 0:
-            return missing_fields
-        else:
-            return None
-
-    @classmethod
-    def _unexpected_fields(cls, api_dict):
-        '''
-        Checks if the given API dict contains an unexpected field.
-
-        :param api_dict: The document to check as dict.
-        :type api_dict: dict
-        :returns: The list of unexpected fields, None if all accepted.
-        :rtype: list
-        '''
-        allowed_fields = cls.FIELDS_REQUIRED + cls.FIELDS_OPTIONAL
-        unexpected_fields = []
-        for key in api_dict:
-            if key not in allowed_fields:
-                unexpected_fields.append(key)
-        if len(unexpected_fields) > 0:
-            return unexpected_fields
-        else:
-            return None
-
-    @classmethod
-    def _check_document_format(cls, api_dict, strict=True):
-        '''
-        Checks if the api_dict has all required fields and if there
-        are unexpected and unallowed keys. 
-
-        :param api_dict: The dict to check.
-        :type api_dict: dict
-        :param strict: If set to true, an UnexpectedFieldException is raised \
-                if an unexpected key is contained in the dict.
-        :type strict: bool
-        '''
-        missing_fields = cls._missing_fields(api_dict)
-        if missing_fields is not None:
-            raise MissingFieldException("Missing field(s) %s" %
-                                        ', '.join(missing_fields))
-        if strict:
-            unexpected_fields = cls._unexpected_fields(api_dict)
-            if unexpected_fields is not None:
-                raise UnexpectedFieldException("Got unexpected field(s): %s" %
-                                               ', '.join(unexpected_fields))
-
-    @classmethod
-    def _validate_document(cls, json_document, strict=True):
-        ''' '''
-        cls._check_document_format(json_document, strict)
-        if 'content' in json_document and 'content_type' not in json_document:
-            raise MissingFieldException(
-                "When field 'content' is set, 'content_type' must be set, too.")
-        elif 'content_type' in json_document and 'content' not in json_document:
-            raise MissingFieldException(
-                "When field 'content_type' is set, 'content' must be set, too.")
-        elif 'content' not in json_document and 'content_type' not in json_document and\
-                'sentences' not in json_document:
-            raise MissingFieldException(
-                "Either 'sentences' or 'content' and 'content_type' must be set.")
-        if 'content' in json_document and 'sentences' in json_document:
-            raise MalformedJSONException(
-                "If 'sentences' is set, 'content' must not be set.")
-        if 'content_type' in json_document and not json_document['content_type'] in cls.SUPPORTED_CONTENT_TYPES:
-            raise UnsupportedValueException("content_type %s is not supported. Supported are %s" %
-                                            (json_document['content_type'],
-                                             cls.SUPPORTED_CONTENT_TYPES))
-        meta_data = json_document.get('meta_data', {})
-
-        valid_from = None
-        if 'published_date' in meta_data:
-            try:
-                from dateutil.parser import parse
-                valid_from = parse(meta_data['published_date'])
-            except Exception as e:
-                raise MissingFieldException(
-                    "Could not process published_date: %s" % meta_data['published_date'])
-            if not isinstance(valid_from, datetime):
-                raise UnsupportedValueException(
-                    'Field published_date set but not parseable')
+from weblyzard_api.model.parsers.xml_2013 import XML2013
+from weblyzard_api.model.parsers import JSONParserBase
+from weblyzard_api.model.exceptions import MalformedJSONException
+from weblyzard_api.model.xml_content import XMLContent
+from weblyzard_api.model import Sentence
 
 
 class JSON10ParserXMLContent(JSONParserBase):
@@ -206,7 +32,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         :param api_dict: The document to parse.
         :type api_dict: dict
         :returns: The parsed document as XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.XMLContent`
+        :rtype: :py:class:`weblyzard_api.model.xml_content.XMLContent`
         '''
         cls._check_document_format(api_dict, strict=True)
         # This basically creates an empty XMLContent object
@@ -267,7 +93,7 @@ class JSON10ParserSentence(JSONParserBase):
         :param api_dict: The document to parse.
         :type api_dict: dict
         :returns: The parsed document as XMLContent object.
-        :rtype: :py:class:`weblyzard_api.xml_content.Sentence`
+        :rtype: :py:class:`weblyzard_api.model.xml_content.Sentence`
         '''
         cls._check_document_format(api_dict)
         sentence = Sentence(

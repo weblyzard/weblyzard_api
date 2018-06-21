@@ -5,9 +5,9 @@ import os
 
 from pickle import load
 
-from weblyzard_api.xml_content.parsers import XMLParser
-from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
-from weblyzard_api.xml_content.parsers.xml_2013 import XML2013
+from weblyzard_api.model.parsers import XMLParser
+from weblyzard_api.model.parsers.xml_2005 import XML2005
+from weblyzard_api.model.parsers.xml_2013 import XML2013
 
 
 class TestXMLParser(unittest.TestCase):
@@ -117,6 +117,13 @@ class TestXML2013(unittest.TestCase):
         for sent in sentences:
             assert 'id' not in sent
             assert 'md5sum' in sent
+
+
+class TestXML2018(unittest.TestCase):
+
+    def test(self):
+
+        pass
 
 
 if __name__ == '__main__':

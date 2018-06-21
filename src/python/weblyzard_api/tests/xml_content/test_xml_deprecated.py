@@ -1,19 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
-Created on Jun 24, 2012
+Created on Jan 25, 2018
 
-@author: heinz-peterlang
+.. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
 import unittest
 
-from weblyzard_api.xml_content.parsers.xml_2005 import XML2005
-
-
-class XMLDeprecated(XML2005):
-
-    SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/'
-    VERSION = 'deprecated'
+from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
 
 class TestXMLDeprecated(unittest.TestCase):
