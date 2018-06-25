@@ -23,8 +23,11 @@ class Document(object):
     TOKEN_KEY = u'TOKEN'
 
     # mapping from document attributes to serialized JSON fields
-    MAPPING = {"content_id": "id", "md5sum": "id", "span_type": "@type",
-               "metadata": "header", "content_type": "format"}
+    MAPPING = {"content_id": "id",
+               "md5sum": "id",
+               "span_type": "@type",
+               "metadata": "header",
+               "content_type": "format"}
 
     # list of required attributes
     REQUIRED_FIELDS = ['id', 'format', 'lang',
@@ -39,8 +42,8 @@ class Document(object):
                               XMLDeprecated.VERSION: XMLDeprecated}
 
     def __init__(self, content_id, content, content_type, lang, url=None, nilsimsa=None,
-                 partitions={}, metadata={}, annotations={}, features={},
-                 relations={}):
+                 partitions=None, metadata=None, annotations=None, features=None,
+                 relations=None):
         ''' '''
         self.content_id = content_id
         self.content = content
@@ -48,11 +51,11 @@ class Document(object):
         self.lang = lang,
         self.url = url
         self.nilsimsa = nilsimsa
-        self.partitions = partitions
-        self.metadata = metadata
-        self.annotations = annotations
-        self.features = features
-        self.relations = relations
+        self.partitions = partitions if partitions else {}
+        self.metadata = metadata if metadata else {}
+        self.annotations = annotations if annotations else {}
+        self.features = features if features else {}
+        self.relations = relations if relations else {}
 
     @classmethod
     def _dict_transform(cls, data):
