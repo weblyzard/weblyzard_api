@@ -8,12 +8,12 @@ Created on Jan 25, 2018
 import json
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
-from weblyzard_api.model import Sentence, DictObject, dict_transform
+from weblyzard_api.model import Sentence, dict_transform
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
 
-class Document(DictObject):
+class Document(object):
 
     # partition keys
     SENTENCE_KEY = u'SENTENCE'
