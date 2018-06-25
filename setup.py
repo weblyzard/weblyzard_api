@@ -14,7 +14,7 @@ setup(
     package_dir={'': 'src/python'},
     install_requires=['eWRT>=0.9.2.2',
                       'nose',
-                      'lxml>=3.4,<4',
+                      'lxml',
                       'requests[security]>=2.13,<3',
                       'pytest',
                       'sparqlwrapper'],

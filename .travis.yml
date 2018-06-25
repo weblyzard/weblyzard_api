@@ -1,11 +1,17 @@
+dist: xenial
 language: java
 
-jdk:
-  - openjdk8
+install: 
+  - wget https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz
+  - tar -xzf openjdk-10_linux-x64_bin.tar.gz
+  - export JAVA_HOME=$(pwd)/jdk-10
 
-install: echo "Skipping install stage, dependencies will be downloaded during test stages."
 test: echo "Skipping test stage, using scripts to perform unit tests and quality metrics."
 
 script:
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$SONAR_LOGIN -Dsonar.host.url=$SONAR_HOST
+
+cache:
+  directories:
+  - $HOME/.m2
 

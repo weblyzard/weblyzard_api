@@ -9,9 +9,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import com.weblyzard.api.model.annotation.Annotation;
 import com.weblyzard.api.model.document.Document;
-import com.weblyzard.api.model.document.XmlDocument;
 
 /** @author philipp.kuntschik@htwchur.ch */
 public class RecognyzeClient extends BasicClient {
@@ -22,8 +20,6 @@ public class RecognyzeClient extends BasicClient {
             "/recognize/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
     private static final String SEARCH_DOCUMENT_SERVICE_URL = "/recognize/rest/search_document";
     private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/recognize/rest/search_documents";
-    private static final String SEARCH_XMLDOCUMENT_SERVICE_URL =
-            "/recognize/rest/search_xmldocument";
     private static final String STATUS_SERVICE_URL = "/recognize/rest/status";
 
     private static final String PARAM_PROFILE_NAME = "profileName";
@@ -49,26 +45,6 @@ public class RecognyzeClient extends BasicClient {
 
         super.checkResponseStatus(response);
         boolean result = response.readEntity(Boolean.class);
-        response.close();
-
-        return result;
-    }
-
-    public List<Annotation> searchXmlDocument(String profileName, XmlDocument document)
-            throws WebApplicationException {
-        return this.searchXmlDocument(profileName, document, 0);
-    }
-
-
-    public List<Annotation> searchXmlDocument(String profileName, XmlDocument document, int limit)
-            throws WebApplicationException {
-
-        Response response = super.getTarget(SEARCH_XMLDOCUMENT_SERVICE_URL)
-                .queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document));
-
-        super.checkResponseStatus(response);
-        List<Annotation> result = response.readEntity(new GenericType<List<Annotation>>() {});
         response.close();
 
         return result;

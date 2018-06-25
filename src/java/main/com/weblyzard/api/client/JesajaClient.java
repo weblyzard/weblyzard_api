@@ -1,6 +1,6 @@
 package com.weblyzard.api.client;
 
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,11 +55,11 @@ public class JesajaClient extends BasicClient {
         return response;
     }
 
-    public Response addDocuments(String matviewId, List<Document> documents)
+    public Response addDocuments(String matviewId, List<LegacyDocument> documents)
             throws WebApplicationException, JAXBException {
 
         List<String> xml = new ArrayList<>();
-        for (Document document : documents) xml.add(Document.toXml(document));
+        for (LegacyDocument document : documents) xml.add(LegacyDocument.toXml(document));
 
         Response response =
                 super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
@@ -73,11 +73,11 @@ public class JesajaClient extends BasicClient {
         return response;
     }
 
-    public Map<String, Map<String, Double>> getKeywords(String matviewId, List<Document> documents)
+    public Map<String, Map<String, Double>> getKeywords(String matviewId, List<LegacyDocument> documents)
             throws WebApplicationException, JAXBException {
 
         List<String> xml = new ArrayList<>();
-        for (Document document : documents) xml.add(Document.toXml(document));
+        for (LegacyDocument document : documents) xml.add(LegacyDocument.toXml(document));
 
         Response response =
                 super.getTarget(GET_KEYWORDS_SERVICE_URL)
@@ -93,11 +93,11 @@ public class JesajaClient extends BasicClient {
         return result == null ? Collections.emptyMap() : result;
     }
 
-    public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
+    public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<LegacyDocument> documents)
             throws WebApplicationException, JAXBException {
 
         List<String> xml = new ArrayList<>();
-        for (Document document : documents) xml.add(Document.toXml(document));
+        for (LegacyDocument document : documents) xml.add(LegacyDocument.toXml(document));
 
         Response response =
                 super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)
