@@ -22,12 +22,15 @@ class Document(object):
     TITLE_KEY = u'TITLE'
     TOKEN_KEY = u'TOKEN'
 
+    # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id", "md5sum": "id", "span_type": "@type",
                "metadata": "header", "content_type": "format"}
 
+    # list of required attributes
     REQUIRED_FIELDS = ['id', 'format', 'lang',
                        'nilsimsa', 'content']
 
+    # list of optional attributes
     OPTIONAL_FIELDS = ['partitions', 'annotations',
                        'features', 'relations', 'header', 'url']
 
@@ -51,8 +54,14 @@ class Document(object):
         self.features = features
         self.relations = relations
 
-    def _dict_transform(self, data):
-        ''' '''
+    @classmethod
+    def _dict_transform(cls, data):
+        ''' 
+        Recursively transform a document object to a JSON serializable dict, 
+        with MAPPING applied as well as empty results removed.
+        @param data, the data to be transformed to a dict
+        @return a dictionary of a document, ready for JSON serialization
+        '''
         if data is None:
             return None
         if isinstance(data, basestring):
@@ -70,13 +79,13 @@ class Document(object):
         if isinstance(data, list):
             result = []
             for item in data:
-                result.append(self._dict_transform(item))
+                result.append(cls._dict_transform(item))
             return result
         if isinstance(data, dict):
             result = {}
             for key, value in data.iteritems():
                 if value is not None:
-                    value = self._dict_transform(value)
+                    value = cls._dict_transform(value)
                     if value is not None:
                         result[key] = value
 
@@ -86,14 +95,14 @@ class Document(object):
         if isinstance(data, object):
             result = {}
             for key, value in data.__dict__.iteritems():
-                if key in self.MAPPING:
-                    key = self.MAPPING[key]
+                if key in cls.MAPPING:
+                    key = cls.MAPPING[key]
                 elif key.startswith('_'):
                     continue
                 if value is not None:
-                    value = self._dict_transform(value)
+                    value = cls._dict_transform(value)
                     if value is not None:
-                        result[key] = self._dict_transform(value)
+                        result[key] = cls._dict_transform(value)
             return result
         return None
 
