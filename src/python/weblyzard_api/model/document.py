@@ -8,17 +8,28 @@ Created on Jan 25, 2018
 import json
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
-from weblyzard_api.model import Sentence, dict_transform
+from weblyzard_api.model import Sentence, SpanFactory
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
+from weblyzard_api.model.exceptions import (MissingFieldException,
+                                            UnexpectedFieldException)
 
 
 class Document(object):
 
-    # partition keys
+    # supported partition keys
     SENTENCE_KEY = u'SENTENCE'
     TITLE_KEY = u'TITLE'
     TOKEN_KEY = u'TOKEN'
+
+    MAPPING = {"content_id": "id", "md5sum": "id", "span_type": "@type",
+               "metadata": "header", "content_type": "format"}
+
+    REQUIRED_FIELDS = ['id', 'format', 'lang',
+                       'nilsimsa', 'content']
+
+    OPTIONAL_FIELDS = ['partitions', 'annotations',
+                       'features', 'relations', 'header', 'url']
 
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
@@ -40,10 +51,107 @@ class Document(object):
         self.features = features
         self.relations = relations
 
+    def _dict_transform(self, data):
+        ''' '''
+        if data is None:
+            return None
+        if isinstance(data, basestring):
+            return data
+        if isinstance(data, int):
+            return data
+        if isinstance(data, float):
+            return data
+        if isinstance(data, bool):
+            return data
+        if isinstance(data, tuple):
+            if len(data) == 1:
+                return data[0]
+            return data
+        if isinstance(data, list):
+            result = []
+            for item in data:
+                result.append(self._dict_transform(item))
+            return result
+        if isinstance(data, dict):
+            result = {}
+            for key, value in data.iteritems():
+                if value is not None:
+                    value = self._dict_transform(value)
+                    if value is not None:
+                        result[key] = value
+
+            if not len(result):
+                return None
+            return result
+        if isinstance(data, object):
+            result = {}
+            for key, value in data.__dict__.iteritems():
+                if key in self.MAPPING:
+                    key = self.MAPPING[key]
+                elif key.startswith('_'):
+                    continue
+                if value is not None:
+                    value = self._dict_transform(value)
+                    if value is not None:
+                        result[key] = self._dict_transform(value)
+            return result
+        return None
+
+    @classmethod
+    def from_json(cls, json_payload):
+        ''' 
+        Convert a JSON object into a content model.
+        @param json_payload, the string representation of the JSON content model
+        '''
+        parsed_content = json.loads(json_payload, strict=False)
+
+        # validation
+        for required_field in cls.REQUIRED_FIELDS:
+            if not required_field in parsed_content:
+                raise MissingFieldException()
+
+        for key in parsed_content.iterkeys():
+            if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
+                raise UnexpectedFieldException()
+
+        # process optional dicts:
+        partitions = {}
+        if 'partitions' in parsed_content:
+            partitions = {label: [SpanFactory.new_span(span) for span in spans]
+                          for label, spans in parsed_content['partitions'].iteritems()}
+
+        header = {}
+        if 'header' in parsed_content:
+            header = parsed_content['header']
+
+        annotations = {}
+        if 'annotations' in parsed_content:
+            annotations = parsed_content['annotations']
+
+        relations = {}
+        if 'relations' in parsed_content:
+            relations = parsed_content['relations']
+
+        features = {}
+        if 'features' in parsed_content:
+            features = parsed_content['features']
+
+        url = None
+        if 'url' in parsed_content:
+            url = parsed_content['url']
+        return Document(content_id=parsed_content['id'], url=url,
+                        content=parsed_content['content'],
+                        nilsimsa=parsed_content['nilsimsa'],
+                        lang=parsed_content['lang'],
+                        content_type=parsed_content['format'],
+                        partitions=partitions,
+                        metadata=header, annotations=annotations,
+                        features=features, relations=relations)
+
     def to_json(self):
         ''' 
         Serialize a document to JSON '''
-        dict_object = dict_transform(self)
+        dict_object = self._dict_transform(self)
         return json.dumps(dict_object)
 
     def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
@@ -93,7 +201,7 @@ class Document(object):
         if not target_partition_key in self.partitions:
             return result
 
-        for other_span in self.partitions[target_partition_key].spans:
+        for other_span in self.partitions[target_partition_key]:
             if self.overlapping(other_span, search_span):
                 result.append(other_span)
 
@@ -106,8 +214,8 @@ class Document(object):
         if not self.SENTENCE_KEY in self.partitions:
             return result
 
-        for sentence_span in self.partitions[self.SENTENCE_KEY].spans:
-            if not sentence_span.type == 'SentenceCharSpan':
+        for sentence_span in self.partitions[self.SENTENCE_KEY]:
+            if not sentence_span.span_type == 'SentenceCharSpan':
                 raise Exception('Bad sentence span')
 
             # get tokens

@@ -23,113 +23,42 @@ class SpanFactory(object):
         assert isinstance(span, dict) and '@type' in span
 
         if span['@type'] == 'CharSpan':
-            return CharSpan(type='CharSpan', start=span['start'], end=span['end'])
+            return CharSpan(span_type='CharSpan', start=span['start'], end=span['end'])
         elif span['@type'] == 'TokenCharSpan':
-            return TokenCharSpan(type='TokenCharSpan', start=span['start'],
+            return TokenCharSpan(span_type='TokenCharSpan', start=span['start'],
                                  end=span['end'], pos=span['pos'],
                                  dependency=span['dependency'])
         elif span['@type'] == 'SentenceCharSpan':
-            return SentenceCharSpan(type='SentenceCharSpan', start=span['start'],
+            return SentenceCharSpan(span_type='SentenceCharSpan', start=span['start'],
                                     end=span['end'], sem_orient=span['sem_orient'],
                                     md5sum=span['id'], significance=span['significance'])
         raise Exception('Invalid Span Type: {}'.format(span['@type']))
 
 
-def dict_transform(data):
-    ''' '''
-    if data is None:
-        return None
-    if isinstance(data, basestring):
-        return data
-    if isinstance(data, int):
-        return data
-    if isinstance(data, float):
-        return data
-    if isinstance(data, bool):
-        return data
-    if isinstance(data, tuple):
-        if len(data) == 1:
-            return data[0]
-        return data
-    if isinstance(data, list):
-        result = []
-        for item in data:
-            result.append(dict_transform(item))
-        return result
-    if isinstance(data, dict):
-        result = {}
-        for key, value in data.iteritems():
-            if value is not None:
-                result[key] = dict_transform(value)
-        return result
-    if isinstance(data, object):
-        result = {}
-        for key, value in data.__dict__.iteritems():
-            if key.startswith('_'):
-                continue
-            if value is not None:
-                result[key] = dict_transform(value)
-        return result
-    return None
-
-
-# class DictObject(object):
-#
-#     def as_dict(self):
-#         '''
-#         :returns: a dictionary representation of the object.
-#         '''
-#         result = {}
-#         for k, v in self.__dict__.iteritems():
-#             if k.startswith('_'):
-#                 continue
-#             if isinstance(v, DictObject):
-#                 value = v.as_dict()
-#                 pass
-#             elif isinstance(v, tuple):
-#                 value = v[0]
-#             elif isinstance(v, dict):
-#                 value = v[0]
-#             else:
-#                 value = v
-#
-#             result[k] = value
-# #         result = dict((k, v.as_dict() if isinstance(v, DictObject) else v)
-# #                       if not k.startswith('_'))
-#         return result
-
-
 class CharSpan(object):
 
-    def __init__(self, type, start, end):
-        self.type = type
+    def __init__(self, span_type, start, end):
+        self.span_type = span_type
         self.start = start
         self.end = end
 
 
 class TokenCharSpan(CharSpan):
 
-    def __init__(self, type, start, end, pos, dependency=None):
-        CharSpan.__init__(self, type, start, end)
+    def __init__(self, span_type, start, end, pos, dependency=None):
+        CharSpan.__init__(self, span_type, start, end)
         self.pos = pos
         self.dependency = dependency
 
 
 class SentenceCharSpan(CharSpan):
 
-    def __init__(self, type, start, end, md5sum, sem_orient,
+    def __init__(self, span_type, start, end, md5sum, sem_orient,
                  significance):
-        CharSpan.__init__(self, type, start, end)
+        CharSpan.__init__(self, span_type, start, end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
-
-
-class Partition(object):
-
-    def __init__(self, label, spans):
-        self.label = label
-        self.spans = spans
 
 
 class Annotation(object):
@@ -339,15 +268,3 @@ class Sentence(object):
     pos_tags_list = property(get_pos_tags_list, set_pos_tags_list)
     pos_tag_string = property(get_pos_tags_string, set_pos_tags_string)
     dependency_list = property(get_dependency_list, set_dependency_list)
-
-
-# class ContentModel(object):
-#
-#     def __init__(self, id, content, nilsimsa, lang, format='text/html',
-#                  partitions={}):
-#         self.id = id
-#         self.content = content
-#         self.nilsimsa = nilsimsa
-#         self.format = format
-#         self.lang = lang
-#         self.partitions = partitions
