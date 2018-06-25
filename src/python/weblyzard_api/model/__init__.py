@@ -35,17 +35,71 @@ class SpanFactory(object):
         raise Exception('Invalid Span Type: {}'.format(span['@type']))
 
 
-class DictObject(object):
+def dict_transform(data):
+    ''' '''
+    if data is None:
+        return None
+    if isinstance(data, basestring):
+        return data
+    if isinstance(data, int):
+        return data
+    if isinstance(data, float):
+        return data
+    if isinstance(data, bool):
+        return data
+    if isinstance(data, tuple):
+        if len(data) == 1:
+            return data[0]
+        return data
+    if isinstance(data, list):
+        result = []
+        for item in data:
+            result.append(dict_transform(item))
+        return result
+    if isinstance(data, dict):
+        result = {}
+        for key, value in data.iteritems():
+            if value is not None:
+                result[key] = dict_transform(value)
+        return result
+    if isinstance(data, object):
+        result = {}
+        for key, value in data.__dict__.iteritems():
+            if key.startswith('_'):
+                continue
+            if value is not None:
+                result[key] = dict_transform(value)
+        return result
+    return None
 
-    def as_dict(self):
-        '''
-        :returns: a dictionary representation of the sentence object.
-        '''
-        return dict((k, v) for k, v in self.__dict__.iteritems()
-                    if not k.startswith('_'))
+
+# class DictObject(object):
+#
+#     def as_dict(self):
+#         '''
+#         :returns: a dictionary representation of the object.
+#         '''
+#         result = {}
+#         for k, v in self.__dict__.iteritems():
+#             if k.startswith('_'):
+#                 continue
+#             if isinstance(v, DictObject):
+#                 value = v.as_dict()
+#                 pass
+#             elif isinstance(v, tuple):
+#                 value = v[0]
+#             elif isinstance(v, dict):
+#                 value = v[0]
+#             else:
+#                 value = v
+#
+#             result[k] = value
+# #         result = dict((k, v.as_dict() if isinstance(v, DictObject) else v)
+# #                       if not k.startswith('_'))
+#         return result
 
 
-class CharSpan(DictObject):
+class CharSpan(object):
 
     def __init__(self, type, start, end):
         self.type = type
@@ -71,14 +125,14 @@ class SentenceCharSpan(CharSpan):
         self.significance = significance
 
 
-class Partition(DictObject):
+class Partition(object):
 
     def __init__(self, label, spans):
         self.label = label
         self.spans = spans
 
 
-class Annotation(DictObject):
+class Annotation(object):
 
     def __init__(self, annotation_type=None, start=None, end=None, key=None,
                  sentence=None, surfaceForm=None, md5sum=None, sem_orient=None,
@@ -94,7 +148,7 @@ class Annotation(DictObject):
         self.preferredName = preferredName
 
 
-class Sentence(DictObject):
+class Sentence(object):
     '''
     The sentence class used for accessing single sentences.
 
@@ -287,77 +341,13 @@ class Sentence(DictObject):
     dependency_list = property(get_dependency_list, set_dependency_list)
 
 
-class ContentModel(object):
-
-    # partition keys
-    SENTENCE_KEY = u'SENTENCE'
-    TITLE_KEY = u'TITLE'
-    TOKEN_KEY = u'TOKEN'
-
-    SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
-                              XML2013.VERSION: XML2013,
-                              XMLDeprecated.VERSION: XMLDeprecated}
-
-    def __init__(self, content_id, content, nilsimsa, content_format='text/html',
-                 partitions={}):
-        self.content_id = content_id
-        self.content = content
-        self.nilsimsa = nilsimsa
-        self.content_format = content_format
-        self.partitions = partitions
-
-    def get_text_by_span(self, span):
-        ''' 
-        Return the textual content of a span. 
-        @param span, the span to extract content for.
-        '''
-        return self.content[span.start:span.end]
-
-    @classmethod
-    def overlapping(cls, spanA, spanB):
-        ''' Return whether two spans overlap. '''
-        return spanB.start <= spanA.start and spanB.end >= spanA.end
-
-    def get_partition_overlaps(self, search_span, target_partition_key):
-        ''' Return all spans from a given target_partition_key that overlap 
-        the search span. 
-        @param search_span, the span to search for overlaps by.
-        @param target_partition_key, the target partition'''
-        result = []
-
-        if not target_partition_key in self.partitions:
-            return result
-
-        for other_span in self.partitions[target_partition_key].spans:
-            if self.overlapping(other_span, search_span):
-                result.append(other_span)
-
-        return result
-
-    def get_sentences(self):
-        ''' Legacy method to extract webLyzard sentences from content model.'''
-        result = []
-
-        if not self.SENTENCE_KEY in self.partitions:
-            return result
-
-        for sentence_span in self.partitions[self.SENTENCE_KEY].spans:
-            if not sentence_span.type == 'SentenceCharSpan':
-                raise Exception('Bad sentence span')
-
-            # get tokens
-            token_spans = self.get_partition_overlaps(search_span=sentence_span,
-                                                      target_partition_key=self.TOKEN_KEY)
-            is_title = len(self.get_partition_overlaps(search_span=sentence_span,
-                                                       target_partition_key=self.TITLE_KEY)) > 0
-            pos_sequence = ' '.join([ts.pos for ts in token_spans])
-            tok_sequence = ' '.join(
-                ['{},{}'.format(ts.start, ts.end) for ts in token_spans])
-            value = self.get_text_by_span(sentence_span)
-            result.append(Sentence(md5sum=sentence_span.md5sum,
-                                   sem_orient=sentence_span.sem_orient,
-                                   significance=sentence_span.significance,
-                                   pos=pos_sequence, token=tok_sequence,
-                                   value=value, is_title=is_title))
-
-        return result
+# class ContentModel(object):
+#
+#     def __init__(self, id, content, nilsimsa, lang, format='text/html',
+#                  partitions={}):
+#         self.id = id
+#         self.content = content
+#         self.nilsimsa = nilsimsa
+#         self.format = format
+#         self.lang = lang
+#         self.partitions = partitions

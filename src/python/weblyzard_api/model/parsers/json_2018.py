@@ -6,357 +6,72 @@ Created on Jan 25, 2018
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
 import json
-import unittest
 
 from weblyzard_api.model.parsers import JSONParserBase
-from weblyzard_api.model import ContentModel, Partition, SpanFactory
-from weblyzard_api.model.exceptions import MissingFieldException
+from weblyzard_api.model import Partition, SpanFactory
+from weblyzard_api.model.exceptions import (MissingFieldException,
+                                            UnexpectedFieldException)
+from weblyzard_api.model.document import Document
 
 
 class JSON2018Parser(JSONParserBase):
 
-    MAPPING = {}
+    MAPPING = {"content_id": "id", "metadata": "header"}
 
     REQUIRED_FIELDS = ['id', 'format', 'lang',
-                       'nilsimsa', 'partitions', 'content']
+                       'nilsimsa', 'content']
+
+    OPTIONAL_FIELDS = ['partitions', 'annotations',
+                       'features', 'relations', 'header', 'url']
 
     @classmethod
-    def to_content_model(cls, json_payload):
+    def from_json(cls, json_payload):
         ''' 
         Convert a JSON object into a content model.
         @param json_payload, the string representation of the JSON content model
         '''
         parsed_content = json.loads(json_payload, strict=False)
+
+        # validation
         for required_field in cls.REQUIRED_FIELDS:
             if not required_field in parsed_content:
                 raise MissingFieldException()
 
-        partitions = {label: Partition(label=label, spans=[SpanFactory.new_span(span) for span in spans])
-                      for label, spans in parsed_content['partitions'].iteritems()}
+        for key in parsed_content.iterkeys():
+            if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
+                raise UnexpectedFieldException()
 
-        content_id = parsed_content['id']
-        nilsimsa = parsed_content['nilsimsa']
-        content = parsed_content['content']
-        content_format = parsed_content['format']
+        # process optional dicts:
+        partitions = {}
+        if 'partitions' in parsed_content:
+            partitions = {label: Partition(label=label,
+                                           spans=[SpanFactory.new_span(span) for span in spans])
+                          for label, spans in parsed_content['partitions'].iteritems()}
 
-        result = ContentModel(content_id=content_id,
-                              content=content,
-                              nilsimsa=nilsimsa,
-                              content_format=content_format,
-                              partitions=partitions)
-        return result
+        header = {}
+        if 'header' in parsed_content:
+            header = parsed_content['header']
 
+        annotations = {}
+        if 'annotations' in parsed_content:
+            annotations = parsed_content['annotations']
 
-class TestJSON2018Parser(unittest.TestCase):
+        relations = {}
+        if 'relations' in parsed_content:
+            relations = parsed_content['relations']
 
-    JSON_2018 = '''{
-                      "id" : "007",
-                      "format" : "text/html",
-                      "lang" : "EN",
-                      "nilsimsa" : "1404e487721ca21e08c2141155621022f39a991640a419064123b812a30f2acc",
-                      "header" : { },
-                      "content" : "1 Corinthians 13:4-7\nLove is patient, love is kind. It does not envy, it does not boast, it is\nnot proud.",
-                      "partitions" : {
-                        "TITLE" : [ {
-                          "@type" : "CharSpan",
-                          "start" : 0,
-                          "end" : 20
-                        } ],
-                        "BODY" : [ {
-                          "@type" : "CharSpan",
-                          "start" : 21,
-                          "end" : 104
-                        } ],
-                        "LINE" : [ {
-                          "@type" : "CharSpan",
-                          "start" : 0,
-                          "end" : 20
-                        }, {
-                          "@type" : "CharSpan",
-                          "start" : 21,
-                          "end" : 94
-                        }, {
-                          "@type" : "CharSpan",
-                          "start" : 95,
-                          "end" : 106
-                        } ],
-                        "SENTENCE" : [ {
-                          "@type" : "SentenceCharSpan",
-                          "start" : 0,
-                          "end" : 20,
-                          "id": "asdfasdmasdnsd23232",
-                          "sem_orient": 1.0,
-                          "significance": 0.1231
-                        }, {
-                          "@type" : "SentenceCharSpan",
-                          "start" : 21,
-                          "end" : 51,
-                          "id": "asdfasdmasdnsd23233",
-                          "sem_orient": 1.0,
-                          "significance": 0.1231
-                        }, {
-                          "@type" : "SentenceCharSpan",
-                          "start" : 52,
-                          "end" : 106,
-                          "id": "asdfasdmasdnsd23231",
-                          "sem_orient": 1.0,
-                          "significance": 0.1231
-                        } ],
-                        "TOKEN" : [ {
-                          "@type" : "TokenCharSpan",
-                          "start" : 0,
-                          "end" : 1,
-                          "pos" : "CD",
-                          "dependency" : {
-                            "parent" : 2,
-                            "label" : "NMOD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 2,
-                          "end" : 13,
-                          "pos" : "NNP",
-                          "dependency" : {
-                            "parent" : 2,
-                            "label" : "NMOD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 14,
-                          "end" : 18,
-                          "pos" : "CD",
-                          "dependency" : {
-                            "parent" : 3,
-                            "label" : "NMOD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 18,
-                          "end" : 20,
-                          "pos" : "CD",
-                          "dependency" : {
-                            "parent" : -1,
-                            "label" : "ROOT"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 21,
-                          "end" : 25,
-                          "pos" : "NN",
-                          "dependency" : {
-                            "parent" : 5,
-                            "label" : "SBJ"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 26,
-                          "end" : 28,
-                          "pos" : "VBZ",
-                          "dependency" : {
-                            "parent" : -1,
-                            "label" : "ROOT"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 29,
-                          "end" : 36,
-                          "pos" : "NN",
-                          "dependency" : {
-                            "parent" : 5,
-                            "label" : "PRD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 36,
-                          "end" : 37,
-                          "pos" : ",",
-                          "dependency" : {
-                            "parent" : 5,
-                            "label" : "P"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 37,
-                          "end" : 42,
-                          "pos" : "NN",
-                          "dependency" : {
-                            "parent" : 5,
-                            "label" : "PRD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 43,
-                          "end" : 25,
-                          "pos" : "VBZ",
-                          "dependency" : {
-                            "parent" : 5,
-                            "label" : "CONJ"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 46,
-                          "end" : 50,
-                          "pos" : "NN",
-                          "dependency" : {
-                            "parent" : 9,
-                            "label" : "PRD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 50,
-                          "end" : 51,
-                          "pos" : ".",
-                          "dependency" : {
-                            "parent" : 5,
-                            "label" : "P"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 52,
-                          "end" : 54,
-                          "pos" : "PRP",
-                          "dependency" : {
-                            "parent" : 12,
-                            "label" : "SBJ"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 55,
-                          "end" : 59,
-                          "pos" : "VBZ",
-                          "dependency" : {
-                            "parent" : -1,
-                            "label" : "ROOT"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 60,
-                          "end" : 63,
-                          "pos" : "RB",
-                          "dependency" : {
-                            "parent" : 12,
-                            "label" : "ADV"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 64,
-                          "end" : 68,
-                          "pos" : "VB",
-                          "dependency" : {
-                            "parent" : 12,
-                            "label" : "VC"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 68,
-                          "end" : 69,
-                          "pos" : ",",
-                          "dependency" : {
-                            "parent" : 17,
-                            "label" : "P"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 70,
-                          "end" : 72,
-                          "pos" : "PRP",
-                          "dependency" : {
-                            "parent" : 17,
-                            "label" : "SBJ"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 73,
-                          "end" : 77,
-                          "pos" : "VBZ",
-                          "dependency" : {
-                            "parent" : 12,
-                            "label" : "PRD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 78,
-                          "end" : 81,
-                          "pos" : "RB",
-                          "dependency" : {
-                            "parent" : 17,
-                            "label" : "ADV"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 82,
-                          "end" : 87,
-                          "pos" : "VB",
-                          "dependency" : {
-                            "parent" : 17,
-                            "label" : "VC"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 87,
-                          "end" : 88,
-                          "pos" : ",",
-                          "dependency" : {
-                            "parent" : 22,
-                            "label" : "P"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 89,
-                          "end" : 91,
-                          "pos" : "PRP",
-                          "dependency" : {
-                            "parent" : 22,
-                            "label" : "SBJ"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 92,
-                          "end" : 94,
-                          "pos" : "VBZ",
-                          "dependency" : {
-                            "parent" : 12,
-                            "label" : "PRD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 95,
-                          "end" : 98,
-                          "pos" : "RB",
-                          "dependency" : {
-                            "parent" : 22,
-                            "label" : "ADV"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 99,
-                          "end" : 104,
-                          "pos" : "JJ",
-                          "dependency" : {
-                            "parent" : 22,
-                            "label" : "PRD"
-                          }
-                        }, {
-                          "@type" : "TokenCharSpan",
-                          "start" : 104,
-                          "end" : 105,
-                          "pos" : ".",
-                          "dependency" : {
-                            "parent" : 12,
-                            "label" : "P"
-                          }
-                        } ]
-                      },
-                      "annotations" : null
-                    }
-    '''
+        features = {}
+        if 'features' in parsed_content:
+            features = parsed_content['features']
 
-    def test(self):
-        model = JSON2018Parser.to_content_model(self.JSON_2018)
-        sentences = model.get_sentences()
-        assert len(sentences) == 3
-        pass
-
-
-if __name__ == '__main__':
-    unittest.main()
+        url = None
+        if 'url' in parsed_content:
+            url = parsed_content['url']
+        return Document(content_id=parsed_content['id'], url=url,
+                        content=parsed_content['content'],
+                        nilsimsa=parsed_content['nilsimsa'],
+                        lang=parsed_content['lang'],
+                        content_type=parsed_content['format'],
+                        partitions=partitions,
+                        metadata=header, annotations=annotations,
+                        features=features, relations=relations)
