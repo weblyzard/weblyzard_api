@@ -123,6 +123,12 @@ class Sentence(object):
         self.is_title = is_title
         self.dependency = dependency
 
+    def as_dict(self):
+        '''
+        :returns: a dictionary representation of the sentence object.
+        '''
+        return dict((k, v) for k, v in self.__dict__.iteritems() if not k.startswith('_'))
+
     def get_sentence(self):
         return self.value
 
