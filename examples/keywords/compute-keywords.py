@@ -15,28 +15,29 @@ from json import dump as jdump
 from time import time
 from re import compile
 
+from eWRT.util.module_path import get_resource
+
 from weblyzard_api.client.jesaja_ng import JesajaNg as Jesaja
 from weblyzard_api.client.jeremia import Jeremia
-from weblyzard_api.xml_content import XMLContent
-from eWRT.util.module_path import get_resource
+from weblyzard_api.model.xml_content import XMLContent
+
 
 RE_WHITESPACE = compile("\s+")
 RE_CONTENT_ID = compile("(\d+)")
 
-MATVIEW_NAME  = 'example'
-PROFILE_NAME  = "example_profile"
+MATVIEW_NAME = 'example'
+PROFILE_NAME = "example_profile"
 STOPLIST_NAME = "example_stoplist"
 STOPLIST_FILE = "example_stoplist.txt.gz"
 
-PROFILE = { 'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
-            'min_phrase_significance'        : 1.0,
-            'num_keywords'                   : 7,
-            'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
-            'min_token_count'                : 2,
-            'skip_underrepresented_keywords' : True,
-            'stoplists'                      : [STOPLIST_NAME],
-          }
-
+PROFILE = {'valid_pos_tags': ['NN', 'P', 'ADJ'],
+           'min_phrase_significance': 1.0,
+           'num_keywords': 7,
+           'keyword_algorithm': 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
+           'min_token_count': 2,
+           'skip_underrepresented_keywords': True,
+           'stoplists': [STOPLIST_NAME],
+           }
 
 
 def read_corpus_files(path):
@@ -51,14 +52,17 @@ def read_corpus_files(path):
 
     return corpus_documents
 
+
 def get_weblyzard_xml_documents(corpus_documents):
     '''
     Performs the pre-processing of the corpus documents (i.e. text
     files are converted into the weblyzard XML format.
     '''
     jeremia = Jeremia()
-    xml_content = [XMLContent(doc['xml_content']) for doc in jeremia.submit_documents(corpus_documents)]
+    xml_content = [XMLContent(doc['xml_content'])
+                   for doc in jeremia.submit_documents(corpus_documents)]
     return {doc.content_id: doc for doc in xml_content}
+
 
 def get_tokens(sentence):
     from json import loads
@@ -71,6 +75,7 @@ def get_tokens(sentence):
 
     return tokens
 
+
 if __name__ == '__main__':
 
     print("Reading corpus...")
@@ -82,9 +87,11 @@ if __name__ == '__main__':
 
     print("Configuring keyword service...")
     jesaja = Jesaja()
-    jesaja.set_stoplist(STOPLIST_NAME, [stopword.strip() for stopword in GzipFile(STOPLIST_FILE)])
+    jesaja.set_stoplist(STOPLIST_NAME, [stopword.strip()
+                                        for stopword in GzipFile(STOPLIST_FILE)])
     jesaja.set_keyword_profile(PROFILE_NAME, PROFILE)
-    jesaja.set_matview_profile(matview_id=MATVIEW_NAME, profile_name=PROFILE_NAME)
+    jesaja.set_matview_profile(
+        matview_id=MATVIEW_NAME, profile_name=PROFILE_NAME)
 
     # check whether we have already shards available for the given matview
     if not jesaja.has_corpus(matview_id=MATVIEW_NAME):
@@ -93,14 +100,17 @@ if __name__ == '__main__':
         # uploaded
         while jesaja.rotate_shard(MATVIEW_NAME) == 0:
             print(" Adding corpus...")
-            jesaja.add_documents(MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
+            jesaja.add_documents(
+                MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
 
     print("Computing keywords...")
-    result = jesaja.get_keywords(MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
+    result = jesaja.get_keywords(
+        MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
 
     for content_id, xml_document in xml_corpus_documents.items():
-        xml_document.add_attribute('keywords', '; '.join(result[unicode(content_id)]))
+        xml_document.add_attribute(
+            'keywords', '; '.join(result[unicode(content_id)]))
 
     with GzipFile("results.json.gz", "w") as f:
-        jdump([doc.get_xml_document() for doc in xml_corpus_documents.values()], f, indent=True)
-
+        jdump([doc.get_xml_document()
+               for doc in xml_corpus_documents.values()], f, indent=True)
