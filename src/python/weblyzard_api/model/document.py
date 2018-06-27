@@ -126,39 +126,34 @@ class Document(object):
             if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
                 raise UnexpectedFieldException()
 
-        # process optional dicts:
-        partitions = {}
-        if 'partitions' in parsed_content:
-            partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                          for label, spans in parsed_content['partitions'].iteritems()}
+        # populate default dicts:
+        partitions = {label: [SpanFactory.new_span(span) for span in spans]
+                      for label, spans in parsed_content['partitions'].iteritems()} \
+            if 'partitions' in parsed_content else {}
 
-        header = {}
-        if 'header' in parsed_content:
-            header = parsed_content['header']
+        metadata = parsed_content['header'] \
+            if 'header' in parsed_content else {}
 
-        annotations = {}
-        if 'annotations' in parsed_content:
-            annotations = parsed_content['annotations']
+        annotations = parsed_content['annotations'] \
+            if 'annotations' in parsed_content else {}
 
-        relations = {}
-        if 'relations' in parsed_content:
-            relations = parsed_content['relations']
+        relations = parsed_content['relations'] \
+            if 'relations' in parsed_content else {}
 
-        features = {}
-        if 'features' in parsed_content:
-            features = parsed_content['features']
+        features = parsed_content['features'] \
+            if 'features' in parsed_content else {}
 
-        url = None
-        if 'url' in parsed_content:
-            url = parsed_content['url']
-        return Document(content_id=parsed_content['id'], url=url,
-                        content=parsed_content['content'],
-                        nilsimsa=parsed_content['nilsimsa'],
-                        lang=parsed_content['lang'],
-                        content_type=parsed_content['format'],
+        return Document(content_id=parsed_content['id'],
+                        url=parsed_content.get('url'),
+                        content=parsed_content.get('content'),
+                        nilsimsa=parsed_content.get('nilsimsa'),
+                        lang=parsed_content.get('lang'),
+                        content_type=parsed_content.get('format'),
                         partitions=partitions,
-                        metadata=header, annotations=annotations,
-                        features=features, relations=relations)
+                        metadata=metadata,
+                        annotations=annotations,
+                        features=features,
+                        relations=relations)
 
     def to_json(self):
         ''' 
