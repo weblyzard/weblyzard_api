@@ -134,6 +134,10 @@ class Document(object):
         metadata = parsed_content['header'] \
             if 'header' in parsed_content else {}
 
+        if not len(metadata):
+            metadata = parsed_content['metadata'] \
+                if 'metadata' in parsed_content else {}
+
         annotations = parsed_content['annotations'] \
             if 'annotations' in parsed_content else {}
 
