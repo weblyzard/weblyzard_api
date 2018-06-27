@@ -119,12 +119,5 @@ class TestXML2013(unittest.TestCase):
             assert 'md5sum' in sent
 
 
-class TestXML2018(unittest.TestCase):
-
-    def test(self):
-
-        pass
-
-
 if __name__ == '__main__':
     unittest.main()
