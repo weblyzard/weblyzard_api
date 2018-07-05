@@ -46,6 +46,9 @@ class XML2013(XMLParser):
         'nilsimsa': ('nilsimsa', 'wl'),
         'content_id': ('id', 'wl'),
         'jonas_type': ('jonas_type', 'wl'),
+        'url_label': ('url_label', 'wl'),
+        'reach': ('reach', 'wl'),
+        'link_text': ('link_text', 'wl'),
 
         'fbType': ('post_type', 'wl'),  # FB
         'thumbnail': ('thumbnail', 'wl'),
