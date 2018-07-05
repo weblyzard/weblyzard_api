@@ -1,0 +1,1 @@
+from weblyzard_api.model.parsers.xml_2005 import *
