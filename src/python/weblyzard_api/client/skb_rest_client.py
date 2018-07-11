@@ -12,11 +12,12 @@ import requests
 
 class SKBRESTClient(object):
 
-    TRANSLATION_PATH = '1.0/skb/translation?'
-    TITLE_TRANSLATION_PATH = '1.0/skb/title_translation?'
-    KEYWORD_PATH = '1.0/skb/keyword_annotation'
-    ENTITY_PATH = '1.0/skb/entity'
-    ENTITY_BY_PROPERTY_PATH = '1.0/skb/entity_by_property'
+    VERSION = 1.0
+    TRANSLATION_PATH = '{}/skb/translation?'.format(VERSION)
+    TITLE_TRANSLATION_PATH = '{}/skb/title_translation?'.format(VERSION)
+    KEYWORD_PATH = '{}/skb/keyword_annotation'.format(VERSION)
+    ENTITY_PATH = '{}/skb/entity'.format(VERSION)
+    ENTITY_BY_PROPERTY_PATH = '{}/skb/entity_by_property'.format(VERSION)
 
     def __init__(self, url):
         '''
@@ -69,7 +70,7 @@ class SKBRESTClient(object):
         '''
         response = requests.post('{}/{}'.format(self.url,
                                                 self.ENTITY_PATH),
-                                 data = json.dumps(entity_dict),
+                                 data=json.dumps(entity_dict),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
             return json.loads(response.text)['uri']
@@ -95,7 +96,7 @@ class SKBRESTClient(object):
             params['entity_type'] = entity_type
         response = requests.get('{}/{}'.format(self.url,
                                                self.ENTITY_BY_PROPERTY_PATH),
-                                params = params,
+                                params=params,
                                 headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
             return json.loads(response.text)
@@ -119,7 +120,7 @@ class SKBRESTClient(object):
         params = {'uri': uri}
         response = requests.get('{}/{}'.format(self.url,
                                                self.ENTITY_PATH),
-                                params = params,
+                                params=params,
                                 headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
             return json.loads(response.text)
@@ -128,7 +129,7 @@ class SKBRESTClient(object):
 
 
 class SKBSentimentDictionary(dict):
-    SENTIMENT_PATH = '1.0/skb/sentiment_dict'
+    SENTIMENT_PATH = '{}/skb/sentiment_dict'.format(SKBRESTClient.VERSION)
 
     def __init__(self, url, language, emotion='polarity'):
         self.url = '{}/{}'.format(url,
