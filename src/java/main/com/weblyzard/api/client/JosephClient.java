@@ -7,7 +7,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.weblyzard.api.model.document.Document;
-import com.weblyzard.api.model.recognyze.RecognyzeResult;
+import com.weblyzard.api.model.joseph.Classification;
 
 /** @author philipp.kuntschik@htwchur.ch */
 public class JosephClient extends BasicClient {
@@ -120,11 +120,11 @@ public class JosephClient extends BasicClient {
         return result;
     }
 
-    public List<RecognyzeResult> classify(String profileName, Document request) {
+    public List<Classification> classify(String profileName, Document request) {
         return this.classify(profileName, request, 0, false);
     }
 
-    public List<RecognyzeResult> classify(String profileName, Document request, int limit,
+    public List<Classification> classify(String profileName, Document request, int limit,
             boolean withFeatures) throws WebApplicationException {
 
         Response response = super.getTarget(CLASSIFY_SERVICE_URL)
@@ -133,8 +133,8 @@ public class JosephClient extends BasicClient {
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
 
         super.checkResponseStatus(response);
-        List<RecognyzeResult> result =
-                response.readEntity(new GenericType<List<RecognyzeResult>>() {});
+        List<Classification> result =
+                response.readEntity(new GenericType<List<Classification>>() {});
         response.close();
 
         return result;

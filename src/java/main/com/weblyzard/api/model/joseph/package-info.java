@@ -1,2 +1,2 @@
 /** Recognyze Named Entity Linking model classes. */
-package com.weblyzard.api.model.recognyze;
+package com.weblyzard.api.model.joseph;

@@ -1,6 +1,6 @@
-package com.weblyzard.api.model.recognyze;
+package com.weblyzard.api.model.joseph;
 
-import java.util.Set;
+import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -8,10 +8,10 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-public class RecognyzeResult {
+public class Classification {
 
     private String key;
-    private Set<SurfaceForm> surfaceForms;
-    private String entityType;
+    private Map<String, Double> terms;
     private double confidence;
+    private String type;
 }
