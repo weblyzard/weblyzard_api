@@ -1,11 +1,10 @@
 package com.weblyzard.api.serialize.json;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
+import java.io.IOException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.weblyzard.api.datatype.MD5Digest;
-import java.io.IOException;
 
 public class MD5DigestSerializer extends StdSerializer<MD5Digest> {
 
@@ -21,7 +20,7 @@ public class MD5DigestSerializer extends StdSerializer<MD5Digest> {
 
     @Override
     public void serialize(MD5Digest value, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException, JsonGenerationException {
+            throws IOException {
         jgen.writeString(value.toString());
     }
 }

@@ -1,11 +1,10 @@
 package com.weblyzard.api.serialize.json;
 
+import java.io.IOException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.weblyzard.api.datatype.MD5Digest;
-import java.io.IOException;
 
 public class MD5DigestDeserializer extends StdDeserializer<MD5Digest> {
 
@@ -20,8 +19,7 @@ public class MD5DigestDeserializer extends StdDeserializer<MD5Digest> {
     }
 
     @Override
-    public MD5Digest deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+    public MD5Digest deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         return MD5Digest.fromHexDigest(p.getValueAsString());
     }
 }
