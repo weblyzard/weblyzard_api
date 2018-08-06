@@ -1,6 +1,6 @@
 package com.weblyzard.api.model.joel;
 
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +25,10 @@ public class KeywordDocument implements Serializable {
     public static final String FIELD_KEYWORDS = "tokens";
     public static final String FIELD_SENTENCES = "sentences";
 
-    private @NonNull Document document;
+    private @NonNull LegacyDocument document;
     private List<String> keywords;
 
-    public KeywordDocument(Document document) {
+    public KeywordDocument(LegacyDocument document) {
         this.document = document;
         initKeywordsFromDocument();
     }
@@ -36,7 +36,7 @@ public class KeywordDocument implements Serializable {
     private void initKeywordsFromDocument() {
         if (document.getHeader() != null) {
             this.keywords =
-                    Arrays.asList(document.getHeader().get(Document.WL_KEYWORD_ATTR).split(";"))
+                    Arrays.asList(document.getHeader().get(LegacyDocument.WL_KEYWORD_ATTR).split(";"))
                             .stream()
                             .map(String::trim)
                             .collect(Collectors.toList());

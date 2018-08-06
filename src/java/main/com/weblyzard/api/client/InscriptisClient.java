@@ -18,12 +18,9 @@ public class InscriptisClient extends BasicClient {
         super(weblyzardUrl);
     }
 
-    public String parseHTMl(String html)
-            throws WebApplicationException {
+    public String parseHTMl(String html) throws WebApplicationException {
         Response response =
-                super.getTarget(GET_TEXT)
-                        .request(MediaType.TEXT_HTML)
-                        .post(Entity.text(html));
+                super.getTarget(GET_TEXT).request(MediaType.TEXT_HTML).post(Entity.text(html));
         super.checkResponseStatus(response);
         String parseResult = response.readEntity(String.class);
         response.close();

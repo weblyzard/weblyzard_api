@@ -29,22 +29,22 @@ public class Sentence implements Serializable {
     private static final String HTML_ENTITY_QUOT = "&quot;";
 
     @JsonProperty("md5sum")
-    @XmlAttribute(name = "id", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "id", namespace = LegacyDocument.NS_WEBLYZARD)
     @XmlJavaTypeAdapter(MD5Digest.class)
     private MD5Digest id;
 
     /** The POS dependency tree of the given sentence. */
-    @XmlAttribute(name = "pos", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "pos", namespace = LegacyDocument.NS_WEBLYZARD)
     private String pos;
 
-    @XmlAttribute(name = "dependency", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "dependency", namespace = LegacyDocument.NS_WEBLYZARD)
     private String dependency;
 
-    @XmlAttribute(name = "token", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "token", namespace = LegacyDocument.NS_WEBLYZARD)
     private String token;
 
     @JsonProperty("is_title")
-    @XmlAttribute(name = "is_title", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "is_title", namespace = LegacyDocument.NS_WEBLYZARD)
     @XmlJavaTypeAdapter(BooleanAdapter.class)
     private boolean title;
 
@@ -54,10 +54,10 @@ public class Sentence implements Serializable {
     private String text;
 
     @JsonProperty("sem_orient")
-    @XmlAttribute(name = "sem_orient", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "sem_orient", namespace = LegacyDocument.NS_WEBLYZARD)
     private double semOrient;
 
-    @XmlAttribute(name = "significance", namespace = Document.NS_WEBLYZARD)
+    @XmlAttribute(name = "significance", namespace = LegacyDocument.NS_WEBLYZARD)
     private double significance;
 
     public Sentence(String text) {

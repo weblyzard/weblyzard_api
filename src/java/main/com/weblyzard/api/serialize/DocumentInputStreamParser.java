@@ -3,7 +3,7 @@ package com.weblyzard.api.serialize;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ public class DocumentInputStreamParser {
      * @param stream the input stream to parse
      * @return the parsed document list
      */
-    public static List<Document> readDocumentFromStream(InputStream stream) throws JAXBException {
-        List<Document> documentList = new ArrayList<>();
+    public static List<LegacyDocument> readDocumentFromStream(InputStream stream) throws JAXBException {
+        List<LegacyDocument> documentList = new ArrayList<>();
         try (JsonParser jp = jsonFactory.createParser(stream)) {
             jp.nextToken();
-            Document d = Document.fromXml(jp.getValueAsString());
+            LegacyDocument d = LegacyDocument.fromXml(jp.getValueAsString());
             if (d != null) {
                 documentList.add(d);
             }
@@ -56,13 +56,13 @@ public class DocumentInputStreamParser {
      * @param stream the input stream to parse
      * @return the parsed document list
      */
-    public static List<Document> readDocumentsFromStream(InputStream stream) throws JAXBException {
-        List<Document> documentList = new ArrayList<>();
+    public static List<LegacyDocument> readDocumentsFromStream(InputStream stream) throws JAXBException {
+        List<LegacyDocument> documentList = new ArrayList<>();
         try (JsonParser jp = jsonFactory.createParser(stream)) {
             // read START_ARRAY
             jp.nextToken();
             while (jp.nextToken() == JsonToken.VALUE_STRING) {
-                Document d = Document.fromXml(jp.getValueAsString());
+                LegacyDocument d = LegacyDocument.fromXml(jp.getValueAsString());
                 if (d != null) {
                     documentList.add(d);
                 }
