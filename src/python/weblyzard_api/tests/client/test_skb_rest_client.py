@@ -47,9 +47,10 @@ from weblyzard_api.client.skb_rest_client import SKBRESTClient
 
 
 class TestSKBKeywords(unittest.TestCase):
+    def setUp(self):
+        self.skb_client = SKBRESTClient(url=os.getenv('WL_SKB_UNITTEST_URL'))
 
-    def test_save_keyword(self):
-        skb_client = SKBRESTClient(url=os.getenv('WL_SKB_UNITTEST_URL'))
+    def test_clean_keyword_data(self):
         kw_annotation = {
             "topEntityId": "energy",
             "confidence": 786.2216230656553,
@@ -70,7 +71,37 @@ class TestSKBKeywords(unittest.TestCase):
             },
             "preferredName": "energy"
         }
-        assert(skb_client.save_doc_kw_skb(kw_annotation) == 'Done')
+        cleaned = self.skb_client.clean_keyword_data(kw_annotation)
+        assert cleaned == {
+            "entityType": "GemetEntity",
+            "uri": "http://www.eionet.europa.eu/gemet/concept/2712",
+            "provenance": "en.gemet",
+            "definition": "The capacity to do work; involving thermal energy (heat), radiant energy (light), kinetic energy (motion) or chemical energy; measured in joules.",
+            "preferredName": "energy"
+        }
+
+    def test_save_keyword(self):
+        kw_annotation = {
+            "topEntityId": "energy",
+            "confidence": 786.2216230656553,
+            "entities": [{
+                "surfaceForm": "energy",
+                "start": 112,
+                "end": 118,
+                "sentence": 0
+            }],
+            "grounded": True,
+            "scoreName": "CONFIDENCE x OCCURENCE",
+            "entityType": "GemetEntity",
+            "score": 786.22,
+            "key": "http://www.eionet.europa.eu/gemet/concept/2712",
+            "profileName": "en.gemet",
+            "properties": {
+                "definition": "The capacity to do work; involving thermal energy (heat), radiant energy (light), kinetic energy (motion) or chemical energy; measured in joules."
+            },
+            "preferredName": "energy"
+        }
+        assert(self.skb_client.save_doc_kw_skb(kw_annotation) == 'Done')
 
 
 if __name__ == '__main__':

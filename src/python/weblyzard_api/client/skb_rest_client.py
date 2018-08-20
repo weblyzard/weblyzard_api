@@ -41,9 +41,19 @@ class SKBRESTClient(object):
         else:
             return None
 
+    def clean_keyword_data(self, kwargs):
+        skb_relevant_data = kwargs.get('properties', {})
+        for key in ('entityType', 'preferredName'):
+            if key in kwargs:
+                skb_relevant_data[key] = kwargs[key]
+        skb_relevant_data['uri'] = kwargs['key']
+        skb_relevant_data['provenance'] = kwargs['profileName']
+        return skb_relevant_data
+
     def save_doc_kw_skb(self, kwargs):
+        skb_relevant_data = self.clean_keyword_data(kwargs)
         response = requests.post('%s/%s' % (self.url, self.KEYWORD_PATH),
-                                 data=json.dumps(kwargs),
+                                 data=json.dumps(skb_relevant_data),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
             return response.text
