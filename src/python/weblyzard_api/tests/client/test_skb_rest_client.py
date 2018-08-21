@@ -46,9 +46,9 @@ from weblyzard_api.client.skb_rest_client import SKBRESTClient
 #
 
 
-class TestSKBKeywords(unittest.TestCase):
+class TestSKBEntities(unittest.TestCase):
     def setUp(self):
-        self.skb_client = SKBRESTClient(url=os.getenv('WL_SKB_UNITTEST_URL'))
+        self.skb_client = SKBRESTClient(url=os.getenv('WL_SKB_UNITTEST_URL', 'http://localhost:5000'))
 
     def test_clean_keyword_data(self):
         kw_annotation = {
@@ -101,7 +101,31 @@ class TestSKBKeywords(unittest.TestCase):
             },
             "preferredName": "energy"
         }
-        assert(self.skb_client.save_doc_kw_skb(kw_annotation) == 'Done')
+        assert(self.skb_client.save_doc_kw_skb(kw_annotation) ==
+               'http://www.eionet.europa.eu/gemet/concept/2712')
+
+    def test_save_entity(self):
+        entity_data = {
+            "publisher": "You Don't Say",
+            "title": "Hello, world!",
+            "url": "http://www.youdontsayaac.com/hello-world-2/",
+            "charset": "UTF-8",
+            "thumbnail": "https://s0.wp.com/i/blank.jpg",
+            "locale": "en_US",
+            "last_modified": "2014-07-15T18:46:42+00:00",
+            "page_type": "article",
+            "published_date": "2014-07-15T18:46:42+00:00",
+            "twitter_site": "@mfm_Kay",
+            "twitter_card": "summary"
+        }
+        try:
+            response = self.skb_client.save_entity(entity_dict=entity_data)
+            assert False  # entityType must be set -> assertion error must be raised
+        except AssertionError:
+            assert True
+        entity_data['entityType'] = 'AgentEntity'
+        response = self.skb_client.save_entity(entity_dict=entity_data)
+        assert response == 'http://weblyzard.com/skb/entity/agent/you_don_t_say'
 
 
 if __name__ == '__main__':

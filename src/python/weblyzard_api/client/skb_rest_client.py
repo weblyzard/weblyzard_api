@@ -15,7 +15,6 @@ class SKBRESTClient(object):
     VERSION = 1.0
     TRANSLATION_PATH = '{}/skb/translation?'.format(VERSION)
     TITLE_TRANSLATION_PATH = '{}/skb/title_translation?'.format(VERSION)
-    KEYWORD_PATH = '{}/skb/keyword_annotation'.format(VERSION)
     ENTITY_PATH = '{}/skb/entity'.format(VERSION)
     ENTITY_BY_PROPERTY_PATH = '{}/skb/entity_by_property'.format(VERSION)
 
@@ -52,13 +51,7 @@ class SKBRESTClient(object):
 
     def save_doc_kw_skb(self, kwargs):
         skb_relevant_data = self.clean_keyword_data(kwargs)
-        response = requests.post('%s/%s' % (self.url, self.KEYWORD_PATH),
-                                 data=json.dumps(skb_relevant_data),
-                                 headers={'Content-Type': 'application/json'})
-        if response.status_code < 400:
-            return response.text
-        else:
-            return None
+        return self.save_entity(entity_dict=skb_relevant_data)
 
     def save_entity(self, entity_dict):
         '''
@@ -78,6 +71,7 @@ class SKBRESTClient(object):
         >>> print(uri)
         http://weblyzard.com/skb/entity/agent/you_don_t_say
         '''
+        assert 'entityType' in entity_dict
         response = requests.post('{}/{}'.format(self.url,
                                                 self.ENTITY_PATH),
                                  data=json.dumps(entity_dict),
