@@ -41,6 +41,16 @@ class SKBRESTClient(object):
             return None
 
     def clean_keyword_data(self, kwargs):
+        '''
+        Helper class that takes the data generated from recognyze and keeps
+        only the properties, preferred Name,  entityType, uri and profileName
+        as provenance.
+
+        :param kwargs: The keyword data.
+        :type kwargs: dict
+        :returns: THe cleaned data.
+        :rtype: dict
+        '''
         skb_relevant_data = kwargs.get('properties', {})
         for key in ('entityType', 'preferredName'):
             if key in kwargs:
@@ -50,11 +60,34 @@ class SKBRESTClient(object):
         return skb_relevant_data
 
     def save_doc_kw_skb(self, kwargs):
+        '''
+        Saves the data for a keyword to the SKB, cleaning it first
+        from document-specific information.
+
+        :param kwargs: The entity data
+        :type kwargs: dict
+        :returns: The entity's uri.
+        :rtype: str or unicode
+        '''
         skb_relevant_data = self.clean_keyword_data(kwargs)
         return self.save_entity(entity_dict=skb_relevant_data)
 
     def save_entity(self, entity_dict):
         '''
+        Save an entity to the SKB, the Entity encoded as `dict`.
+        The `entity_dict` must contain a 'uri' and an 'entityType' entry.
+        Adding a 'provenance' entry is encouraged, this should contain an
+        identifier how the entity's information got obtained (e.g. profiles,
+        query/script etc. used.
+
+        Only exception (at the moment) is AgentEntity, where the SKB compiles
+        the URI.
+
+        :param entity_dict: The entity as dict
+        :type entity_dict: `dict`
+        :returns: The entity's uri or None, if an error occurred.
+        :rtype: str or unicode or None.
+
         >>> uri = skb_client.save_entity({
             "publisher": "You Don't Say",
             "title": "Hello, world!",
@@ -90,6 +123,15 @@ class SKBRESTClient(object):
         It returns a list of dicts containing the properties of the matching entities or None
         if no entities matched.
 
+        :param property_value: The property's value
+        :type property_value: str or unicode
+        :param property_name: The property's name. Optional.
+        :type property_name: str or unicode
+        :param entity_type: The type of entity to accept. Optional.
+        :type entity_type: str or unicode
+        :returns: The data of the entities matching the filter criteria.
+        :rtype: list
+
         >>> skb_client.get_entity_by_property(property_value="You Don't Say")
         [{u'entityType': u'AgentEntity', u'uri': u'http://weblyzard.com/skb/entity/agent/you_don_t_say', u'last_modified': u'2018-05-17T13:16:24.779019', u'_id': u'agent:you_don_t_say', u'properties': {u'url': u'youdontsayaac.com', u'publisher': u"You Don't Say", u'locale': u'en_US', u'twitter_site': u'@mfm_Kay', u'thumbnail': u'https://s0.wp.com/i/blank.jpg'}, u'preferredName': u"You Don't Say"}]
         '''
@@ -113,6 +155,11 @@ class SKBRESTClient(object):
 
         It returns a dict containing the properties of the entity or None
         if no entities matched.
+
+        :param uri: The uri of the Entity to get.
+        :type uri: str or unicode
+        :returns: The Entity's data.
+        :rtype: dict
 
         >>> skb_client.get_entity(uri="http://weblyzard.com/skb/entity/agent/you_don_t_say")
         {u'publisher': u"You Don't Say", u'locale': u'en_US', u'entityType': u'AgentEntity', u'thumbnail': u'https://s0.wp.com/i/blank.jpg', u'url': u'youdontsayaac.com', u'twitter_site': u'@mfm_Kay', u'preferredName': u"You Don't Say"}
