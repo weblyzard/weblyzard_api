@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import pytest
 import unittest
+
 
 from weblyzard_api.client.skb_rest_client import SKBRESTClient
 #
@@ -106,17 +108,17 @@ class TestSKBEntities(unittest.TestCase):
 
     def test_save_entity(self):
         entity_data = {
-            "publisher": "You Don't Say",
-            "title": "Hello, world!",
-            "url": "http://www.youdontsayaac.com/hello-world-2/",
-            "charset": "UTF-8",
-            "thumbnail": "https://s0.wp.com/i/blank.jpg",
-            "locale": "en_US",
-            "last_modified": "2014-07-15T18:46:42+00:00",
-            "page_type": "article",
-            "published_date": "2014-07-15T18:46:42+00:00",
-            "twitter_site": "@mfm_Kay",
-            "twitter_card": "summary"
+            u"publisher": u"You Don't Say",
+            u"title": u"Hello, world!",
+            u"url": u"http://www.youdontsayaac.com/hello-world-2/",
+            u"charset": u"UTF-8",
+            u"thumbnail": u"https://s0.wp.com/i/blank.jpg",
+            u"locale": u"en_US",
+            u"last_modified": u"2014-07-15T18:46:42+00:00",
+            u"page_type": u"article",
+            u"published_date": u"2014-07-15T18:46:42+00:00",
+            u"twitter_site": u"@mfm_Kay",
+            u"twitter_card": u"summary"
         }
         try:
             response = self.skb_client.save_entity(entity_dict=entity_data)
@@ -126,6 +128,11 @@ class TestSKBEntities(unittest.TestCase):
         entity_data['entityType'] = 'AgentEntity'
         response = self.skb_client.save_entity(entity_dict=entity_data)
         assert response == 'http://weblyzard.com/skb/entity/agent/you_don_t_say'
+        # Getting entity
+        result = self.skb_client.get_entity(
+            uri="http://weblyzard.com/skb/entity/agent/you_don_t_say")
+        entity_data[u'provenance'] = None
+        assert result == entity_data
 
 
 if __name__ == '__main__':
