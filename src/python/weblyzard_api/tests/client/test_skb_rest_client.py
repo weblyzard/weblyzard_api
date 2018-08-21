@@ -133,6 +133,21 @@ class TestSKBEntities(unittest.TestCase):
             uri="http://weblyzard.com/skb/entity/agent/you_don_t_say")
         entity_data[u'provenance'] = None
         assert result == entity_data
+        result = self.skb_client.get_entity(
+            uri="agent:you_don_t_say")
+        assert result == entity_data
+        result = self.skb_client.get_entity_by_property(
+            property_name='url',
+            property_value='http://www.youdontsayaac.com/hello-world-2/',
+            entity_type='AgentEntity')
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0] == entity_data
+        result = self.skb_client.get_entity_by_property(
+            property_value='http://www.youdontsayaac.com/hello-world-2/')
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0] == entity_data
 
 
 if __name__ == '__main__':
