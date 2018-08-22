@@ -16,6 +16,7 @@ class SKBRESTClient(object):
     TRANSLATION_PATH = '{}/skb/translation?'.format(VERSION)
     TITLE_TRANSLATION_PATH = '{}/skb/title_translation?'.format(VERSION)
     ENTITY_PATH = '{}/skb/entity'.format(VERSION)
+    ENTITY_BATCH_PATH = '{}/skb/entity_batch'.format(VERSION)
     ENTITY_BY_PROPERTY_PATH = '{}/skb/entity_by_property'.format(VERSION)
 
     def __init__(self, url):
@@ -111,6 +112,34 @@ class SKBRESTClient(object):
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
             return json.loads(response.text)['uri']
+        else:
+            return None
+
+    def save_entity_batch(self, entity_list):
+        '''
+        Save a list of entities to the SKB, the individual Entities encoded as 
+        `dict`.
+        Each `entity_dict` must contain a 'uri' and an 'entityType' entry.
+        Adding a 'provenance' entry is encouraged, this should contain an
+        identifier how the entity's information got obtained (e.g. profiles,
+        query/script etc. used.
+
+        Only exception (at the moment) is AgentEntity, where the SKB compiles
+        the URI.
+
+        :param entity_list: The entities as list of dicts
+        :type entity_dict: `list`
+        :returns: The entities' uris or None, if an error occurred.
+        :rtype: `list`
+        '''
+        for entity in entity_list:
+            assert 'entityType' in entity
+        response = requests.post('{}/{}'.format(self.url,
+                                                self.ENTITY_BATCH_PATH),
+                                 data=json.dumps(entity_list),
+                                 headers={'Content-Type': 'application/json'})
+        if response.status_code < 400:
+            return json.loads(response.text)['uris']
         else:
             return None
 
