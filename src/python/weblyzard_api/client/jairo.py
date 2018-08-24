@@ -25,20 +25,20 @@ class JairoClient(MultiRESTClient):
 
     def set_profile(self, profile_name, profile):
         ''' '''
-        return self.request('profiles/add/{}'.format(profile_name), profile)
+        return self.request('add_profile/{}'.format(profile_name), profile)
 
     def enrich_annotations(self, profile_name, annotations):
         ''' '''
-        return self.request('annotations/enrich/{}'.format(profile_name),
+        return self.request('extend_annotations/{}'.format(profile_name),
                             annotations)
 
     def list_profiles(self):
         ''' '''
-        return self.request('profiles/list', return_plain=True)
+        return self.request('list_profiles', return_plain=True)
 
     def reload_profiles(self):
         ''' '''
-        return self.request('profiles/reload', return_plain=True)
+        return self.request('reload_profiles', return_plain=True)
 
     def status(self):
         ''' '''
