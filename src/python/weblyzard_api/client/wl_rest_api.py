@@ -151,7 +151,7 @@ class WlSearchRestApiClient(object):
 
 class WlStatisticsRestApiClient(object):
 
-    API_VERSION = 1.0
+    API_VERSION = 2.0
 
     def __init__(self, base_url):
         '''
