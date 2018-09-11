@@ -41,6 +41,7 @@ class XML2013(XMLParser):
         'publisher': ('publisher', 'dc'),
         'keywords': ('subject', 'dc'),
         'title': ('title', 'dc'),
+        'description': ('description', 'dc'),
 
         # internal
         'nilsimsa': ('nilsimsa', 'wl'),
@@ -55,7 +56,6 @@ class XML2013(XMLParser):
         'picture': ('thumbnail', 'wl'),  # FB, YT
         'org_picture': ('thumbnail', 'wl'),  # FB
         'group_picture': ('thumbnail', 'wl'),  # FB
-        'description': ('description', 'wl'),
         'location': ('location', 'wl'),  # YT, vimeo/daily
         'duration': ('duration', 'wl'),
         'is_sensitive': ('is_sensitive', 'wl'),  # YT
