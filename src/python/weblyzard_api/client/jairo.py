@@ -3,6 +3,9 @@
 '''
 .. moduleauthor:: Max Goebel <goebel@weblyzard.com>
 '''
+
+import json
+
 from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
@@ -34,7 +37,9 @@ class JairoClient(MultiRESTClient):
 
     def list_profiles(self):
         ''' '''
-        return self.request('list_profiles', return_plain=True)
+        return json.loads(self.request(
+            'list_profiles',
+            return_plain=True))
 
     def reload_profiles(self):
         ''' '''
