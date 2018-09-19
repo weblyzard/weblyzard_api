@@ -162,7 +162,7 @@ class WlStatisticsRestApiClient(object):
         '''
         self.base_url = '/'.join([base_url, str(self.API_VERSION)])
 
-    def add_observation(self, repository_name, observation):
+    def add_observation(self, repository_name, observation, indicator_id):
         '''
         Adds the document to the given portal.
 
@@ -176,9 +176,11 @@ class WlStatisticsRestApiClient(object):
         '''
         if isinstance(observation, dict):
             observation = json.dumps(observation)
-        r = requests.post('/'.join([self.base_url,
-                                    'observations',
-                                    repository_name]),
+        url = '/'.join([self.base_url,
+                        'observations',
+                        repository_name,
+                        indicator_id])
+        r = requests.post(url=url,
                           data=observation,
                           headers={'Content-Type': 'application/json'})
         return r.json()
