@@ -101,7 +101,7 @@
 		<dependency>
 			<groupId>com.weblyzard.api</groupId>
 			<artifactId>weblyzard-api</artifactId>
-			<version>0.2.0.2-SNAPSHOT</version>
+			<version>0.2.0.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
