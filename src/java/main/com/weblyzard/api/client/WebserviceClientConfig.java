@@ -2,11 +2,13 @@ package com.weblyzard.api.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain = true)
+@NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class WebserviceClientConfig {
 
     private String url = System.getenv("WEBLYZARD_API_URL");
@@ -19,7 +21,8 @@ public class WebserviceClientConfig {
     private boolean debug = System.getenv("WEBLYZARD_API_DEBUG") != null;
 
     /**
-     * set the serivce prefix to the defaultServicePrefix if no custom one has been set.
+     * Sets the service prefix to the defaultServicePrefix provided by
+     * the calling class, if no custom prefix has been specified. 
      */
     public void setServicePrefixIfEmpty(String defaultServicePrefix) {
         if (servicePrefix == null) {

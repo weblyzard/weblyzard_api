@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.weblyzard.api.client.JairoClient;
+import com.weblyzard.api.client.WebserviceClientConfig;
 import com.weblyzard.api.model.annotation.Annotation;
 import com.weblyzard.api.model.jairo.Profile;
 
@@ -22,7 +23,7 @@ public class JairoClientIT extends TestClientBase {
 
     @Before
     public void before() {
-        jairoClient = new JairoClient();
+        jairoClient = new JairoClient(new WebserviceClientConfig());
         initMockObjects();
     }
 

@@ -6,18 +6,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.weblyzard.api.client.JohnDoeClient;
+import com.weblyzard.api.client.WebserviceClientConfig;
 
 public class JohnDoeClientIT {
 	
 	private JohnDoeClient client;
-	private static final String LOCAL_JOHNDOE = "http://localhost:63013";
 	private static final String TEST_CONTENT = "Müller Peter Jansen";
 	private static final String TEST_PROFILE = "JOBCOCKPIT";
 	private static final String TEST_BASEURL = "http://www.tbd.com";
 	
 	@Before
 	public void setUp() {
-		client = new JohnDoeClient(LOCAL_JOHNDOE);
+		client = new JohnDoeClient(
+		        new WebserviceClientConfig().setUrl("http://localhost").setServicePrefix(":63013"));
 	}
 	
 	@Test

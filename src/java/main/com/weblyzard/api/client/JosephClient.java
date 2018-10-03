@@ -9,7 +9,9 @@ import javax.ws.rs.core.Response;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.joseph.Classification;
 
-/** @author philipp.kuntschik@htwchur.ch */
+/** 
+ * @author Philipp Kuntschik
+ */
 public class JosephClient extends BasicClient {
 
     private static final String TEMPLATE_PROFILE_NAME = "profileName";
@@ -61,54 +63,50 @@ public class JosephClient extends BasicClient {
     }
 
     public boolean unloadProfile(String profileName) {
-        Response response = super.getTarget(UNLOAD_PROFILE_SERVICE_URL)
+        try (Response response = super.getTarget(UNLOAD_PROFILE_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
-                .request(MediaType.APPLICATION_JSON_TYPE).get();
+                .request(MediaType.APPLICATION_JSON_TYPE).get()) {
 
-        super.checkResponseStatus(response);
-        boolean result = response.readEntity(Boolean.class);
-        response.close();
-
-        return result;
+            super.checkResponseStatus(response);
+            boolean result = response.readEntity(Boolean.class);
+            return result;
+        }
     }
 
     public boolean train(String profileName, Document document, String category) {
-        Response response = super.getTarget(TRAIN_SERVICE_URL)
+        try (Response response = super.getTarget(TRAIN_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
                 .resolveTemplate(TEMPLATE_CATEGORY, category)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document));
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document))) {
 
-        super.checkResponseStatus(response);
-        boolean result = response.readEntity(Boolean.class);
-        response.close();
-
-        return result;
+            super.checkResponseStatus(response);
+            boolean result = response.readEntity(Boolean.class);
+            return result;
+        }
     }
 
     public boolean retrain(String profileName, Document document, String category) {
-        Response response = super.getTarget(RETRAIN_SERVICE_URL)
+        try (Response response = super.getTarget(RETRAIN_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
                 .resolveTemplate(TEMPLATE_CATEGORY, category)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document));
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document))) {
 
-        super.checkResponseStatus(response);
-        boolean result = response.readEntity(Boolean.class);
-        response.close();
-
-        return result;
+            super.checkResponseStatus(response);
+            boolean result = response.readEntity(Boolean.class);
+            return result;
+        }
     }
 
     public boolean forget(String profileName, Document document, String category) {
-        Response response = super.getTarget(FORGET_SERVICE_URL)
+        try (Response response = super.getTarget(FORGET_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
                 .resolveTemplate(TEMPLATE_CATEGORY, category)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document));
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(document))) {
 
-        super.checkResponseStatus(response);
-        boolean result = response.readEntity(Boolean.class);
-        response.close();
-
-        return result;
+            super.checkResponseStatus(response);
+            boolean result = response.readEntity(Boolean.class);
+            return result;
+        }
     }
 
     public List<Classification> classify(String profileName, Document request) {
@@ -118,16 +116,15 @@ public class JosephClient extends BasicClient {
     public List<Classification> classify(String profileName, Document request, int limit,
             boolean withFeatures) throws WebApplicationException {
 
-        Response response = super.getTarget(CLASSIFY_SERVICE_URL)
+        try (Response response = super.getTarget(CLASSIFY_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
                 .queryParam(PARAM_WITH_FEATURES, withFeatures)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request));
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
 
-        super.checkResponseStatus(response);
-        List<Classification> result =
-                response.readEntity(new GenericType<List<Classification>>() {});
-        response.close();
-
-        return result;
+            super.checkResponseStatus(response);
+            List<Classification> result =
+                    response.readEntity(new GenericType<List<Classification>>() {});
+            return result;
+        }
     }
 }
