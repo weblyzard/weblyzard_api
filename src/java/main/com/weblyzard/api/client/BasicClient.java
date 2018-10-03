@@ -20,32 +20,10 @@ import org.glassfish.jersey.logging.LoggingFeature;
 
 public abstract class BasicClient {
 
-    private static final String ENV_WEBLYZARD_API_URL = "WEBLYZARD_API_URL";
-    private static final String ENV_WEBLYZARD_API_USER = "WEBLYZARD_API_USER";
-    private static final String ENV_WEBLYZARD_API_PASS = "WEBLYZARD_API_PASS";
-    private static final String FALLBACK_WEBLYZARD_API_URL = "http://localhost:8080";
-
-    private static final String ENV_WEBLYZARD_API_DEBUG = "WEBLYZARD_API_DEBUG";
-
     private final WebTarget baseTarget;
     private Map<String, WebTarget> webTargets = new ConcurrentHashMap<>();
 
     private Logger logger = Logger.getLogger(getClass().getName());
-
-    /** Constructor using environment variables. */
-    public BasicClient() {
-        this(System.getenv(ENV_WEBLYZARD_API_URL));
-    }
-
-    /**
-     * Constructor using environment variables with a custom url.
-     *
-     * @param weblyzardUrl the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
-     */
-    public BasicClient(String weblyzardUrl) {
-        this(weblyzardUrl, System.getenv(ENV_WEBLYZARD_API_USER),
-                System.getenv(ENV_WEBLYZARD_API_PASS));
-    }
 
     /**
      * Constructor using a custom url, username and password.
@@ -53,26 +31,26 @@ public abstract class BasicClient {
      * @param weblyzardUrl the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
      * @param username may be null
      * @param password may be null
+     * @param servicePrefix an optional prefix such as `/jeremia` or `/jesaja`
      */
-    public BasicClient(String weblyzardUrl, String username, String password) {
+    public BasicClient(WebserviceClientConfig c) {
 
         ClientConfig config = new ClientConfig();
 
-        if (Boolean.parseBoolean(System.getenv(ENV_WEBLYZARD_API_DEBUG))) {
+        if (c.isDebug()) {
             // https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
             // -> Example 21.1. Logging on client-side
             config.register(new LoggingFeature(logger, Level.SEVERE,
                     LoggingFeature.Verbosity.PAYLOAD_TEXT, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
         }
 
-        if (username != null && password != null) {
-            config.register(HttpAuthenticationFeature.basicBuilder().credentials(username, password)
-                    .build());
+        if (c.getUsername() != null && c.getPassword() != null) {
+            config.register(HttpAuthenticationFeature.basicBuilder()
+                    .credentials(c.getUsername(), c.getPassword()).build());
         }
 
         this.baseTarget = JerseyClientBuilder.createClient(config)
-                .target(weblyzardUrl == null ? FALLBACK_WEBLYZARD_API_URL : weblyzardUrl)
-                .register(new JacksonJsonProvider());
+                .target(c.getUrl() + c.getServicePrefix()).register(new JacksonJsonProvider());
     }
 
     public WebTarget getTarget(String urlTemplate) {

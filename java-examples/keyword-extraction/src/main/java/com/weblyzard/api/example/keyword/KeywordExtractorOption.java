@@ -5,7 +5,7 @@ import com.google.devtools.common.options.OptionsBase;
 
 public class KeywordExtractorOption extends OptionsBase{
 
-	@Option(name="help", abbrev='h', help="Print usage info.", defaultValue="true")
+	@Option(name="help", abbrev='h', help="Print usage info.", defaultValue="false")
 	public boolean printHelp;
 
 	@Option(name="Profile name", abbrev='n', help="Profile name used for the trained keyword extraction model.", defaultValue="default")

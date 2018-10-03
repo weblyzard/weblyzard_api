@@ -18,31 +18,11 @@ import com.weblyzard.api.model.document.MirrorDocument;
 public class JeremiaClient extends BasicClient {
 
     private static final String SUBMIT_DOCUMENT_SERVICE_URL = "/rest/submit_document";
-    private static String prefix = "/jeremia";
     private static final GenericType<List<Document>> DOCUMENT_LIST_TYPE = new GenericType<>() {};
 
-    public JeremiaClient() {
-        super();
-    }
-
-    public JeremiaClient(String weblyzardUrl) {
-        super(weblyzardUrl);
-    }
-
-    /**
-     * prefix and Url is overwritable
-     * 
-     * @param weblyzardUrl e.g. http://localhost:63001
-     * @param prefix if prefix is null, no prefix will be applied, otherwise prefix is used before
-     *        resource
-     */
-    public JeremiaClient(String weblyzardUrl, String prefix) {
-        super(weblyzardUrl);
-        JeremiaClient.prefix = prefix == null ? "" : prefix;
-    }
-
-    public JeremiaClient(String weblyzardUrl, String username, String password) {
-        super(weblyzardUrl, username, password);
+    public JeremiaClient(WebserviceClientConfig c) {
+        super(c);
+        c.setServicePrefixIfEmpty("/jeremia");
     }
 
     /**
@@ -52,7 +32,7 @@ public class JeremiaClient extends BasicClient {
      * @return the corresponding {@link Document} object
      */
     public Document submitDocument(MirrorDocument request) throws WebApplicationException {
-        try (Response response = super.getTarget(prefix + SUBMIT_DOCUMENT_SERVICE_URL)
+        try (Response response = super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
             super.checkResponseStatus(response);
             return response.readEntity(Document.class);
@@ -67,7 +47,7 @@ public class JeremiaClient extends BasicClient {
      */
     public List<Document> submitDocuments(List<MirrorDocument> request)
             throws WebApplicationException {
-        try (Response response = super.getTarget(prefix + SUBMIT_DOCUMENT_SERVICE_URL)
+        try (Response response = super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
             super.checkResponseStatus(response);
             return response.readEntity(DOCUMENT_LIST_TYPE);

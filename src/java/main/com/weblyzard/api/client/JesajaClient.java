@@ -26,30 +26,23 @@ public class JesajaClient extends BasicClient {
     private static final String TEMPLATE_PROFILE = "profile";
 
     private static final String GET_KEYWORDS_SERVICE_URL =
-            "/jesaja/rest/get_keywords/{" + TEMPLATE_MATVIEW + "}";
+            "/rest/get_keywords/{" + TEMPLATE_MATVIEW + "}";
     private static final String SET_REFERENCE_CORPUS_SERVICE_URL =
-            "/jesaja/rest/add_csv/{" + TEMPLATE_MATVIEW + "}";
+            "/rest/add_csv/{" + TEMPLATE_MATVIEW + "}";
     private static final String ADD_DOCUMENTS_SERVICE_URL =
-            "/jesaja/rest/add_documents/{" + TEMPLATE_MATVIEW + "}";
+            "/rest/add_documents/{" + TEMPLATE_MATVIEW + "}";
     private static final String GET_NEK_ANNOTATIONS_SERVICE_URL =
-            "/jesaja/rest/get_nek_annotations/{" + TEMPLATE_MATVIEW + "}";
+            "/rest/get_nek_annotations/{" + TEMPLATE_MATVIEW + "}";
     private static final String ROTATE_SHARD_SERVICE_URL =
-            "/jesaja/rest/rotate_shard/{" + TEMPLATE_MATVIEW + "}";
+            "/rest/rotate_shard/{" + TEMPLATE_MATVIEW + "}";
     private static final String SET_MATVIEW_PROFILE_URL = "/jesaja/rest/set_matview_profile/{"
             + TEMPLATE_PROFILE + "}/{" + TEMPLATE_PROFILE + "}";
     private static final String SET_KEYWORD_PROFILE_URL =
-            "/jesaja/rest/set_keyword_profile/{" + TEMPLATE_PROFILE + "}";
+            "/rest/set_keyword_profile/{" + TEMPLATE_PROFILE + "}";
 
-    public JesajaClient() {
-        super();
-    }
-
-    public JesajaClient(String weblyzardUrl) {
-        super(weblyzardUrl);
-    }
-
-    public JesajaClient(String weblyzardUrl, String username, String password) {
-        super(weblyzardUrl, username, password);
+    public JesajaClient(WebserviceClientConfig c) {
+        super(c);
+        c.setServicePrefixIfEmpty("/jesaja");
     }
 
     public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
@@ -79,7 +72,6 @@ public class JesajaClient extends BasicClient {
 
     public Map<String, Map<String, Double>> getKeywords(String matviewId, List<Document> documents)
             throws WebApplicationException, JAXBException {
-
         try (Response response = super.getTarget(GET_KEYWORDS_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents))) {
@@ -93,7 +85,6 @@ public class JesajaClient extends BasicClient {
 
     public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
             throws WebApplicationException, JAXBException {
-
         try (Response response = super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents))) {
@@ -104,7 +95,6 @@ public class JesajaClient extends BasicClient {
     }
 
     public int rotateShard(String matviewId) throws WebApplicationException, JAXBException {
-
         try (Response response = super.getTarget(ROTATE_SHARD_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                 .request(MediaType.APPLICATION_JSON_TYPE).get()) {

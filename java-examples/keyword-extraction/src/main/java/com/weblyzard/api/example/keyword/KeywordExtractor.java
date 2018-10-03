@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +49,13 @@ public class KeywordExtractor {
 		OptionsParser parser = OptionsParser.newOptionsParser(KeywordExtractorOption.class);
 		parser.parseAndExitUponError(argv);
 		KeywordExtractorOption options = parser.getOptions(KeywordExtractorOption.class);
+		System.out.println("Arguments   : " + Arrays.toString(argv));
+		System.out.println("Base URL    : " + options.webServiceBaseUrl);
+		System.out.println("Profile name: " + options.profileName);
 		
 		if (options.printHelp || options.webServiceBaseUrl.isEmpty() || options.profileName.isEmpty()) {
 			printUsage(parser);
+			return;
 		}
 		
 		// setup keyword service

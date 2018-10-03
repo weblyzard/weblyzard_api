@@ -10,12 +10,9 @@ public class InscriptisClient extends BasicClient {
     private static final String GET_TEXT = "get_text";
 
 
-    public InscriptisClient() {
-        super();
-    }
-
-    public InscriptisClient(String weblyzardUrl) {
-        super(weblyzardUrl);
+    public InscriptisClient(WebserviceClientConfig c) {
+        super(c);
+        c.setServicePrefixIfEmpty("");
     }
 
     public String parseHTMl(String html) throws WebApplicationException {
