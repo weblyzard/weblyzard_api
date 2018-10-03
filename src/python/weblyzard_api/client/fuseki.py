@@ -15,6 +15,7 @@ import socket
 import time
 
 from SPARQLWrapper import SPARQLWrapper, JSON
+import rdflib.term
 
 
 class FusekiWrapper(object):
@@ -25,6 +26,7 @@ class FusekiWrapper(object):
     NAMESPACES = {
         'http://weblyzard.com/skb/lexicon/': '',
         'http://weblyzard.com/skb/property/': 'skbprop',
+        'http://weblyzard.com/skb/entity/agent/': 'agent',
         'http://lemon-model.net/lemon#': 'lemon',
         'http://www.w3.org/2000/01/rdf-schema#': 'rdfs',
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#': 'rdf',
@@ -35,6 +37,11 @@ class FusekiWrapper(object):
         'http://www.w3.org/2001/XMLSchema#': 'xsd',
         'http://www.w3.org/ns/prov#': 'prov',
         'http://id.loc.gov/vocabulary/iso639-1/': 'lang',
+        'http://dbpedia.org/ontology/': 'dbo',
+        'http://www.w3.org/2002/07/owl#': 'owl',
+        'http://www.opengis.net/ont/geosparql#': 'geo',
+        'http://www.wikidata.org/prop/direct/': 'wdt',
+        'http://www.wikidata.org/entity/': 'wd',
     }
     PREFIXES = '\n'.join(['PREFIX {value}: <{key}>'.format(value=value,
                                                            key=key) \
@@ -94,6 +101,48 @@ class FusekiWrapper(object):
             if value.startswith('<http') and value[-1:] == '>':
                 return True
             return False
+
+    def variable_to_python(self, variable_dict, add_language_tag=False):
+        '''
+        Converts the given variable_dict to the closest python representation.
+
+        :param variable_dict: The dict representing the variable.
+        :type variable_dict: `dict`
+        :param add_language_tag: If a language-tagged string literal should \
+                be language-tagged (and wrapped in double quotes).
+        :type add_language_tag: `bool`
+        :rtype: `object`
+        '''
+        if variable_dict['type'] == 'uri':
+            return variable_dict['value']
+        elif variable_dict['type'] == 'literal':
+            if variable_dict.get('xml:lang', False):
+                if add_language_tag:
+                    return u'"{}"@{}'.format(
+                        variable_dict['value'],
+                        variable_dict['xml:lang']
+                    )
+                else:
+                    return variable_dict['value']
+            elif variable_dict.get('datatype', False):
+                datatype = variable_dict['datatype']
+                uri_ref = rdflib.term.URIRef(datatype)
+                mapping_function = rdflib.term._toPythonMapping.get(uri_ref, None)
+                if mapping_function is None:
+                    return variable_dict['value']
+                else:
+                    return mapping_function(variable_dict['value'])
+            else:
+                try:
+                    return int(variable_dict['value'])
+                except ValueError:
+                    pass
+                try:
+                    return float(variable_dict['value'])
+                except ValueError:
+                    return variable_dict['value']
+        else:
+            return variable_dict['value']
 
     def execute_query(self, query, caching=False, on_fly_json_decoding=False):
         def parse_and_yield(result):
