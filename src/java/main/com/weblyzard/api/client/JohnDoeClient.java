@@ -1,6 +1,5 @@
 package com.weblyzard.api.client;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -20,13 +19,12 @@ public class JohnDoeClient extends BasicClient {
 
     /**
      * 
-     * @param content
-     * @param profileName
-     * @return annonymized identifier
-     * @throws WebApplicationException
+     * @param content the content to assess
+     * @param profileName the profile name
+     * @param the baseUrl of the page used for grounding
+     * @return anonymized identifier
      */
-    public String annonymizeContent(String content, String profileName, String baseUrl)
-            throws WebApplicationException {
+    public String annonymizeContent(String content, String profileName, String baseUrl) {
         try (Response response = super.getTarget(ANNON_SERVICE_URL).queryParam(CONTENT, content)
                 .queryParam(PROFILE, profileName).queryParam(BASEURL, baseUrl)
                 .request(MediaType.APPLICATION_JSON).get()) {

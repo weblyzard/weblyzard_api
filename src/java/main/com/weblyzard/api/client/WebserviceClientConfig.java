@@ -21,8 +21,10 @@ public class WebserviceClientConfig {
     private boolean debug = System.getenv("WEBLYZARD_API_DEBUG") != null;
 
     /**
-     * Sets the service prefix to the defaultServicePrefix provided by
-     * the calling class, if no custom prefix has been specified. 
+     * Sets the service prefix to the defaultServicePrefix provided by the calling class, if no
+     * custom prefix has been specified.
+     * 
+     * @param defaultServicePrefix the prefix to use if no custom prefix has been set
      */
     public void setServicePrefixIfEmpty(String defaultServicePrefix) {
         if (servicePrefix == null) {

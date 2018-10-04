@@ -25,13 +25,11 @@ public abstract class BasicClient {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
+
     /**
-     * Constructor using a custom url, username and password.
-     *
-     * @param weblyzardUrl the url to the service, or FALLBACK_WEBLYZARD_API_URL if null
-     * @param username may be null
-     * @param password may be null
-     * @param servicePrefix an optional prefix such as `/jeremia` or `/jesaja`
+     * Constructs the {@link BasicClient} based on a {@link WebserviceClientConfig}
+     * 
+     * @param c the {@link WebserviceClientConfig} to use for the connection
      */
     public BasicClient(WebserviceClientConfig c) {
 
