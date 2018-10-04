@@ -13,6 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<weblyzard-api.version>0.2.1.0-SNAPSHOT</weblyzard-api.version>
+		<jaxb.version>2.3.0</jaxb.version>
 	</properties>
 
 	<build>
@@ -112,5 +113,31 @@
 			<artifactId>google-options</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+
+		<!-- Java 9+ missing libraries -->
+		<dependency>
+			<groupId>com.sun.activation</groupId>
+			<artifactId>javax.activation</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+
+
 	</dependencies>
+
+
 </project>
