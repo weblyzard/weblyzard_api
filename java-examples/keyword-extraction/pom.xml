@@ -12,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<weblyzard-api.version>0.2.0.3-SNAPSHOT</weblyzard-api.version>
+		<weblyzard-api.version>0.2.1.0-SNAPSHOT</weblyzard-api.version>
 	</properties>
 
 	<build>
@@ -44,36 +44,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>3.8.0</version>
 				<configuration>
 					<source>10</source>
 					<target>10</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.21.0</version>
-				<configuration>
-					<systemPropertyVariables>
-						<user.language>de</user.language>
-						<user.region>AT</user.region>
-					</systemPropertyVariables>
-					<argLine>-Dfile.encoding=UTF-8</argLine>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.21.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
@@ -84,7 +59,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.1</version>
+				<version>0.8.2</version>
 			</plugin>
 			<!-- generate runable jar file -->
 			<plugin>
@@ -129,7 +104,7 @@
 		<dependency>
 			<groupId>com.weblyzard.api</groupId>
 			<artifactId>weblyzard-api</artifactId>
-			<version>0.2.0.3-SNAPSHOT</version>
+			<version>${weblyzard-api.version}</version>
 		</dependency>
 
 		<dependency>
