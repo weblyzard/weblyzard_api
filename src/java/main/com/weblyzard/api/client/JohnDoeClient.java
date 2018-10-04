@@ -21,7 +21,7 @@ public class JohnDoeClient extends BasicClient {
      * 
      * @param content the content to assess
      * @param profileName the profile name
-     * @param the baseUrl of the page used for grounding
+     * @param baseUrl used for grounding
      * @return anonymized identifier
      */
     public String annonymizeContent(String content, String profileName, String baseUrl) {
