@@ -35,8 +35,8 @@ public class JesajaClient extends BasicClient {
             "/rest/get_nek_annotations/{" + TEMPLATE_MATVIEW + "}";
     private static final String ROTATE_SHARD_SERVICE_URL =
             "/rest/rotate_shard/{" + TEMPLATE_MATVIEW + "}";
-    private static final String SET_MATVIEW_PROFILE_URL = "/jesaja/rest/set_matview_profile/{"
-            + TEMPLATE_PROFILE + "}/{" + TEMPLATE_PROFILE + "}";
+    private static final String SET_MATVIEW_PROFILE_URL =
+            "/rest/set_matview_profile/{" + TEMPLATE_PROFILE + "}/{" + TEMPLATE_PROFILE + "}";
     private static final String SET_KEYWORD_PROFILE_URL =
             "/rest/set_keyword_profile/{" + TEMPLATE_PROFILE + "}";
 
@@ -104,7 +104,7 @@ public class JesajaClient extends BasicClient {
         }
     }
 
-    public int setMatviewProfile(String profileName, String matviewId)
+    public void setMatviewProfile(String profileName, String matviewId)
             throws WebApplicationException {
         try (Response response = super.getTarget(SET_MATVIEW_PROFILE_URL)
                 .resolveTemplate(TEMPLATE_PROFILE, profileName)
@@ -112,18 +112,16 @@ public class JesajaClient extends BasicClient {
                 .request(MediaType.APPLICATION_JSON_TYPE).get()) {
 
             super.checkResponseStatus(response);
-            return response.readEntity(Integer.class);
         }
     }
 
-    public int setKeywordProfile(String profileName, KeywordCalculationProfile keywordProfile)
+    public void setKeywordProfile(String profileName, KeywordCalculationProfile keywordProfile)
             throws WebApplicationException {
         try (Response response = super.getTarget(SET_KEYWORD_PROFILE_URL)
                 .resolveTemplate(TEMPLATE_PROFILE, profileName)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(keywordProfile))) {
 
             super.checkResponseStatus(response);
-            return response.readEntity(Integer.class);
         }
     }
 

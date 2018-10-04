@@ -34,14 +34,12 @@ public abstract class BasicClient {
     public BasicClient(WebserviceClientConfig c) {
 
         ClientConfig config = new ClientConfig();
-
         if (c.isDebug()) {
             // https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
             // -> Example 21.1. Logging on client-side
             config.register(new LoggingFeature(logger, Level.SEVERE,
                     LoggingFeature.Verbosity.PAYLOAD_TEXT, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
         }
-
         if (c.getUsername() != null && c.getPassword() != null) {
             config.register(HttpAuthenticationFeature.basicBuilder()
                     .credentials(c.getUsername(), c.getPassword()).build());
