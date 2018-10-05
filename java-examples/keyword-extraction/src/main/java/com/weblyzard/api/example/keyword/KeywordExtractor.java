@@ -41,7 +41,7 @@ public class KeywordExtractor {
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 	
 	private static KeywordCalculationProfile KEYWORD_PROFILE = new KeywordCalculationProfile()
-			.setValidPosTags(Set.of("NN", "NNP", "P", "ADJ", "TO", "IN"))
+			.setValidPosTags(Set.of("NN", "NNP", "P", "ADJ"))
 			.setMinPhraseSignificance(2)
 			.setNumKeywords(15)
 			.setKeywordAlgorithm("com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm")
