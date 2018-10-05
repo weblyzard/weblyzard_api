@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.weblyzard.api.client.JosephClient;
+import com.weblyzard.api.client.WebserviceClientConfig;
 import com.weblyzard.api.model.document.Document;
 
 public class JosephClientIT extends TestClientBase {
@@ -29,7 +30,7 @@ public class JosephClientIT extends TestClientBase {
     @Test
     public void before() {
         psalmDocs = readWeblyzardDocuments();
-        client = new JosephClient();
+        client = new JosephClient(new WebserviceClientConfig());
         assumeTrue(weblyzardServiceAvailable(client));
         assertTrue(client.loadProfile(profileName));
     }

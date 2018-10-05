@@ -4,112 +4,96 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import com.weblyzard.api.model.document.Document;
 
-/** @author philipp.kuntschik@htwchur.ch */
+/**
+ * Provide access to the Recognyze named entity linking Web service
+ * 
+ * @author Philipp Kuntschik
+ * @author Albert Weichselbraun
+ */
 public class RecognyzeClient extends BasicClient {
 
-	private static final String TEMPLATE_PROFILE_NAME = "profileName";
+    private static final String TEMPLATE_PROFILE_NAME = "profileName";
 
-	private static final String ADD_PROFILE_SERVICE_URL = "/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
-	private static final String SEARCH_DOCUMENT_SERVICE_URL = "/rest/search_document";
-	private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/rest/search_documents";
-	private static final String STATUS_SERVICE_URL = "/rest/status";
-	private static String prefix = "/recognize";
+    private static final String ADD_PROFILE_SERVICE_URL =
+            "/rest/load_profile/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String SEARCH_DOCUMENT_SERVICE_URL = "/rest/search_document";
+    private static final String SEARCH_DOCUMENTS_SERVICE_URL = "/rest/search_documents";
+    private static final String STATUS_SERVICE_URL = "/rest/status";
 
-	private static final String PARAM_PROFILE_NAME = "profileName";
-	private static final String PARAM_LIMIT = "limit";
+    private static final String PARAM_PROFILE_NAME = "profileName";
+    private static final String PARAM_LIMIT = "limit";
 
-	public RecognyzeClient() {
-		super();
-	}
+    public RecognyzeClient(WebserviceClientConfig c) {
+        super(c, "/recognize");
+    }
 
-	public RecognyzeClient(String weblyzardUrl) {
-		super(weblyzardUrl);
-	}
 
-	/**
-	 * Resource and Url is overwritable it only overwrites search_document resource
-	 * 
-	 * @param weblyzardUrl e.g. http://localhost:63007
-	 * @param prefix       if prefix is null, prefix will be removed otherwise
-	 *                     prefix will be applied before resource
-	 */
-	public RecognyzeClient(String weblyzardUrl, String prefix) {
-		super(weblyzardUrl);
-		RecognyzeClient.prefix = prefix == null ? "" : prefix;
-	}
+    public boolean loadProfile(String profileName) throws WebApplicationException {
 
-	public RecognyzeClient(String weblyzardUrl, String username, String password) {
-		super(weblyzardUrl, username, password);
-	}
+        try (Response response = super.getTarget(ADD_PROFILE_SERVICE_URL)
+                .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
+                .request(MediaType.APPLICATION_JSON_TYPE).get()) {
 
-	public boolean loadProfile(String profileName) throws WebApplicationException {
+            super.checkResponseStatus(response);
+            boolean result = response.readEntity(Boolean.class);
+            return result;
+        }
+    }
 
-		Response response = super.getTarget(prefix + ADD_PROFILE_SERVICE_URL)
-				.resolveTemplate(TEMPLATE_PROFILE_NAME, profileName).request(MediaType.APPLICATION_JSON_TYPE).get();
+    public Document searchDocument(String profileName, Document data)
+            throws WebApplicationException {
 
-		super.checkResponseStatus(response);
-		boolean result = response.readEntity(Boolean.class);
-		response.close();
+        return this.searchDocument(profileName, data, 0);
+    }
 
-		return result;
-	}
+    public Document searchDocument(String profileName, Document data, int limit)
+            throws WebApplicationException {
 
-	public Document searchDocument(String profileName, Document data) throws WebApplicationException {
+        try (Response response = super.getTarget(SEARCH_DOCUMENT_SERVICE_URL)
+                .queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data))) {
 
-		return this.searchDocument(profileName, data, 0);
-	}
+            super.checkResponseStatus(response);
+            Document result = response.readEntity(Document.class);
+            return result;
+        }
+    }
 
-	public Document searchDocument(String profileName, Document data, int limit) throws WebApplicationException {
+    public List<Document> searchDocuments(String profileName, Set<Document> data)
+            throws WebApplicationException {
 
-		Response response = super.getTarget(prefix + SEARCH_DOCUMENT_SERVICE_URL)
-				.queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
+        return this.searchDocuments(profileName, data, 0);
+    }
 
-		super.checkResponseStatus(response);
-		Document result = response.readEntity(Document.class);
-		response.close();
+    public List<Document> searchDocuments(String profileName, Set<Document> data, int limit)
+            throws WebApplicationException {
 
-		return result;
-	}
+        try (Response response = super.getTarget(SEARCH_DOCUMENTS_SERVICE_URL)
+                .queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data))) {
 
-	public List<Document> searchDocuments(String profileName, Set<Document> data) throws WebApplicationException {
+            super.checkResponseStatus(response);
+            List<Document> result = response.readEntity(new GenericType<List<Document>>() {});
+            return result == null ? Collections.emptyList() : result;
+        }
+    }
 
-		return this.searchDocuments(profileName, data, 0);
-	}
+    public Map<String, Object> status() throws WebApplicationException {
 
-	public List<Document> searchDocuments(String profileName, Set<Document> data, int limit)
-			throws WebApplicationException {
+        try (Response response = super.getTarget(STATUS_SERVICE_URL)
+                .request(MediaType.APPLICATION_JSON_TYPE).get()) {
 
-		Response response = super.getTarget(prefix + SEARCH_DOCUMENTS_SERVICE_URL)
-				.queryParam(PARAM_PROFILE_NAME, profileName).queryParam(PARAM_LIMIT, limit)
-				.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
-
-		super.checkResponseStatus(response);
-		List<Document> result = response.readEntity(new GenericType<List<Document>>() {
-		});
-		response.close();
-
-		return result == null ? Collections.emptyList() : result;
-	}
-
-	public Map<String, Object> status() throws WebApplicationException {
-
-		Response response = super.getTarget(prefix + STATUS_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE).get();
-
-		super.checkResponseStatus(response);
-		Map<String, Object> result = response.readEntity(new GenericType<Map<String, Object>>() {
-		});
-		response.close();
-
-		return result == null ? Collections.emptyMap() : result;
-	}
+            super.checkResponseStatus(response);
+            Map<String, Object> result =
+                    response.readEntity(new GenericType<Map<String, Object>>() {});
+            return result == null ? Collections.emptyMap() : result;
+        }
+    }
 }

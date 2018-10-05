@@ -15,55 +15,44 @@ public class JairoClient extends BasicClient {
     private static final String TEMPLATE_PROFILE_NAME = "profileName";
 
     private static final String EXTEND_ANNOTATIONS =
-            "/jairo/rest/extend_annotations/{" + TEMPLATE_PROFILE_NAME + "}";
-    private static final String ADD_PROFILE =
-            "/jairo/rest/add_profile/{" + TEMPLATE_PROFILE_NAME + "}";
-    private static final String LIST_PROFILES = "/jairo/rest/list_profiles";
+            "/rest/extend_annotations/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String ADD_PROFILE = "/rest/add_profile/{" + TEMPLATE_PROFILE_NAME + "}";
+    private static final String LIST_PROFILES = "/rest/list_profiles";
 
-    public JairoClient() {
-        super();
-    }
-
-    public JairoClient(String weblyzardUrl) {
-        super(weblyzardUrl);
-    }
-
-    public JairoClient(String weblyzardUrl, String username, String password) {
-        super(weblyzardUrl, username, password);
+    public JairoClient(WebserviceClientConfig c) {
+        super(c, "/jairo");
     }
 
     public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)
             throws WebApplicationException {
-
-        Response response = super.getTarget(EXTEND_ANNOTATIONS)
+        try (Response response = super.getTarget(EXTEND_ANNOTATIONS)
                 .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(annotations));
+                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(annotations))) {
 
-        super.checkResponseStatus(response);
-        List<Annotation> result = response.readEntity(new GenericType<List<Annotation>>() {});
-        response.close();
-        return result;
+            super.checkResponseStatus(response);
+            List<Annotation> result = response.readEntity(new GenericType<List<Annotation>>() {});
+            return result;
+        }
     }
 
     public Response addProfile(Profile profile, String profileName) {
-
-        Response response =
+        try (Response response =
                 super.getTarget(ADD_PROFILE).resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
-                        .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(profile));
+                        .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(profile))) {
 
-        super.checkResponseStatus(response);
-        response.close();
-        return response;
+            super.checkResponseStatus(response);
+            return response;
+        }
     }
 
     public Map<String, Profile> listProfiles() {
-        Response response =
-                super.getTarget(LIST_PROFILES).request(MediaType.APPLICATION_JSON_TYPE).get();
+        try (Response response =
+                super.getTarget(LIST_PROFILES).request(MediaType.APPLICATION_JSON_TYPE).get()) {
 
-        super.checkResponseStatus(response);
-        Map<String, Profile> profiles =
-                response.readEntity(new GenericType<Map<String, Profile>>() {});
-        response.close();
-        return profiles;
+            super.checkResponseStatus(response);
+            Map<String, Profile> profiles =
+                    response.readEntity(new GenericType<Map<String, Profile>>() {});
+            return profiles;
+        }
     }
 }

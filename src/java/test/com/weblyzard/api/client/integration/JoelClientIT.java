@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.weblyzard.api.client.JoelClient;
+import com.weblyzard.api.client.WebserviceClientConfig;
 import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.Sentence;
 import com.weblyzard.api.model.joel.ClusterResult;
@@ -35,7 +36,7 @@ public class JoelClientIT extends TestClientBase {
     @Before
     public void before() {
         psalmDocs = readWeblyzardDocuments();
-        joelClient = new JoelClient();
+        joelClient = new JoelClient(new WebserviceClientConfig());
     }
 
     @Test
