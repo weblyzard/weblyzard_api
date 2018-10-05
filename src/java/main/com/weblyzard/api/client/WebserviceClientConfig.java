@@ -26,9 +26,7 @@ public class WebserviceClientConfig {
      * 
      * @param defaultServicePrefix the prefix to use if no custom prefix has been set
      */
-    public void setServicePrefixIfEmpty(String defaultServicePrefix) {
-        if (servicePrefix == null) {
-            servicePrefix = defaultServicePrefix;
-        }
+    public String getServicePrefix(String defaultServicePrefix) {
+        return servicePrefix == null ? defaultServicePrefix : servicePrefix;
     }
 }

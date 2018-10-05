@@ -26,8 +26,7 @@ public class JoelClient extends BasicClient {
             "No Keyword in Document Header";
 
     public JoelClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/joel");
+        super(c, "/joel");
     }
 
     public Response addDocuments(List<LegacyDocument> documents)

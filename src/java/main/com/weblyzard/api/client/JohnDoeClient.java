@@ -13,8 +13,7 @@ public class JohnDoeClient extends BasicClient {
     private static final String ANNON_SERVICE_URL = "/rest/annon";
 
     public JohnDoeClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/johndoe");
+        super(c, "/johndoe");
     }
 
     /**

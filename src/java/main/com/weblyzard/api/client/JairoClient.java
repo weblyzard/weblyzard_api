@@ -20,8 +20,7 @@ public class JairoClient extends BasicClient {
     private static final String LIST_PROFILES = "/rest/list_profiles";
 
     public JairoClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/jairo");
+        super(c, "/jairo");
     }
 
     public List<Annotation> extendAnnotations(String profileName, List<Annotation> annotations)

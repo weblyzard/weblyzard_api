@@ -41,7 +41,7 @@ public class KeywordExtractor {
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 	
 	private static KeywordCalculationProfile KEYWORD_PROFILE = new KeywordCalculationProfile()
-			.setValidPosTags(Set.of("NN", "NNP", "P", "ADJ"))
+			.setValidPosTags(Set.of("NE", "NNS", "NN", "NNP", "P", "ADJ"))
 			.setMinPhraseSignificance(2)
 			.setNumKeywords(15)
 			.setKeywordAlgorithm("com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm")
@@ -91,11 +91,12 @@ public class KeywordExtractor {
 				.setUsername(options.webServiceUserName).setPassword(options.webServiceUserPassword);
 		WebserviceClientConfig jesajaConfig = new WebserviceClientConfig().setUrl(options.webServiceBaseUrl)
 				.setUsername(options.webServiceUserName).setPassword(options.webServiceUserPassword);
+		System.out.println(jeremiaConfig);
 		// use standard service ports, if the web service has been deployed locally
 		if (options.webServiceBaseUrl.startsWith("http://localhost") || options.webServiceBaseUrl.startsWith("http://127.0.0.1")) {
 			jeremiaConfig.setServicePrefix(":63001");
 			jesajaConfig.setServicePrefix(":63002");
-		}
+		} 
 		
 		preProcessingClient = new JeremiaClient(jeremiaConfig);
 		keywordExtractionClient = new JesajaClient(jesajaConfig);

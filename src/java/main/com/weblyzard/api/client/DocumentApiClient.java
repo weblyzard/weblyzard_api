@@ -15,8 +15,7 @@ public class DocumentApiClient extends BasicClient {
     private static final String WEBLYZARD_DOCUMENT_API_URL = "";
 
     public DocumentApiClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/document-api");
+        super(c, "/document-api");
     }
 
     public Response insertNewDocument(Request request) {

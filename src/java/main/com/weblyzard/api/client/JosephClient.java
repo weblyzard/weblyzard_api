@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.joseph.Classification;
 
-/** 
+/**
  * @author Philipp Kuntschik
  */
 public class JosephClient extends BasicClient {
@@ -36,8 +36,7 @@ public class JosephClient extends BasicClient {
     private static final String PARAM_WITH_FEATURES = "full";
 
     public JosephClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/joseph");
+        super(c, "/joseph");
     }
 
     public boolean loadProfile(String profileName) {

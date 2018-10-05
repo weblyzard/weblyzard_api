@@ -27,8 +27,7 @@ public class JeremiaClient extends BasicClient {
     private static final GenericType<List<Document>> DOCUMENT_LIST_TYPE = new GenericType<>() {};
 
     public JeremiaClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/jeremia");
+        super(c, "/jeremia");
     }
 
     /**

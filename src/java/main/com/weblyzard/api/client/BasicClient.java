@@ -30,8 +30,9 @@ public abstract class BasicClient {
      * Constructs the {@link BasicClient} based on a {@link WebserviceClientConfig}
      * 
      * @param c the {@link WebserviceClientConfig} to use for the connection
+     * @param defaultServicePrefix the default Web service prefix for the given component
      */
-    public BasicClient(WebserviceClientConfig c) {
+    public BasicClient(WebserviceClientConfig c, String defaultServicePrefix) {
 
         ClientConfig config = new ClientConfig();
         if (c.isDebug()) {
@@ -46,7 +47,8 @@ public abstract class BasicClient {
         }
 
         this.baseTarget = JerseyClientBuilder.createClient(config)
-                .target(c.getUrl() + c.getServicePrefix()).register(new JacksonJsonProvider());
+                .target(c.getUrl() + c.getServicePrefix(defaultServicePrefix))
+                .register(new JacksonJsonProvider());
     }
 
     public WebTarget getTarget(String urlTemplate) {

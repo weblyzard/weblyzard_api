@@ -16,8 +16,7 @@ public class InscriptisClient extends BasicClient {
 
 
     public InscriptisClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/inscriptis");
+        super(c, "/inscriptis");
     }
 
     /**

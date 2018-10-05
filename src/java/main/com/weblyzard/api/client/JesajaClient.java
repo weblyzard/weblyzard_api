@@ -41,8 +41,7 @@ public class JesajaClient extends BasicClient {
             "/rest/set_keyword_profile/{" + TEMPLATE_PROFILE + "}";
 
     public JesajaClient(WebserviceClientConfig c) {
-        super(c);
-        c.setServicePrefixIfEmpty("/jesaja");
+        super(c, "/jesaja");
     }
 
     public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
