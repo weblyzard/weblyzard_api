@@ -75,6 +75,24 @@ class FusekiWrapper(object):
         if self.debug_:
             print(string_)
 
+    def expand_prefix(self, uri):
+        '''
+        Replaces a prefix known to FusekiWrapper by the full URI path.
+        '''
+        for full_path, prefix in self.NAMESPACES.items():
+            prefix_colon = u'{}:'.format(prefix)
+            if uri.startswith(prefix_colon):
+                return uri.replace(prefix_colon, full_path)
+        return uri
+
+    def prefix_uri(self, uri):
+        for full_path, prefix in self.NAMESPACES.items():
+            prefix_colon = u'{}:'.format(prefix)
+            if uri.startswith(full_path):
+                return uri.replace(full_path, prefix_colon)
+        return uri
+
+
     def fix_uri(self, o):
         '''
         If a uri is only the full ury, i.e. not prefixed, it needs
