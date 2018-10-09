@@ -30,7 +30,7 @@ class SpanFactory(object):
                                  dependency=span['dependency'])
         elif span['@type'] == 'SentenceCharSpan':
             return SentenceCharSpan(span_type='SentenceCharSpan', start=span['start'],
-                                    end=span['end'], sem_orient=span['sem_orient'],
+                                    end=span['end'], sem_orient=span['semOrient'],
                                     md5sum=span['id'], significance=span['significance'])
         raise Exception('Invalid Span Type: {}'.format(span['@type']))
 
