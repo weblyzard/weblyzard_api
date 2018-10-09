@@ -51,11 +51,36 @@ class Document(object):
         self.lang = lang
         self.url = url
         self.nilsimsa = nilsimsa
+
+        # five dictionaries
         self.partitions = partitions if partitions else {}
         self.metadata = metadata if metadata else {}
         self.annotations = annotations if annotations else {}
         self.features = features if features else {}
         self.relations = relations if relations else {}
+
+    def get_title(self):
+        if self.content is None or len(self.content) == 0:
+            return ''
+        if self.TITLE_KEY in self.partitions:
+            self.partitions[self.TITLE_KEY]
+        return ''
+
+    def set_title(self, title):
+        """ """
+        assert title in self.content
+        start_index = self.content.index(title)
+        end_index = start_index + len(title)
+        self.partitions[self.TITLE_KEY] = [{
+            "@type": "CharSpan",
+            "start": start_index,
+            "end": end_index
+        }]
+
+    title = property(get_title, set_title)
+
+    def __repr__(self):
+        return 'Document: {}'.format(self.__dict__)
 
     @classmethod
     def _dict_transform(cls, data):
@@ -179,6 +204,17 @@ class Document(object):
         '''
         return self._dict_transform(self)
 
+#     def from_xml(self, xml_content):
+#         """
+#         Deserialize a XML document to a document.
+#         @param xml_content
+#         """
+#         xml = XMLContent(xml_content)
+#         annotation = xml.body_annotations
+#         content = ''.join([s.get_text() for s in xml.get_sentences()])
+#         return Document(content_id, content, content_type, lang, url, nilsimsa,
+# partitions, metadata, annotations, features, relations)
+
     def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
         ''' 
         Serialize a document to XML.
@@ -209,12 +245,12 @@ class Document(object):
         Return the textual content of a span. 
         @param span, the span to extract content for.
         '''
-        return self.content[span.start:span.end]
+        return self.content[span['start']:span['end']]
 
     @classmethod
     def overlapping(cls, spanA, spanB):
         ''' Return whether two spans overlap. '''
-        return spanB.start <= spanA.start and spanB.end >= spanA.end
+        return spanB['start'] <= spanA['start'] and spanB['end'] >= spanA['end']
 
     def get_partition_overlaps(self, search_span, target_partition_key):
         ''' Return all spans from a given target_partition_key that overlap 
@@ -240,7 +276,7 @@ class Document(object):
             return result
 
         for sentence_span in self.partitions[self.SENTENCE_KEY]:
-            if not sentence_span.span_type == 'SentenceCharSpan':
+            if not sentence_span['@type'] == 'SentenceCharSpan':
                 raise Exception('Bad sentence span')
 
             # get tokens
@@ -248,13 +284,13 @@ class Document(object):
                                                       target_partition_key=self.TOKEN_KEY)
             is_title = len(self.get_partition_overlaps(search_span=sentence_span,
                                                        target_partition_key=self.TITLE_KEY)) > 0
-            pos_sequence = ' '.join([ts.pos for ts in token_spans])
+            pos_sequence = ' '.join([ts['pos'] for ts in token_spans])
             tok_sequence = ' '.join(
-                ['{},{}'.format(ts.start, ts.end) for ts in token_spans])
+                ['{},{}'.format(ts['start'], ts['end']) for ts in token_spans])
             value = self.get_text_by_span(sentence_span)
-            result.append(Sentence(md5sum=sentence_span.md5sum,
-                                   sem_orient=sentence_span.sem_orient,
-                                   significance=sentence_span.significance,
+            result.append(Sentence(md5sum=sentence_span['id'],
+                                   sem_orient=sentence_span['semOrient'],
+                                   significance=sentence_span['significance'],
                                    pos=pos_sequence, token=tok_sequence,
                                    value=value, is_title=is_title))
 
