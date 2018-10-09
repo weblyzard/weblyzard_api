@@ -141,7 +141,16 @@ class Document(object):
         @param json_payload, the string representation of the JSON content model
         '''
         parsed_content = json.loads(json_payload, strict=False)
+        return cls.from_dict(dict_=parsed_content)
 
+    @classmethod
+    def from_dict(cls, dict_):
+        '''
+        Convert a `dict` object corresponding to the JSON serialisation
+        into a Document object.
+        @param dict_, the `dict` representing the Document.
+        '''
+        parsed_content = dict_
         # validation
         for required_field in cls.REQUIRED_FIELDS:
             if not required_field in parsed_content:
@@ -185,10 +194,15 @@ class Document(object):
                         relations=relations)
 
     def to_json(self):
-        ''' 
+        '''
         Serialize a document to JSON '''
-        dict_object = self._dict_transform(self)
-        return json.dumps(dict_object)
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
+        '''
+        Create a dict representing the Document analogous to the JSON structure.
+        '''
+        return self._dict_transform(self)
 
 #     def from_xml(self, xml_content):
 #         """

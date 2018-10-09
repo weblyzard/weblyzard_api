@@ -45,10 +45,15 @@ class OpinionClient(MultiRESTClient):
         while retries <= retrycount:
             retries += 1
             try:
-                result = self.request('document',
-                                      parameters={'format': content_format,
-                                                  'content': content},
-                                      return_plain=False)
+                if content_format == 'json':
+                    result = self.request('document',
+                                          parameters=content,
+                                          return_plain=False)
+                else:
+                    result = self.request('document',
+                                          parameters={'format': content_format,
+                                                      'content': content},
+                                          return_plain=False)
                 break
             except Exception as e:
                 if retries <= retrycount:
