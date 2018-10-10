@@ -20,19 +20,19 @@ class SpanFactory(object):
 
     @classmethod
     def new_span(cls, span):
-        assert isinstance(span, dict) and '@type' in span
+        assert isinstance(span, dict) and 'span_type' in span
 
-        if span['@type'] == 'CharSpan':
+        if span['span_type'] == 'CharSpan':
             return CharSpan(span_type='CharSpan', start=span['start'], end=span['end'])
-        elif span['@type'] == 'TokenCharSpan':
+        elif span['span_type'] == 'TokenCharSpan':
             return TokenCharSpan(span_type='TokenCharSpan', start=span['start'],
                                  end=span['end'], pos=span['pos'],
                                  dependency=span['dependency'])
-        elif span['@type'] == 'SentenceCharSpan':
+        elif span['span_type'] == 'SentenceCharSpan':
             return SentenceCharSpan(span_type='SentenceCharSpan', start=span['start'],
-                                    end=span['end'], sem_orient=span['semOrient'],
-                                    md5sum=span['id'], significance=span['significance'])
-        raise Exception('Invalid Span Type: {}'.format(span['@type']))
+                                    end=span['end'], sem_orient=span['sem_orient'],
+                                    md5sum=span['md5sum'], significance=span['significance'])
+        raise Exception('Invalid Span Type: {}'.format(span['span_type']))
 
 
 class CharSpan(object):
