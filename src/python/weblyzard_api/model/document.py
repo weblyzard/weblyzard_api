@@ -186,7 +186,7 @@ class Document(object):
         features = parsed_content['features'] \
             if 'features' in parsed_content else {}
 
-        return Document(content_id=parsed_content['id'],
+        return Document(content_id=long(parsed_content['id']),
                         content=parsed_content.get('content'),
                         nilsimsa=parsed_content.get('nilsimsa'),
                         lang=parsed_content.get('lang'),
@@ -207,17 +207,6 @@ class Document(object):
         Create a dict representing the Document analogous to the JSON structure.
         '''
         return self._dict_transform(self)
-
-#     def from_xml(self, xml_content):
-#         """
-#         Deserialize a XML document to a document.
-#         @param xml_content
-#         """
-#         xml = XMLContent(xml_content)
-#         annotation = xml.body_annotations
-#         content = ''.join([s.get_text() for s in xml.get_sentences()])
-#         return Document(content_id, content, content_type, lang, nilsimsa,
-# partitions, metadata, annotations, features, relations)
 
     def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
         ''' 
@@ -249,12 +238,12 @@ class Document(object):
         Return the textual content of a span. 
         @param span, the span to extract content for.
         '''
-        return self.content[span['start']:span['end']]
+        return self.content[span.start:span.end]
 
     @classmethod
     def overlapping(cls, spanA, spanB):
         ''' Return whether two spans overlap. '''
-        return spanB['start'] <= spanA['start'] and spanB['end'] >= spanA['end']
+        return spanB.start <= spanA.start and spanB.end >= spanA.end
 
     def get_partition_overlaps(self, search_span, target_partition_key):
         ''' Return all spans from a given target_partition_key that overlap 
@@ -280,7 +269,7 @@ class Document(object):
             return result
 
         for sentence_span in self.partitions[self.SENTENCE_KEY]:
-            if not sentence_span['@type'] == 'SentenceCharSpan':
+            if not sentence_span.span_type == 'SentenceCharSpan':
                 raise Exception('Bad sentence span')
 
             # get tokens
@@ -288,13 +277,13 @@ class Document(object):
                                                       target_partition_key=self.TOKEN_KEY)
             is_title = len(self.get_partition_overlaps(search_span=sentence_span,
                                                        target_partition_key=self.TITLE_KEY)) > 0
-            pos_sequence = ' '.join([ts['pos'] for ts in token_spans])
+            pos_sequence = ' '.join([ts.pos for ts in token_spans])
             tok_sequence = ' '.join(
-                ['{},{}'.format(ts['start'], ts['end']) for ts in token_spans])
+                ['{},{}'.format(ts.start, ts.end) for ts in token_spans])
             value = self.get_text_by_span(sentence_span)
-            result.append(Sentence(md5sum=sentence_span['id'],
-                                   sem_orient=sentence_span['semOrient'],
-                                   significance=sentence_span['significance'],
+            result.append(Sentence(md5sum=sentence_span.md5sum,
+                                   sem_orient=sentence_span.sem_orient,
+                                   significance=sentence_span.significance,
                                    pos=pos_sequence, token=tok_sequence,
                                    value=value, is_title=is_title))
 
