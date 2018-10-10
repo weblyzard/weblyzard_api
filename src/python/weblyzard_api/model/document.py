@@ -166,7 +166,7 @@ class Document(object):
             if 'partitions' in parsed_content else {}
 
         metadata = parsed_content['header'] \
-            if 'header' in parsed_content else {}
+            if 'header' in parsed_content and parsed_content['header'] is not None else {}
 
         if not len(metadata):
             metadata = parsed_content['metadata'] \
