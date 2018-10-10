@@ -16,7 +16,7 @@ class JesajaNg(MultiRESTClient):
     associations (i.e. keywords) from text documents.
     '''
 
-    URL_PATH = 'jesaja/rest'
+    URL_PATH = 'rest'
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None,

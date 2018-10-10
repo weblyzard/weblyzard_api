@@ -29,7 +29,7 @@ class Recognize(MultiRESTClient):
         * :func:`search_document` for document dictionaries.
     '''
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
-    URL_PATH = '/recognize/rest/'
+    URL_PATH = 'rest/'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'lang': 'lang',
                          'format': 'format',
@@ -50,6 +50,7 @@ class Recognize(MultiRESTClient):
         :param usr: optional user name
         :param pwd: optional password
         '''
+#         url = 'localhost:63007'
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
         self.profile_cache = []
@@ -124,7 +125,7 @@ class Recognize(MultiRESTClient):
         '''
         content_type = 'application/json'
 
-        return self.request(path='search_text',
+        return self.request(path='corpus/annotate_unknown',
                             parameters=text,
                             content_type=content_type,
                             query_parameters={'profileName': profile_name,
