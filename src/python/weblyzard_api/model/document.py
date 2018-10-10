@@ -7,6 +7,8 @@ Created on Jan 25, 2018
 '''
 import json
 
+from datetime import datetime
+
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import Sentence, SpanFactory
 from weblyzard_api.model.parsers.xml_2005 import XML2005
@@ -35,21 +37,20 @@ class Document(object):
 
     # list of optional attributes
     OPTIONAL_FIELDS = ['partitions', 'annotations',
-                       'features', 'relations', 'header', 'url']
+                       'features', 'relations', 'header']
 
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
                               XMLDeprecated.VERSION: XMLDeprecated}
 
-    def __init__(self, content_id, content, content_type, lang, url=None, nilsimsa=None,
+    def __init__(self, content_id, content, content_type, lang, nilsimsa=None,
                  partitions=None, metadata=None, annotations=None, features=None,
                  relations=None):
         ''' '''
         self.content_id = content_id
         self.content = content
         self.content_type = content_type
-        self.lang = lang
-        self.url = url
+        self.lang = lang.lower() if lang else lang
         self.nilsimsa = nilsimsa
 
         # five dictionaries
@@ -98,12 +99,16 @@ class Document(object):
             return data
         if isinstance(data, float):
             return data
+        if isinstance(data, long):
+            return data
         if isinstance(data, bool):
             return data
         if isinstance(data, tuple):
             if len(data) == 1:
                 return data[0]
             return data
+        if isinstance(data, datetime):
+            return data.strftime("%Y-%m-%d %H:%M:%S")
         if isinstance(data, list):
             result = []
             for item in data:
@@ -182,7 +187,6 @@ class Document(object):
             if 'features' in parsed_content else {}
 
         return Document(content_id=parsed_content['id'],
-                        url=parsed_content.get('url'),
                         content=parsed_content.get('content'),
                         nilsimsa=parsed_content.get('nilsimsa'),
                         lang=parsed_content.get('lang'),
@@ -212,7 +216,7 @@ class Document(object):
 #         xml = XMLContent(xml_content)
 #         annotation = xml.body_annotations
 #         content = ''.join([s.get_text() for s in xml.get_sentences()])
-#         return Document(content_id, content, content_type, lang, url, nilsimsa,
+#         return Document(content_id, content, content_type, lang, nilsimsa,
 # partitions, metadata, annotations, features, relations)
 
     def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
