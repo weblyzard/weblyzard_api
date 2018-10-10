@@ -42,6 +42,14 @@ class CharSpan(object):
         self.start = start
         self.end = end
 
+    def to_dict(self):
+        return {'@type': self.span_type,
+                'start': self.start,
+                'end': self.end}
+
+    def __repr__(self, *args, **kwargs):
+        return json.dumps(self.to_dict())
+
 
 class TokenCharSpan(CharSpan):
 
@@ -49,6 +57,16 @@ class TokenCharSpan(CharSpan):
         CharSpan.__init__(self, span_type, start, end)
         self.pos = pos
         self.dependency = dependency
+
+    def to_dict(self):
+        return {'@type': self.span_type,
+                'start': self.start,
+                'end': self.end,
+                'pos': self.pos,
+                'dependency': self.dependency}
+
+    def __repr__(self, *args, **kwargs):
+        return json.dumps(self.to_dict())
 
 
 class SentenceCharSpan(CharSpan):
@@ -59,6 +77,17 @@ class SentenceCharSpan(CharSpan):
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
+
+    def to_dict(self):
+        return {'@type': self.span_type,
+                'start': self.start,
+                'end': self.end,
+                'md5sum': self.md5sum,
+                'semOrient': self.sem_orient,
+                'significance': self.significance}
+
+    def __repr__(self, *args, **kwargs):
+        return json.dumps(self.to_dict())
 
 
 class Annotation(object):
