@@ -45,8 +45,7 @@ class Document(object):
                               XMLDeprecated.VERSION: XMLDeprecated}
 
     def __init__(self, content_id, content, content_type, lang, nilsimsa=None,
-                 partitions=None, metadata=None, annotations=None, features=None,
-                 relations=None):
+                 partitions=None, metadata=None, annotations=None):
         ''' '''
         self.content_id = content_id
         self.content = content
@@ -57,9 +56,7 @@ class Document(object):
         # five dictionaries
         self.partitions = partitions if partitions else {}
         self.metadata = metadata if metadata else {}
-        self.annotations = annotations if annotations else {}
-        self.features = features if features else {}
-        self.relations = relations if relations else {}
+        self.annotations = annotations if annotations else []
 
     def get_title(self):
         if self.content is None or len(self.content) == 0:
@@ -125,8 +122,8 @@ class Document(object):
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
                         result[key] = value
-            if not len(result):
-                return None
+#             if not len(result):
+#                 return None
             return result
         if isinstance(data, object):
             result = {}
@@ -135,10 +132,13 @@ class Document(object):
                     key = mapping[key]
                 elif key.startswith('_'):
                     continue
+                if key == 'lang':
+                    value = value.upper()
                 if value is not None:
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
-                        result[key] = cls._dict_transform(value, mapping=mapping)
+                        result[key] = cls._dict_transform(
+                            value, mapping=mapping)
             return result
         return None
 
@@ -166,11 +166,15 @@ class Document(object):
         for key in dict_.iterkeys():
             if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
                 raise UnexpectedFieldException(key)
+
         parsed_content = dict_
+
         # This is tricky ... the mapping cannot be easily inversed
         # making the md5sum to content_id conversion at the top level necessary
-        inverse_mapping = {v:k for k, v in cls.MAPPING.items() if k != 'content_id'}
-        parsed_content = Document._dict_transform(dict_, mapping=inverse_mapping)
+        inverse_mapping = {v: k for k,
+                           v in cls.MAPPING.items() if k != 'content_id'}
+        parsed_content = Document._dict_transform(
+            dict_, mapping=inverse_mapping)
         parsed_content['content_id'] = parsed_content.pop('md5sum')
 
         # populate default dicts:
@@ -188,12 +192,6 @@ class Document(object):
         annotations = parsed_content['annotations'] \
             if 'annotations' in parsed_content else {}
 
-        relations = parsed_content['relations'] \
-            if 'relations' in parsed_content else {}
-
-        features = parsed_content['features'] \
-            if 'features' in parsed_content else {}
-
         return Document(content_id=long(parsed_content['content_id']),
                         content=parsed_content.get('content'),
                         nilsimsa=parsed_content.get('nilsimsa'),
@@ -201,9 +199,7 @@ class Document(object):
                         content_type=parsed_content.get('content_type'),
                         partitions=partitions,
                         metadata=metadata,
-                        annotations=annotations,
-                        features=features,
-                        relations=relations)
+                        annotations=annotations)
 
     def to_json(self):
         '''
@@ -214,9 +210,7 @@ class Document(object):
         '''
         Create a dict representing the Document analogous to the JSON structure.
         '''
-        print(self.content_type)
         result = self._dict_transform(self)
-        print(result)
         return result
 
     def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
@@ -240,9 +234,7 @@ class Document(object):
             titles=titles,
             attributes=self.attributes,
             sentences=self.sentences,
-            annotations=self.annotations,
-            features=self.features,
-            relations=self.relations)
+            annotations=self.annotations)
 
     def get_text_by_span(self, span):
         ''' 
