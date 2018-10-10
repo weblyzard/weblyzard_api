@@ -29,7 +29,8 @@ class Document(object):
                "md5sum": "id",
                "span_type": "@type",
                "metadata": "header",
-               "content_type": "format"}
+               "content_type": "format",
+               "sem_orient": "semOrient"}
 
     # list of required attributes
     REQUIRED_FIELDS = ['id', 'format', 'lang',
@@ -84,13 +85,15 @@ class Document(object):
         return 'Document: {}'.format(self.__dict__)
 
     @classmethod
-    def _dict_transform(cls, data):
+    def _dict_transform(cls, data, mapping=None):
         ''' 
         Recursively transform a document object to a JSON serializable dict, 
         with MAPPING applied as well as empty results removed.
         @param data, the data to be transformed to a dict
         @return a dictionary of a document, ready for JSON serialization
         '''
+        if mapping is None:
+            mapping = cls.MAPPING
         if data is None:
             return None
         if isinstance(data, basestring):
@@ -112,30 +115,30 @@ class Document(object):
         if isinstance(data, list):
             result = []
             for item in data:
-                result.append(cls._dict_transform(item))
+                result.append(cls._dict_transform(item, mapping=mapping))
             return result
         if isinstance(data, dict):
             result = {}
             for key, value in data.iteritems():
+                key = mapping.get(key, key)
                 if value is not None:
-                    value = cls._dict_transform(value)
+                    value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
                         result[key] = value
-
             if not len(result):
                 return None
             return result
         if isinstance(data, object):
             result = {}
             for key, value in data.__dict__.iteritems():
-                if key in cls.MAPPING:
-                    key = cls.MAPPING[key]
+                if key in mapping:
+                    key = mapping[key]
                 elif key.startswith('_'):
                     continue
                 if value is not None:
-                    value = cls._dict_transform(value)
+                    value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
-                        result[key] = cls._dict_transform(value)
+                        result[key] = cls._dict_transform(value, mapping=mapping)
             return result
         return None
 
@@ -155,15 +158,20 @@ class Document(object):
         into a Document object.
         @param dict_, the `dict` representing the Document.
         '''
-        parsed_content = dict_
         # validation
         for required_field in cls.REQUIRED_FIELDS:
-            if not required_field in parsed_content:
-                raise MissingFieldException()
+            if not required_field in dict_:
+                raise MissingFieldException(required_field)
 
-        for key in parsed_content.iterkeys():
+        for key in dict_.iterkeys():
             if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
-                raise UnexpectedFieldException()
+                raise UnexpectedFieldException(key)
+        parsed_content = dict_
+        # This is tricky ... the mapping cannot be easily inversed
+        # making the md5sum to content_id conversion at the top level necessary
+        inverse_mapping = {v:k for k, v in cls.MAPPING.items() if k != 'content_id'}
+        parsed_content = Document._dict_transform(dict_, mapping=inverse_mapping)
+        parsed_content['content_id'] = parsed_content.pop('md5sum')
 
         # populate default dicts:
         partitions = {label: [SpanFactory.new_span(span) for span in spans]
@@ -186,11 +194,11 @@ class Document(object):
         features = parsed_content['features'] \
             if 'features' in parsed_content else {}
 
-        return Document(content_id=long(parsed_content['id']),
+        return Document(content_id=long(parsed_content['content_id']),
                         content=parsed_content.get('content'),
                         nilsimsa=parsed_content.get('nilsimsa'),
                         lang=parsed_content.get('lang'),
-                        content_type=parsed_content.get('format'),
+                        content_type=parsed_content.get('content_type'),
                         partitions=partitions,
                         metadata=metadata,
                         annotations=annotations,
@@ -206,7 +214,10 @@ class Document(object):
         '''
         Create a dict representing the Document analogous to the JSON structure.
         '''
-        return self._dict_transform(self)
+        print(self.content_type)
+        result = self._dict_transform(self)
+        print(result)
+        return result
 
     def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
         ''' 
