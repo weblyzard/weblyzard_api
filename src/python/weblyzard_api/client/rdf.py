@@ -24,7 +24,7 @@ NAMESPACES = {
     # weblyzard namespaces
     'http://weblyzard.com/skb/lexicon/': 'skblex',
     'http://weblyzard.com/skb/property/': 'skbprop',
-    'http://weblyzard.com/skb/entity/': 'skbprop',
+    'http://weblyzard.com/skb/entity/': 'skbentity',
     'http://weblyzard.com/skb/entity/agent/': 'agent',
     # weblyzard keywords per language
     'http://weblyzard.com/skb/keyword/en#': 'skbkwen',
