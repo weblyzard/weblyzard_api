@@ -1,6 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+
 NAMESPACES = {
     'http://www.w3.org/1999/02/22-rdf-syntax-ns#': 'rdf',
     'http://www.w3.org/2000/01/rdf-schema#': 'rdfs',
@@ -42,3 +46,48 @@ NAMESPACES = {
 PREFIXES = '\n'.join(['PREFIX {value}: <{key}>'.format(value=value,
                                                        key=key) \
                       for key, value in NAMESPACES.items()])
+
+
+def prefix_uri(uri, namespaces=None):
+    '''
+    Replaces a sub-path from the uri with the most specific prefix as defined
+    in the namespaces.
+
+    :param uri: The URI to modify.
+    :type uri: str
+    :param namespaces: A mapping of namespace to prefix (without ':').
+    :type namespaces: `dict`
+    :returns: The modified URI if applicable
+    :rtype: str
+    '''
+    if namespaces is None:
+        namespaces = NAMESPACES
+    # replace most specific/longest prefix, hence sorted
+    for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
+        if namespace in uri:
+            replaced = uri.replace(namespace, '{}:'.format(namespaces[namespace]))
+            if '/' in replaced or '#' in replaced:
+                # slashes or hashes in prefixed URIs not allowed
+                continue
+            else:
+                return replaced
+    return uri
+
+
+def replace_prefix(uri, namespaces=None):
+    '''
+    Replaces a prefix with the full namespace path.
+
+    :param uri: The URI to modify.
+    :type uri: str
+    :param namespaces: A mapping of namespace to prefix (without ':').
+    :type namespaces: `dict`
+    :returns: The modified URI if applicable
+    :rtype: str
+    '''
+    if namespaces is None:
+        namespaces = NAMESPACES
+    for namespace, prefix in namespaces.items():
+        if prefix in uri:
+            return uri.replace('{}:'.format(prefix), namespace)
+    return uri
