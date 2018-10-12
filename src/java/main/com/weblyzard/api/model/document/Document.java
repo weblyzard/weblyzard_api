@@ -37,6 +37,7 @@ public class Document implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public static final String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
+    public static final String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
 
     /** The Attribute used to encode document keywords */
     public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");

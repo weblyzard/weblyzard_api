@@ -110,7 +110,14 @@ class XMLContent(object):
         if len(titles) == 0 and 'title' in attributes:
             # fall back titles from attributes
             titles = [Sentence(value=attributes['title'], is_title=True)]
+        # body_annotations_stripped = []
+        # for annotation in body_annotations:
+        #     new = {key[key.index('}')+1:]: annotation[key] for key in annotation if '}' in key}
+        #     new.update({key:annotation[key] for key in annotation if not '}' in key})
+        #     del new['confidence']
+        #     body_annotations_stripped.append(new)
 
+        # body_annotations = body_annotations_stripped
         for annotation in body_annotations:
             annotation_obj = Annotation(**annotation)
             annotation_objects.append(annotation_obj)
@@ -384,3 +391,4 @@ class XMLContent(object):
     title = property(get_title)
     lang = property(get_lang)
     content_id = property(get_content_id)
+

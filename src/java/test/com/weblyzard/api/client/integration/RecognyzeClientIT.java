@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weblyzard.api.client.RecognyzeClient;
+import com.weblyzard.api.client.WebserviceClientConfig;
 import com.weblyzard.api.model.annotation.Annotation;
 import com.weblyzard.api.model.document.Document;
 
@@ -34,7 +35,7 @@ public class RecognyzeClientIT extends TestClientBase {
 
     @Before
     public void testLoadProfile() {
-        recognizeClient = new RecognyzeClient();
+        recognizeClient = new RecognyzeClient(new WebserviceClientConfig());
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
         boolean profileLoaded = recognizeClient.loadProfile(profile);
         assumeTrue(profileLoaded);
