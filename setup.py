@@ -13,6 +13,7 @@ setup(
     packages=find_packages('src/python'),
     package_dir={'': 'src/python'},
     install_requires=['eWRT>=0.9.2.2',
+                      'future',
                       'nose',
                       'lxml',
                       'requests[security]>=2.13,<3',

@@ -34,12 +34,12 @@ class JairoClient(MultiRESTClient):
 
     def list_profiles(self):
         ''' '''
-        return self.request('list_profiles', return_plain=True)
+        return self.request('list_profiles')
 
     def reload_profiles(self):
         ''' '''
-        return self.request('reload_profiles', return_plain=True)
+        return self.request('reload_profiles')
 
     def status(self):
         ''' '''
-        return self.request('status', return_plain=True)
+        return self.request('status')
