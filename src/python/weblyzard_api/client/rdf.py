@@ -24,7 +24,7 @@ NAMESPACES = {
     'http://www.opengis.net/ont/geosparql#': 'geo',
     'http://www.wikidata.org/prop/direct/': 'wdt',
     'http://www.wikidata.org/entity/': 'wd',
-    'http://sws.geonames.org': 'geonames',
+    'http://sws.geonames.org': 'gn',
     # weblyzard namespaces
     'http://weblyzard.com/skb/lexicon/': 'skblex',
     'http://weblyzard.com/skb/property/': 'skbprop',
