@@ -62,6 +62,8 @@ def prefix_uri(uri, namespaces=None):
     '''
     if namespaces is None:
         namespaces = NAMESPACES
+    if not uri.startswith('http'):
+        return uri
     # replace most specific/longest prefix, hence sorted
     for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
         if namespace in uri:
