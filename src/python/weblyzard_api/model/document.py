@@ -28,7 +28,7 @@ class Document(object):
     MAPPING = {"content_id": "id",
                "md5sum": "id",
                "span_type": "@type",
-               "metadata": "header",
+               "header": "header",
                "content_type": "format",
                "sem_orient": "semOrient"}
 
@@ -45,7 +45,7 @@ class Document(object):
                               XMLDeprecated.VERSION: XMLDeprecated}
 
     def __init__(self, content_id, content, content_type, lang, nilsimsa=None,
-                 partitions=None, metadata=None, annotations=None):
+                 partitions=None, header=None, annotations=None):
         ''' '''
         self.content_id = content_id
         self.content = content
@@ -55,7 +55,7 @@ class Document(object):
 
         # five dictionaries
         self.partitions = partitions if partitions else {}
-        self.metadata = metadata if metadata else {}
+        self.header = header if header else {}
         self.annotations = annotations if annotations else []
 
     def get_title(self):
@@ -182,12 +182,12 @@ class Document(object):
                       for label, spans in parsed_content['partitions'].iteritems()} \
             if 'partitions' in parsed_content else {}
 
-        metadata = parsed_content['header'] \
+        header = parsed_content['header'] \
             if 'header' in parsed_content and parsed_content['header'] is not None else {}
 
-        if not len(metadata):
-            metadata = parsed_content['metadata'] \
-                if 'metadata' in parsed_content else {}
+        if not len(header):
+            header = parsed_content['header'] \
+                if 'header' in parsed_content else {}
 
         annotations = parsed_content['annotations'] \
             if 'annotations' in parsed_content else {}
@@ -198,7 +198,7 @@ class Document(object):
                         lang=parsed_content.get('lang'),
                         content_type=parsed_content.get('content_type'),
                         partitions=partitions,
-                        metadata=metadata,
+                        header=header,
                         annotations=annotations)
 
     def to_json(self):
@@ -226,15 +226,16 @@ class Document(object):
         if not hasattr(self, 'relations'):
             self.relations = {}
 
+        if not hasattr(self, 'titles'):
+            self.titles = []
         titles = self.titles
         if ignore_title:
             titles = []
 
         return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(
             titles=titles,
-            attributes=self.attributes,
-            sentences=self.sentences,
-            annotations=self.annotations)
+            attributes=self.header,
+            sentences=self.get_sentences())
 
     def get_text_by_span(self, span):
         ''' 
@@ -265,7 +266,9 @@ class Document(object):
         return result
 
     def get_sentences(self):
-        ''' Legacy method to extract webLyzard sentences from content model.'''
+        """
+        Legacy method to extract webLyzard sentences from content model.
+        """
         result = []
 
         if not self.SENTENCE_KEY in self.partitions:
