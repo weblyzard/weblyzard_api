@@ -10,9 +10,11 @@ class TestJSON2018Parser(unittest.TestCase):
 
     JSON_2018 = """
     {
-    "id": "007",
+    "id": 7,
     "format": "text/html",
     "lang": "EN",
+    "header": {},
+    "annotations": [],
     "nilsimsa": "1404e487721ca21e08c2141155621022f39a991640a419064123b812a30f2acc",
     "content": "1 Corinthians 13:4-7\\nLove is patient, love is kind. It does not envy, it does not boast, it is\\nnot proud.",
     "partitions": {
@@ -44,21 +46,21 @@ class TestJSON2018Parser(unittest.TestCase):
             "start": 0,
             "end": 20,
             "id": "asdfasdmasdnsd23232",
-            "sem_orient": 1.0,
+            "semOrient": 1.0,
             "significance": 0.1231
         }, {
             "@type": "SentenceCharSpan",
             "start": 21,
             "end": 51,
             "id": "asdfasdmasdnsd23233",
-            "sem_orient": 1.0,
+            "semOrient": 1.0,
             "significance": 0.1231
         }, {
             "@type": "SentenceCharSpan",
             "start": 52,
             "end": 106,
             "id": "asdfasdmasdnsd23231",
-            "sem_orient": 1.0,
+            "semOrient": 1.0,
             "significance": 0.1231
         }],
         "TOKEN": [{
