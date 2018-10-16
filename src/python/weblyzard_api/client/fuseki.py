@@ -15,6 +15,9 @@ import socket
 import time
 
 from SPARQLWrapper import SPARQLWrapper, JSON
+import rdflib.term
+
+from weblyzard_api.client.rdf import PREFIXES, NAMESPACES
 
 
 class FusekiWrapper(object):
@@ -22,23 +25,8 @@ class FusekiWrapper(object):
     provides methods to easily interface fuseki or other triple stores.
     '''
 
-    NAMESPACES = {
-        'http://weblyzard.com/skb/lexicon/': '',
-        'http://weblyzard.com/skb/property/': 'skbprop',
-        'http://lemon-model.net/lemon#': 'lemon',
-        'http://www.w3.org/2000/01/rdf-schema#': 'rdfs',
-        'http://www.w3.org/1999/02/22-rdf-syntax-ns#': 'rdf',
-        'http://www.w3.org/2004/02/skos/core#': 'skos',
-        'http://purl.org/dc/elements/1.1/': 'dc',
-        'http://www.lexinfo.net/ontology/2.0/lexinfo#': 'lexinfo',
-        'http://purl.org/dc/terms/': 'dct',
-        'http://www.w3.org/2001/XMLSchema#': 'xsd',
-        'http://www.w3.org/ns/prov#': 'prov',
-        'http://id.loc.gov/vocabulary/iso639-1/': 'lang',
-    }
-    PREFIXES = '\n'.join(['PREFIX {value}: <{key}>'.format(value=value,
-                                                           key=key) \
-                          for key, value in NAMESPACES.iteritems()])
+    NAMESPACES = NAMESPACES
+    PREFIXES = PREFIXES
 
     def __init__(self, sparql_endpoint, debug=False):
         self.debug_ = debug
@@ -68,6 +56,24 @@ class FusekiWrapper(object):
         if self.debug_:
             print(string_)
 
+    def expand_prefix(self, uri):
+        '''
+        Replaces a prefix known to FusekiWrapper by the full URI path.
+        '''
+        for full_path, prefix in self.NAMESPACES.items():
+            prefix_colon = u'{}:'.format(prefix)
+            if uri.startswith(prefix_colon):
+                return uri.replace(prefix_colon, full_path)
+        return uri
+
+    def prefix_uri(self, uri):
+        for full_path, prefix in self.NAMESPACES.items():
+            prefix_colon = u'{}:'.format(prefix)
+            if uri.startswith(full_path):
+                return uri.replace(full_path, prefix_colon)
+        return uri
+
+
     def fix_uri(self, o):
         '''
         If a uri is only the full ury, i.e. not prefixed, it needs
@@ -94,6 +100,48 @@ class FusekiWrapper(object):
             if value.startswith('<http') and value[-1:] == '>':
                 return True
             return False
+
+    def variable_to_python(self, variable_dict, add_language_tag=False):
+        '''
+        Converts the given variable_dict to the closest python representation.
+
+        :param variable_dict: The dict representing the variable.
+        :type variable_dict: `dict`
+        :param add_language_tag: If a language-tagged string literal should \
+                be language-tagged (and wrapped in double quotes).
+        :type add_language_tag: `bool`
+        :rtype: `object`
+        '''
+        if variable_dict['type'] == 'uri':
+            return variable_dict['value']
+        elif variable_dict['type'] == 'literal':
+            if variable_dict.get('xml:lang', False):
+                if add_language_tag:
+                    return u'"{}"@{}'.format(
+                        variable_dict['value'],
+                        variable_dict['xml:lang']
+                    )
+                else:
+                    return variable_dict['value']
+            elif variable_dict.get('datatype', False):
+                datatype = variable_dict['datatype']
+                uri_ref = rdflib.term.URIRef(datatype)
+                mapping_function = rdflib.term._toPythonMapping.get(uri_ref, None)
+                if mapping_function is None:
+                    return variable_dict['value']
+                else:
+                    return mapping_function(variable_dict['value'])
+            else:
+                try:
+                    return int(variable_dict['value'])
+                except ValueError:
+                    pass
+                try:
+                    return float(variable_dict['value'])
+                except ValueError:
+                    return variable_dict['value']
+        else:
+            return variable_dict['value']
 
     def execute_query(self, query, caching=False, on_fly_json_decoding=False):
         def parse_and_yield(result):
