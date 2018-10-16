@@ -16,29 +16,16 @@ import time
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+from weblyzard_api.client.rdf import PREFIXES, NAMESPACES
+
 
 class FusekiWrapper(object):
     '''
     provides methods to easily interface fuseki or other triple stores.
     '''
 
-    NAMESPACES = {
-        'http://weblyzard.com/skb/lexicon/': '',
-        'http://weblyzard.com/skb/property/': 'skbprop',
-        'http://lemon-model.net/lemon#': 'lemon',
-        'http://www.w3.org/2000/01/rdf-schema#': 'rdfs',
-        'http://www.w3.org/1999/02/22-rdf-syntax-ns#': 'rdf',
-        'http://www.w3.org/2004/02/skos/core#': 'skos',
-        'http://purl.org/dc/elements/1.1/': 'dc',
-        'http://www.lexinfo.net/ontology/2.0/lexinfo#': 'lexinfo',
-        'http://purl.org/dc/terms/': 'dct',
-        'http://www.w3.org/2001/XMLSchema#': 'xsd',
-        'http://www.w3.org/ns/prov#': 'prov',
-        'http://id.loc.gov/vocabulary/iso639-1/': 'lang',
-    }
-    PREFIXES = '\n'.join(['PREFIX {value}: <{key}>'.format(value=value,
-                                                           key=key) \
-                          for key, value in NAMESPACES.iteritems()])
+    NAMESPACES = NAMESPACES
+    PREFIXES = PREFIXES
 
     def __init__(self, sparql_endpoint, debug=False):
         self.debug_ = debug
