@@ -12,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<weblyzard-api.version>0.2.1.2-SNAPSHOT</weblyzard-api.version>
+		<weblyzard-api.version>0.2.1.2</weblyzard-api.version>
 		<jaxb.version>2.3.0</jaxb.version>
 	</properties>
 
