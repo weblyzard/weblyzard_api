@@ -34,7 +34,7 @@ class TestRecognize(unittest.TestCase):
 
     def setUp(self):
         self.available_profiles = []
-        url = 'localhost:8080/Recognize/rest/recognize'
+        url = 'gecko6.wu.ac.at:8083/recognize/rest/recognize'
         self.client = Recognize(url)
         self.service_is_online = self.client.is_online()
         if not self.service_is_online:
@@ -81,7 +81,8 @@ class TestRecognize(unittest.TestCase):
         if profile_name not in self.available_profiles:
             print("Profile %s not available!" % profile_name)
             return
-        text = u'Bill Gates, Achim Steiner, Mark Zuckerberg are some people of interest.  Achim Steiner and Tegegnework Gettu and Abdoulaye Mar Dieye and Lenni Montiel and Haoliang Xu and Susan McDade and Robert Piper andCihan Sultanoğlu are UNEP people.'
+        text = u'Cindy Crawford, George Clooney, Eddie Redmayne, Kaia Gerber, Presley Gerber, Daniel Craig, Clemens Doppler, Alexander Horst, Hanner Jagerhofer, Melanie Rondonell, Helmut Saller, Karin Sailer, Irmgard Wiesinger, Jürgen Demuth, Peter Altrichter, Manfred Sulyok, Berta Sando sind tolle Menschen.'
+        # Hanner Jagerhofer, Bill Gates, Achim Steiner, Mark Zuckerberg are some people of interest.  Achim Steiner and Tegegnework Gettu and Abdoulaye Mar Dieye and Lenni Montiel and Haoliang Xu and Susan McDade and Robert Piper and Cihan Sultanoğlu are UNEP people.'
 #         geodocs = [{'content_id': '11',
 #                     'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},
 #                    ]
@@ -104,7 +105,8 @@ class TestRecognize(unittest.TestCase):
             result = self.client.search_text(
                 profile_names=profile_name, text=text, output_format='compact',
                 max_entities=20, buckets=20, limit=20)
-            pprint(result)
+            for item in result:
+                print(item['preferredName'])
 
 #     def test_geo(self):
 #         required_profile = 'en.geo.500000.ng'
