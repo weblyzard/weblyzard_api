@@ -205,4 +205,14 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         '''
-        raise NotImplementedError
+        if not document_list:
+            return
+
+        content_type = 'application/json'
+        search_command = 'search_documents'
+        return self.request(path=search_command,
+                            parameters=document_list,
+                            content_type=content_type,
+                            query_parameters={'profileName': profile_name,
+                                              'limit': limit
+                                              })
