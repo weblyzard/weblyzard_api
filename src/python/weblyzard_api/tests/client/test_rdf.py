@@ -2,7 +2,8 @@
 
 import pytest
 
-from weblyzard_api.client.rdf import prefix_uri, replace_prefix
+from weblyzard_api.client.rdf import (
+    prefix_uri, replace_prefix, parse_language_tagged_string)
 
 
 @pytest.mark.parametrize(
@@ -24,6 +25,18 @@ def test_replace_prefix(uri, prefixed):
     }
     result = replace_prefix(uri=prefixed, namespaces=namespaces)
     assert result == uri
+
+
+@pytest.mark.parametrize('value,expected',
+                         [('test@en', ('test', 'en')),
+                          ('test@eng', ('test', 'eng')),
+                          ('test@en-us', ('test', 'en-us')),
+                          ('fabian.fischer@modul.ac.at', ('fabian.fischer@modul.ac.at', None)),
+                          ('@xy', ('@xy', None))
+                         ])
+def test_parse_single_string(value, expected):
+    assert parse_language_tagged_string(value) == expected
+
 
 @pytest.mark.parametrize(
     "uri,prefixed",

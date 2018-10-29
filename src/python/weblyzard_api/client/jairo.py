@@ -29,8 +29,15 @@ class JairoClient(MultiRESTClient):
 
     def enrich_annotations(self, profile_name, annotations):
         ''' '''
-        return self.request('extend_annotations/{}'.format(profile_name),
-                            annotations)
+        annotations_to_send = []
+        for annotation in annotations:
+            if len(annotation.get('key', '')) > 3:
+                annotations_to_send.append(annotation)
+        if len(annotations_to_send) > 0:
+            return self.request('extend_annotations/{}'.format(profile_name),
+                                annotations_to_send)
+        else:
+            return None
 
     def list_profiles(self):
         ''' '''

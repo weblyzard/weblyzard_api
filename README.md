@@ -111,6 +111,12 @@ mvn deploy -Denvironment=mavencentral
 
 ### Changelog
 
+#### 0.2.1.0-SNAPSHOT
+
+ * use WebserviceClientConfig object for the configuration of REST clients
+ * re-added weblyzard namespace
+ * lombok 1.18.0
+
 ##### 0.2.0.0-SNAPSHOT 
 
 * switch to layout aware document model

@@ -43,7 +43,7 @@ NAMESPACES = {
     'http://weblyzard.com/skb/keyword/nl#': 'skbkwnl',
 }
 
-PREFIXES = '\n'.join(['PREFIX {value}: <{key}>'.format(value=value,
+PREFIXES = '\n'.join(['']+['PREFIX {value}: <{key}>'.format(value=value,
                                                        key=key) \
                       for key, value in NAMESPACES.items()])
 
@@ -93,3 +93,24 @@ def replace_prefix(uri, namespaces=None):
         if prefix in uri:
             return uri.replace('{}:'.format(prefix), namespace)
     return uri
+
+
+def parse_language_tagged_string(value):
+    '''
+    Checks if the string value has a language tag @xx or @xxx
+    and returns the string without the value tag and language
+    as tuple. If no language tag -> language is None
+    '''
+    lang = None
+    if value[0] == value[-1] == '"':
+        value = value[1:-1]
+    if len(value) > 6 and value[-6] == '@':
+        lang = value[-5:]
+        value = value[:-6]
+    elif len(value) > 3 and value[-3] == '@':
+        lang = value[-2:]
+        value = value[:-3]
+    elif len(value) > 4 and value[-4] == '@':
+        lang = value[-3:]
+        value = value[:-4]
+    return value, lang
