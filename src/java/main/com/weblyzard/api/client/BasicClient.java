@@ -13,10 +13,13 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.client.filter.EncodingFilter;
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.message.GZipEncoder;
 
 public abstract class BasicClient {
 
@@ -33,20 +36,30 @@ public abstract class BasicClient {
      * @param defaultServicePrefix the default Web service prefix for the given component
      */
     public BasicClient(WebserviceClientConfig c, String defaultServicePrefix) {
-
-        ClientConfig config = new ClientConfig();
+        baseTarget = getClient(c, defaultServicePrefix, false);
         if (c.isDebug()) {
             // https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
             // -> Example 21.1. Logging on client-side
-            config.register(new LoggingFeature(logger, Level.SEVERE,
+            baseTarget.register(new LoggingFeature(logger, Level.SEVERE,
                     LoggingFeature.Verbosity.PAYLOAD_TEXT, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
         }
+    }
+
+    public static WebTarget getClient(WebserviceClientConfig c, String defaultServicePrefix, boolean enableCompression) {
+        ClientConfig config = new ClientConfig();
+
+        if (enableCompression) {
+            config.register(EncodingFilter.class)
+            .register(GZipEncoder.class)
+            .property(ClientProperties.USE_ENCODING, "gzip");
+        }
+
         if (c.getUsername() != null && c.getPassword() != null) {
             config.register(HttpAuthenticationFeature.basicBuilder()
                     .credentials(c.getUsername(), c.getPassword()).build());
         }
 
-        this.baseTarget = JerseyClientBuilder.createClient(config)
+        return JerseyClientBuilder.createClient(config)
                 .target(c.getUrl() + c.getServicePrefix(defaultServicePrefix))
                 .register(new JacksonJsonProvider());
     }

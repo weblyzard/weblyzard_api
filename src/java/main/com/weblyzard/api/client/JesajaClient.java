@@ -9,6 +9,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.jesaja.KeywordCalculationProfile;
@@ -39,9 +40,12 @@ public class JesajaClient extends BasicClient {
             "/rest/set_matview_profile/{" + TEMPLATE_PROFILE + "}/{" + TEMPLATE_PROFILE + "}";
     private static final String SET_KEYWORD_PROFILE_URL =
             "/rest/set_keyword_profile/{" + TEMPLATE_PROFILE + "}";
+    
+    WebserviceClientConfig c;
 
     public JesajaClient(WebserviceClientConfig c) {
         super(c, "/jesaja");
+        this.c = c;
     }
 
     public Response setReferenceCorpus(String matviewId, Map<String, Integer> corpusMapping)
@@ -60,9 +64,11 @@ public class JesajaClient extends BasicClient {
     public Response addDocuments(String matviewId, List<Document> documents)
             throws WebApplicationException, JAXBException {
 
-        try (Response response = super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
+        System.out.println("NeW....");
+        try (Response response = BasicClient.getClient(c, "/jesaja", true).path(ADD_DOCUMENTS_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents))) {
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(documents, new Variant(MediaType.APPLICATION_JSON_TYPE, (String)null, "gzip")))) {
 
             super.checkResponseStatus(response);
             return response;

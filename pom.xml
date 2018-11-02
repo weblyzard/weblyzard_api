@@ -187,6 +187,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.0</version>
+				<!-- required due to a bug in the latest JDK - see https://stackoverflow.com/questions/50661648/spring-boot-fails-to-run-maven-surefire-plugin-classnotfoundexception-org-apache/50661649#50661649 -->
+				<configuration>
+					<useSystemClassLoader>false</useSystemClassLoader>
+			        </configuration>
 			</plugin>
 
 			<!-- Integration testing -->
