@@ -34,7 +34,7 @@ class TestRecognize(unittest.TestCase):
 
     def setUp(self):
         self.available_profiles = []
-        url = 'gecko6.wu.ac.at:8083/recognize/rest/recognize'
+        url = 'localhost:8080/Recognize/rest/recognize'
         self.client = Recognize(url)
         self.service_is_online = self.client.is_online()
         if not self.service_is_online:
