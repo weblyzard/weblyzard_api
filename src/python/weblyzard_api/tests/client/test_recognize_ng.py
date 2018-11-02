@@ -13,7 +13,6 @@ from weblyzard_api.client.recognize.ng import Recognize
 class TestRecognizeNg(unittest.TestCase):
 
     SERVICE_URL = 'localhost:63007/rest'
-#     SERVICE_URL = 'gecko9.wu.ac.at:8088/rest'
     PROFILE_NAME = 'wl_full_international_en'
     DOCUMENTS = [{u'annotations': [],
                   u'content': u'Hello "world" more \nDonald Trump and Barack Obama are presidents in the United States. Vienna is the capital of Austria, Berlin is the capital of Germany. Linz also is in Austria" 1000',
