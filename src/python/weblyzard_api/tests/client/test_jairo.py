@@ -10,7 +10,6 @@ from weblyzard_api.client.jairo import JairoClient
 
 class JairoTest(unittest.TestCase):
 
-    #     SERVICE_URL = 'gecko9.wu.ac.at:8083/rest'
     SERVICE_URL = 'localhost:63005/rest'
 
     PROFILES = {
