@@ -89,9 +89,10 @@ def replace_prefix(uri, namespaces=None):
     '''
     if namespaces is None:
         namespaces = NAMESPACES
-    for namespace, prefix in namespaces.items():
-        if prefix in uri:
-            return uri.replace('{}:'.format(prefix), namespace)
+    for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
+        prefix = '{}:'.format(namespaces[namespace])
+        if uri.startswith(prefix):
+            return uri.replace(prefix, namespace)
     return uri
 
 
