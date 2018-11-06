@@ -14,6 +14,8 @@ public class WebserviceClientConfig {
     private String url = System.getenv("WEBLYZARD_API_URL");
     private String username = System.getenv("WEBLYZARD_API_USER");
     private String password = System.getenv("WEBLYZARD_API_PASS");
+    /** whether to compress the communication between server and client */
+    private boolean useCompression = true;
 
     /** the service prefix such as `/jeremia` or `:63001` */
     private String servicePrefix;

@@ -28,7 +28,6 @@ public abstract class BasicClient {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
-
     /**
      * Constructs the {@link BasicClient} based on a {@link WebserviceClientConfig}
      * 
@@ -36,19 +35,16 @@ public abstract class BasicClient {
      * @param defaultServicePrefix the default Web service prefix for the given component
      */
     public BasicClient(WebserviceClientConfig c, String defaultServicePrefix) {
-        baseTarget = getClient(c, defaultServicePrefix, false);
+        ClientConfig config = new ClientConfig();
+
         if (c.isDebug()) {
             // https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
             // -> Example 21.1. Logging on client-side
-            baseTarget.register(new LoggingFeature(logger, Level.SEVERE,
+            config.register(new LoggingFeature(logger, Level.SEVERE,
                     LoggingFeature.Verbosity.PAYLOAD_TEXT, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
         }
-    }
 
-    public static WebTarget getClient(WebserviceClientConfig c, String defaultServicePrefix, boolean enableCompression) {
-        ClientConfig config = new ClientConfig();
-
-        if (enableCompression) {
+        if (c.isUseCompression()) {
             config.register(EncodingFilter.class)
             .register(GZipEncoder.class)
             .property(ClientProperties.USE_ENCODING, "gzip");
@@ -59,7 +55,7 @@ public abstract class BasicClient {
                     .credentials(c.getUsername(), c.getPassword()).build());
         }
 
-        return JerseyClientBuilder.createClient(config)
+        this.baseTarget = JerseyClientBuilder.createClient(config)
                 .target(c.getUrl() + c.getServicePrefix(defaultServicePrefix))
                 .register(new JacksonJsonProvider());
     }
