@@ -14,7 +14,7 @@ NAMESPACES = {
     'http://www.w3.org/ns/prov#': 'prov',
     'http://purl.org/dc/elements/1.1/': 'dc',
     'http://purl.org/dc/terms/': 'dct',
-    'http://schema.org/description': 'schema',
+    'http://schema.org/': 'schema',
     # lexical namespaces
     'http://lemon-model.net/lemon#': 'lemon',
     'http://www.lexinfo.net/ontology/2.0/lexinfo#': 'lexinfo',
