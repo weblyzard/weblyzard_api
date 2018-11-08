@@ -15,7 +15,7 @@ public class WebserviceClientConfig {
     private String username = System.getenv("WEBLYZARD_API_USER");
     private String password = System.getenv("WEBLYZARD_API_PASS");
 
-    /** the service prefix such as `/jeremia` or `:63001` */
+    /** the service prefix such as '/jeremia' or ':63001'. */
     private String servicePrefix;
 
     private boolean debug = System.getenv("WEBLYZARD_API_DEBUG") != null;

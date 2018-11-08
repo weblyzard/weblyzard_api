@@ -21,12 +21,12 @@ import com.weblyzard.api.model.document.partition.TokenCharSpan;
 public interface Span {
 
     /**
-     * @return the {@link Span}s start position
+     * Returns the {@link Span}s start position.
      */
     public int getStart();
 
     /**
-     * @return the {@link Span}s end position
+     * Returns the {@link Span}s end position.
      */
     public int getEnd();
 

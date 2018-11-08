@@ -1,23 +1,23 @@
 package com.weblyzard.api.model.document;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.weblyzard.api.datatype.MD5Digest;
-import com.weblyzard.api.serialize.xml.BooleanAdapter;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.eclipse.persistence.oxm.annotations.XmlCDATA;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.weblyzard.api.datatype.MD5Digest;
+import com.weblyzard.api.serialize.xml.BooleanAdapter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 
 /**
- * webLyzard Sentence class
+ * webLyzard Sentence class.
  *
- * @author weichselbraun@weblyzard.com
+ * @author Albert Weichselbraun
  */
 @Data
 @Accessors(chain = true)
@@ -88,9 +88,9 @@ public class Sentence implements Serializable {
 
     public Sentence setPos(String pos) {
         // required for handling double quotes in POS tags.
-    	if(pos!=null){
-    		this.pos = pos.replace("\"", HTML_ENTITY_QUOT);
-    	}
+        if (pos != null) {
+            this.pos = pos.replace("\"", HTML_ENTITY_QUOT);
+        }
         return this;
     }
 

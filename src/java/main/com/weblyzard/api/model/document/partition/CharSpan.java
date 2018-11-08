@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * A string range within a document
+ * A string range within a document.
  * 
  * @author Albert Weichselbraun
  *
@@ -21,6 +21,8 @@ public class CharSpan implements Span {
     private int end;
 
     /**
+     * Returns the text of the given {@link CharSpan}.
+     * 
      * @param s input string
      * @return the substring within the given range
      */

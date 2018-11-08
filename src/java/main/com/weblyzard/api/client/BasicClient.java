@@ -30,7 +30,7 @@ public abstract class BasicClient {
 
 
     /**
-     * Constructs the {@link BasicClient} based on a {@link WebserviceClientConfig}
+     * Constructs the {@link BasicClient} based on a {@link WebserviceClientConfig}.
      * 
      * @param c the {@link WebserviceClientConfig} to use for the connection
      * @param defaultServicePrefix the default Web service prefix for the given component
@@ -45,13 +45,13 @@ public abstract class BasicClient {
         }
     }
 
-    public static WebTarget getClient(WebserviceClientConfig c, String defaultServicePrefix, boolean enableCompression) {
+    public static WebTarget getClient(WebserviceClientConfig c, String defaultServicePrefix,
+            boolean enableCompression) {
         ClientConfig config = new ClientConfig();
 
         if (enableCompression) {
-            config.register(EncodingFilter.class)
-            .register(GZipEncoder.class)
-            .property(ClientProperties.USE_ENCODING, "gzip");
+            config.register(EncodingFilter.class).register(GZipEncoder.class)
+                    .property(ClientProperties.USE_ENCODING, "gzip");
         }
 
         if (c.getUsername() != null && c.getPassword() != null) {

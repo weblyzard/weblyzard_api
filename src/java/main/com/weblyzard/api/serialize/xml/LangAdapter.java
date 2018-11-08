@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import com.weblyzard.api.model.Lang;
 
 /**
- * Serialization and deserialization of Lang attributes
+ * Serialization and deserialization of {@link Lang} attributes.
  * 
  * @author Albert Weichselbraun
  */
