@@ -64,9 +64,8 @@ public class JesajaClient extends BasicClient {
     public Response addDocuments(String matviewId, List<Document> documents)
             throws WebApplicationException, JAXBException {
 
-        System.out.println("NeW....");
-        try (Response response = BasicClient.getClient(config, "/jesaja", true)
-                .path(ADD_DOCUMENTS_SERVICE_URL).resolveTemplate(TEMPLATE_MATVIEW, matviewId)
+        try (Response response = super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
+                .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(documents,
                         new Variant(MediaType.APPLICATION_JSON_TYPE, (String) null, "gzip")))) {
 
