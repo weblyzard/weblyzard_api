@@ -14,7 +14,7 @@ NAMESPACES = {
     'http://www.w3.org/ns/prov#': 'prov',
     'http://purl.org/dc/elements/1.1/': 'dc',
     'http://purl.org/dc/terms/': 'dct',
-    'http://schema.org/description': 'schema',
+    'http://schema.org/': 'schema',
     # lexical namespaces
     'http://lemon-model.net/lemon#': 'lemon',
     'http://www.lexinfo.net/ontology/2.0/lexinfo#': 'lexinfo',
@@ -24,7 +24,7 @@ NAMESPACES = {
     'http://www.opengis.net/ont/geosparql#': 'geo',
     'http://www.wikidata.org/prop/direct/': 'wdt',
     'http://www.wikidata.org/entity/': 'wd',
-    'http://sws.geonames.org': 'gn',
+    'http://sws.geonames.org/': 'gn',
     # weblyzard namespaces
     'http://weblyzard.com/skb/lexicon/': 'skblex',
     'http://weblyzard.com/skb/property/': 'skbprop',
@@ -89,9 +89,10 @@ def replace_prefix(uri, namespaces=None):
     '''
     if namespaces is None:
         namespaces = NAMESPACES
-    for namespace, prefix in namespaces.items():
-        if prefix in uri:
-            return uri.replace('{}:'.format(prefix), namespace)
+    for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
+        prefix = '{}:'.format(namespaces[namespace])
+        if uri.startswith(prefix):
+            return uri.replace(prefix, namespace)
     return uri
 
 
