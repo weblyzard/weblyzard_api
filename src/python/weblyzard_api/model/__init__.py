@@ -104,6 +104,7 @@ class Annotation(object):
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.preferredName = preferredName
+        self.confidence = confidence
 
 
 class Sentence(object):
