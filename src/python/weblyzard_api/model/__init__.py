@@ -94,7 +94,7 @@ class Annotation(object):
 
     def __init__(self, annotation_type=None, start=None, end=None, key=None,
                  sentence=None, surfaceForm=None, md5sum=None, sem_orient=None,
-                 preferredName=None):
+                 preferredName=None, confidence=None):
         self.annotation_type = annotation_type
         self.surfaceForm = surfaceForm
         self.start = start
