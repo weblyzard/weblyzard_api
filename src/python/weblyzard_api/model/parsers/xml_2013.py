@@ -40,6 +40,7 @@ class XML2013(XMLParser):
         'author': ('creator', 'dc'),
         'publisher': ('publisher', 'dc'),
         'keywords': ('subject', 'dc'),
+        'tags': ('subject', 'dc'),  # twitter
         'title': ('title', 'dc'),
         'description': ('description', 'dc'),
 
@@ -76,7 +77,6 @@ class XML2013(XMLParser):
 
         # DOCUMENT METRICS ####################################################
         'user_mentions': ('user_mentions', 'wl'),
-        'rating': ('rating', 'wl'),
         'rating_average': ('rating', 'wl'),  # YT
         'viewcount': ('num_views', 'wl'),  # vimeo/daily
         'statistics_viewcount': ('num_views', 'wl'),  # youtube
@@ -85,6 +85,13 @@ class XML2013(XMLParser):
         'nr_of_retweets': ('num_reshares', 'wl'),  # twitter
 
         # USER MAPPINGS #######################################################
+        'user_verified': ('user_verified', 'wl'),  # TW
+        'user_geo_enabled': ('user_geo_enabled', 'wl'),  # TW
+        'user_favourites_count': ('user_favourites_count', 'wl'),  # TW
+        'user_post_count': ('user_post_count', 'wl'),
+        'user_following': ('user_following', 'wl'),
+        'num_tweets': ('user_post_count', 'wl'),  # TW
+        'user_created': ('user_created', 'wl'),  # TW
         'user_id': ('user_id', 'wl'),  # FB, G+
         'user_url': ('user_id', 'wl'),  # YT, twitter
         'user_name': ('user_name', 'wl'),
@@ -137,10 +144,7 @@ class XML2013(XMLParser):
                           'annotationType': ('annotationType', 'wl'),
                           'preferredName': ('preferredName', 'wl'),
                           'sem_orient': ('sem_orient', 'wl'),
-                          'md5sum': ('md5sum', 'wl'),
-                          'sentence': ('sentence', 'wl'),
-                          'significance': ('significance', 'wl'),
-                          'confidence': ('confidence', 'wl')
+                          'md5sum': ('md5sum', 'wl')
                           }
 
     FEATURE_MAPPING = {'key': ('key', 'wl'),
