@@ -422,7 +422,7 @@ class XMLParser(object):
         return relations
 
     @classmethod
-    def dump_xml_attributes(cls, attributes, mapping):
+    def dump_xml_attributes(cls, attributes, mapping, resolve_namespaces=True):
         new_attributes = {}
 
         for key, value in attributes.iteritems():
@@ -435,8 +435,11 @@ class XMLParser(object):
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
-                    key = '{%s}%s' % (
-                        cls.DOCUMENT_NAMESPACES[namespace], key)
+                    if resolve_namespaces:
+                        key = '{%s}%s' % (
+                            cls.DOCUMENT_NAMESPACES[namespace], key)
+                    else:
+                        key = '%s:%s' % (namespace, key)
             if value and value not in ('None', 'null', '0.0'):
                 new_attributes[key] = cls.encode_value(value)
 
