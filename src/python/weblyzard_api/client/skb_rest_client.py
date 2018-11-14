@@ -45,7 +45,7 @@ class SKBRESTClient(object):
         '''
         Helper class that takes the data generated from recognyze and keeps
         only the properties, preferred Name,  entityType, uri and profileName
-        as provenance.
+        as provenance, if set.
 
         :param kwargs: The keyword data.
         :type kwargs: dict
@@ -57,7 +57,8 @@ class SKBRESTClient(object):
             if key in kwargs:
                 skb_relevant_data[key] = kwargs[key]
         skb_relevant_data['uri'] = kwargs['key']
-        skb_relevant_data['provenance'] = kwargs['profileName']
+        if 'profileName' in kwargs:
+            skb_relevant_data['provenance'] = kwargs['profileName']
         return skb_relevant_data
 
     def save_doc_kw_skb(self, kwargs):
