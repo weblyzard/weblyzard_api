@@ -78,6 +78,7 @@ class XML2013(XMLParser):
 
         # DOCUMENT METRICS ####################################################
         'user_mentions': ('user_mentions', 'wl'),
+        'rating': ('rating', 'wl'),
         'rating_average': ('rating', 'wl'),  # YT
         'viewcount': ('num_views', 'wl'),  # vimeo/daily
         'statistics_viewcount': ('num_views', 'wl'),  # youtube
