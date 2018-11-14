@@ -37,5 +37,5 @@ class MediaCriticism(MultiRESTClient):
                (is_relevant, mediacriticism_score, num_recognized_entities)
         '''
         result = self.request(self.CLASSIFIER_WS_BASE_PATH
-                              + 'checkDocumentRelevance', {'document': api_document})
+                              + 'checkDocumentRelevance', api_document)
         return result['relevantDocument'], result['mediacriticism']
