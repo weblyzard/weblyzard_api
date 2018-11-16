@@ -14,7 +14,7 @@ NAMESPACES = {
     'http://www.w3.org/ns/prov#': 'prov',
     'http://purl.org/dc/elements/1.1/': 'dc',
     'http://purl.org/dc/terms/': 'dct',
-    'http://schema.org/description': 'schema',
+    'http://schema.org/': 'schema',
     # lexical namespaces
     'http://lemon-model.net/lemon#': 'lemon',
     'http://www.lexinfo.net/ontology/2.0/lexinfo#': 'lexinfo',
@@ -24,7 +24,7 @@ NAMESPACES = {
     'http://www.opengis.net/ont/geosparql#': 'geo',
     'http://www.wikidata.org/prop/direct/': 'wdt',
     'http://www.wikidata.org/entity/': 'wd',
-    'http://sws.geonames.org': 'gn',
+    'http://sws.geonames.org/': 'gn',
     # weblyzard namespaces
     'http://weblyzard.com/skb/lexicon/': 'skblex',
     'http://weblyzard.com/skb/property/': 'skbprop',
@@ -43,7 +43,7 @@ NAMESPACES = {
     'http://weblyzard.com/skb/keyword/nl#': 'skbkwnl',
 }
 
-PREFIXES = '\n'.join(['PREFIX {value}: <{key}>'.format(value=value,
+PREFIXES = '\n'.join(['']+['PREFIX {value}: <{key}>'.format(value=value,
                                                        key=key) \
                       for key, value in NAMESPACES.items()])
 
@@ -89,7 +89,29 @@ def replace_prefix(uri, namespaces=None):
     '''
     if namespaces is None:
         namespaces = NAMESPACES
-    for namespace, prefix in namespaces.items():
-        if prefix in uri:
-            return uri.replace('{}:'.format(prefix), namespace)
+    for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
+        prefix = '{}:'.format(namespaces[namespace])
+        if uri.startswith(prefix):
+            return uri.replace(prefix, namespace)
     return uri
+
+
+def parse_language_tagged_string(value):
+    '''
+    Checks if the string value has a language tag @xx or @xxx
+    and returns the string without the value tag and language
+    as tuple. If no language tag -> language is None
+    '''
+    lang = None
+    if value[0] == value[-1] == '"':
+        value = value[1:-1]
+    if len(value) > 6 and value[-6] == '@':
+        lang = value[-5:]
+        value = value[:-6]
+    elif len(value) > 3 and value[-3] == '@':
+        lang = value[-2:]
+        value = value[:-3]
+    elif len(value) > 4 and value[-4] == '@':
+        lang = value[-3:]
+        value = value[:-4]
+    return value, lang
