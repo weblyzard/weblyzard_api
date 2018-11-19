@@ -18,7 +18,7 @@ The API needs to know the URL, user and password used for the Web service. These
   + `WEBLYZARD_API_URL`
   + `WEBLYZARD_API_USER`
   + `WEBLYZARD_API_PASS`
-  + 'MEDMON_API_URL'
+  + `OGER_API_URL`
 
    this is also the preferred way for running unit tests.
 
@@ -28,7 +28,7 @@ The preferred way for setting these variables is using `.bash_profile`.
 export WEBLYZARD_API_URL="https://noah.semanticlab.net/ws"
 export WEBLYZARD_API_USER="user"
 export WEBLYZARD_API_PASS="pass"
-export MEDMON_API_URL="medmon_api_url"
+export OGER_API_URL="oger_api_url"
 ```
 
 Do not set `WEBLYZARD_API_USER` and `WEBLYZARD_API_PASS` if your Web service does not require authentication.
