@@ -8,7 +8,7 @@ import unittest
 
 from pprint import pprint
 
-from weblyzard_api.client import MEDMON_API_URL
+from weblyzard_api.client import OGER_API_URL
 
 from weblyzard_api.client.ontogene import Oger
 from weblyzard_api.client.recognize import Recognize
@@ -17,7 +17,7 @@ from weblyzard_api.client.jeremia import Jeremia
 
 class TestOGER(unittest.TestCase):
     def setUp(self):
-        url =  MEDMON_API_URL
+        url =  OGER_API_URL
         print(url)
         
         self.client = Oger(url)

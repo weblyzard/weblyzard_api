@@ -8,7 +8,7 @@ import logging
 from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
-                                  WEBLYZARD_API_PASS, MEDMON_API_URL)
+                                  WEBLYZARD_API_PASS, OGER_API_URL)
 from weblyzard_api.xml_content import XMLContent
 
 INTERNAL_PROFILE_PREFIX = 'extras.'
@@ -67,7 +67,7 @@ class Oger(MultiRESTClient):
         OUTPUT_FORMAT: bioc, odin, odin_custom, tsv, xml
 
     '''
-    def __init__(self, url=MEDMON_API_URL, default_timeout=None):
+    def __init__(self, url=OGER_API_URL, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
         #:param usr: optional user name
@@ -88,7 +88,7 @@ class Oger(MultiRESTClient):
         ''' 
         :returns: the version of the Recognize web service.
         '''
-        return 'MEDMON'
+        return 'OGER-MEDMON'
 
     def fetch_document(self, docid='29630699'):
         '''
@@ -143,7 +143,7 @@ class Oger(MultiRESTClient):
         '''
         :returns: OGER annotated document after uploading a text.
         '''
-        url = MEDMON_OGER + "upload/txt/bioc_json"
+        url = OGER_API_URL + "upload/txt/bioc_json"
         files = {'file1': (docid, doctext)}
         
         r = requests.post(url, files=files)
