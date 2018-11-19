@@ -4,6 +4,7 @@
 .. moduleauthor:: Adrian Brasoveanu <adrian.brasoveanu@htwchur.ch>
 '''
 import logging
+import requests
 
 from eWRT.ws.rest import MultiRESTClient
 
@@ -90,17 +91,17 @@ class Oger(MultiRESTClient):
         '''
         return 'OGER-MEDMON'
 
-    def fetch_document(self, docid='29630699'):
+    def fetch_document(self, docid):
         '''
         :returns: OGER annotated document from pubmed or DB.
         '''
         #fetch/pubmed/tsv/29630699
-        fetchpath = '/fetch/'+'pubmed' + '/bioc_json/' + docid
+        #docid='21436587'
+        fetchpath = 'fetch/pubmed/pubtator/' + str(docid)
+        print(fetchpath)
         r = self.request(path=fetchpath)
         
-        #print(r.status())
         return r.json()
-        #print(r.status())
         #print(r.json())
         #raise NotImplementedError
         
@@ -150,7 +151,7 @@ class Oger(MultiRESTClient):
         print(r.text)
         
         res = r.json()
-        return convert_document(res)
+        return self.convert_document(res)
         #raise NotImplementedError
     
     def search_documents(self):

@@ -28,12 +28,27 @@ class TestOGER(unittest.TestCase):
             self.IS_ONLINE = False
             return
 
+    def test_version(self):
         version = self.client.get_version()
         print(version)
-        
+        self.assertTrue(version)
+    
+    
     def test_status(self):
         self.assertTrue(self.client.status())
         
-
+    #'''
+    def test_fetch_path(self):
+        response = self.client.fetch_document(docid='21436587')
+        self.assertTrue(response)
+    #'''
+    
+    def test_upload(self):
+        docid='99999999'
+        doctext='Cancer, also called malignancy, is an abnormal growth of cells. '
+        response = self.client.upload_document(docid, doctext)
+        self.assertTrue(response)
+        #'''
+    
 if __name__ == '__main__':
     unittest.main()
