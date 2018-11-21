@@ -32,7 +32,7 @@ import lombok.experimental.Accessors;
 
 /**
  * The {@link LegacyDocument} and {@link Sentence} model classes used to represent documents.
- *
+ * 
  * <p>
  * The {@link LegacyDocument} class also supports arbitrary meta data which is stored in the <code>
  * header</code> instance variable.
@@ -42,7 +42,7 @@ import lombok.experimental.Accessors;
  * {@link LegacyDocument#fromXml(String)} translate between {@link LegacyDocument} objects and the
  * corresponding XML representations.
  *
- * @author weichselbraun@weblyzard.com
+ * @author Albert Weichselbraun
  */
 @Data
 @Accessors(chain = true)
@@ -56,7 +56,7 @@ public class LegacyDocument implements Serializable {
     public static final String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
     public static final String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
 
-    /** The Attribute used to encode document keywords */
+    /** The Attribute used to encode document keywords. */
     public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 
     @XmlAttribute(name = "id", namespace = LegacyDocument.NS_WEBLYZARD)
@@ -77,7 +77,7 @@ public class LegacyDocument implements Serializable {
     @XmlAnyAttribute
     private Map<QName, String> header = new HashMap<>();
 
-    /** Elements used in the output (and input) */
+    /** Elements used in the output (and input). */
     @JsonProperty("sentences")
     @XmlElement(name = "sentence", namespace = LegacyDocument.NS_WEBLYZARD)
     private List<Sentence> sentences;
@@ -96,7 +96,7 @@ public class LegacyDocument implements Serializable {
     }
 
     /**
-     * Converts a {@link LegacyDocument} to the corresponding webLyzard XML representation
+     * Converts a {@link LegacyDocument} to the corresponding webLyzard XML representation.
      *
      * @param document The {@link LegacyDocument} object to convert.
      * @return An XML representation of the given {@link LegacyDocument} object.

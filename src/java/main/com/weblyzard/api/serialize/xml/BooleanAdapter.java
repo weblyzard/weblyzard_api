@@ -3,7 +3,7 @@ package com.weblyzard.api.serialize.xml;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * Enables empty attributes for boolean values that are false
+ * Enables empty attributes for boolean values that are false.
  *
  * @author http://stackoverflow.com/questions/6552740/jaxb-suppress-boolean-attribute-if-false
  */
