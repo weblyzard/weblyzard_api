@@ -42,10 +42,23 @@ class SKBRESTClient(object):
             return None
 
     def clean_keyword_data(self, kwargs):
+        """
+        Prepare the keyword entity for SKB submission.
+        :param kwargs
+        """
+        lang, kw = kwargs['key'].split(':')[1].split('/')
+        uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
+        skb_relevant_data = {'uri': uri,
+                             'preferredName': kwargs['preferredName'],
+                             'entityType': kwargs['entityType'],
+                             'provenance': kwargs['provenance']}
+        return skb_relevant_data
+
+    def clean_recognize_data(self, kwargs):
         '''
         Helper class that takes the data generated from recognyze and keeps
         only the properties, preferred Name,  entityType, uri and profileName
-        as provenance.
+        as provenance, if set.
 
         :param kwargs: The keyword data.
         :type kwargs: dict
@@ -57,7 +70,8 @@ class SKBRESTClient(object):
             if key in kwargs:
                 skb_relevant_data[key] = kwargs[key]
         skb_relevant_data['uri'] = kwargs['key']
-        skb_relevant_data['provenance'] = kwargs['profileName']
+        if 'profileName' in kwargs:
+            skb_relevant_data['provenance'] = kwargs['profileName']
         return skb_relevant_data
 
     def save_doc_kw_skb(self, kwargs):
