@@ -273,7 +273,7 @@ class OpenRdfClient(object):
 
     def check_exists(self, object, repository):
         ''' '''
-        query = 'describe <{}>'.format(object.replace('page', 'resource'))
+        query = 'describe <{}>'.format(object)
         endpoint = "{}/repositories/{}" .format(self.server_uri, repository)
 
 #         print("POSTing SPARQL query to {}".format(endpoint))
@@ -483,7 +483,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         http://de.dbpedia.org/page/Matthias_Strolz?output=text%2Fplain
         '''
 
-        base_url = 'http://dbpedia.org/page/'
+        base_url = 'http://dbpedia.org/resource/'
 #         if language and language != 'en':
 #             base_url = 'http://{}.dbpedia.org/page/'.format(language)
         format_suffix = '?output=text%2Fplain'
@@ -491,24 +491,26 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         label = label.replace(' ', '_')
 
         entity = ''.join([base_url, label])
-        entity = entity.format(entity.replace('page', 'resource'))
+#         entity = entity.format(entity.replace('page', 'resource'))
 
 #         content = self.create_template(entity, type, language)
 
         (result, content) = self.check_exists(entity, repository)
+#         print(result.status, entity, content)
 #         print(result)
-        if result.status == 200 and len(content):
-            print('Skipping: {} already exists in repository {}'.format(
-                entity, repository))
-        else:
-            #             url = ''.join([base_url, label, format_suffix])
-            #             dbpedia_url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=DESCRIBE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F{}%3E&format=text%2Fx-html-script-turtle'.format(
-            #                 label)
-            #
-            #             context = ''
-            #             data = requests.get(dbpedia_url)
-            #             content = data.content
-            #             if not len(content):
-            content = self.create_template(entity, entity_type, language)
+        if result.status and len(content):
+            #             print('Skipping: {} already exists in repository {}'.format(
+            #                 entity, repository))
+            return None
+#         else:
+        #             url = ''.join([base_url, label, format_suffix])
+        #             dbpedia_url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=DESCRIBE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F{}%3E&format=text%2Fx-html-script-turtle'.format(
+        #                 label)
+        #
+        #             context = ''
+        #             data = requests.get(dbpedia_url)
+        #             content = data.content
+        #             if not len(content):
+        content = self.create_template(entity, entity_type, language)
 
-            print(content)
+        print(content)
