@@ -84,36 +84,31 @@ class Oger(MultiRESTClient):
         :returns: the status of the OGER web service.
         '''
         return self.request(path='status')
-    
-    def get_version(self):
-        ''' 
-        :returns: the version of the Recognize web service.
-        '''
-        return 'OGER-MEDMON'
 
+    
+    '''
     def fetch_document(self, docid):
-        '''
-        :returns: OGER annotated document from pubmed or DB.
-        '''
-        #fetch/pubmed/tsv/29630699
-        #docid='21436587'
+
         fetchpath = 'fetch/pubmed/pubtator/' + str(docid)
         print(fetchpath)
         r = self.request(path=fetchpath)
         
         return r.json()
-        #print(r.json())
-        #raise NotImplementedError
-        
+    '''
 
     def convert_document(self, oger_json):
         '''
         :returns: OGER document converted to Recognyze format.
         '''
         res = oger_json
-
+        
         entities = {}
         d2 = []
+        
+        #TODO: talk to OGER developers to fix this rather than have it fixed here!
+        #this is a fix for offset which always seems to be delayed with this value
+        offset = res['documents'][0]['passages'][1]['annotations'][0]['locations'][0]['offset']
+        
         for passage in res['documents'][0]['passages']:
         
             for rs in passage['annotations']:
@@ -124,23 +119,20 @@ class Oger(MultiRESTClient):
                     "key": rs['infons']['original_id'],
                     "resource": rs['infons']['original_resource'],
                     "surfaceForm": rs['text'], #.encode("utf8")
-                    "start": start,
-                    "end": end,
+                    #includes fixes for offset
+                    "start": start - offset,
+                    "end": end - offset,
+                    "offset": offset,
                     "confidence": 1,
                     "preferred_name": rs['infons']['preferred_form'],
-                    "entity_type": rs['infons']['type'],
-                    "entity_metadata": {
-                        "document_indexes": [
-                            start,
-                            end
-                            ]
-                        }
+                    "entity_type": rs['infons']['type']
                 }
-            #print(ditem)         
-            d2.append(ditem)
+                #print(ditem)         
+                d2.append(ditem)
+        print(d2)
         return d2
     
-    def upload_document(self, docid, doctext):
+    def annotate_text(self, docid, doctext):
         '''
         :returns: OGER annotated document after uploading a text.
         '''
@@ -148,11 +140,10 @@ class Oger(MultiRESTClient):
         files = {'file1': (docid, doctext)}
         
         r = requests.post(url, files=files)
-        print(r.text)
-        
+        #print(r.text)
         res = r.json()
         return self.convert_document(res)
-        #raise NotImplementedError
+ 
     
     def search_documents(self):
         '''

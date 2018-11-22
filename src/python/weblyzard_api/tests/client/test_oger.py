@@ -27,27 +27,17 @@ class TestOGER(unittest.TestCase):
             print('WARNING: Webservice is offline --> not executing all tests!!')
             self.IS_ONLINE = False
             return
-
-    def test_version(self):
-        version = self.client.get_version()
-        print(version)
-        self.assertTrue(version)
     
     
     def test_status(self):
         self.assertTrue(self.client.status())
         
-    #'''
-    def test_fetch_path(self):
-        response = self.client.fetch_document(docid='21436587')
-        self.assertTrue(response)
-    #'''
     
-    def test_upload(self):
+    def test_annotate_text(self):
         docid='99999999'
         doctext='Cancer, also called malignancy, is an abnormal growth of cells. '
-        response = self.client.upload_document(docid, doctext)
-        self.assertTrue(response)
+        response = self.client.annotate_text(docid, doctext)
+        #self.assertTrue(response)
         #'''
     
 if __name__ == '__main__':
