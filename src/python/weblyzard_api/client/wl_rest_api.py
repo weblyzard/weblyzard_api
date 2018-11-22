@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This module provides an easy client for the WL Document REST API.
 
     .. moduleauthor: Fabian Fischer <fabian.fischer@modul.ac.at>
-'''
+"""
 
 import json
 import requests
@@ -114,8 +114,8 @@ class WlSearchRestApiClient(object):
     def get_auth_token(self, username, password):
         """ 
         GET a valid authentication token from the server. 
-        @param username, as provided by webLyzard
-        @param password, as provided by webLyzard
+        :param username, as provided by webLyzard
+        :param password, as provided by webLyzard
         """
         url = '/'.join([self.base_url, self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
@@ -127,11 +127,11 @@ class WlSearchRestApiClient(object):
                          start_date=None, end_date=None):
         """ 
         Search an index for documents matching the search parameters.
-        @param sources
-        @param term_query, the query string
-        @param auth_token, the webLyzard authentication token, if any
-        @param start_date, result documents must be younger than this, if given (e.g. \"2018-08-01\")
-        @param end_date, result documents must be older than this, if given
+        :param sources
+        :param term_query, the query string
+        :param auth_token, the webLyzard authentication token, if any
+        :param start_date, result documents must be younger than this, if given (e.g. \"2018-08-01\")
+        :param end_date, result documents must be older than this, if given
         :returns: The result documents as serialized JSON
         :rtype: str
         """
@@ -144,7 +144,7 @@ class WlSearchRestApiClient(object):
 
         if not isinstance(sources, list):
             sources = [sources]
-        query = '''{"bool" : {
+        query = """{"bool" : {
                           "must" : [
                             {
                               "date" : {
@@ -154,7 +154,7 @@ class WlSearchRestApiClient(object):
                             },<<term_query>>
                           ]
                         }}
-        ''' % (start_date, end_date)
+        """ % (start_date, end_date)
 
         term_query = ',%s' % term_query
         query = query.replace(',<<term_query>>', term_query)
@@ -175,13 +175,13 @@ class WlSearchRestApiClient(object):
                         num_associations=5, auth_token=None, term_query=""):
         """ 
         Search an index for top keyword associations matching the search parameters.
-        @param sources
-        @param term_query, the query string
-        @param start_date, result documents must be younger than this (e.g. \"2018-08-01\")
-        @param end_date, result documents must be older than this
-        @param num_keywords, how many keywords to return
-        @param num_associations, how many keyword associations to return
-        @param auth_token, the webLyzard authentication token, if any
+        :param sources
+        :param term_query, the query string
+        :param start_date, result documents must be younger than this (e.g. \"2018-08-01\")
+        :param end_date, result documents must be older than this
+        :param num_keywords, how many keywords to return
+        :param num_associations, how many keyword associations to return
+        :param auth_token, the webLyzard authentication token, if any
         :returns: The result documents as serialized JSON
         :rtype: str
         """
@@ -189,7 +189,7 @@ class WlSearchRestApiClient(object):
             auth_token = self.auth_token
         if not isinstance(sources, list):
             sources = [sources]
-        query = '''{"bool" : {
+        query = """{"bool" : {
                           "must" : [
                             {
                               "date" : {
@@ -199,7 +199,7 @@ class WlSearchRestApiClient(object):
                             },<<term_query>>
                           ]
                         }}
-        ''' % (start_date, end_date)
+        """ % (start_date, end_date)
         if len(term_query) > 0:
             term_query = ',%s' % term_query
         query = query.replace(',<<term_query>>', term_query)
@@ -226,6 +226,8 @@ class WlStatisticsRestApiClient(object):
     """
     API_VERSION = 2.0
 
+    PATH = 'observations'
+
     def __init__(self, base_url):
         """
         Sets the base url for the API endpoint.
@@ -249,11 +251,8 @@ class WlStatisticsRestApiClient(object):
         """
         if isinstance(observation, dict):
             observation = json.dumps(observation)
-        url = '/'.join([self.base_url,
-                        'observations',
-                        repository_name,
-                        indicator_id])
-        r = requests.post(url=url,
+        r = requests.post('/'.join([self.base_url, self.PATH,
+                                    repository_name, indicator_id]),
                           data=observation,
                           headers={'Content-Type': 'application/json'})
         return r.json()
@@ -268,7 +267,7 @@ class WlStatisticsRestApiClient(object):
         :type observation_id: int
         :rtype: str
         """
-        r = requests.get('/'.join([self.base_url, 'observations',
+        r = requests.get('/'.join([self.base_url, self.PATH,
                                    repository_name,
                                    str(observation_id)]))
         return r.json()
@@ -280,6 +279,9 @@ class WlDocumentRestApiClient(object):
     `Documentation <https://api.weblyzard.com/doc/ui/#!/Document_API>`_
     """
     API_VERSION = 1.0
+
+    DOCUMENTS_ENDPOINT = 'documents'
+    ANNOTATE_ENDPOINT = 'annotate'
 
     def __init__(self, base_url):
         """
@@ -304,7 +306,7 @@ class WlDocumentRestApiClient(object):
         """
         if isinstance(document, dict):
             document = json.dumps(document)
-        r = requests.post('/'.join([self.base_url, 'documents', portal_name]),
+        r = requests.post('/'.join([self.base_url, self.DOCUMENTS_ENDPOINT, portal_name]),
                           data=document,
                           headers={'Content-Type': 'application/json'})
         return r.json()
@@ -320,7 +322,7 @@ class WlDocumentRestApiClient(object):
         :rtype: str
         """
         r = requests.get(
-            '/'.join([self.base_url, 'documents', portal_name, str(content_id)]))
+            '/'.join([self.base_url, self.DOCUMENTS_ENDPOINT, portal_name, str(content_id)]))
         return r.json()
 
     def update_document(self, portal_name, content_id, document):
@@ -340,7 +342,7 @@ class WlDocumentRestApiClient(object):
         if isinstance(document, dict):
             document = json.dumps(document)
         r = requests.put('/'.join([self.base_url,
-                                   'documents',
+                                   self.DOCUMENTS_ENDPOINT,
                                    portal_name,
                                    str(content_id)]),
                          data=document,
@@ -360,7 +362,7 @@ class WlDocumentRestApiClient(object):
         :rtype: str
         """
         r = requests.delete('/'.join([self.base_url,
-                                      'documents',
+                                      self.DOCUMENTS_ENDPOINT,
                                       portal_name,
                                       str(content_id)]))
         return r.json()
@@ -384,7 +386,7 @@ class WlDocumentRestApiClient(object):
         if isinstance(document, dict):
             document = json.dumps(document)
         r = requests.post('/'.join([self.base_url,
-                                    'annotate',
+                                    self.ANNOTATE_ENDPOINT,
                                     '+'.join(analyzer_steps)]),
                           data=document,
                           headers={'Content-Type': 'application/json'})

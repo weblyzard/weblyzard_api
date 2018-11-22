@@ -13,10 +13,13 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.client.filter.EncodingFilter;
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.message.GZipEncoder;
 
 public abstract class BasicClient {
 
@@ -25,21 +28,24 @@ public abstract class BasicClient {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
-
     /**
-     * Constructs the {@link BasicClient} based on a {@link WebserviceClientConfig}
+     * Constructs the {@link BasicClient} based on a {@link WebserviceClientConfig}.
      * 
      * @param c the {@link WebserviceClientConfig} to use for the connection
      * @param defaultServicePrefix the default Web service prefix for the given component
      */
     public BasicClient(WebserviceClientConfig c, String defaultServicePrefix) {
-
         ClientConfig config = new ClientConfig();
+
         if (c.isDebug()) {
             // https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
             // -> Example 21.1. Logging on client-side
             config.register(new LoggingFeature(logger, Level.SEVERE,
                     LoggingFeature.Verbosity.PAYLOAD_TEXT, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+        }
+        if (c.isUseCompression()) {
+            config.register(EncodingFilter.class).register(GZipEncoder.class)
+                    .property(ClientProperties.USE_ENCODING, "gzip");
         }
         if (c.getUsername() != null && c.getPassword() != null) {
             config.register(HttpAuthenticationFeature.basicBuilder()

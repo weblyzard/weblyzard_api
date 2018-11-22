@@ -1,12 +1,17 @@
 package com.weblyzard.api.model.jairo;
 
 import java.io.Serializable;
+import com.weblyzard.api.model.annotation.Annotation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-/** @author Norman Suesstrunk */
+/**
+ * Describes the SPARQL endpoint and query used for metadata enrichment of {@link Annotation}s.
+ * 
+ * @author Norman Suesstrunk
+ */
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode

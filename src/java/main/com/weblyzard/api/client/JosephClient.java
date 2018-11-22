@@ -10,6 +10,8 @@ import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.joseph.Classification;
 
 /**
+ * Text classification service.
+ * 
  * @author Philipp Kuntschik
  */
 public class JosephClient extends BasicClient {

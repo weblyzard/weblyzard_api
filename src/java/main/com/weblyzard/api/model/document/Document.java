@@ -39,7 +39,7 @@ public class Document implements Serializable {
     public static final String NS_DUBLIN_CORE = "http://purl.org/dc/elements/1.1/";
     public static final String NS_WEBLYZARD = "http://www.weblyzard.com/wl/2013#";
 
-    /** The Attribute used to encode document keywords */
+    /** The Attribute used to encode document keywords. */
     public static final QName WL_KEYWORD_ATTR = new QName(NS_DUBLIN_CORE, "subject");
 
     private String id;
@@ -52,12 +52,14 @@ public class Document implements Serializable {
 
     private String content;
 
-    /** Document {@link DocumentPartition} such as title, body, sentences, lines, etc. */
+    /**
+     * Document {@link DocumentPartition} such as title, body, sentences, lines, etc.
+     */
     private Map<DocumentPartition, List<Span>> partitions;
 
     /**
-     * This field contains all annotations after titleAnnotations and bodyAnnotations have been
-     * merged. (i.e. after the document's finalization)
+     * This field contains all annotations after the document's finalization. (i.e. after
+     * titleAnnotations and bodyAnnotations have been merged)
      */
     @JsonProperty("annotations")
     private List<Annotation> annotations;
