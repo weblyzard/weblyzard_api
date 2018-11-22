@@ -7,7 +7,9 @@ import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.service.AnnotationService;
 
 /**
- * Provide access to the Recognyze named entity linking Web service
+ * Provide access to Web services implementing the AnnotationService interface.
+ * 
+ * @see AnnotationService
  * 
  * @author Philipp Kuntschik
  * @author Albert Weichselbraun
