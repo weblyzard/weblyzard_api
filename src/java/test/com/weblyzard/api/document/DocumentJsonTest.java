@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.Sentence;
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +25,7 @@ public class DocumentJsonTest {
     public static final URL WEBLYZARD_EXAMPLE_XML =
             DocumentJsonTest.class.getClassLoader().getResource("reference/weblyzard-example.xml");
 
-    private Document referenceDocument;
+    private LegacyDocument referenceDocument;
     private QName referenceKeywordQName;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -34,13 +34,13 @@ public class DocumentJsonTest {
 
         // init mock objects
         referenceDocument =
-                Document.fromXml(
+                LegacyDocument.fromXml(
                         Resources.toString(WEBLYZARD_EXAMPLE_XML, Charsets.UTF_8));
 
         referenceKeywordQName =
                 new QName(
-                        Document.WL_KEYWORD_ATTR.getNamespaceURI(),
-                        Document.WL_KEYWORD_ATTR.getLocalPart());
+                        LegacyDocument.WL_KEYWORD_ATTR.getNamespaceURI(),
+                        LegacyDocument.WL_KEYWORD_ATTR.getLocalPart());
 
         // set the header
         referenceDocument.getHeader().put(referenceKeywordQName, "keyword1, keyword2");
@@ -62,7 +62,7 @@ public class DocumentJsonTest {
         System.out.println(documentJsonSerialized);
 
         // deserialize document
-        Document deserializedDocument = mapper.readValue(documentJsonSerialized, Document.class);
+        LegacyDocument deserializedDocument = mapper.readValue(documentJsonSerialized, LegacyDocument.class);
         QName deserializedQname = deserializedDocument.getHeader().keySet().iterator().next();
 
         // must be the same qname

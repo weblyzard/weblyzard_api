@@ -14,6 +14,7 @@ import unittest
 from datetime import datetime, timedelta
 from weblyzard_api.client.videolyzard import VideolyzardClient
 
+
 class TestVideolyzard(unittest.TestCase):
 
     def test_submit_video(self):
@@ -27,7 +28,8 @@ class TestVideolyzard(unittest.TestCase):
                    'title': 'test2',
                    'text': 'test2 description'}, ]
 
-        client = VideolyzardClient(username='weblyzard', password='VID30lyz4rd')
+        client = VideolyzardClient(
+            username='weblyzard', password='VID30lyz4rd')
         response = client.post_dict_videos_to_queue(videos)
 
         self.assertEquals(response.status_code, 200)
@@ -35,9 +37,10 @@ class TestVideolyzard(unittest.TestCase):
 
     def test_retrieve_videos(self):
 
-        client = VideolyzardClient(username='weblyzard', password='VID30lyz4rd')
+        client = VideolyzardClient(
+            username='weblyzard', password='VID30lyz4rd')
         since = datetime.now() - timedelta(days=90)
-        videos_query = client.get_video_data('portal_climate_new', 
+        videos_query = client.get_video_data('portal_climate_new',
                                              status='completed',
                                              since=since)
 
@@ -57,6 +60,7 @@ class TestVideolyzard(unittest.TestCase):
             # the test would run for ages!
             if num_checked_videos > 10:
                 break
+
 
 if __name__ == '__main__':
     unittest.main()

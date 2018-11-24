@@ -18,7 +18,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.weblyzard.api.client.JoelClient;
-import com.weblyzard.api.model.document.Document;
+import com.weblyzard.api.client.WebserviceClientConfig;
+import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.Sentence;
 import com.weblyzard.api.model.joel.ClusterResult;
 
@@ -28,14 +29,14 @@ public class JoelClientIT extends TestClientBase {
     private static final String PSALMS_DOCS_WEBLYZARDFORMAT_JSON =
             "resources/psalms-docs-weblyzardformat.json";
 
-    public List<Document> psalmDocs;
+    public List<LegacyDocument> psalmDocs;
 
     private JoelClient joelClient;
 
     @Before
     public void before() {
         psalmDocs = readWeblyzardDocuments();
-        joelClient = new JoelClient();
+        joelClient = new JoelClient(new WebserviceClientConfig());
     }
 
     @Test
@@ -59,8 +60,8 @@ public class JoelClientIT extends TestClientBase {
     public void testDocumentHeaderBadRequest() {
         assumeTrue(weblyzardServiceAvailable(joelClient));
         try {
-            joelClient.addDocuments(Arrays.asList(new Document[] {
-                    new Document().setSentences(Arrays.asList(new Sentence("Test")))}));
+            joelClient.addDocuments(Arrays.asList(new LegacyDocument[] {
+                    new LegacyDocument().setSentences(Arrays.asList(new Sentence("Test")))}));
         } catch (ClientErrorException clientErrorException) {
             assertThat(clientErrorException.getMessage(),
                     is(JoelClient.NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE));
@@ -69,7 +70,7 @@ public class JoelClientIT extends TestClientBase {
         }
     }
 
-    public List<Document> readWeblyzardDocuments() {
+    public List<LegacyDocument> readWeblyzardDocuments() {
         try {
 
             logger.info(JoelClientIT.class.getClassLoader().getResource(".").getPath());
@@ -78,7 +79,7 @@ public class JoelClientIT extends TestClientBase {
             return objectMapper.readValue(
                     JoelClientIT.class.getClassLoader()
                             .getResourceAsStream(PSALMS_DOCS_WEBLYZARDFORMAT_JSON),
-                    new TypeReference<List<Document>>() {});
+                    new TypeReference<List<LegacyDocument>>() {});
         } catch (JsonParseException e1) {
             e1.printStackTrace();
         } catch (JsonMappingException e1) {

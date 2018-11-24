@@ -6,6 +6,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
 import com.weblyzard.api.client.JeremiaClient;
+import com.weblyzard.api.client.WebserviceClientConfig;
 import com.weblyzard.api.model.Lang;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.document.MirrorDocument;
@@ -16,7 +17,7 @@ public class JeremiaClientIT extends TestClientBase {
 
     @Before
     public void before() {
-        jeremiaClient = new JeremiaClient();
+        jeremiaClient = new JeremiaClient(new WebserviceClientConfig());
     }
 
     @Test

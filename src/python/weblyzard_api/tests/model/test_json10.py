@@ -4,12 +4,12 @@ import json
 import pytest
 import unittest
 
-from weblyzard_api.xml_content.parsers.json_10 import (JSON10ParserSentence,
-                                                       MalformedJSONException,
-                                                       JSON10ParserXMLContent,
-                                                       UnexpectedFieldException,
-                                                       MissingFieldException)
-from weblyzard_api.xml_content import Sentence, XMLContent
+from weblyzard_api.model.parsers.json_10 import (JSON10ParserSentence,
+                                                 MalformedJSONException,
+                                                 JSON10ParserXMLContent)
+from weblyzard_api.model.exceptions import (UnexpectedFieldException,
+                                            MissingFieldException)
+from weblyzard_api.model.xml_content import Sentence, XMLContent
 
 
 class TestJSON10ParserXMLContent(unittest.TestCase):
@@ -17,25 +17,25 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
     Tests for the JSON_10_Parser class.
     '''
     test_xmlcontent_minimal_dict = {
-            'uri': 'derstandard.at/',
-            'title': 'Test title'
-            }
+        'uri': 'derstandard.at/',
+        'title': 'Test title'
+    }
     test_xmlcontent_maximal_dict = {
-            'uri': 'derstandard.at/',
-            'title': 'document title',
-            'language_id': 'en',
-            'sentences': [
-                {
-                    'value': 'Therefore we could show that "x>y" and "y<z.".',
-                    'id': '6e4c1420b2edaa374ff9d2300b8df31d',
-                    'is_title': False,
-                    'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
-                    'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
-                    'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
-                    'polarity': 0.0,
-                },
-            ],
-            }
+        'uri': 'derstandard.at/',
+        'title': 'document title',
+        'language_id': 'en',
+        'sentences': [
+            {
+                'value': 'Therefore we could show that "x>y" and "y<z.".',
+                'id': '6e4c1420b2edaa374ff9d2300b8df31d',
+                'is_title': False,
+                'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+                'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
+                'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
+                'polarity': 0.0,
+            },
+        ],
+    }
     xml_content_string = '''
         <?xml version="1.0" encoding="UTF-8"?>
         <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="99933" dc:format="text/html" xml:lang="en" wl:nilsimsa="c3f00c9bae798a55a013209ceba9012f4d2349f7c1b2486529674a05ef7be8fb" dc:identifier="http://www.heise.de" dc:related="http://www.heise.de http://www.kurier.at">
@@ -68,14 +68,14 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
             with pytest.raises(MissingFieldException):
                 JSON10ParserXMLContent.from_json_string(json.dumps(xmldict_))
         assert JSON10ParserXMLContent.from_json_string(
-                json.dumps(self.test_xmlcontent_minimal_dict)) is not None
+            json.dumps(self.test_xmlcontent_minimal_dict)) is not None
 
     def test_minimal_xmlcontent_from_json(self):
         '''
         Tests for the correct conversion from a JSON string.
         '''
         xmlcontent = JSON10ParserXMLContent.from_json_string(
-                json.dumps(self.test_xmlcontent_minimal_dict))
+            json.dumps(self.test_xmlcontent_minimal_dict))
 
     def test_document_to_json(self):
         '''
@@ -83,15 +83,15 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
         object.
         '''
         result = json.loads(
-                JSON10ParserXMLContent.from_json_string(
-                    json.dumps(self.test_xmlcontent_minimal_dict)
-                ).to_json(version=1.0))
+            JSON10ParserXMLContent.from_json_string(
+                json.dumps(self.test_xmlcontent_minimal_dict)
+            ).to_json(version=1.0))
 
         assert self.test_xmlcontent_minimal_dict == result
         assert self.test_xmlcontent_maximal_dict == json.loads(
-                JSON10ParserXMLContent.from_json_string(
-                    json.dumps(self.test_xmlcontent_maximal_dict)
-                ).to_json(version=1.0))
+            JSON10ParserXMLContent.from_json_string(
+                json.dumps(self.test_xmlcontent_maximal_dict)
+            ).to_json(version=1.0))
 
     def test_document_xml_dict(self):
         '''
@@ -100,17 +100,17 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
         '''
         xml_content = XMLContent(self.xml_content_string)
         api_dict = xml_content.to_api_dict(version=1.0)
-        
+
         assert api_dict == {
             'uri': 'http://www.heise.de',
             'language_id': 'en',
             'title': 'Global Dimming.',
             'sentences': [
                 {'polarity': 0.0,
-                 'value': 'Global Dimming.', 
-                 'pos_list': 'JJ NN .', 
-                 'tok_list': '0,6 7,14 14,15', 
-                 'is_title': 'True', 
+                 'value': 'Global Dimming.',
+                 'pos_list': 'JJ NN .',
+                 'tok_list': '0,6 7,14 14,15',
+                 'is_title': 'True',
                  'id': '27cd03a5aaac20ae0dba60038f17fdad'},
                 {'id': '7f3251087b6552159846493558742f18',
                  'is_title': False,
@@ -144,23 +144,23 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
 
 class TestJSON10ParserSentence(object):
     test_sentence = Sentence(
-            md5sum=u'6e4c1420b2edaa374ff9d2300b8df31d',
-            pos=u"RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
-            sem_orient=0.0,
-            significance=0.0,
-            token=u'0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
-            value=u'Therefore we could show that "x>y" and "y<z.".',
-            is_title=False,
-            dependency=u'2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT')
+        md5sum=u'6e4c1420b2edaa374ff9d2300b8df31d',
+        pos=u"RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+        sem_orient=0.0,
+        significance=0.0,
+        token=u'0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
+        value=u'Therefore we could show that "x>y" and "y<z.".',
+        is_title=False,
+        dependency=u'2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT')
     test_sentence_dict = {
-            'value': 'Therefore we could show that "x>y" and "y<z.".',
-            'id': '6e4c1420b2edaa374ff9d2300b8df31d',
-            'is_title': False,
-            'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
-            'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
-            'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
-            'polarity': 0.0,
-            }
+        'value': 'Therefore we could show that "x>y" and "y<z.".',
+        'id': '6e4c1420b2edaa374ff9d2300b8df31d',
+        'is_title': False,
+        'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+        'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
+        'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
+        'polarity': 0.0,
+    }
 
     def test_sentence_from_json(self):
         '''
@@ -169,6 +169,7 @@ class TestJSON10ParserSentence(object):
         new_sentence = JSON10ParserSentence.from_json_string(
             json.dumps(self.test_sentence_dict))
         assert new_sentence.as_dict() == self.test_sentence.as_dict()
+
 
 if __name__ == '__main__':
     unittest.main()

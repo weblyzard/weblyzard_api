@@ -273,10 +273,10 @@ class OpenRdfClient(object):
 
     def check_exists(self, object, repository):
         ''' '''
-        query = 'describe <{}>'.format(object.replace('page', 'resource'))
+        query = 'describe <{}>'.format(object)
         endpoint = "{}/repositories/{}" .format(self.server_uri, repository)
 
-        print("POSTing SPARQL query to {}".format(endpoint))
+#         print("POSTing SPARQL query to {}".format(endpoint))
         params = {'query': query}
         headers = {
             'content-type': 'application/x-www-form-urlencoded',
@@ -287,7 +287,7 @@ class OpenRdfClient(object):
                                                       urllib.urlencode(params),
                                                       headers=headers)
 
-        print("Response %s" % response.status)
+#         print("Response %s" % response.status)
         return (response, content)
 
     def execute_query(self, query, repository):
@@ -452,24 +452,27 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         if not self.config_repository in repositories:
             print('warning config repo "%s" does not exist') % self.config_repository
 
-    def create_template(self, entity, entity_type, language):
+    def create_template(self, entity, entity_type, language='en'):
         ''' '''
         if entity_type.lower() == 'person':
-            first_name, surname = entity.split('/')[-1].split('_')
+            names = entity.split('/')[-1].split('_')
+            surname = names[-1]
+            first_names = names[:len(names) - 1]
+            first_name = ' '.join(first_names)
             tuples = [
-                '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person> .'.format(
+                '<{}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person> .'.format(
                     entity),
-                '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .'.format(
+                '<{}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .'.format(
                     entity),
-                '{} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .'.format(
+                '<{}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .'.format(
                     entity),
-                '{} <http://de.dbpedia.org/property/name> "{}, {}"@{} .'.format(
+                '<{}> <http://de.dbpedia.org/property/name> "{}, {}"@{} .'.format(
                     entity, surname, first_name, language),
-                '{} <http://xmlns.com/foaf/0.1/givenName> "{}"@{} .'.format(
+                '<{}> <http://xmlns.com/foaf/0.1/givenName> "{}"@{} .'.format(
                     entity, first_name, language),
-                '{} <http://xmlns.com/foaf/0.1/surname> "{}"@{} .'.format(
+                '<{}> <http://xmlns.com/foaf/0.1/surname> "{}"@{} .'.format(
                     entity, surname, language),
-                '{} <http://www.w3.org/2000/01/rdf-schema#label> "{} {}"@{} . '.format(
+                '<{}> <http://www.w3.org/2000/01/rdf-schema#label> "{} {}"@{} . '.format(
                     entity, first_name, surname, language)
             ]
         return '\n'.join(tuples)
@@ -480,30 +483,34 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         http://de.dbpedia.org/page/Matthias_Strolz?output=text%2Fplain
         '''
 
-        base_url = 'http://dbpedia.org/page/'
-        if language:
-            base_url = 'http://{}.dbpedia.org/page/'.format(language)
+        base_url = 'http://dbpedia.org/resource/'
+#         if language and language != 'en':
+#             base_url = 'http://{}.dbpedia.org/page/'.format(language)
         format_suffix = '?output=text%2Fplain'
 
         label = label.replace(' ', '_')
 
         entity = ''.join([base_url, label])
-        entity = entity.format(entity.replace('page', 'resource'))
+#         entity = entity.format(entity.replace('page', 'resource'))
 
 #         content = self.create_template(entity, type, language)
 
         (result, content) = self.check_exists(entity, repository)
-        print(result)
-        if result.status == 200 and len(content):
-            print('Skipping: {} already exists in repository {}'.format(
-                entity, repository))
-        else:
-            url = ''.join([base_url, label, format_suffix])
+#         print(result.status, entity, content)
+#         print(result)
+        if result.status and len(content):
+            #             print('Skipping: {} already exists in repository {}'.format(
+            #                 entity, repository))
+            return None
+#         else:
+        #             url = ''.join([base_url, label, format_suffix])
+        #             dbpedia_url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=DESCRIBE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F{}%3E&format=text%2Fx-html-script-turtle'.format(
+        #                 label)
+        #
+        #             context = ''
+        #             data = requests.get(dbpedia_url)
+        #             content = data.content
+        #             if not len(content):
+        content = self.create_template(entity, entity_type, language)
 
-            context = ''
-            data = requests.get(url)
-            content = data.content
-#             if not len(content):
-            content = self.create_template(entity, entity_type, language)
-
-            print(content)
+        print(content)

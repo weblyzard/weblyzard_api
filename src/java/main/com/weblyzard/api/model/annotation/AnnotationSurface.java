@@ -1,9 +1,10 @@
 package com.weblyzard.api.model.annotation;
 
-import com.weblyzard.api.datatype.MD5Digest;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import com.weblyzard.api.datatype.MD5Digest;
+import com.weblyzard.api.model.Span;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AnnotationSurface implements Serializable {
+public class AnnotationSurface implements Serializable, Span {
 
     private static final long serialVersionUID = 1L;
 

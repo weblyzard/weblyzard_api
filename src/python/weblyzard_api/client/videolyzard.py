@@ -16,6 +16,7 @@ import requests
 import time
 import urllib
 
+
 class VideolyzardClient(object):
     '''
     A Python client for the Weblyzard API.
@@ -54,7 +55,8 @@ class VideolyzardClient(object):
         :param datetime_obj: A datetime object from the standard library
         :returns: an integer timestamp e.g. 1396310400
         '''
-        converted_time = time.mktime(datetime_obj.timetuple()) + datetime_obj.microsecond / 1E6
+        converted_time = time.mktime(
+            datetime_obj.timetuple()) + datetime_obj.microsecond / 1E6
         return int(converted_time)
 
     @classmethod
@@ -67,8 +69,10 @@ class VideolyzardClient(object):
         reader = csv.reader(file_obj)
         titles = reader.next()
 
-        portal_idx = titles.index('portal_name') if 'portal_name' in titles else None
-        url_idx = titles.index('original_url') if 'original_url' in titles else None
+        portal_idx = titles.index(
+            'portal_name') if 'portal_name' in titles else None
+        url_idx = titles.index(
+            'original_url') if 'original_url' in titles else None
         title_idx = titles.index('title') if 'title' in titles else None
         text_idx = titles.index('text') if 'text' in titles else None
 
@@ -81,14 +85,12 @@ class VideolyzardClient(object):
 
             video = {'portal_name': video_line[portal_idx],
                      'original_url': video_line[url_idx],
-                     'title':video_line[title_idx] if title_idx else '',
-                     'text': video_line[text_idx] if text_idx else '',}
+                     'title': video_line[title_idx] if title_idx else '',
+                     'text': video_line[text_idx] if text_idx else '', }
 
             videos.append(video)
 
         return videos
-
-
 
     def post_dict_videos_to_queue(self, videos):
         '''
@@ -111,7 +113,6 @@ class VideolyzardClient(object):
         response = self._send_to_queue(videos)
         return response
 
-
     def post_csv_to_queue(self, csv_file_object):
         '''
         Accepts a CSV file object and posts the lines to
@@ -128,22 +129,19 @@ class VideolyzardClient(object):
         videos = self.convert_videos_csv_to_dict(csv_file_object)
         return self.post_dict_videos_to_queue(videos)
 
-
     def _prepare_url_with_user_credentials(self, url):
-        return url % {'server_url' : self.server_url,
-                      'username' : self.username,
-                      'password' : self.password}
-
+        return url % {'server_url': self.server_url,
+                      'username': self.username,
+                      'password': self.password}
 
     def _send_to_queue(self, videos):
 
-        headers = {'Content-type':'application/x-www-form-urlencoded',}
+        headers = {'Content-type': 'application/x-www-form-urlencoded', }
         url = self._prepare_url_with_user_credentials(self.UPLOAD_URL)
 
-        payload = {'json':json.dumps(videos)}
+        payload = {'json': json.dumps(videos)}
         response = requests.post(url, data=payload, headers=headers)
         return response
-
 
     def get_video_data(self, portal, since=None, page=1, status=None):
         '''
@@ -161,7 +159,7 @@ class VideolyzardClient(object):
         :param page: Current selected page (e.g. 5); shows page 1 if not specified
         '''
         assert isinstance(page, int), page
-        parameters = {'portal' : portal}
+        parameters = {'portal': portal}
 
         # prepare the request URL
         if since:

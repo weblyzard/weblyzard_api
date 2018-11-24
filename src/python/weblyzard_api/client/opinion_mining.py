@@ -5,15 +5,18 @@ Created on 15.12.2014
 
 '''
 from eWRT.ws.rest import MultiRESTClient
-from weblyzard_api.client import WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS
+
+from weblyzard_api.client import (
+    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 SERVER_URL_PATH = '/rest/polarity/document'
 
+
 class OpinionClient(MultiRESTClient):
-    
+
     URL_PATH = '/'.join(SERVER_URL_PATH.split('/')[:-1])
 
-    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
@@ -42,7 +45,7 @@ class OpinionClient(MultiRESTClient):
         while retries <= retrycount:
             retries += 1
             try:
-                result = self.request('document', 
+                result = self.request('document',
                                       parameters={'format': content_format,
                                                   'content': content},
                                       return_plain=False)
@@ -54,7 +57,6 @@ class OpinionClient(MultiRESTClient):
                     result = {
                         'error': 'Request to sentiment webservice timed out %d times' % retries}
         return result
-
 
     def status(self):
         return self.request('config')

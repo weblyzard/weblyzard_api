@@ -31,10 +31,10 @@ public class XmlDocument {
     private List<Annotation> annotation;
     private String error;
 
-    public XmlDocument(Document document, List<Annotation> annotation) throws JAXBException {
+    public XmlDocument(LegacyDocument document, List<Annotation> annotation) throws JAXBException {
         contentId = document.getId();
         nilsimsa = document.getNilsimsa();
         this.annotation = annotation;
-        xmlContent = Document.toXml(document);
+        xmlContent = LegacyDocument.toXml(document);
     }
 }

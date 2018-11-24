@@ -3,17 +3,17 @@
 '''
 .. moduleauthor:: Max Goebel <goebel@weblyzard.com>
 '''
-import logging
-
 from eWRT.ws.rest import MultiRESTClient
+
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
+
 class JairoClient(MultiRESTClient):
-    
-    URL_PATH = 'jairo/rest'
-        
-    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER, 
+
+    URL_PATH = 'rest'
+
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
         '''
         :param url: URL of the jeremia web service
@@ -22,26 +22,31 @@ class JairoClient(MultiRESTClient):
         '''
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
-        
+
     def set_profile(self, profile_name, profile):
         ''' '''
-        return self.request('set_profile/{}'.format(profile_name), profile)
-    
-    def extend_annotations(self, profile_name, annotations):
+        return self.request('add_profile/{}'.format(profile_name), profile)
+
+    def enrich_annotations(self, profile_name, annotations):
         ''' '''
-        return self.request('extend_annotations/{}'.format(profile_name), 
-                            annotations)
-    
+        annotations_to_send = []
+        for annotation in annotations:
+            if len(annotation.get('key', '')) > 3:
+                annotations_to_send.append(annotation)
+        if len(annotations_to_send) > 0:
+            return self.request('extend_annotations/{}'.format(profile_name),
+                                annotations_to_send)
+        else:
+            return None
+
     def list_profiles(self):
         ''' '''
-        return self.request('list_profiles', return_plain=True)
-    
+        return self.request('list_profiles')
+
     def reload_profiles(self):
         ''' '''
-        return self.request('reload_profiles', return_plain=True)
-       
+        return self.request('reload_profiles')
+
     def status(self):
         ''' '''
-        return self.request('status', return_plain=True)
-    
-    
+        return self.request('status')
