@@ -104,7 +104,6 @@ class Oger(MultiRESTClient):
         except Exception as e:
             message = e
             logger.error(message)
-            created = False
             raise Exception('Span error: {}'.format(message))
 
         return result
