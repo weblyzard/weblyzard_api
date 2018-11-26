@@ -17,9 +17,7 @@ from weblyzard_api.client.jeremia import Jeremia
 
 class TestOGER(unittest.TestCase):
     def setUp(self):
-        url =  OGER_API_URL
-        print(url)
-        
+        url =  OGER_API_URL        
         self.client = Oger(url)
         
         self.service_is_online = self.client.is_online()
