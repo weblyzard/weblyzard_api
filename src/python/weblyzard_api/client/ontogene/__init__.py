@@ -21,31 +21,6 @@ DAYS_BACK_DEFAULT = 20
 
 #GET URL/{pubmed|pmd}/{txt|bioc|pxml|nxml|pxml.gz}/DOC_ID
 
-class SpecialGetRequest(object):
-    ''' Make a post request and return the connection without
-    reading the data. Allows for finer handling of error codes
-    '''
-    def __init__(self, url, data):
-        self.url = url
-        #self.data = json.dumps({"hashes": data})
-        #self.headers = [{"Content-Type": "application/json"}]
-    
-    def request(self):
-        handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        req = urllib2.Request(url=self.url)
-        req.add_header("Content-Type", "application/json")
-        req.get_method = lambda: "GET"
-        req.add_data(self.data)
-        try:
-            conn = opener.open(req)
-        except urllib2.HTTPError as e:
-            conn = e
-        except urllib2.URLError as e:
-            logger.error("Connection refused.. %s", e)
-            raise e
-        return conn
-
 
 class Oger(MultiRESTClient):
     '''
@@ -77,7 +52,6 @@ class Oger(MultiRESTClient):
         #no usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS,
         ##user=usr, password=pwd,
         MultiRESTClient.__init__(self, service_urls=url, default_timeout=default_timeout)
-        self.profile_cache = []
         
     def status(self):
         '''
@@ -90,7 +64,6 @@ class Oger(MultiRESTClient):
     def fetch_document(self, docid):
 
         fetchpath = 'fetch/pubmed/pubtator/' + str(docid)
-        print(fetchpath)
         r = self.request(path=fetchpath)
         
         return r.json()
@@ -103,34 +76,38 @@ class Oger(MultiRESTClient):
         res = oger_json
         
         entities = {}
-        d2 = []
+        result = []
         
-        #TODO: talk to OGER developers to fix this rather than have it fixed here!
-        #this is a fix for offset which always seems to be delayed with this value
-        offset = res['documents'][0]['passages'][1]['annotations'][0]['locations'][0]['offset']
-        
-        for passage in res['documents'][0]['passages']:
-        
-            for rs in passage['annotations']:
-                print(rs)
-                start = rs['locations'][0]['offset']
-                end = rs['locations'][0]['offset'] + len(rs['text'])
-                ditem = {
-                    "key": rs['infons']['original_id'],
-                    "resource": rs['infons']['original_resource'],
-                    "surfaceForm": rs['text'], #.encode("utf8")
-                    #includes fixes for offset
-                    "start": start - offset,
-                    "end": end - offset,
-                    "offset": offset,
-                    "confidence": 1,
-                    "preferred_name": rs['infons']['preferred_form'],
-                    "entity_type": rs['infons']['type']
-                }
-                #print(ditem)         
-                d2.append(ditem)
-        print(d2)
-        return d2
+        try:
+            #TODO: talk to OGER developers to fix this rather than have it fixed here!
+            #this is a fix for offset which always seems to be delayed with this value
+            offset = res['documents'][0]['passages'][1]['annotations'][0]['locations'][0]['offset']
+            
+            for passage in res['documents'][0]['passages']:
+            
+                for rs in passage['annotations']:
+                    start = rs['locations'][0]['offset']
+                    end = rs['locations'][0]['offset'] + len(rs['text'])
+                    ditem = {
+                        "key": rs['infons']['original_id'],
+                        #"resource": rs['infons']['original_resource'],
+                        "surfaceForm": rs['text'], #.encode("utf8")
+                        #includes fixes for offset
+                        "start": start - offset,
+                        "end": end - offset,
+                        "offset": offset,
+                        "confidence": 1,
+                        "preferred_name": rs['infons']['preferred_form'],
+                        "entity_type": rs['infons']['type']
+                    }
+                    result.append(ditem)
+        except Exception as e:
+            message = e
+            logger.error(message)
+            created = False
+            raise Exception('Span error: {}'.format(message))
+
+        return result
     
     def annotate_text(self, docid, doctext):
         '''
@@ -140,14 +117,6 @@ class Oger(MultiRESTClient):
         files = {'file1': (docid, doctext)}
         
         r = requests.post(url, files=files)
-        #print(r.text)
         res = r.json()
         return self.convert_document(res)
- 
-    
-    def search_documents(self):
-        '''
-        :returns: the status of the Recognize web service.
-        '''
-        raise NotImplementedError
     
