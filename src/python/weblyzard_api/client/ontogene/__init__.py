@@ -5,6 +5,7 @@
 '''
 import logging
 import requests
+import json
 
 from eWRT.ws.rest import MultiRESTClient
 
@@ -12,7 +13,6 @@ from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS, OGER_API_URL)
 from weblyzard_api.xml_content import XMLContent
 
-INTERNAL_PROFILE_PREFIX = 'extras.'
 LOGGER = logging.getLogger('weblyzard_api.client.ontogene.oger')
 
 DEFAULT_MAX_RETRY_DELAY = 15
@@ -75,14 +75,10 @@ class Oger(MultiRESTClient):
         :returns: OGER document converted to Recognyze format.
         '''
         res = oger_json  
-        print(res)      
         result = []
         
         try:
-            #TODO: talk to OGER developers to fix this rather than have it fixed here!
-            #this is a fix for offset which always seems to be delayed with this value
-            offset = res['documents'][0]['passages'][1]['annotations'][0]['locations'][0]['offset']
-            
+            #this version fixes the offset error         
             for passage in res['documents'][0]['passages']:
             
                 for rs in passage['annotations']:
@@ -92,10 +88,8 @@ class Oger(MultiRESTClient):
                         "key": rs['infons']['original_id'],
                         #"resource": rs['infons']['original_resource'],
                         "surfaceForm": rs['text'], #.encode("utf8")
-                        #includes fixes for offset
-                        "start": start - offset,
-                        "end": end - offset,
-                        "offset": offset,
+                        "start": start,
+                        "end": end,
                         "confidence": 1,
                         "preferred_name": rs['infons']['preferred_form'],
                         "entity_type": rs['infons']['type']
@@ -103,20 +97,19 @@ class Oger(MultiRESTClient):
                     result.append(ditem)
         except Exception as e:
             message = e
-            logger.error(message)
-            raise Exception('Span error: {}'.format(message))
-        print(result)
+            LOGGER.error(message)
+            raise Exception('Error: {}'.format(message))
+        
         return result
     
     def annotate_text(self, docid, doctext):
         '''
         :returns: OGER annotated document after uploading a text.
         '''
-        url = OGER_API_URL + "upload/txt/bioc_json"
-        files = {'file1': (docid, doctext)}
-        headers = {'content-type' : 'text/plain'}
-        
-        r = requests.post(url, files=files, headers=headers)
-        res = r.json()
-        return self.convert_document(res)
+        url = OGER_API_URL + "upload/txt/bioc_json/" + docid
+        r = requests.post(url=url, data=doctext.encode('utf-8'))
+        if r.status_code == 200:
+            return self.convert_document(json.loads(r.content.decode('utf-8')))
+        else:
+            return None
     
