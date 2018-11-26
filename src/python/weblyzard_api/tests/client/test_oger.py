@@ -17,26 +17,19 @@ from weblyzard_api.client.jeremia import Jeremia
 
 class TestOGER(unittest.TestCase):
     def setUp(self):
-        url =  OGER_API_URL        
+        url =  OGER_API_URL    
+        print(url)    
         self.client = Oger(url)
-        
-        self.service_is_online = self.client.is_online()
-        if not self.service_is_online:
-            print('WARNING: Webservice is offline --> not executing all tests!!')
-            self.IS_ONLINE = False
-            return
     
     
     def test_status(self):
         self.assertTrue(self.client.status())
         
-    
     def test_annotate_text(self):
         docid='99999999'
         doctext='Cancer, also called malignancy, is an abnormal growth of cells. '
         response = self.client.annotate_text(docid, doctext)
         #self.assertTrue(response)
-        #'''
     
 if __name__ == '__main__':
     unittest.main()

@@ -21,7 +21,6 @@ DAYS_BACK_DEFAULT = 20
 
 #GET URL/{pubmed|pmd}/{txt|bioc|pxml|nxml|pxml.gz}/DOC_ID
 
-
 class Oger(MultiRESTClient):
     '''
     Provides access to the OntoGene Entity Recognition.
@@ -49,15 +48,17 @@ class Oger(MultiRESTClient):
         #:param usr: optional user name
         #:param pwd: optional password
         '''
-        #no usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS,
-        ##user=usr, password=pwd,
-        MultiRESTClient.__init__(self, service_urls=url, default_timeout=default_timeout)
+        self.url = OGER_API_URL
         
     def status(self):
         '''
         :returns: the status of the OGER web service.
         '''
-        return self.request(path='status')
+        #return self.request(path='status')
+        url = OGER_API_URL + "status"
+        r = requests.get(url)
+        result = r.json()
+        return result
 
     
     '''
@@ -73,9 +74,8 @@ class Oger(MultiRESTClient):
         '''
         :returns: OGER document converted to Recognyze format.
         '''
-        res = oger_json
-        
-        entities = {}
+        res = oger_json  
+        print(res)      
         result = []
         
         try:
@@ -105,7 +105,7 @@ class Oger(MultiRESTClient):
             message = e
             logger.error(message)
             raise Exception('Span error: {}'.format(message))
-
+        print(result)
         return result
     
     def annotate_text(self, docid, doctext):
@@ -114,8 +114,9 @@ class Oger(MultiRESTClient):
         '''
         url = OGER_API_URL + "upload/txt/bioc_json"
         files = {'file1': (docid, doctext)}
+        headers = {'content-type' : 'text/plain'}
         
-        r = requests.post(url, files=files)
+        r = requests.post(url, files=files, headers=headers)
         res = r.json()
         return self.convert_document(res)
     
