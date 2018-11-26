@@ -27,7 +27,8 @@ class TestOGER(unittest.TestCase):
         
     def test_annotate_text(self):
         docid='99999999'
-        doctext='Cancer, also called malignancy, is an abnormal growth of cells. '
+        #doctext='Cancer, also called malignancy, is an abnormal growth of cells.'
+        doctext='Alzheimer\'s disease (AD), also referred to simply as Alzheimer\'s, is a chronic neurodegenerative disease that usually starts slowly and worsens over time.'
         response = self.client.annotate_text(docid, doctext)
         #self.assertTrue(response)
     
