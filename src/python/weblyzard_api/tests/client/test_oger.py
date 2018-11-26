@@ -30,7 +30,7 @@ class TestOGER(unittest.TestCase):
         #doctext='Cancer, also called malignancy, is an abnormal growth of cells.'
         doctext='Alzheimer\'s disease (AD), also referred to simply as Alzheimer\'s, is a chronic neurodegenerative disease that usually starts slowly and worsens over time.'
         response = self.client.annotate_text(docid, doctext)
-        #self.assertTrue(response)
+        assert len(response), 'No items found for {}'.format(docid)
     
 if __name__ == '__main__':
     unittest.main()
