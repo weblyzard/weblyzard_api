@@ -19,7 +19,7 @@ class JSON10ParserXMLContent(JSONParserBase):
     the Weblyzard API 1.0 definition.
     '''
     FIELDS_REQUIRED = ['uri', 'title']
-    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations', 'confidencce'] \
+    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations', 'confidence'] \
         + XML2013.ATTR_MAPPING.keys()
     API_VERSION = 1.0
 
