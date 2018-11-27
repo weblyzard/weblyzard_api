@@ -13,6 +13,8 @@ from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS, OGER_API_URL)
 from weblyzard_api.xml_content import XMLContent
 
+ONTOGENE_NS = 'https://pub.cl.uzh.ch/projects/ontogene/medmon-oger/'
+
 LOGGER = logging.getLogger('weblyzard_api.client.ontogene.oger')
 
 DEFAULT_MAX_RETRY_DELAY = 15
@@ -84,8 +86,9 @@ class Oger(MultiRESTClient):
                 for rs in passage['annotations']:
                     start = rs['locations'][0]['offset']
                     end = rs['locations'][0]['offset'] + len(rs['text'])
+                    key = ONTOGENE_NS + rs['infons']['original_id']
                     ditem = {
-                        "key": rs['infons']['original_id'],
+                        "key": key,
                         #"resource": rs['infons']['original_resource'],
                         "surfaceForm": rs['text'], #.encode("utf8")
                         "start": start,
@@ -99,7 +102,7 @@ class Oger(MultiRESTClient):
             message = e
             LOGGER.error(message)
             raise Exception('Error: {}'.format(message))
-        
+
         return result
     
     def annotate_text(self, docid, doctext):
