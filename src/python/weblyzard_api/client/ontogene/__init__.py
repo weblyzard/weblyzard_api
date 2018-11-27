@@ -51,15 +51,17 @@ class OgerClient(MultiRESTClient):
     ANNOTATE_PATH = 'upload/txt/bioc_json'
     STATUS_PATH = 'status'
 
-    def __init__(self, url=OGER_API_URL, default_timeout=None):
+    def __init__(self, url=OGER_API_URL, usr=None, pwd=None):
         """
         :param url: URL of the jeremia web service
-        :param default_timeout: a request timeout
+        :param usr: an optional authorization user
+        :param pwd: an optional authorization password
         """
         if url.endswith('/'):
             url = url[:-1]
         self.url = url
-        self.timeout = default_timeout
+        self.usr = usr
+        self.pwd = pwd
 
     def status(self):
         """
