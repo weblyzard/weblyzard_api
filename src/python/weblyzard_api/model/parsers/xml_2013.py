@@ -146,7 +146,9 @@ class XML2013(XMLParser):
                           'annotationType': ('annotationType', 'wl'),
                           'preferredName': ('preferredName', 'wl'),
                           'sem_orient': ('sem_orient', 'wl'),
-                          'md5sum': ('md5sum', 'wl')
+                          'md5sum': ('md5sum', 'wl'),
+                          'sentence': ('sentence', 'wl'),
+                          'confidence': ('confidence', 'wl')
                           }
 
     FEATURE_MAPPING = {'key': ('key', 'wl'),
