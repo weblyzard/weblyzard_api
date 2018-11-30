@@ -1,12 +1,12 @@
 package com.weblyzard.api.model.annotation;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.weblyzard.api.model.document.LegacyDocument;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.weblyzard.api.model.document.LegacyDocument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -40,18 +40,10 @@ public class CompactAnnotation extends EntityDescriptor {
 
     public CompactAnnotation(final Annotation a) {
         super(a.getKey());
-        setPreferredName(a.getPreferredName())
-                .setEntityType(a.getEntityType())
-                .setEntityMetadata(a.getEntityMetadata())
-                .compactAnnotation()
-                .addSurface(
-                        new AnnotationSurface(
-                                a.getStart(),
-                                a.getEnd(),
-                                a.getSentence(),
-                                a.getMd5sum(),
-                                a.getSurfaceForm(),
-                                a.getConfidence()));
+        setPreferredName(a.getPreferredName()).setEntityType(a.getEntityType())
+                .setEntityMetadata(a.getEntityMetadata()).compactAnnotation()
+                .addSurface(new AnnotationSurface(a.getStart(), a.getEnd(), a.getSentence(),
+                        a.getMd5sum(), a.getSurfaceForm(), a.getConfidence()));
     }
 
     public static CompactAnnotation build(String key) {
@@ -59,7 +51,9 @@ public class CompactAnnotation extends EntityDescriptor {
     }
 
     public CompactAnnotation addSurface(AnnotationSurface entity) {
-        if (!entities.contains(entity)) entities.add(entity);
+        if (!entities.contains(entity)) {
+            entities.add(entity);
+        }
         return this;
     }
 }

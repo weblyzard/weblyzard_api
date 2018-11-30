@@ -1,18 +1,18 @@
 package com.weblyzard.api.model.document;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.weblyzard.api.model.annotation.Annotation;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.weblyzard.api.model.annotation.Annotation;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * Data format used to return to the Web service client
+ * Data format used to return to the Web service client.
  *
- * @author albert@weblyzard.com
+ * @author Albert Weichselbraun
  */
 @Data
 @Accessors(chain = true)

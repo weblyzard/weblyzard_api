@@ -31,7 +31,7 @@ public class JeremiaClient extends BasicClient {
     }
 
     /**
-     * Submits a single {@link MirrorDocument} to the document pre-processing service
+     * Submits a single {@link MirrorDocument} to the document pre-processing service.
      * 
      * @param request the document to process
      * @return the corresponding {@link Document} object

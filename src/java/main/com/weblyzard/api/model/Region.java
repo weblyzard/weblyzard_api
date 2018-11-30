@@ -5,7 +5,7 @@ import lombok.Getter;
 
 /**
  * An enum of all supported regions based on the list of internet top level domains available at
- * https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains
+ * https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains.
  * 
  * @author Albert Weichselbraun
  *
@@ -277,6 +277,8 @@ public enum Region {
     }
 
     /**
+     * Transforms a String into the corresponding {@link Region}.
+     * 
      * @param region region String to be converted into an enum.
      * @return the Region constant for the given region (case insensitive)
      */

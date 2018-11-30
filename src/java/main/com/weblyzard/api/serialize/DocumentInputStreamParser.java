@@ -1,15 +1,15 @@
 package com.weblyzard.api.serialize;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.weblyzard.api.model.document.LegacyDocument;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.JAXBException;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.weblyzard.api.model.document.LegacyDocument;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,12 +26,13 @@ public class DocumentInputStreamParser {
     private DocumentInputStreamParser() {}
 
     /**
-     * parses an input stream to a list of documents
+     * Parses an input stream to a list of documents.
      *
      * @param stream the input stream to parse
      * @return the parsed document list
      */
-    public static List<LegacyDocument> readDocumentFromStream(InputStream stream) throws JAXBException {
+    public static List<LegacyDocument> readDocumentFromStream(InputStream stream)
+            throws JAXBException {
         List<LegacyDocument> documentList = new ArrayList<>();
         try (JsonParser jp = jsonFactory.createParser(stream)) {
             jp.nextToken();
@@ -51,12 +52,13 @@ public class DocumentInputStreamParser {
     }
 
     /**
-     * parses an input stream to a list of documents
+     * Parses an input stream to a list of documents.
      *
      * @param stream the input stream to parse
      * @return the parsed document list
      */
-    public static List<LegacyDocument> readDocumentsFromStream(InputStream stream) throws JAXBException {
+    public static List<LegacyDocument> readDocumentsFromStream(InputStream stream)
+            throws JAXBException {
         List<LegacyDocument> documentList = new ArrayList<>();
         try (JsonParser jp = jsonFactory.createParser(stream)) {
             // read START_ARRAY

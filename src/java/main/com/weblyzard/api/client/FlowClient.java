@@ -2,19 +2,21 @@ package com.weblyzard.api.client;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-import com.weblyzard.api.model.document_api.Request;
-import com.weblyzard.api.model.document_api.Response;
+import com.weblyzard.api.model.flow.Request;
+import com.weblyzard.api.model.flow.Response;
 
 /**
- * TODO: untested!
- *
+ * Provides access to the webLyzard document api.
+ * 
  * @author philipp.kuntschik@htwchur.ch
+ * 
+ *         TODO: untested!
  */
-public class DocumentApiClient extends BasicClient {
+public class FlowClient extends BasicClient {
 
     private static final String WEBLYZARD_DOCUMENT_API_URL = "";
 
-    public DocumentApiClient(WebserviceClientConfig c) {
+    public FlowClient(WebserviceClientConfig c) {
         super(c, "/document-api");
     }
 
