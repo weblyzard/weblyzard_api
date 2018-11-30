@@ -49,8 +49,8 @@ class SKBRESTClient(object):
         lang, kw = kwargs['key'].split(':')[1].split('/')
         uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
         skb_relevant_data = {'uri': uri,
-                             'preferredName': kwargs['preferredName'],
-                             'entityType': kwargs['entityType'],
+                             'preferredName': kwargs.get('preferred_name', kwargs.get('preferredName'), None),
+                             'entityType': kwargs.get('entity_type', kwargs.get('entityType'), None),
                              'provenance': kwargs['provenance']}
         return skb_relevant_data
 
