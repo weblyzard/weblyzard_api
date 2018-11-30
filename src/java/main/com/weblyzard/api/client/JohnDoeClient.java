@@ -4,7 +4,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * @author sandro.hoerler@htwchur.ch
+ * webLyzard annonymization service.
+ * 
+ * @author Sandro Hörler
  */
 public class JohnDoeClient extends BasicClient {
     private static final String PROFILE = "profileName";
@@ -17,6 +19,7 @@ public class JohnDoeClient extends BasicClient {
     }
 
     /**
+     * Computes an anonymized identifier for the given content.
      * 
      * @param content the content to assess
      * @param profileName the profile name

@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import com.weblyzard.api.model.document.Document;
 
 /**
- * Provide access to the Recognyze named entity linking Web service
+ * Provide access to the Recognyze named entity linking Web service.
  * 
  * @author Philipp Kuntschik
  * @author Albert Weichselbraun

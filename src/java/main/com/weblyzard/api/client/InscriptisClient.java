@@ -5,7 +5,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * HTML to text Web service
+ * HTML to text Web service.
  * 
  * @author Albert Weichselbraun
  *

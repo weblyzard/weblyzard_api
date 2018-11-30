@@ -6,7 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-/** @author norman.suesstrunk@htwchur.ch */
+/**
+ * A {@link Cluster} with the corresponding {@link Topic}s as returned by the Joel clustering
+ * service.
+ * 
+ * @author Norman Süsstrunk
+ */
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor

@@ -13,8 +13,10 @@ import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.joel.ClusterResult;
 
 /**
- * @author philipp.kuntschik@htwchur.ch
- * @author norman.suesstrunk@htwchur.ch
+ * Provides access to the keyword clustering service.
+ * 
+ * @author Philipp Kuntschik
+ * @author Norman Süsstrunk
  */
 public class JoelClient extends BasicClient {
 

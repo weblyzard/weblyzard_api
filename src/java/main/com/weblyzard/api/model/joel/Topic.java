@@ -9,10 +9,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
+ * A Topic is characterized by its "title" and a list of keywords that frequently occur in documents
+ * covering the topic. Keywords are represented by their corresponding URLs.
+ * 
  * @author Norman Suesstrunk
- *     <p>A Topic is characterized by its "title" and a list of keywords that frequently occur in
- *     documents covering the topic.
- *     <p>Keywords are represented by their corresponding URLs
+ * 
  */
 @Data
 @Accessors(chain = true)
@@ -22,6 +23,6 @@ public class Topic implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private @NonNull String title;
-    /** A list of identifiers (URLs) of the context keywords */
+    /** A list of identifiers (URLs) of the context keywords. */
     private List<String> contextKeywords;
 }
