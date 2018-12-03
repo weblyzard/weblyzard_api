@@ -46,8 +46,10 @@ class SKBRESTClient(object):
         Prepare the keyword entity for SKB submission.
         :param kwargs
         """
-        lang, kw = kwargs['key'].split(':')[1].split('/')
-        uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
+        uri = kwargs['key']
+        if uri.startswith('wl:'):
+            lang, kw = uri.split(':')[1].split('/')
+            uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
         skb_relevant_data = {'uri': uri,
                              'preferredName': kwargs.get('preferred_name', kwargs.get('preferredName', None)),
                              'entityType': kwargs.get('entity_type', kwargs.get('entityType', None)),
