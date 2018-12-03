@@ -110,7 +110,7 @@ class XMLContent(object):
         if len(titles) == 0 and 'title' in attributes:
             # fall back titles from attributes
             titles = [Sentence(value=attributes['title'], is_title=True)]
-  
+
         for annotation in body_annotations:
             annotation_obj = Annotation(**annotation)
             annotation_objects.append(annotation_obj)
@@ -129,12 +129,16 @@ class XMLContent(object):
     def get_xml_document(self, header_fields='all',
                          sentence_attributes=SENTENCE_ATTRIBUTES,
                          annotations=None,
+                         features=None,
+                         relations=None,
                          ignore_title=False,
                          xml_version=XML2013.VERSION):
         '''
         :param header_fields: the header_fields to include
         :param sentence_attributes: sentence attributes to include
         :param annotations, optionally
+        :param features, optionally to overwrite
+        :param relations, optionally to overwrite
         :param xml_version: version of the webLyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
         :returns: the XML representation of the webLyzard XML object
         '''
@@ -144,9 +148,13 @@ class XMLContent(object):
 
         if not hasattr(self, 'features'):
             self.features = {}
+        if features is None:
+            features = self.features
 
         if not hasattr(self, 'relations'):
             self.relations = {}
+        if relations is None:
+            relations = self.relations
 
         titles = self.titles
         if ignore_title:
@@ -156,8 +164,8 @@ class XMLContent(object):
                                                                  attributes=self.attributes,
                                                                  sentences=self.sentences,
                                                                  annotations=annotations,
-                                                                 features=self.features,
-                                                                 relations=self.relations)
+                                                                 features=features,
+                                                                 relations=relations)
 
     def get_plain_text(self):
         ''' :returns: the plain text of the XML content '''
@@ -384,4 +392,3 @@ class XMLContent(object):
     title = property(get_title)
     lang = property(get_lang)
     content_id = property(get_content_id)
-
