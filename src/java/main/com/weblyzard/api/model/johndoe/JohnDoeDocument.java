@@ -20,7 +20,7 @@ public class JohnDoeDocument {
      * Default constructor for {@link JohnDoeDocument} {@link profileName}} {@link baseUrl} and
      * {@link names} must be set to get document processed by johndoe.
      * 
-     * @param profileName Profile name 
+     * @param profileName Profile name
      * @param baseUrl Url of document
      * @param names extracted names for annonymization
      */
