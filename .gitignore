@@ -65,3 +65,7 @@ coverage.xml
 .*.swp
 *~
 .idea/
+
+# Checkstyle         #
+######################
+.checkstyle
