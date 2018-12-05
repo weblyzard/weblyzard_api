@@ -21,8 +21,7 @@ public class JohnDoeClient extends BasicClient {
      * Computes an anonymized identifier for given Document.
      * 
      * @param document {@link JohnDoeDocument#JohnDoeDocument(String, String, java.util.List)}
-     * @return {@link JohnDoeDocument}, the field {@link JohnDoeDocument#getNameAnnonIdMap()} holds
-     *         the annonymized content
+     * @return {@link JohnDoeDocument} holds the annonymized content.
      */
     public JohnDoeDocument annonymizeContent(JohnDoeDocument document) {
         try (Response response =
