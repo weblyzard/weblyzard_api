@@ -22,7 +22,7 @@ public class JohnDoeDocument {
      * 
      * @param profileName Profile name
      * @param baseUrl Url of document
-     * @param names extracted names for annonymization
+     * @param names for annonymization
      */
     public JohnDoeDocument(String profileName, String baseUrl, List<String> names) {
         this.profileName = profileName;

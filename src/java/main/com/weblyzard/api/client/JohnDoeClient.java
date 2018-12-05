@@ -18,17 +18,16 @@ public class JohnDoeClient extends BasicClient {
     }
 
     /**
-     * Computes an anonymized identifier for the given content.
+     * Computes an anonymized identifier for given Document.
      * 
-     * @param content the content to assess
-     * @param profileName the profile name
-     * @param baseUrl used for grounding
-     * @return anonymized identifier
+     * @param document {@link JohnDoeDocument#JohnDoeDocument(String, String, java.util.List)}
+     * @return {@link JohnDoeDocument}, the field {@link JohnDoeDocument#getNameAnnonIdMap()} holds
+     *         the annonymized content
      */
     public JohnDoeDocument annonymizeContent(JohnDoeDocument document) {
         try (Response response =
-                super.getTarget(ANNON_SERVICE_URL).request(MediaType.APPLICATION_JSON)
-                        .post(Entity.entity(document, MediaType.APPLICATION_JSON))) {
+                        super.getTarget(ANNON_SERVICE_URL).request(MediaType.APPLICATION_JSON).post(
+                                        Entity.entity(document, MediaType.APPLICATION_JSON))) {
             super.checkResponseStatus(response);
             return response.readEntity(JohnDoeDocument.class);
         }
