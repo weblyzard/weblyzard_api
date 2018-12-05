@@ -6,8 +6,7 @@ Provides access to all webLyzard Web services through a python and java library.
 Full Documentation is available at 
 
 * Python: http://weblyzard-api.readthedocs.org/en/latest/
-* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.1.0.1/
-
+* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.2.1.3
 
 ## Configuration
 
