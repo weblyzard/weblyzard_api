@@ -495,7 +495,7 @@ class XMLParser(object):
 
     @classmethod
     def dump_xml(cls, titles, attributes, sentences, annotations=[],
-                 features={}, relations={}):
+                 features=None, relations=None):
         ''' returns a webLyzard XML document '''
         required_namespaces = cls.get_required_namespaces(attributes)
         attributes, sentences = cls.pre_xml_dump(titles=titles,
@@ -573,6 +573,8 @@ class XMLParser(object):
                                 continue
 
         # feature mappings if specified
+        if features is None:
+            features = {}
         if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
             for key, items in features.iteritems():
                 feature_attributes = cls.dump_xml_attributes({'key': key},
@@ -595,6 +597,8 @@ class XMLParser(object):
                         continue
 
         # relation mappings, if specified
+        if relations is None:
+            relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             for key, items in relations.iteritems():
                 rel_attributes = cls.dump_xml_attributes({'key': key},
