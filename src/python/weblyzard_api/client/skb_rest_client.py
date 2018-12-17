@@ -133,7 +133,7 @@ class SKBRESTClient(object):
 
     def save_entity_batch(self, entity_list):
         '''
-        Save a list of entities to the SKB, the individual Entities encoded as 
+        Save a list of entities to the SKB, the individual entities encoded as 
         `dict`.
         Each `entity_dict` must contain a 'uri' and an 'entityType' entry.
         Adding a 'provenance' entry is encouraged, this should contain an

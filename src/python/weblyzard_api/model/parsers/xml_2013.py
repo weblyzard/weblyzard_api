@@ -31,6 +31,7 @@ class XML2013(XMLParser):
         'language': ('language', 'dc'),
         'content_type': ('format', 'dc'),
         'publication_date': ('issued', 'dc'),
+        'published': ('issued', 'dc'),
         'published_date': ('issued', 'dc'),
         'last_modified': ('modified', 'dc'),
         'url': ('identifier', 'dc'),
@@ -42,6 +43,7 @@ class XML2013(XMLParser):
         'keywords': ('subject', 'dc'),
         'tags': ('subject', 'dc'),  # twitter
         'title': ('title', 'dc'),
+        'content': ('description', 'dc'),
         'description': ('description', 'dc'),
 
         # internal
