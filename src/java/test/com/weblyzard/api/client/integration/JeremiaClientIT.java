@@ -1,10 +1,11 @@
 package com.weblyzard.api.client.integration;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import javax.ws.rs.ClientErrorException;
 import javax.xml.bind.JAXBException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.weblyzard.api.client.JeremiaClient;
 import com.weblyzard.api.client.WebserviceClientConfig;
 import com.weblyzard.api.model.Lang;
@@ -15,13 +16,13 @@ public class JeremiaClientIT extends TestClientBase {
 
     private JeremiaClient jeremiaClient;
 
-    @Before
+    @BeforeEach
     public void before() {
         jeremiaClient = new JeremiaClient(new WebserviceClientConfig());
     }
 
     @Test
-    public void testSubmitDocument() throws ClientErrorException, JAXBException {
+    public void testSubmitDocument() throws ClientErrorException {
         // assumeTrue(weblyzardServiceAvailable(jeremiaClient));
         MirrorDocument request = new MirrorDocument().setBody(
                 "Fast Track's Karen Bowerman asks what the changes in penguin population could mealenn for the rest of us in the event of climate change.")

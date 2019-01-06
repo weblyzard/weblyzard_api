@@ -1,18 +1,21 @@
 package com.weblyzard.api.document;
 
-import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.Sentence;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.net.URL;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the serialization to json and the deserialization from json. Tests specifically for the
@@ -29,7 +32,7 @@ public class DocumentJsonTest {
     private QName referenceKeywordQName;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Before
+    @BeforeEach
     public void before() throws IOException, JAXBException {
 
         // init mock objects
