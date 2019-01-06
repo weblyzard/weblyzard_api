@@ -1,15 +1,16 @@
 package com.weblyzard.api.model.annotation;
 
-import static org.junit.Assert.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.weblyzard.api.datatype.MD5Digest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AnnotationSerializationTest {
 

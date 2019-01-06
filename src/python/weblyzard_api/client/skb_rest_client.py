@@ -46,11 +46,13 @@ class SKBRESTClient(object):
         Prepare the keyword entity for SKB submission.
         :param kwargs
         """
-        lang, kw = kwargs['key'].split(':')[1].split('/')
-        uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
+        uri = kwargs['key']
+        if uri.startswith('wl:'):
+            lang, kw = uri.split(':')[1].split('/')
+            uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
         skb_relevant_data = {'uri': uri,
-                             'preferredName': kwargs['preferredName'],
-                             'entityType': kwargs['entityType'],
+                             'preferredName': kwargs.get('preferred_name', kwargs.get('preferredName', None)),
+                             'entityType': kwargs.get('entity_type', kwargs.get('entityType', None)),
                              'provenance': kwargs['provenance']}
         return skb_relevant_data
 
@@ -131,7 +133,7 @@ class SKBRESTClient(object):
 
     def save_entity_batch(self, entity_list):
         '''
-        Save a list of entities to the SKB, the individual Entities encoded as 
+        Save a list of entities to the SKB, the individual entities encoded as 
         `dict`.
         Each `entity_dict` must contain a 'uri' and an 'entityType' entry.
         Adding a 'provenance' entry is encouraged, this should contain an

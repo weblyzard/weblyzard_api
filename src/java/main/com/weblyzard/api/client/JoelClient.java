@@ -8,7 +8,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBException;
 import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.joel.ClusterResult;
 
@@ -32,7 +31,7 @@ public class JoelClient extends BasicClient {
     }
 
     public Response addDocuments(List<LegacyDocument> documents)
-            throws ClientErrorException, JAXBException {
+            throws ClientErrorException {
         try (Response response = super.getTarget(ADDDOCUMENTS_SERVICE_URL)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents))) {
 

@@ -10,7 +10,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Variant;
-import javax.xml.bind.JAXBException;
 import com.weblyzard.api.model.document.Document;
 import com.weblyzard.api.model.jesaja.KeywordCalculationProfile;
 
@@ -62,7 +61,7 @@ public class JesajaClient extends BasicClient {
 
 
     public Response addDocuments(String matviewId, List<Document> documents)
-            throws WebApplicationException, JAXBException {
+            throws WebApplicationException {
 
         try (Response response = super.getTarget(ADD_DOCUMENTS_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
@@ -75,7 +74,7 @@ public class JesajaClient extends BasicClient {
     }
 
     public Map<String, Map<String, Double>> getKeywords(String matviewId, List<Document> documents)
-            throws WebApplicationException, JAXBException {
+            throws WebApplicationException {
         try (Response response = super.getTarget(GET_KEYWORDS_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents))) {
@@ -88,7 +87,7 @@ public class JesajaClient extends BasicClient {
     }
 
     public JsonObject getNonEntityKeywordAnnotations(String matviewId, List<Document> documents)
-            throws WebApplicationException, JAXBException {
+            throws WebApplicationException {
         try (Response response = super.getTarget(GET_NEK_ANNOTATIONS_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents))) {
@@ -98,7 +97,7 @@ public class JesajaClient extends BasicClient {
         }
     }
 
-    public int rotateShard(String matviewId) throws WebApplicationException, JAXBException {
+    public int rotateShard(String matviewId) throws WebApplicationException {
         try (Response response = super.getTarget(ROTATE_SHARD_SERVICE_URL)
                 .resolveTemplate(TEMPLATE_MATVIEW, matviewId)
                 .request(MediaType.APPLICATION_JSON_TYPE).get()) {
