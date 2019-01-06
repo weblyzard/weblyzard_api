@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.ClientErrorException;
-import javax.xml.bind.JAXBException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -50,7 +49,7 @@ public class JoelClientIT extends TestClientBase {
             assertTrue(clusterResults.size() > 0);
             // flush the queue
             assertEquals(200, joelClient.flush().getStatus());
-        } catch (ClientErrorException | JAXBException e) {
+        } catch (ClientErrorException e) {
             e.printStackTrace();
         }
     }

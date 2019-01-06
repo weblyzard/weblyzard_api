@@ -3,7 +3,6 @@ package com.weblyzard.api.client.integration;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.ws.rs.ClientErrorException;
-import javax.xml.bind.JAXBException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.weblyzard.api.client.JeremiaClient;
