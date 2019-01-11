@@ -134,6 +134,8 @@ class SKBRESTClient(object):
         '''
         for entity in entity_list:
             assert 'entityType' in entity
+        if len(entity_list) < 1:
+            return None
         response = requests.post('{}/{}'.format(self.url,
                                                 self.ENTITY_BATCH_PATH),
                                  data=json.dumps(entity_list),
