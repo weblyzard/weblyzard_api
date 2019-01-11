@@ -124,7 +124,7 @@ class SKBRESTClient(object):
         assert 'entityType' in entity_dict
         urlpath = self.ENTITY_PATH
         if force_update:
-            urlpath = u'{}&force_update'.format(urlpath)
+            urlpath = u'{}?force_update'.format(urlpath)
         response = requests.post('{}/{}'.format(self.url,
                                                 self.ENTITY_PATH),
                                  data=json.dumps(entity_dict),
