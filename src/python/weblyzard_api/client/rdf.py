@@ -24,7 +24,7 @@ NAMESPACES = {
     'http://www.opengis.net/ont/geosparql#': 'geo',
     'http://www.wikidata.org/prop/direct/': 'wdt',
     'http://www.wikidata.org/entity/': 'wd',
-    'http://sws.geonames.org': 'gn',
+    'http://sws.geonames.org/': 'gn',
     # weblyzard namespaces
     'http://weblyzard.com/skb/lexicon/': 'skblex',
     'http://weblyzard.com/skb/property/': 'skbprop',
@@ -43,9 +43,9 @@ NAMESPACES = {
     'http://weblyzard.com/skb/keyword/nl#': 'skbkwnl',
 }
 
-PREFIXES = '\n'.join(['']+['PREFIX {value}: <{key}>'.format(value=value,
-                                                       key=key) \
-                      for key, value in NAMESPACES.items()])
+PREFIXES = '\n'.join([''] + ['PREFIX {value}: <{key}>'.format(value=value,
+                                                              key=key)
+                             for key, value in NAMESPACES.items()])
 
 
 def prefix_uri(uri, namespaces=None):
@@ -67,7 +67,8 @@ def prefix_uri(uri, namespaces=None):
     # replace most specific/longest prefix, hence sorted
     for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
         if namespace in uri:
-            replaced = uri.replace(namespace, '{}:'.format(namespaces[namespace]))
+            replaced = uri.replace(
+                namespace, '{}:'.format(namespaces[namespace]))
             if '/' in replaced or '#' in replaced:
                 # slashes or hashes in prefixed URIs not allowed
                 continue
@@ -97,11 +98,13 @@ def replace_prefix(uri, namespaces=None):
 
 
 def parse_language_tagged_string(value):
-    '''
-    Checks if the string value has a language tag @xx or @xxx
+    """
+    Check if the string value has a language tag @xx or @xxx
     and returns the string without the value tag and language
     as tuple. If no language tag -> language is None
-    '''
+    :param value
+    :returns:
+    """
     lang = None
     if value[0] == value[-1] == '"':
         value = value[1:-1]

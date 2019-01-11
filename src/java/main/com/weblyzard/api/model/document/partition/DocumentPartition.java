@@ -1,7 +1,7 @@
 package com.weblyzard.api.model.document.partition;
 
 /**
- * Supported document partitions
+ * Supported document partition types.
  * 
  * @author Albert Weichselbraun
  *

@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.weblyzard.api.model.document.LegacyDocument;
 
 /**
- * Custom Map Key Serializer and Deserializer for header field in {@link LegacyDocument} model class
- *
+ * Custom Map Key Serializer and Deserializer for header field in {@link LegacyDocument} model
+ * class.
  * <p>
  * The header field in the Document has QName objects as keys
  *

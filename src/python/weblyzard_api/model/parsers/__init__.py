@@ -422,7 +422,7 @@ class XMLParser(object):
         return relations
 
     @classmethod
-    def dump_xml_attributes(cls, attributes, mapping):
+    def dump_xml_attributes(cls, attributes, mapping, resolve_namespaces=True):
         new_attributes = {}
 
         for key, value in attributes.iteritems():
@@ -435,8 +435,11 @@ class XMLParser(object):
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
-                    key = '{%s}%s' % (
-                        cls.DOCUMENT_NAMESPACES[namespace], key)
+                    if resolve_namespaces:
+                        key = '{%s}%s' % (
+                            cls.DOCUMENT_NAMESPACES[namespace], key)
+                    else:
+                        key = '%s:%s' % (namespace, key)
             if value and value not in ('None', 'null', '0.0'):
                 new_attributes[key] = cls.encode_value(value)
 
@@ -492,7 +495,7 @@ class XMLParser(object):
 
     @classmethod
     def dump_xml(cls, titles, attributes, sentences, annotations=[],
-                 features={}, relations={}):
+                 features=None, relations=None):
         ''' returns a webLyzard XML document '''
         required_namespaces = cls.get_required_namespaces(attributes)
         attributes, sentences = cls.pre_xml_dump(titles=titles,
@@ -570,6 +573,8 @@ class XMLParser(object):
                                 continue
 
         # feature mappings if specified
+        if features is None:
+            features = {}
         if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
             for key, items in features.iteritems():
                 feature_attributes = cls.dump_xml_attributes({'key': key},
@@ -592,6 +597,8 @@ class XMLParser(object):
                         continue
 
         # relation mappings, if specified
+        if relations is None:
+            relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             for key, items in relations.iteritems():
                 rel_attributes = cls.dump_xml_attributes({'key': key},

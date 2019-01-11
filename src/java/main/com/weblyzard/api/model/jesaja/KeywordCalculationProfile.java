@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * The profile specifying how keywords should be computed
+ * The profile specifying how keywords should be computed.
  * 
  * @author Albert Weichselbraun
  *
@@ -27,39 +27,39 @@ public class KeywordCalculationProfile {
     @JsonProperty("max_ngram_length")
     private int maxNGramLength = 3;
 
-    /** minimum significance of phrases to get included in the analysis */
+    /** minimum significance of phrases to get included in the analysis. */
     @JsonProperty("min_phrase_significance")
     private double minPhraseSignificance;
 
-    /** number of keywords to return */
+    /** number of keywords to return. */
     @JsonProperty("num_keywords")
     private int numKeywords;
 
-    /** keyword algorithm to use */
+    /** keyword algorithm to use. */
     @JsonProperty("keyword_algorithm")
     private String keywordAlgorithm;
 
-    /** skip under-represented keywords */
+    /** skip under-represented keywords. */
     @JsonProperty("skip_underrepresented_keywords")
     private boolean skipUnderrepresentedKeywords = true;
 
-    /** minimum number of tokens required */
+    /** minimum number of tokens required. */
     @JsonProperty("min_token_count")
     private int minTokenCount = 1;
 
-    /** allowed part-of-speech (POS) tags */
+    /** allowed part-of-speech (POS) tags. */
     @JsonProperty("valid_pos_tags")
     private Set<String> validPosTags;
 
-    /** required part-of-speech (POS) tags */
+    /** required part-of-speech (POS) tags. */
     @JsonProperty("required_pos_tags")
     private Set<String> requiredPosTags;
 
-    /** stoplist to use */
+    /** stoplist to use. */
     @JsonProperty("stoplists")
     private List<String> stoplists = Collections.emptyList();
 
-    /** NEKs ground annotation entities as keywords */
+    /** NEKs ground annotation entities as keywords. */
     @JsonProperty("ground_annotations")
     private boolean groundAnnotations;
 

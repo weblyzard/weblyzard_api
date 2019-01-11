@@ -16,7 +16,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-/** @author norman.suesstrunk@htwchur.ch */
+/**
+ * An Annotation encodes a single occurrence of an entity that has been described with an
+ * {@link EntityDescriptor}.
+ * 
+ * @author Norman Süsstrunk
+ */
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor

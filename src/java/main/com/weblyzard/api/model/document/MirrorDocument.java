@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
  * The {@link MirrorDocument} represents a document with separate title and body fields as created
  * by mirror processes.
  *
- * @author weichselbraun@weblyzard.com
+ * @author Albert Weichselbraun
  */
 @Data
 @Accessors(chain = true)
@@ -27,20 +27,20 @@ public class MirrorDocument implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** a unique document identifier such as the content id */
+    /** a unique document identifier such as the content id. */
     private String id;
     private String title;
     private String body;
 
-    /** the document's content type (e.g. `text/html`) */
+    /** the document's content type (e.g. 'text/html'). */
     private String format;
     @JsonDeserialize(using = LangDeserializer.class)
     private Lang lang;
 
-    /** arbitrary header metadata */
+    /** arbitrary header metadata. */
     private Map<QName, String> header;
 
-    /** attributes required for the annotation handling */
+    /** attributes required for the annotation handling. */
     @JsonProperty("body_annotation")
     private List<Annotation> bodyAnnotations;
     @JsonProperty("title_annotation")

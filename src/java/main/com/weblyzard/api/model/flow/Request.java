@@ -1,4 +1,4 @@
-package com.weblyzard.api.model.document_api;
+package com.weblyzard.api.model.flow;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

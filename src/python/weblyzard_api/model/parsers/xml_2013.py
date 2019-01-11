@@ -31,6 +31,7 @@ class XML2013(XMLParser):
         'language': ('language', 'dc'),
         'content_type': ('format', 'dc'),
         'publication_date': ('issued', 'dc'),
+        'published': ('issued', 'dc'),
         'published_date': ('issued', 'dc'),
         'last_modified': ('modified', 'dc'),
         'url': ('identifier', 'dc'),
@@ -40,7 +41,9 @@ class XML2013(XMLParser):
         'author': ('creator', 'dc'),
         'publisher': ('publisher', 'dc'),
         'keywords': ('subject', 'dc'),
+        'tags': ('subject', 'dc'),  # twitter
         'title': ('title', 'dc'),
+        'content': ('description', 'dc'),
         'description': ('description', 'dc'),
 
         # internal
@@ -50,6 +53,7 @@ class XML2013(XMLParser):
         'url_label': ('url_label', 'wl'),
         'reach': ('reach', 'wl'),
         'link_text': ('link_text', 'wl'),
+        'tweet_id': ('tweet_id', 'wl'),
 
         'fbType': ('post_type', 'wl'),  # FB
         'thumbnail': ('thumbnail', 'wl'),
@@ -85,6 +89,13 @@ class XML2013(XMLParser):
         'nr_of_retweets': ('num_reshares', 'wl'),  # twitter
 
         # USER MAPPINGS #######################################################
+        'user_verified': ('user_verified', 'wl'),  # TW
+        'user_geo_enabled': ('user_geo_enabled', 'wl'),  # TW
+        'user_favourites_count': ('user_favourites_count', 'wl'),  # TW
+        'user_post_count': ('user_post_count', 'wl'),
+        'user_following': ('user_following', 'wl'),
+        'num_tweets': ('user_post_count', 'wl'),  # TW
+        'user_created': ('user_created', 'wl'),  # TW
         'user_id': ('user_id', 'wl'),  # FB, G+
         'user_url': ('user_id', 'wl'),  # YT, twitter
         'user_name': ('user_name', 'wl'),
@@ -137,7 +148,9 @@ class XML2013(XMLParser):
                           'annotationType': ('annotationType', 'wl'),
                           'preferredName': ('preferredName', 'wl'),
                           'sem_orient': ('sem_orient', 'wl'),
-                          'md5sum': ('md5sum', 'wl')
+                          'md5sum': ('md5sum', 'wl'),
+                          'sentence': ('sentence', 'wl'),
+                          'confidence': ('confidence', 'wl')
                           }
 
     FEATURE_MAPPING = {'key': ('key', 'wl'),

@@ -94,7 +94,7 @@ class Annotation(object):
 
     def __init__(self, annotation_type=None, start=None, end=None, key=None,
                  sentence=None, surfaceForm=None, md5sum=None, sem_orient=None,
-                 preferredName=None):
+                 preferredName=None, confidence=None):
         self.annotation_type = annotation_type
         self.surfaceForm = surfaceForm
         self.start = start
@@ -104,6 +104,7 @@ class Annotation(object):
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.preferredName = preferredName
+        self.confidence = confidence
 
 
 class Sentence(object):
