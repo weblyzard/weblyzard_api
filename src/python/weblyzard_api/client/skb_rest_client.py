@@ -89,7 +89,7 @@ class SKBRESTClient(object):
         skb_relevant_data = self.clean_keyword_data(kwargs)
         return self.save_entity(entity_dict=skb_relevant_data)
 
-    def save_entity(self, entity_dict):
+    def save_entity(self, entity_dict, force_update=False):
         '''
         Save an entity to the SKB, the Entity encoded as `dict`.
         The `entity_dict` must contain a 'uri' and an 'entityType' entry.
@@ -122,6 +122,9 @@ class SKBRESTClient(object):
         http://weblyzard.com/skb/entity/agent/you_don_t_say
         '''
         assert 'entityType' in entity_dict
+        urlpath = self.ENTITY_PATH
+        if force_update:
+            urlpath = u'{}&force_update'.format(urlpath)
         response = requests.post('{}/{}'.format(self.url,
                                                 self.ENTITY_PATH),
                                  data=json.dumps(entity_dict),
