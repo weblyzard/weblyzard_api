@@ -82,7 +82,7 @@ class JeremiaNg(MultiRESTClient):
         :param usr: optional user name
         :param pwd: optional password
         '''
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
+        MultiRESTClient.__init__(self, service_urls=url + "/jeremia", user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
     def submit_document(self, document):

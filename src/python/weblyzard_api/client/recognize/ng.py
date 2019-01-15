@@ -26,7 +26,7 @@ class Recognize(MultiRESTClient):
         * :func:`search_text` for plain text.
         * :func:`search_document` for document dictionaries.
     """
-    URL_PATH = 'rest/'
+    URL_PATH = 'recognize/rest/'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'lang': 'lang',
                          'format': 'format',
@@ -105,7 +105,7 @@ class Recognize(MultiRESTClient):
            .. code-block:: python
 
               # option 1: document dictionary
-              {'content_id': 12, 
+              {'content_id': 12,
                'content': u'the text to analyze'}
 
               # option 2: weblyzardXML
@@ -130,7 +130,7 @@ class Recognize(MultiRESTClient):
 
         .. note:: Example document
 
-           .. code-block:: python     
+           .. code-block:: python
                 test_doc = {'id': 111,
                             'body': 'Management Directive\nBill Gates\n Java Programmer',
                             'title': 'Hello President! ',
@@ -139,7 +139,7 @@ class Recognize(MultiRESTClient):
 
                 jeremia_client = Jeremia()
                 jresult = jeremia_client.submit_document(test_doc2)
-                newresult = r.search_xmldocument(profile_name=profile, document=jresult, limit=0)   
+                newresult = r.search_xmldocument(profile_name=profile, document=jresult, limit=0)
         :param profile_name: the profile to search in
         :param document: the document to search in
         :param limit: maximum number of results to return
