@@ -126,7 +126,7 @@ class SKBRESTClient(object):
         if force_update:
             urlpath = u'{}?force_update'.format(urlpath)
         response = requests.post('{}/{}'.format(self.url,
-                                                self.ENTITY_PATH),
+                                                urlpath),
                                  data=json.dumps(entity_dict),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
