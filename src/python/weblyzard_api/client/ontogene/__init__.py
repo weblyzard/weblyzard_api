@@ -51,12 +51,16 @@ class OgerClient(MultiRESTClient):
     ANNOTATE_PATH = 'upload/txt/bioc_json'
     STATUS_PATH = 'status'
 
-    def __init__(self, url=OGER_API_URL, usr=None, pwd=None):
+    def __init__(self, url=OGER_API_URL, usr=WEBLYZARD_API_USER,
+                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
         """
-        :param url: URL of the jeremia web service
+        :param url: URL of the OGER web service
         :param usr: an optional authorization user
         :param pwd: an optional authorization password
         """
+
+        if isinstance(url, list):
+            raise Exception('Oger url cannot be an array')
         if url.endswith('/'):
             url = url[:-1]
         self.url = url

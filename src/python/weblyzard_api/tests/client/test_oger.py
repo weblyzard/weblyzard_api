@@ -10,7 +10,7 @@ from pprint import pprint
 
 from weblyzard_api.client import OGER_API_URL
 
-from weblyzard_api.client.ontogene import Oger
+from weblyzard_api.client.ontogene import OgerClient
 from weblyzard_api.client.recognize import Recognize
 from weblyzard_api.client.jeremia import Jeremia
 
@@ -19,8 +19,12 @@ class TestOGER(unittest.TestCase):
     def setUp(self):
         url =  OGER_API_URL    
         print(url)    
-        self.client = Oger(url)
+        self.client = OgerClient(url)
     
+    def test_raise_exception_if_service_urls_is_array(self):
+        with self.assertRaises(Exception) as context:
+            OgerClient(['http://localhost:8080', 'http://localhost:8081'])
+        self.assertTrue('Oger url cannot be an array' in context.exception)
     
     def test_status(self):
         self.assertTrue(self.client.status())

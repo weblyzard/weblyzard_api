@@ -106,7 +106,7 @@ def parse_language_tagged_string(value):
     :returns:
     """
     lang = None
-    if value[0] == value[-1] == '"':
+    if len(value) >1 and value[0] == value[-1] == '"':
         value = value[1:-1]
     if len(value) > 6 and value[-6] == '@':
         lang = value[-5:]
