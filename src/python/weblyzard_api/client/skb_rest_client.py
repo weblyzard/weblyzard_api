@@ -134,7 +134,7 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def save_entity_batch(self, entity_list):
+    def save_entity_batch(self, entity_list, force_update=False):
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
         `dict`.
@@ -155,8 +155,11 @@ class SKBRESTClient(object):
             assert 'entityType' in entity
         if len(entity_list) < 1:
             return None
+        urlpath = self.ENTITY_PATH
+        if force_update:
+            urlpath = u'{}?force_update'.format(urlpath)
         response = requests.post('{}/{}'.format(self.url,
-                                                self.ENTITY_BATCH_PATH),
+                                                urlpath),
                                  data=json.dumps(entity_list),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
