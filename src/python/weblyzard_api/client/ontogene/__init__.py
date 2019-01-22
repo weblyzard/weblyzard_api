@@ -54,7 +54,9 @@ class OgerClient(MultiRESTClient):
     def __init__(self, url=OGER_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
         """
-        :param service_urls: URL of the jeremia web service
+        :param url: URL of the OGER web service
+        :param usr: an optional authorization user
+        :param pwd: an optional authorization password
         """
 
         if isinstance(url, list):
