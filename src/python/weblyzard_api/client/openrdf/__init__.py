@@ -466,7 +466,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
                     entity),
                 '<{}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .'.format(
                     entity),
-                '<{}> <http://de.dbpedia.org/property/name> "{}, {}"@{} .'.format(
+                '<{}> <http://dbpedia.org/property/name> "{}, {}"@{} .'.format(
                     entity, surname, first_name, language),
                 '<{}> <http://xmlns.com/foaf/0.1/givenName> "{}"@{} .'.format(
                     entity, first_name, language),
@@ -499,8 +499,8 @@ class RecognizeOpenRdfClient(OpenRdfClient):
 #         print(result.status, entity, content)
 #         print(result)
         if result.status and len(content):
-            #             print('Skipping: {} already exists in repository {}'.format(
-            #                 entity, repository))
+            print('Skipping: {} already exists in repository {}'.format(
+                entity, repository))
             return None
 #         else:
         #             url = ''.join([base_url, label, format_suffix])
