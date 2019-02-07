@@ -155,7 +155,7 @@ class SKBRESTClient(object):
             assert 'entityType' in entity
         if len(entity_list) < 1:
             return None
-        urlpath = self.ENTITY_PATH
+        urlpath = self.ENTITY_BATCH_PATH
         if force_update:
             urlpath = u'{}?force_update'.format(urlpath)
         response = requests.post('{}/{}'.format(self.url,
