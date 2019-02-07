@@ -1,17 +1,16 @@
 package com.weblyzard.api.client.integration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.ClientErrorException;
-import javax.xml.bind.JAXBException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -33,7 +32,7 @@ public class JoelClientIT extends TestClientBase {
 
     private JoelClient joelClient;
 
-    @Before
+    @BeforeEach
     public void before() {
         psalmDocs = readWeblyzardDocuments();
         joelClient = new JoelClient(new WebserviceClientConfig());
@@ -50,7 +49,7 @@ public class JoelClientIT extends TestClientBase {
             assertTrue(clusterResults.size() > 0);
             // flush the queue
             assertEquals(200, joelClient.flush().getStatus());
-        } catch (ClientErrorException | JAXBException e) {
+        } catch (ClientErrorException e) {
             e.printStackTrace();
         }
     }
@@ -59,15 +58,11 @@ public class JoelClientIT extends TestClientBase {
     @Test
     public void testDocumentHeaderBadRequest() {
         assumeTrue(weblyzardServiceAvailable(joelClient));
-        try {
+        Exception e = assertThrows(ClientErrorException.class, () -> { 
             joelClient.addDocuments(Arrays.asList(new LegacyDocument[] {
                     new LegacyDocument().setSentences(Arrays.asList(new Sentence("Test")))}));
-        } catch (ClientErrorException clientErrorException) {
-            assertThat(clientErrorException.getMessage(),
-                    is(JoelClient.NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE));
-        } catch (JAXBException jaxbException) {
-            jaxbException.printStackTrace();
-        }
+        });
+        assertEquals(JoelClient.NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE, e.getMessage());
     }
 
     public List<LegacyDocument> readWeblyzardDocuments() {

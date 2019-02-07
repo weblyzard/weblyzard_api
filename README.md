@@ -1,13 +1,12 @@
 # The webLyzard API
 [![Build Status](https://www.travis-ci.org/weblyzard/weblyzard_api.png?branch=master)](https://www.travis-ci.org/weblyzard/weblyzard_api) (Java API)
 
-Provides access to all webLyzard Web services through a python and java library.
+Provides access to all webLyzard Web services through a Python and Java library.
 
 Full Documentation is available at 
 
 * Python: http://weblyzard-api.readthedocs.org/en/latest/
-* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.1.0.1/
-
+* Javadoc: http://javadoc.io/doc/com.weblyzard.api/weblyzard-api/0.2.1.4
 
 ## Configuration
 
@@ -24,7 +23,7 @@ The API needs to know the URL, user and password used for the Web service. These
 
 The preferred way for setting these variables is using `.bash_profile`.
 
-```sh
+```bash
 export WEBLYZARD_API_URL="https://noah.semanticlab.net/ws"
 export WEBLYZARD_API_USER="user"
 export WEBLYZARD_API_PASS="pass"
@@ -35,7 +34,7 @@ Do not set `WEBLYZARD_API_USER` and `WEBLYZARD_API_PASS` if your Web service doe
 
 If you have already set the variables using `.bash_profile`, when you run a script from the command line is also recommended to use:
 
-```sh
+```bash
 source ~/.bash_profile
 ```
 
@@ -50,9 +49,15 @@ To run the unit tests in eclipse, the environment variables have to be set in th
 
 The following interfaces are currently available for `weblyzard_api`:
 
-+ **domain specificity:** document relevance in regard of a particular domain)
++ **domain specificity**: document relevance in regard of a particular domain)
++ **FlowClient**: the webLyzard document API
++ **GenericAnnotationClient**: all Web services implementing the `AnnotationService` interfaces
 + **Jeremia**: text pre-processing (pos tagger, dependency parser, sentence splitter, languag detection)
++ **Jairo**: Semantic enrichment
 + **Jesaja**: keyword extraction
++ **Joel**: keyword and document clustering
++ **John Doe**: anonymization service
++ **Joseph**: text classification
 + **OpenRDF**: access OpenRDF linked open data repositories
 + **Recognize**: named entity recognition
 + **Sentiment Analysis**:
@@ -109,19 +114,6 @@ Deploying to the public mavencentral:
 mvn deploy -Denvironment=mavencentral
 ```
 
-## Java API
+## Java API Changelog
 
-### Changelog
-
-#### 0.2.1.0-SNAPSHOT
-
- * use WebserviceClientConfig object for the configuration of REST clients
- * re-added weblyzard namespace
- * lombok 1.18.0
-
-##### 0.2.0.0-SNAPSHOT 
-
-* switch to layout aware document model
-* java9 support
-* lombok 1.16.20 
-
+Please refer to the [releases](https://github.com/weblyzard/weblyzard_api/releases) page.

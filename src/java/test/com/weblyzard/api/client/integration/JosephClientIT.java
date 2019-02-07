@@ -1,11 +1,12 @@
 package com.weblyzard.api.client.integration;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.IOException;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,7 +27,7 @@ public class JosephClientIT extends TestClientBase {
 
     private String profileName = "smc";
 
-    @Before
+    @BeforeEach
     @Test
     public void before() {
         psalmDocs = readWeblyzardDocuments();

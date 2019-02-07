@@ -37,7 +37,7 @@ class Document(object):
                        'nilsimsa', 'content']
 
     # list of optional attributes
-    OPTIONAL_FIELDS = ['partitions', 'annotations',
+    OPTIONAL_FIELDS = ['partitions', 'annotations', 'encoding',
                        'features', 'relations', 'header']
 
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
@@ -264,6 +264,17 @@ class Document(object):
                 result.append(other_span)
 
         return result
+
+    def get_pos_for_annotation(self, annotation):
+        """
+        Get the part-of-speech for a given annotation.
+        :param annotation
+        :return: the POS of the annotation
+        """
+        for token_span in self.partitions[self.TOKEN_KEY]:
+            if token_span.start >= annotation['start']:
+                return token_span.pos
+        return None
 
     def get_sentences(self):
         """

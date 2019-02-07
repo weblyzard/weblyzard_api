@@ -1,12 +1,13 @@
 package com.weblyzard.api.client.integration;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 import com.weblyzard.api.client.JairoClient;
 import com.weblyzard.api.client.WebserviceClientConfig;
@@ -21,7 +22,7 @@ public class JairoClientIT extends TestClientBase {
     private String mockJairoProfileName = "IMAGINE";
     private List<Annotation> mockImagineAnnotations;
 
-    @Before
+    @BeforeEach
     public void before() {
         jairoClient = new JairoClient(new WebserviceClientConfig());
         initMockObjects();
@@ -55,7 +56,7 @@ public class JairoClientIT extends TestClientBase {
         List<Annotation> annotations = Arrays.asList((Annotation) new Annotation()
                 .setKey("<http://dbpedia.org/resource/Aurora_(singer)>"));
         List<Annotation> result = jairoClient.extendAnnotations(mockJairoProfileName, annotations);
-        assertTrue(result.size() > 0);
+        assertTrue(!result.isEmpty());
 
         annotations = Arrays.asList(
                 (Annotation) new Annotation().setKey("<http://dbpedia.org/resource/Feusisberg>"),
