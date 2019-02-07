@@ -24,7 +24,7 @@ class TestOGER(unittest.TestCase):
     def test_raise_exception_if_service_urls_is_array(self):
         with self.assertRaises(Exception) as context:
             OgerClient(['http://localhost:8080', 'http://localhost:8081'])
-        self.assertTrue('Oger service_urls cannot be an array' in context.exception)
+        self.assertTrue('Oger url cannot be an array' in context.exception)
     
     def test_status(self):
         self.assertTrue(self.client.status())

@@ -131,6 +131,7 @@ class XML2013(XMLParser):
 
         # to be migrated to features, eventually
         'mediacriticism': ('mediacriticism', 'wl'),  # SMC
+        'categories_by_url': ('categories_by_url', 'wl'),
     }
 
     SENTENCE_MAPPING = {'token': ('token', 'wl'),

@@ -28,8 +28,15 @@ class JairoClient(MultiRESTClient):
         return self.request('add_profile/{}'.format(profile_name), profile)
 
     def enrich_annotations(self, profile_name, annotations):
-        ''' '''
+        """
+        Enrich a list/dict of annotations with a given profile_name.
+        :param profile_name: the profile to use for enrichment
+        :param annotations: the annotations to enricht
+        :returns: the enriched annotations, or None
+        """
         annotations_to_send = []
+        if isinstance(annotations, dict):
+            annotations = annotations.values()
         for annotation in annotations:
             if len(annotation.get('key', '')) > 3:
                 annotations_to_send.append(annotation)
