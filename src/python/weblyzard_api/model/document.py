@@ -132,9 +132,10 @@ class Document(object):
                     key = mapping[key]
                 elif key.startswith('_'):
                     continue
-                if key == 'lang':
-                    value = value.upper()
+
                 if value is not None:
+                    if key == 'lang':
+                        value = value.upper()
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
                         result[key] = cls._dict_transform(
