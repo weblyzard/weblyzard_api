@@ -249,3 +249,26 @@ class SKBSentimentDictionary(dict):
             dict.__init__(self, data)
         else:
             dict.__init__(self, {})
+
+
+class SKBSentimentDictionaryDepSpec(dict):
+
+    SENTIMENT_PATH = '{}/skb/sentiment_dict'.format(SKBRESTClient.VERSION)
+    def __init__(self, url, language, emotion='polarity'):
+        self.url = '{}/{}'.format(url,
+                                  self.SENTIMENT_PATH)
+        res = requests.get(self.url,
+                           params={'lang': language,
+                                   'emotion': emotion})
+        if res.status_code < 400:
+            response = json.loads(res.text)
+            data = {}
+            for document in response:
+                spec = document.get('dep', u'')
+                key_tuple = (document['term'], document['pos'], spec)
+                if len(key_tuple) != 3:
+                    pass
+                data[(document['term'], document['pos'], spec)] = document['value']
+            dict.__init__(self, data)
+        else:
+            dict.__init__(self, {})
