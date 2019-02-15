@@ -46,3 +46,26 @@ class TestOpinionClient(object):
                 assert sentence.sem_orient == 1.0
             elif sentence.value == 'Wie im Anfang so auch jetzt und alle Zeit und in Ewigkeit Amen.':
                 assert sentence.sem_orient == 0.0
+
+    def test_negation_triggers(self, client):
+        """Tests negation of sentiment keywords by triggers 'weder-noch'"""
+        xml_content_str = '''<?xml version="1.0" encoding="UTF-8"?><wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="192292" dc:format="html/text" xml:lang="de" wl:nilsimsa="79FD4E2402678A0016BBCDFCFEE37640406C39B21B793CE9FFB94FC2BE8BF374"><wl:sentence wl:id="54a4f9cbfc85df3b197ad5db2dc22cc9" wl:pos="ART ADJA NN VAFIN KON ADJD KON ADJD $." wl:dependency="2:det 2:amod 3:nsubj -1:ROOT 3:cc 3:acomp 5:cc 5:conj 3:p" wl:token="0,3 4,14 15,21 22,25 26,31 32,40 41,45 46,58 58,59" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Das derzeitige Gesetz ist weder sinnvoll noch verständlich.]]></wl:sentence></wl:page>'''
+        result = client.get_polarity(content=xml_content_str,
+                                     content_format='xml')
+        print(result)
+        polarity_value = result['polarity']
+        assert polarity_value == -1.0
+        xml_content = XMLContent(result['content'])
+        assert xml_content.sentences[0].sem_orient == -1.0
+        assert xml_content.sentences[0].sem_orient == polarity_value
+
+    def test_ngram(self, client):
+        """Tests that 'nicht nur' is not treated as negation"""
+        xml_content_str = """<?xml version="1.0" encoding="UTF-8"?><wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="192292" dc:format="html/text" xml:lang="de" wl:nilsimsa="7224521128026A4684A089F17C8344C415D2EFE11C8C0C53B439489133802200"><wl:sentence wl:id="bc570f2b4355afdddbacf18f511e95ef" wl:pos="PPER VAFIN PTKNEG ADV ART ADJA NN $, KON ADV ART NN VAFIN ADJD $." wl:dependency="1:nsubj -1:ROOT 1:neg 1:advmod 6:det 6:amod 1:attr 6:p 6:cc 12:advmod 11:det 12:nsubj 6:conj 12:acomp 1:p" wl:token="0,2 3,6 7,12 13,16 17,20 21,28 29,34 34,35 36,43 44,48 49,52 53,58 59,62 63,72 72,73" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Es war nicht nur ein schöner Abend, das Essen war auch OK.]]></wl:sentence></wl:page>"""
+        result = client.get_polarity(content=xml_content_str,
+                                     content_format='xml')
+        print(result)
+        polarity_value = result['polarity']
+        assert polarity_value > 0.75
+        xml_content = XMLContent(result['content'])
+        assert xml_content.sentences[0].sem_orient == polarity_value
