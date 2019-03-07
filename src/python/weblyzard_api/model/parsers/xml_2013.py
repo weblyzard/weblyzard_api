@@ -24,7 +24,8 @@ class XML2013(XMLParser):
                            'ma': 'http://www.w3.org/ns/ma-ont#',
                            'po': 'http://purl.org/ontology/po/',
                            'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-                           'rdfs': 'http://www.w3.org/2000/01/rdf-schema#'}
+                           'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
+                           'schema': 'http://schema.org/'}
 
     ATTR_MAPPING = {
         'lang': ('lang', 'xml'),  # legacy
@@ -41,6 +42,7 @@ class XML2013(XMLParser):
         'author': ('creator', 'dc'),
         'publisher': ('publisher', 'dc'),
         'keywords': ('subject', 'dc'),
+        'articleSection': ('articleSection', 'schema'),
         'tags': ('subject', 'dc'),  # twitter
         'title': ('title', 'dc'),
         'content': ('description', 'dc'),
