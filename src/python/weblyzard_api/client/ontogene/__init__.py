@@ -46,7 +46,7 @@ class OgerClient(object):
     """
 
     ONTOGENE_NS = 'https://pub.cl.uzh.ch/projects/ontogene/medmon-oger/'
-
+    ENTITY_TYPE = 'MedicalEntity'
     DEFAULT_TIMEOUT_SEC = 10
 
     # available endpoints
@@ -90,7 +90,7 @@ class OgerClient(object):
         :returns: OGER document converted to Recognyze format.
         """
         result = []
-
+        annotations = []
         try:
             if not 'documents' in result_dict or not len(result_dict['documents']):
                 return result
@@ -101,7 +101,7 @@ class OgerClient(object):
                 for rs in passage['annotations']:
                     start = rs['locations'][0]['offset']
                     end = rs['locations'][0]['offset'] + len(rs['text'])
-                    key = self.ONTOGENE_NS + rs['infons']['original_id']
+                    key = self.ONTOGENE_NS + rs['infons']['native_id']
                     ditem = {
                         "key": key,
                         #"resource": rs['infons']['original_resource'],
@@ -110,14 +110,18 @@ class OgerClient(object):
                         "end": end,
                         "confidence": 1,
                         "preferred_name": rs['infons']['preferred_form'],
-                        "entity_type": rs['infons']['type']
+
+                        # formerly: rs['infons']['type']
+                        "entity_type": self.ENTITY_TYPE,
+                        "annotation_type": self.ENTITY_TYPE
                     }
-                    result.append(ditem)
+                    annotations.append(ditem)
         except Exception as message:
             logger.error(message)
             raise Exception('Error: {}'.format(message))
 
-        return result
+
+        return annotations
 
     def annotate_text(self, docid, doctext):
         """
@@ -131,4 +135,4 @@ class OgerClient(object):
             'utf-8'), timeout=self.service_timeout)
         if r.status_code == 200:
             return self.convert_result(json.loads(r.content.decode('utf-8')))
-        return None
+        return []
