@@ -14,7 +14,7 @@ from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
 from weblyzard_api.xml_content import XMLContent
 
 
-LOGGER = logging.getLogger('weblyzard_api.client.ontogene.oger')
+logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_RETRY_DELAY = 15
 DEFAULT_MAX_RETRY_ATTEMPTS = 5
@@ -23,7 +23,7 @@ DAYS_BACK_DEFAULT = 20
 # GET URL/{pubmed|pmd}/{txt|bioc|pxml|nxml|pxml.gz}/DOC_ID
 
 
-class OgerClient(MultiRESTClient):
+class OgerClient(object):
     """
     Provides access to the OntoGene Entity Recognition.
 
@@ -46,33 +46,33 @@ class OgerClient(MultiRESTClient):
     """
 
     ONTOGENE_NS = 'https://pub.cl.uzh.ch/projects/ontogene/medmon-oger/'
+    ENTITY_TYPE = 'MedicalEntity'
+    DEFAULT_TIMEOUT_SEC = 10
 
     # available endpoints
     ANNOTATE_PATH = 'upload/txt/bioc_json'
     STATUS_PATH = 'status'
 
-    def __init__(self, url=OGER_API_URL, usr=WEBLYZARD_API_USER,
-                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
+    def __init__(self, url=OGER_API_URL, service_timeout=None):
         """
         :param url: URL of the OGER web service
-        :param usr: an optional authorization user
-        :param pwd: an optional authorization password
+        :param timeout: optional timeout for service responses
         """
-
         if isinstance(url, list):
             raise Exception('Oger url cannot be an array')
         if url.endswith('/'):
             url = url[:-1]
         self.url = url
-        self.usr = usr
-        self.pwd = pwd
+        self.service_timeout = service_timeout
+        if self.service_timeout is None:
+            self.service_timeout = self.DEFAULT_TIMEOUT_SEC
 
     def status(self):
         """
         :returns: the status of the OGER web service.
         """
         url = '/'.join([self.url, self.STATUS_PATH])
-        return requests.get(url).json()
+        return requests.get(url, timeout=self.service_timeout).json()
 
     """
     def fetch_document(self, docid):
@@ -90,7 +90,7 @@ class OgerClient(MultiRESTClient):
         :returns: OGER document converted to Recognyze format.
         """
         result = []
-
+        annotations = []
         try:
             if not 'documents' in result_dict or not len(result_dict['documents']):
                 return result
@@ -101,7 +101,7 @@ class OgerClient(MultiRESTClient):
                 for rs in passage['annotations']:
                     start = rs['locations'][0]['offset']
                     end = rs['locations'][0]['offset'] + len(rs['text'])
-                    key = self.ONTOGENE_NS + rs['infons']['original_id']
+                    key = self.ONTOGENE_NS + rs['infons']['native_id']
                     ditem = {
                         "key": key,
                         #"resource": rs['infons']['original_resource'],
@@ -110,14 +110,18 @@ class OgerClient(MultiRESTClient):
                         "end": end,
                         "confidence": 1,
                         "preferred_name": rs['infons']['preferred_form'],
-                        "entity_type": rs['infons']['type']
+
+                        # formerly: rs['infons']['type']
+                        "entity_type": self.ENTITY_TYPE,
+                        "annotation_type": self.ENTITY_TYPE
                     }
-                    result.append(ditem)
+                    annotations.append(ditem)
         except Exception as message:
-            LOGGER.error(message)
+            logger.error(message)
             raise Exception('Error: {}'.format(message))
 
-        return result
+
+        return annotations
 
     def annotate_text(self, docid, doctext):
         """
@@ -127,7 +131,8 @@ class OgerClient(MultiRESTClient):
         :returns: OGER annotated document after uploading a text.
         """
         url = '/'.join([self.url, self.ANNOTATE_PATH, docid])
-        r = requests.post(url=url, data=doctext.encode('utf-8'))
+        r = requests.post(url=url, data=doctext.encode(
+            'utf-8'), timeout=self.service_timeout)
         if r.status_code == 200:
             return self.convert_result(json.loads(r.content.decode('utf-8')))
-        return None
+        return []
