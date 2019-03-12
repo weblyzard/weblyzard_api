@@ -3,7 +3,6 @@ package com.weblyzard.api.model.jesaja;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -38,8 +37,8 @@ public class KeywordCalculationProfile {
      *  Examples: <code>List.of("noun", "noun:noun", "noun:noun:noun")</code>
      */
     @JsonProperty("valid_grammar_group_patterns")
-    private Set<String> requiredPosTags;
-    
+    private List<String> validGrammarGroupPatterns;
+
     /** minimum significance of phrases to get included in the analysis. */
     @JsonProperty("min_phrase_significance")
     private double minPhraseSignificance;
