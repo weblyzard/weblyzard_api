@@ -94,6 +94,7 @@ class XML2013(XMLParser):
         'user_favourites_count': ('user_favourites_count', 'wl'),  # TW
         'user_post_count': ('user_post_count', 'wl'),
         'user_following': ('user_following', 'wl'),
+        'user_view_count': ('user_view_count', 'wl'),  # YT
         'num_tweets': ('user_post_count', 'wl'),  # TW
         'user_created': ('user_created', 'wl'),  # TW
         'user_id': ('user_id', 'wl'),  # FB, G+
