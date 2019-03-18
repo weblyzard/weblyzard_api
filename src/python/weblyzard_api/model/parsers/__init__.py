@@ -162,8 +162,13 @@ class JSONParserBase(object):
         valid_from = None
         if 'published_date' in meta_data:
             try:
-                from dateutil.parser import parse
-                valid_from = parse(meta_data['published_date'])
+                if isinstance(meta_data['published_date'], basestring):
+                    from dateutil.parser import parse
+                    valid_from = parse(meta_data['published_date'])
+                elif isinstance(meta_data['published_date'], float) or \
+                        isinstance(meta_data['published_date'], int):
+                    valid_from = datetime.utcfromtimestamp(
+                        meta_data['published_date'])
             except Exception as e:
                 raise MissingFieldException(
                     "Could not process published_date: %s" % meta_data['published_date'])
