@@ -1,17 +1,18 @@
 package com.weblyzard.api.client.integration;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.bind.JAXBException;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weblyzard.api.client.RecognyzeClient;
 import com.weblyzard.api.client.WebserviceClientConfig;
@@ -27,13 +28,13 @@ public class RecognyzeClientIT extends TestClientBase {
     private static final String PSALMS_DOCS_WEBLYZARDFORMAT =
             "resources/reference/weblyzard-example.json";
 
-    private static Document loadDocument() throws JAXBException, IOException {
+    private static Document loadDocument() throws IOException {
         return objectMapper.readValue(new File(PSALMS_DOCS_WEBLYZARDFORMAT), Document.class);
     }
 
     private RecognyzeClient recognizeClient;
 
-    @Before
+    @BeforeEach
     public void testLoadProfile() {
         recognizeClient = new RecognyzeClient(new WebserviceClientConfig());
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
@@ -42,7 +43,7 @@ public class RecognyzeClientIT extends TestClientBase {
     }
 
     @Test
-    public void testSearchDocument() throws JAXBException, IOException {
+    public void testSearchDocument() throws IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
 
         Document request = loadDocument();
@@ -55,7 +56,7 @@ public class RecognyzeClientIT extends TestClientBase {
     }
 
     @Test
-    public void testSearchDocuments() throws JAXBException, IOException {
+    public void testSearchDocuments() throws IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
         Set<Document> request = new HashSet<>();
         Document document = loadDocument();
@@ -69,7 +70,7 @@ public class RecognyzeClientIT extends TestClientBase {
     }
 
     @Test
-    public void testSearchDocumentsWithoutId() throws JAXBException, IOException {
+    public void testSearchDocumentsWithoutId() throws IOException {
         assumeTrue(weblyzardServiceAvailable(recognizeClient));
         Set<Document> request = new HashSet<>();
         request.add(loadDocument());

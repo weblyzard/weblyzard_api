@@ -2,8 +2,10 @@ package com.weblyzard.api.model.jesaja;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,11 +23,21 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class KeywordCalculationProfile {
 
-    @JsonProperty("min_ngram_length")
-    private int minNGramLength = 1;
+    /** A mapping of part-of-speech (POS) tags to the corresponding
+     *  grammar groups.
+     *  <p>
+     *  Examples: <code>Map.of("NN", "noun", "NNS", "noun", "VB", "verb");</code>
+     */
+    @JsonProperty("pos_grammar_group_mapping")
+    private Map<String, String> posGrammarGroupMapping;
 
-    @JsonProperty("max_ngram_length")
-    private int maxNGramLength = 3;
+    /** A {@link Set} of valid grammar group patterns used for the keyword
+     *  computation process.
+     *  <p>
+     *  Examples: <code>List.of("noun", "noun:noun", "noun:noun:noun")</code>
+     */
+    @JsonProperty("valid_grammar_group_patterns")
+    private List<String> validGrammarGroupPatterns;
 
     /** minimum significance of phrases to get included in the analysis. */
     @JsonProperty("min_phrase_significance")
@@ -46,14 +58,6 @@ public class KeywordCalculationProfile {
     /** minimum number of tokens required. */
     @JsonProperty("min_token_count")
     private int minTokenCount = 1;
-
-    /** allowed part-of-speech (POS) tags. */
-    @JsonProperty("valid_pos_tags")
-    private Set<String> validPosTags;
-
-    /** required part-of-speech (POS) tags. */
-    @JsonProperty("required_pos_tags")
-    private Set<String> requiredPosTags;
 
     /** stoplist to use. */
     @JsonProperty("stoplists")

@@ -1,11 +1,11 @@
 package com.weblyzard.api.serialize.json;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weblyzard.api.model.document.Sentence;
 import java.io.IOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SerializationTest {
 
