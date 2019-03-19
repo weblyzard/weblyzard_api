@@ -606,10 +606,17 @@ class XMLParser(object):
             relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             for key, items in relations.iteritems():
-                rel_attributes = cls.dump_xml_attributes({'key': key},
-                                                         mapping=cls.RELATION_MAPPING)
+                rel_attributes = {'key': key}
+                if isinstance(items, dict):
+                    for att_key in items.keys():
+                        rel_attributes['format'] = att_key
+                    items = items.values()
+
                 if not isinstance(items, list):
                     items = [items]
+
+                rel_attributes = cls.dump_xml_attributes(rel_attributes,
+                                                         mapping=cls.RELATION_MAPPING)
 
                 for value in items:
                     try:
