@@ -606,27 +606,30 @@ class XMLParser(object):
             relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             for key, items in relations.iteritems():
+                rel_items = []
                 rel_attributes = {'key': key}
                 if isinstance(items, dict):
-                    for att_key in items.keys():
-                        rel_attributes['format'] = att_key
-                    items = items.values()
+                    for url_format, urls in items.iteritems():
+                        rel_attributes['format'] = url_format
+                        rel_items.append((rel_attributes, urls))
+                elif isinstance(items, list):
+                    rel_items = [(rel_attributes, item)
+                                 for item in items]
+                else:
+                    rel_items = [(rel_attributes, items)]
 
-                if not isinstance(items, list):
-                    items = [items]
+                for rel_attributes, urls in rel_items:
 
-                rel_attributes = cls.dump_xml_attributes(rel_attributes,
-                                                         mapping=cls.RELATION_MAPPING)
-
-                for value in items:
+                    rel_attributes = cls.dump_xml_attributes(rel_attributes,
+                                                             mapping=cls.RELATION_MAPPING)
                     try:
-                        value = cls.get_xml_value(value)
+                        urls = cls.get_xml_value(urls)
                         rel_elem = etree.SubElement(root,
                                                     '{%s}relation' % cls.get_default_ns(
                                                     ),
                                                     attrib=rel_attributes,
                                                     nsmap={})
-                        rel_elem.text = etree.CDATA(value)
+                        rel_elem.text = etree.CDATA(urls)
 
                     except Exception as e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))
