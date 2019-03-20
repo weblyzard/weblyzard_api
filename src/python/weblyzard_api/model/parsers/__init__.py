@@ -606,12 +606,21 @@ class XMLParser(object):
             relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             for key, items in relations.iteritems():
-                rel_items = []
+
                 rel_attributes = {'key': key}
+                rel_items = []
+
                 if isinstance(items, dict):
-                    for url_format, urls in items.iteritems():
-                        rel_attributes['format'] = url_format
-                        rel_items.append((rel_attributes, urls))
+                    for url, attributes in items.iteritems():
+                        rel_attributes = {'key': key}
+                        attributes = {key: value for (
+                            key, value) in attributes.iteritems() if key in cls.RELATION_MAPPING}
+                        rel_attributes.update(attributes)
+                        rel_items.append((rel_attributes, url))
+#                     for url_format, urls in items.iteritems():
+#                         rel_attributes = {'key': key}
+#                         rel_attributes['format'] = url_format
+#                         rel_items.append((rel_attributes, urls))
                 elif isinstance(items, list):
                     rel_items = [(rel_attributes, item)
                                  for item in items]

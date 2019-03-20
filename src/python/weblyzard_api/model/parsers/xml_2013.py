@@ -163,6 +163,9 @@ class XML2013(XMLParser):
                        'content': ('key', 'wl')}
 
     RELATION_MAPPING = {'key': ('key', 'wl'),
+                        'type': ('type', 'wl'),
+                        'domain': ('domain', 'wl'),
+                        'internal': ('internal', 'wl'),
                         'format': ('format', 'dc')}
 
     @classmethod
