@@ -606,20 +606,36 @@ class XMLParser(object):
             relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             for key, items in relations.iteritems():
-                rel_attributes = cls.dump_xml_attributes({'key': key},
-                                                         mapping=cls.RELATION_MAPPING)
-                if not isinstance(items, list):
-                    items = [items]
 
-                for value in items:
+                rel_attributes = {'key': key}
+                rel_items = []
+
+                if isinstance(items, dict):
+                    for url, attributes in items.iteritems():
+                        rel_attributes = {'key': key}
+                        attributes = {key: value for (
+                            key, value) in attributes.iteritems() if key in cls.RELATION_MAPPING}
+                        rel_attributes.update(attributes)
+                        rel_items.append((rel_attributes, url))
+
+                elif isinstance(items, list):
+                    rel_items = [(rel_attributes, item)
+                                 for item in items]
+                else:
+                    rel_items = [(rel_attributes, items)]
+
+                for rel_attributes, urls in rel_items:
+
+                    rel_attributes = cls.dump_xml_attributes(rel_attributes,
+                                                             mapping=cls.RELATION_MAPPING)
                     try:
-                        value = cls.get_xml_value(value)
+                        urls = cls.get_xml_value(urls)
                         rel_elem = etree.SubElement(root,
                                                     '{%s}relation' % cls.get_default_ns(
                                                     ),
                                                     attrib=rel_attributes,
                                                     nsmap={})
-                        rel_elem.text = etree.CDATA(value)
+                        rel_elem.text = etree.CDATA(urls)
 
                     except Exception as e:
                         print('Skipping bad cdata: %s (%s)' % (value, e))

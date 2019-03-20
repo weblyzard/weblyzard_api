@@ -73,6 +73,8 @@ class XML2013(XMLParser):
         # DOCUMENT RELATIONS (CID<->CID only) #################################
         # reference to other document (outgoing link)
         'references': ('references', 'dc'),
+        'relation': ('relation', 'dc'),
+
         # reference to similar document (re-tweet)
         'source': ('source', 'dc'),
         # reference to top-level parent (thread ancestor)
@@ -160,7 +162,11 @@ class XML2013(XMLParser):
     FEATURE_MAPPING = {'key': ('key', 'wl'),
                        'content': ('key', 'wl')}
 
-    RELATION_MAPPING = {'key': ('key', 'wl')}
+    RELATION_MAPPING = {'key': ('key', 'wl'),
+                        'type': ('type', 'wl'),
+                        'domain': ('domain', 'wl'),
+                        'internal': ('internal', 'wl'),
+                        'format': ('format', 'dc')}
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
