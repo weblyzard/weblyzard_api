@@ -617,10 +617,7 @@ class XMLParser(object):
                             key, value) in attributes.iteritems() if key in cls.RELATION_MAPPING}
                         rel_attributes.update(attributes)
                         rel_items.append((rel_attributes, url))
-#                     for url_format, urls in items.iteritems():
-#                         rel_attributes = {'key': key}
-#                         rel_attributes['format'] = url_format
-#                         rel_items.append((rel_attributes, urls))
+
                 elif isinstance(items, list):
                     rel_items = [(rel_attributes, item)
                                  for item in items]
