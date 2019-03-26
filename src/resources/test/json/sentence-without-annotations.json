@@ -1,0 +1,26 @@
+[
+   {
+    "end": 169,
+    "id": null,
+    "start": 0,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 244,
+    "id": null,
+    "start": 170,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 334,
+    "id": null,
+    "start": 245,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 387,
+    "id": null,
+    "start": 342,
+    "@type": "SentenceCharSpan"
+   }
+]
