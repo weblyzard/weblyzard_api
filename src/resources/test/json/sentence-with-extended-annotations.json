@@ -1,0 +1,29 @@
+[
+   {
+    "end": 169,
+    "id": null,
+    "start": 0,
+    "semOrient": 0.1,
+    "significance": 0.9,
+    "mediaCriticismScore": 0.8,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 244,
+    "id": null,
+    "start": 170,
+    "semOrient": 0.1,
+    "significance": 0.9,
+    "veracityScore": 0.6,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 334,
+    "id": null,
+    "start": 245,
+    "semOrient": 0.1,
+    "significance": 0.9,
+    "mediaCriticismScore": 0.8,
+    "@type": "SentenceCharSpan"
+   }
+]
