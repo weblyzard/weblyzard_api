@@ -26,7 +26,7 @@ class OpinionClient(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
-    def get_polarity(self, content, content_format):
+    def get_polarity(self, content, content_format, annotations=None):
         '''
         Sends the content in the content_format to the opinion mining server
         to calculate the polarity/sentiment of the content.
@@ -47,7 +47,8 @@ class OpinionClient(MultiRESTClient):
             try:
                 result = self.request('document',
                                       parameters={'format': content_format,
-                                                  'content': content},
+                                                  'content': content,
+                                                  'annotations': annotations},
                                       return_plain=False)
                 break
             except Exception as e:
