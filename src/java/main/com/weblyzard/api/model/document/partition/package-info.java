@@ -1,5 +1,5 @@
 /**
- * Classes that are used to partition the document
+ * Classes that are used to partition the document.
  * 
  * @author Albert Weichselbraun
  *
