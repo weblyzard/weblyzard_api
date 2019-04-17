@@ -1,5 +1,5 @@
 /**
- * webLyzard API model classes
+ * webLyzard API model classes.
  *
  * @author Albert Weichselbraun
  */

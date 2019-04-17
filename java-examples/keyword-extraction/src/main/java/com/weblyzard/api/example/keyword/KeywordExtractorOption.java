@@ -8,33 +8,50 @@ public class KeywordExtractorOption extends OptionsBase {
     @Option(name = "help", abbrev = 'h', help = "Print usage info.", defaultValue = "false")
     public boolean printHelp;
 
-    @Option(name = "Profile name", abbrev = 'n',
+    @Option(name = "profile-name", abbrev = 'n',
             help = "Profile name used for the trained keyword extraction model.",
             defaultValue = "default")
     public String profileName;
 
-    @Option(name = "Reference documents", abbrev = 'r',
+    @Option(name = "document-language", abbrev = 'l',
+            help = "Force the given document language on all documents.", defaultValue = "")
+    public String documentLanguage;
+
+    @Option(name = "reference-documents", abbrev = 'r',
             help = "Directory with the reference documents used to train the keyword extraction.",
             defaultValue = "")
     public String referenceCorpusDirectory;
 
-    @Option(name = "Target documents", abbrev = 't',
-            help = "Directory with the documents to annotate.", defaultValue = "")
+    @Option(name = "target-documents", abbrev = 't',
+            help = "Directory with the target documents to annotate.", defaultValue = "")
     public String targetCorpusDirectory;
 
-    @Option(name = "Web service base URL", abbrev = 'b', help = "webLyzard API base URL.",
+    @Option(name = "web-service-url", abbrev = 'b', help = "webLyzard API base URL.",
             defaultValue = "")
     public String webServiceBaseUrl;
 
-    @Option(name = "Web service user name", abbrev = 'u', help = "webLyzard API user name.",
+    @Option(name = "web-service-user", abbrev = 'u', help = "webLyzard API user name.",
             defaultValue = "")
     public String webServiceUserName;
 
-    @Option(name = "Web service password", abbrev = 'p', help = "webLyzard API password.",
+    @Option(name = "web-service-password", abbrev = 'p', help = "webLyzard API password.",
             defaultValue = "")
     public String webServiceUserPassword;
 
-    @Option(name = "Use compression", abbrev = 'c', help = "Compress requests to the API server.",
+    @Option(name = "use-compression", abbrev = 'c', help = "Compress requests to the API server.",
             defaultValue = "false")
     public String useCompression;
+
+    @Option(name = "valid-grammar-group-patterns", abbrev = 'v',
+            help = "Grammar group patterns used for extracting keywords.",
+            defaultValue = "noun,noun:noun,noun:prep:noun,noun:noun,noun:adj:noun,adv:adj:noun,adj:noun:noun")
+    public String validGrammarGroupPatterns;
+
+    @Option(name = "num-keywords", abbrev = 'k', help = "Number of keywords to compute.",
+            defaultValue = "15")
+    public String numKeywords;
+
+    @Option(name = "debug-jeremia-document-file", abbrev = 'j',
+            help = "Write Jeremia results into the given file.", defaultValue = "")
+    public String debugJeremiaDocumentFile;
 }

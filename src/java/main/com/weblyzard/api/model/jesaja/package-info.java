@@ -1,8 +1,8 @@
+
 /**
+ * The webLyzard significant phrase and keyword extraction service.
  * 
- */
-/**
- * @author albert
+ * @author Albert Weichselbraun
  *
  */
 package com.weblyzard.api.model.jesaja;
