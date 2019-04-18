@@ -24,6 +24,8 @@ NAMESPACES = {
     'http://www.opengis.net/ont/geosparql#': 'geo',
     'http://www.wikidata.org/prop/direct/': 'wdt',
     'http://www.wikidata.org/entity/': 'wd',
+    'http://www.wikidata.org/prop/': 'p',
+    'http://www.wikidata.org/prop/qualifier/': 'pq',
     'http://sws.geonames.org/': 'gn',
     # weblyzard namespaces
     'http://weblyzard.com/skb/lexicon/': 'skblex',
@@ -106,7 +108,7 @@ def parse_language_tagged_string(value):
     :returns:
     """
     lang = None
-    if len(value) >1 and value[0] == value[-1] == '"':
+    if len(value) > 1 and value[0] == value[-1] == '"':
         value = value[1:-1]
     if len(value) > 6 and value[-6] == '@':
         lang = value[-5:]
