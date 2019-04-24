@@ -1,0 +1,34 @@
+[
+   {
+    "end": 169,
+    "id": null,
+    "start": 0,
+    "semOrient": 0.1,
+    "significance": 0.2,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 244,
+    "id": null,
+    "start": 170,
+    "semOrient": 0.1,
+    "significance": 0.2,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 334,
+    "id": null,
+    "start": 245,
+    "semOrient": 0.1,
+    "significance": 0.2,
+    "@type": "SentenceCharSpan"
+   },
+   {
+    "end": 387,
+    "id": null,
+    "start": 342,
+    "semOrient": 0.1,
+    "significance": 0.2,
+    "@type": "SentenceCharSpan"
+   }
+]
