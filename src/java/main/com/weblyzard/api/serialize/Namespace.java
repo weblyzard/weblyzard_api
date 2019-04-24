@@ -1,7 +1,6 @@
 package com.weblyzard.api.serialize;
 
 import java.util.Optional;
-import com.weblyzard.api.model.Region;
 import lombok.Getter;
 
 /**
@@ -38,10 +37,10 @@ public enum Namespace {
     }
 
     /**
-     * Transforms a String into the corresponding {@link Region}.
+     * Transforms a String into the corresponding {@link Namespace}.
      * 
-     * @param region region String to be converted into an enum.
-     * @return the Region constant for the given region (case insensitive)
+     * @param prefix prefix String to be converted into an enum.
+     * @return the Namespace constant for the given region (case insensitive)
      */
     public static Optional<Namespace> getNamespace(String prefix) {
         try {
