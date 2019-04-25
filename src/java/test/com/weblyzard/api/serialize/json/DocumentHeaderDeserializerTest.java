@@ -20,6 +20,14 @@ public class DocumentHeaderDeserializerTest {
     }
 
     @Test
+    public void testUppercasePrefix() throws JsonProcessingException, IOException {
+        QName result = (QName) deserializer.deserializeKey("WL:jonas_type", null);
+        assertTrue(result.getLocalPart().equals("WL:jonas_type"));
+        assertTrue(result.getNamespaceURI().equals(""));
+        assertTrue(result.getPrefix().equals(""));
+    }
+
+    @Test
     public void testSupportedNamespace() throws JsonProcessingException, IOException {
         QName result = (QName) deserializer
                 .deserializeKey("http://www.weblyzard.com/wl/2013#jonas_type", null);
@@ -35,6 +43,7 @@ public class DocumentHeaderDeserializerTest {
         assertTrue(result.getNamespaceURI().equals(""));
         assertTrue(result.getPrefix().equals(""));
     }
+
 
     @Test
     public void testUnknownNamespace() throws JsonProcessingException, IOException {
