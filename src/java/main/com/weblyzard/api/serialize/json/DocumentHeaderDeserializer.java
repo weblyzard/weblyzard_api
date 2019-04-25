@@ -24,12 +24,12 @@ public class DocumentHeaderDeserializer extends KeyDeserializer {
 
         // check if key represents a supported full qualified URI
         Optional<Namespace> optionalNamespace = Arrays.stream(Namespace.values())
-                .filter(namespace -> key.startsWith(namespace.getNamespace())).findFirst();
+                .filter(namespace -> key.startsWith(namespace.getUri())).findFirst();
 
         if (optionalNamespace.isPresent()) {
             Namespace namespace = optionalNamespace.get();
-            String local = key.substring(namespace.getNamespace().length());
-            return new QName(namespace.getNamespace(), local, namespace.name());
+            String local = key.substring(namespace.getUri().length());
+            return new QName(namespace.getUri(), local, namespace.getPrefix());
         }
 
         // check if key represents a supported prefixed URI
@@ -41,7 +41,7 @@ public class DocumentHeaderDeserializer extends KeyDeserializer {
 
             if (optionalPrefix.isPresent()) {
                 Namespace namespace = optionalPrefix.get();
-                return new QName(namespace.getNamespace(), local, namespace.name());
+                return new QName(namespace.getUri(), local, namespace.getPrefix());
             }
         }
 
