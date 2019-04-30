@@ -19,7 +19,7 @@ class JeremiaTest(unittest.TestCase):
              'format': 'text/html',
              'header': {}} for content_id in xrange(1000, 1020)]
     def setUp(self):
-        service_url = 'gecko7.wu.ac.at:8081'
+        service_url = 'localhost:63001'
         self.client = JeremiaNg(url=service_url)
 
 
