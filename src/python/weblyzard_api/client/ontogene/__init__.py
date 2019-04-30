@@ -45,7 +45,6 @@ class OgerClient(object):
 
     """
 
-    ONTOGENE_NS = 'https://pub.cl.uzh.ch/projects/ontogene/medmon-oger/'
     ENTITY_TYPE = 'MedicalEntity'
     DEFAULT_TIMEOUT_SEC = 10
 
@@ -101,9 +100,8 @@ class OgerClient(object):
                 for rs in passage['annotations']:
                     start = rs['locations'][0]['offset']
                     end = rs['locations'][0]['offset'] + len(rs['text'])
-                    key = self.ONTOGENE_NS + rs['infons']['native_id']
                     ditem = {
-                        "key": key,
+                        "key": rs['infons']['native_id'],
                         #"resource": rs['infons']['original_resource'],
                         "surfaceForm": rs['text'],  # .encode("utf8")
                         "start": start,
