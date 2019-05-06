@@ -19,7 +19,7 @@ class JeremiaTest(unittest.TestCase):
              'format': 'text/html',
              'header': {}} for content_id in xrange(1000, 1020)]
     def setUp(self):
-        service_url = 'http://gecko7.wu.ac.at:8081'
+        service_url = 'localhost:63001'
         self.client = JeremiaNg(url=service_url)
 
 
@@ -41,14 +41,10 @@ class JeremiaTest(unittest.TestCase):
                'header': {}}
         print('submitting document...')
         result = self.client.submit_document(doc)
-
+        tockens = set([tocken['pos'] for tocken in result['partitions']['TOKEN']])
+        assert 'VNW|pers|pron|obl|red|3|ev|masc' not in tockens
         from pprint import pprint
-        tockens = []
-        for tocken in result['partitions']['TOKEN']:
-            tockens.append(tocken['pos'])
-        tockens = set(tockens)
         pprint(result)
-        pprint(tockens)
         assert result['lang'] == 'NL'
 
 
