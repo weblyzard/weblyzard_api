@@ -8,9 +8,6 @@ Created on Oct 24, 2016
 
 import json
 import requests
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class SKBRESTClient(object):
@@ -233,53 +230,6 @@ class SKBRESTClient(object):
             return json.loads(response.text)
         else:
             return None
-
-    def check_entity_exists_in_skb(self, entity, entity_type):
-        '''
-        Check if a given entity already exists in the SKB. Supports both
-        direct (i.e. URI as key) and `owl:sameAs` lookups.
-        :param entity
-        :param entity_type
-        :returns: bool
-        '''
-        return self.check_existing_entity_key(entity, entity_type) is not None
-
-    def check_existing_entity_key(self, entity, entity_type):
-        '''
-        If a given entity already exists in the SKB, as identified directly
-        (i. e. by URI) or by `owl:sameAs` lookups, return the identifier of
-        the existing equivalent entity
-        :param entity
-        :param entity_type
-        :returns: uri of exisiting equivalent entity or None
-        '''
-        uri = entity.get('uri', entity.get('key', None))
-
-        same_as = entity.get('owl:sameAs', [])
-        if isinstance(same_as, basestring):
-            same_as = [same_as]
-        for uri in [uri] + same_as:
-            try:
-                if uri:
-                    exact_match = self.get_entity(uri=uri)
-                    if exact_match is not None:
-                        return exact_match['uri']
-                sameas_match = self.get_entity_by_property(
-                    property_value=uri,
-                    property_name='owl:sameAs',
-                    entity_type=entity_type
-                )
-                if sameas_match is not None:
-                    logger.info(
-                        u'Identified entity {} through sameAs match.'.format(uri))
-                    return sameas_match[0]['uri']
-            except Exception as e:
-                logger.error('Check if entity exists in SKB failed for %s: %s',
-                             uri,
-                             e)
-        return None
-
-
 
 
 class SKBSentimentDictionary(dict):
