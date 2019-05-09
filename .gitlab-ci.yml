@@ -1,0 +1,23 @@
+# CI config
+image: registry.gitlab.semanticlab.net/docker/py3base:latest
+
+# TODO before_script
+
+stages:
+    - test
+    - build-package
+
+pytest:
+    stage: test
+
+pylint:
+    stage: test
+
+vulture:
+    stage: test
+
+build:
+    stage: build-package
+    only:
+        - migration
+
