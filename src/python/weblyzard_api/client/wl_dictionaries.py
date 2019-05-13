@@ -9,8 +9,12 @@ The source files for the dictionaries (of format *.csv and *.txt) are being
 copied by Jenkins from the opinion-mining-lexicon repository to 
 services.weblyzard.com.
 '''
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import os
-import urlparse
+import urllib.parse
 
 from datetime import datetime, timedelta
 from socket import gethostbyname, gaierror
@@ -49,7 +53,7 @@ class WeblyzardDictionaries(object):
         :returns:
             True, if the dictionary server is online/reachable.
         '''
-        hostname = urlparse.urlsplit(server_url).netloc
+        hostname = urllib.parse.urlsplit(server_url).netloc
         try:
             gethostbyname(hostname)
             return True
@@ -97,7 +101,7 @@ class WeblyzardDictionaries(object):
         :param dictionary_uri: URI for the dictionary, e.g. people/de/titles/all.txt
         '''
 
-        full_url = urlparse.urljoin(self.server_url, dictionary_uri)
+        full_url = urllib.parse.urljoin(self.server_url, dictionary_uri)
         response = self.retrieve.open(full_url,
                                       user=self.user,
                                       pwd=self.password,
@@ -115,7 +119,7 @@ class WeblyzardDictionaries(object):
         :returns: target_path if the file was saved
         '''
 
-        full_url = urlparse.urljoin(self.server_url, dictionary_uri)
+        full_url = urllib.parse.urljoin(self.server_url, dictionary_uri)
         response = self.retrieve.open(full_url,
                                       user=self.user,
                                       pwd=self.password)

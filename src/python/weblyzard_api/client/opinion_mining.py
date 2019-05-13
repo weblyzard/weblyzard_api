@@ -4,6 +4,7 @@
 Created on 15.12.2014
 
 '''
+from __future__ import unicode_literals
 from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.client import (

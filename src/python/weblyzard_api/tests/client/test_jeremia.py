@@ -3,6 +3,9 @@
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import range
 import unittest
 
 from sys import argv
@@ -17,7 +20,7 @@ class JeremiaTest(unittest.TestCase):
              'body': 'Good day Mr. President! Hello "world" {}'.format(content_id),
              'title': 'Hello "world" more ',
              'format': 'text/html',
-             'header': {}} for content_id in xrange(1000, 1020)]
+             'header': {}} for content_id in range(1000, 1020)]
 
     def test_single_document_processing(self):
         j = Jeremia()
@@ -123,7 +126,7 @@ class JeremiaTest(unittest.TestCase):
             'Retos de la #RSE (II): 1. Más autocrítica en las memorias de sostenibilidad': 17,
         }
 
-        for text, token_number in test_texts.iteritems():
+        for text, token_number in list(test_texts.items()):
             result = j.submit_documents(documents=text_as_doc(text))
             res_xml = list(result)[0]['xml_content']
             assert len(

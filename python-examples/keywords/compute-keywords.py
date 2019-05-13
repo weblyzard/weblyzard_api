@@ -5,11 +5,16 @@
 Jesaja Keyword Service - Example
 Written by Albert Weichselbraun <weichselbraun@weblyzard.com>
 '''
+from __future__ import print_function
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
 from sys import path
 from os.path import join as os_join, dirname
 from glob import glob
-from cPickle import loads, load, dump
+from pickle import loads, load, dump
 from gzip import GzipFile
 from json import dump as jdump
 from time import time
@@ -70,7 +75,7 @@ def get_tokens(sentence):
     text = sentence['value']
     tokens = []
     for indices in sentence['tok_list'].split(' '):
-        start, end = map(int, indices.split(','))
+        start, end = list(map(int, indices.split(',')))
         tokens.append(text[start:end])
 
     return tokens
@@ -101,16 +106,16 @@ if __name__ == '__main__':
         while jesaja.rotate_shard(MATVIEW_NAME) == 0:
             print(" Adding corpus...")
             jesaja.add_documents(
-                MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
+                MATVIEW_NAME, [doc.get_xml_document() for doc in list(xml_corpus_documents.values())])
 
     print("Computing keywords...")
     result = jesaja.get_keywords(
-        MATVIEW_NAME, [doc.get_xml_document() for doc in xml_corpus_documents.values()])
+        MATVIEW_NAME, [doc.get_xml_document() for doc in list(xml_corpus_documents.values())])
 
-    for content_id, xml_document in xml_corpus_documents.items():
+    for content_id, xml_document in list(xml_corpus_documents.items()):
         xml_document.add_attribute(
-            'keywords', '; '.join(result[unicode(content_id)]))
+            'keywords', '; '.join(result[str(content_id)]))
 
     with GzipFile("results.json.gz", "w") as f:
         jdump([doc.get_xml_document()
-               for doc in xml_corpus_documents.values()], f, indent=True)
+               for doc in list(xml_corpus_documents.values())], f, indent=True)

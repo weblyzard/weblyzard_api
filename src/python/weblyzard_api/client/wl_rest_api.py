@@ -6,7 +6,10 @@ This module provides an easy client for the WL Document REST API.
 
     .. moduleauthor: Fabian Fischer <fabian.fischer@modul.ac.at>
 """
+from __future__ import unicode_literals
 
+from builtins import str
+from builtins import object
 import json
 import requests
 

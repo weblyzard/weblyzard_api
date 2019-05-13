@@ -6,6 +6,7 @@
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
+from __future__ import unicode_literals
 from os import getenv
 
 WEBLYZARD_API_URL = getenv("WEBLYZARD_API_URL") or "http://localhost:8080"

@@ -5,7 +5,10 @@
 This module provides a class that provides some convenience methods
 to access a fuseki triplestore.
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import object
 import datetime
 import hashlib
 import io
@@ -60,14 +63,14 @@ class FusekiWrapper(object):
         '''
         Replaces a prefix known to FusekiWrapper by the full URI path.
         '''
-        for full_path, prefix in self.NAMESPACES.items():
+        for full_path, prefix in list(self.NAMESPACES.items()):
             prefix_colon = u'{}:'.format(prefix)
             if uri.startswith(prefix_colon):
                 return uri.replace(prefix_colon, full_path)
         return uri
 
     def prefix_uri(self, uri):
-        for full_path, prefix in self.NAMESPACES.items():
+        for full_path, prefix in list(self.NAMESPACES.items()):
             prefix_colon = u'{}:'.format(prefix)
             if uri.startswith(full_path):
                 return uri.replace(full_path, prefix_colon)
@@ -81,7 +84,7 @@ class FusekiWrapper(object):
         '''
         if isinstance(o, tuple) and len(o) == 3:
             return((self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2])))
-        elif isinstance(o, str) or isinstance(o, unicode):
+        elif isinstance(o, str) or isinstance(o, str):
             if o.startswith('http'):
                 return u'<{}>'.format(o)
             else:
@@ -93,8 +96,8 @@ class FusekiWrapper(object):
         '''
         if isinstance(value, int):
             return False
-        elif isinstance(value, str) or isinstance(value, unicode):
-            for prefix in self.NAMESPACES.values():
+        elif isinstance(value, str) or isinstance(value, str):
+            for prefix in list(self.NAMESPACES.values()):
                 if value.startswith(prefix):
                     return True
             if value.startswith('<http') and value[-1:] == '>':

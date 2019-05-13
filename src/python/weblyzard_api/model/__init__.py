@@ -5,6 +5,11 @@ Created on May 14, 2018
 
 .. codeauthor: Max Göbel <goebel@weblyzard.com>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import map
+from builtins import str
+from builtins import object
 import json
 import hashlib
 
@@ -139,7 +144,7 @@ class Sentence(object):
             try:
                 m = hashlib.md5()
                 m.update(value.encode('utf-8')
-                         if isinstance(value, unicode) else str(value))
+                         if isinstance(value, str) else str(value))
                 md5sum = m.hexdigest()
             except Exception as e:
                 print(e)
@@ -157,7 +162,7 @@ class Sentence(object):
         '''
         :returns: a dictionary representation of the sentence object.
         '''
-        return dict((k, v) for k, v in self.__dict__.iteritems() if not k.startswith('_'))
+        return dict((k, v) for k, v in list(self.__dict__.items()) if not k.startswith('_'))
 
     def get_sentence(self):
         return self.value
@@ -217,9 +222,9 @@ class Sentence(object):
             raise StopIteration
 
         for token_pos in self.token.split(' '):
-            start, end = map(int, token_pos.split(','))
+            start, end = list(map(int, token_pos.split(',')))
             # yield self.sentence.decode('utf8')[start:end]
-            yield unicode(self.sentence)[start:end]
+            yield str(self.sentence)[start:end]
 
     def get_dependency_list(self):
         '''
@@ -295,7 +300,7 @@ class Sentence(object):
         '''
         key_map = self.API_MAPPINGS[version]
         return {key_map[key]: value for key, value in
-                self.as_dict().iteritems() if key in key_map and
+                list(self.as_dict().items()) if key in key_map and
                 value is not None}
 
     sentence = property(get_sentence, set_sentence)

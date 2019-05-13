@@ -7,6 +7,9 @@ Before uploading a new repository, visit the web-interface and create the
 repository (type: Java Native store).
 ATTENTION: uploading the same dataset multiple times will lead to redundant data.
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import range
 import os.path
 
 from weblyzard_api.client import WEBLYZARD_API_URL
@@ -18,7 +21,7 @@ from weblyzard_api.client.openrdf import OpenRdfClient
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i + n]
 
 

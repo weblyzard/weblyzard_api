@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import str
+from builtins import zip
 import unittest
 import json
 
@@ -90,7 +94,7 @@ class TestXMLContent(unittest.TestCase):
         print(xml.get_xml_document())
 
         for sentence in xml.sentences:
-            print(sentence.md5sum, sentence.value, sentence.significance)
+            print((sentence.md5sum, sentence.value, sentence.significance))
 
         xml.sentences = sentences
 
@@ -350,11 +354,11 @@ class TestXMLContent(unittest.TestCase):
         xml2005 = xml_obj.get_xml_document(xml_version=2005)
         xml2013 = xml_obj.get_xml_document(xml_version=2013)
 
-        assert 'id="0b1bd9b348e90e02738da7d20db09196"' not in xml2005
+        assert 'id="0b1bd9b348e90e02738da7d20db09196"' not in xml2005 
         assert 'md5sum="0b1bd9b348e90e02738da7d20db09196"' in xml2005
 
-        assert 'wl:id="0b1bd9b348e90e02738da7d20db09196"' in xml2013
-        assert 'md5sum="0b1bd9b348e90e02738da7d20db09196"' not in xml2013
+        assert 'wl:id="0b1bd9b348e90e02738da7d20db09196"' in xml2013  
+        assert 'md5sum="0b1bd9b348e90e02738da7d20db09196"' not in xml2013  
 
     def test_tokenization(self):
         ''' tests the tokenization '''
@@ -362,7 +366,7 @@ class TestXMLContent(unittest.TestCase):
         for sentence in xml.sentences:
             for token, reference_token in zip(sentence.tokens,
                                               self.sentence_tokens[sentence.md5sum]):
-                print(token, reference_token)
+                print((token, reference_token))
                 self.assertEqual(token, reference_token)
 
     def test_token_to_pos_mapping(self):
@@ -461,8 +465,11 @@ class TestSentence(unittest.TestCase):
         Tests that Sentence objects can successfully be serialized to
         JSON.
         '''
-        assert self.test_sentence.to_json(version=1.0) == \
-            json.dumps(self.test_sentence_dict)
+        # [mig] this tests seems a bit pointless, because the serialization order doesn't matter, but we're checking for it anyway
+        # [mig] so I will serialize the contents, then read them again and compare the dictionaries
+        serialized_dict = json.dumps(self.test_sentence_dict)
+        serialized_sentence = self.test_sentence.to_json(version=1.0)
+        assert json.loads(serialized_dict) == json.loads(serialized_sentence)
 
 
 if __name__ == '__main__':
