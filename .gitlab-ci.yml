@@ -1,20 +1,31 @@
 # CI config
-image: registry.gitlab.semanticlab.net/docker/py3base:latest
 
-# TODO before_script
+# shared key for the python jobs to not have redundant config parameters
+.python_before_script: &shareme  # using anchor magic
+    before_script:
+        - git submodule sync --recursive
+        - git submodule update --init --recursive --remote
+        - cp wl_python_utils/python3/* .
+        - sed -i s/-dev//g setup.py
+        - export PROJECT=$(/usr/bin/python3 -W ignore ./setup.py --name | awk 'NR==1{print $1}')
+        - export VERSION=$(/usr/bin/python3 -W ignore ./setup.py --version | awk 'NR==1{print $1}')
 
 stages:
-    - test
+    - test-python
+    - test-java
     - build-package
 
 pytest:
-    stage: test
+    <<: *shareme  # we reference the anchor here
+    stage: test-python
 
 pylint:
-    stage: test
+    <<: *shareme
+    stage: test-python
 
-vulture:
-    stage: test
+    vulture:
+    <<: *shareme
+    stage: test-python
 
 build:
     stage: build-package
