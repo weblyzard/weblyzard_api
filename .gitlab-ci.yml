@@ -17,18 +17,18 @@ stages:
 
 pytest:
     <<: *shareme  # we reference the anchor here
-    stage: test-python
+    #    stage: test-python
 
 pylint:
     <<: *shareme
-    stage: test-python
+    #    stage: test-python
 
     vulture:
     <<: *shareme
-    stage: test-python
+    #    stage: test-python
 
-build:
-    stage: build-package
-    only:
-        - migration
+    #build:
+    #    stage: build-package
+    #    only:
+    #        - migration
 
