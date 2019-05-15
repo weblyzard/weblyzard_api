@@ -1,3 +1,4 @@
 [submodule "wl_python_utils"]
 	path = wl_python_utils
-	url = https://gitlab.semanticlab.net/core/wl_python_utils.git
+	url = ../../wl_python_utils.git
+	branch = master
