@@ -32,7 +32,7 @@ pytest:
 
 pylint:
     <<: *py_anchor
-    stage: test-python@
+    stage: test-python
     script:
         - tox -e pylint
     when: manual
