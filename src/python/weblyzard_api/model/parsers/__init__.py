@@ -123,7 +123,7 @@ class JSONParserBase(object):
     def _check_document_format(cls, api_dict, strict=True):
         '''
         Checks if the api_dict has all required fields and if there
-        are unexpected and unallowed keys. 
+        are unexpected and unallowed keys.
 
         :param api_dict: The dict to check.
         :type api_dict: dict
@@ -272,7 +272,7 @@ class XMLParser(object):
 
     @classmethod
     def is_supported(cls, xml_content):
-        return 'xmlns:wl="{}"'.format(cls.SUPPORTED_NAMESPACE) in xml_content 
+        return 'xmlns:wl="{}"'.format(cls.SUPPORTED_NAMESPACE) in xml_content
 
     @classmethod
     def invert_mapping(cls, mapping):
@@ -294,7 +294,7 @@ class XMLParser(object):
     def parse(cls, xml_content, remove_duplicates=True):
         ''' '''
         parser = etree.XMLParser(recover=True, strip_cdata=False)
-        root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''), 
+        root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''),
                                 parser=parser)
         try:
             invert_mapping = cls.invert_mapping(cls.ATTR_MAPPING)
@@ -646,7 +646,8 @@ class XMLParser(object):
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
 
-        return etree.tostring(root, encoding='unicode', pretty_print=True)  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode' ... 
+        return etree.tostring(root, encoding='unicode', pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
+        # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :) 
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
