@@ -51,12 +51,10 @@ sonarqube:
         - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
         - cd java-examples/keyword-extraction; mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
     only:
-        - master
-        - develop
         - migration
     tags:
         - java10
-            
+
 # the sed and exports needed are in the actual build-package.sh
 build:
     stage: build-package

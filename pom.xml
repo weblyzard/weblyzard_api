@@ -147,6 +147,7 @@
 				<version>3.0.1</version>
 				<configuration>
 					<additionalparam>-Xdoclint:none -html5</additionalparam>
+					<failOnError>false</failOnError>
 				</configuration>
 				<executions>
 					<execution>
@@ -326,4 +327,3 @@
 		</dependency>
 	</dependencies>
 </project>
-
