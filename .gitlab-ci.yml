@@ -48,6 +48,11 @@ vulture:
 # the sed and exports needed are in the actual build-package.sh
 build:
     stage: build-package
+    before_script:
+        - git submodule sync --recursive
+        - git submodule update --init --recursive --remote
+        - cp --no-clobber wl_python_utils/python3/* .
+        - sed -i s/-dev//g setup.py
     script:
         - chmod +x build-package.sh
         - ./build-package.sh
