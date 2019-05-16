@@ -4,7 +4,7 @@
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
 # cp -no-clobber copies files but doesn't overwrite existing ones (e.g. sonar property settings)
 .python_defaults: &py_anchor  # using anchor magic
-    image: registry.gitlab.semanticlab.net/docker/py3base:latest 
+    image: registry.gitlab.semanticlab.net/docker/py3base:latest
     before_script:
         - git submodule sync --recursive
         - git submodule update --init --recursive --remote
@@ -16,12 +16,12 @@
         - export SRCDIR=src/python/weblyzard_api/
     only:
         - migration
-    tags: 
+    tags:
         - docker
-    
+
 stages:
     - test-python
-      #    - test-java
+    - test-java
     - build-package
 
 pytest:
@@ -44,7 +44,19 @@ vulture:
     script:
         - tox -e vulture
     when: manual
-    
+
+sonarqube:
+    stage: test-java
+    script:
+        - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
+        - cd java-examples/keyword-extraction; mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
+    only:
+        - master
+        - develop
+        - migration
+    tags:
+        - java10
+            
 # the sed and exports needed are in the actual build-package.sh
 build:
     stage: build-package
