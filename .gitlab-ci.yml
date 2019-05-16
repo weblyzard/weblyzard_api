@@ -2,12 +2,13 @@
 
 # shared key for the python jobs to not have redundant config parameters
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
+# cp -no-clobber copies files but doesn't overwrite existing ones (e.g. sonar property settings)
 .python_defaults: &py_anchor  # using anchor magic
     image: registry.gitlab.semanticlab.net/docker/py3base:latest 
     before_script:
         - git submodule sync --recursive
         - git submodule update --init --recursive --remote
-        - cp wl_python_utils/python3/* .
+        - cp --no-clobber wl_python_utils/python3/* .
         - sed -i s/-dev//g setup.py
         - export PROJECT=$(/usr/bin/python3 -W ignore ./setup.py --name | awk 'NR==1{print $1}')
         - export VERSION=$(/usr/bin/python3 -W ignore ./setup.py --version | awk 'NR==1{print $1}')
