@@ -19,7 +19,7 @@ class TestXMLDeprecated(unittest.TestCase):
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
             </wl:page> '''
 
-        attributes, sentences = XMLDeprecated.parse(xml)
+        attributes, sentences, title_annotations, body_annotations, features, relations = XMLDeprecated.parse(xml)
         assert len(attributes) == 4
         assert len(sentences) == 1
         for sent in sentences:
