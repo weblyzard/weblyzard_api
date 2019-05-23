@@ -129,9 +129,15 @@ class WeblyzardDictionaries(object):
 
             if not os.path.exists(target_directory):
                 os.makedirs(target_directory)
-
-            with open(target_path, 'w') as f:
-                f.write(response.read())
+            content = response.read()
+            if isinstance(content, bytes):
+                try:
+                    content = content.decode('utf-8')
+                    with open(target_path, 'w') as f:
+                        f.write(content)
+                except Exception as e:
+                    with open(target_path, 'wb') as f:
+                        f.write(content)
 
             return target_path
 
