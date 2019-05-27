@@ -483,7 +483,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         http://de.dbpedia.org/page/Matthias_Strolz?output=text%2Fplain
         '''
 
-        base_url = 'http://dbpedia.org/resource/'
+        base_url = 'http://dbpedia.org/page/'
 #         if language and language != 'en':
 #             base_url = 'http://{}.dbpedia.org/page/'.format(language)
         format_suffix = '?output=text%2Fplain'
