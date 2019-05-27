@@ -13,7 +13,6 @@ from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS, OGER_API_URL)
 from weblyzard_api.xml_content import XMLContent
 
-
 logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_RETRY_DELAY = 15
@@ -102,7 +101,7 @@ class OgerClient(object):
                     end = rs['locations'][0]['offset'] + len(rs['text'])
                     ditem = {
                         "key": rs['infons']['native_id'],
-                        #"resource": rs['infons']['original_resource'],
+                        # "resource": rs['infons']['original_resource'],
                         "surfaceForm": rs['text'],  # .encode("utf8")
                         "start": start,
                         "end": end,
@@ -111,13 +110,12 @@ class OgerClient(object):
 
                         # formerly: rs['infons']['type']
                         "entity_type": self.ENTITY_TYPE,
-                        "annotation_type": self.ENTITY_TYPE
+#                         "annotation_type": self.ENTITY_TYPE
                     }
                     annotations.append(ditem)
         except Exception as message:
             logger.error(message)
             raise Exception('Error: {}'.format(message))
-
 
         return annotations
 

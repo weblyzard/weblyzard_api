@@ -277,16 +277,17 @@ class Document(object):
                 return token_span.pos
         return None
 
-    def get_sentences(self):
+    def get_sentences(self, zero_based=False):
         """
         Legacy method to extract webLyzard sentences from content model.
         """
         result = []
-
+        offset = 0
         if not self.SENTENCE_KEY in self.partitions:
             return result
-
         for sentence_span in self.partitions[self.SENTENCE_KEY]:
+            if zero_based:
+                offset = sentence_span.start
             if not sentence_span.span_type == 'SentenceCharSpan':
                 raise Exception('Bad sentence span')
 
@@ -297,7 +298,7 @@ class Document(object):
                                                        target_partition_key=self.TITLE_KEY)) > 0
             pos_sequence = ' '.join([ts.pos for ts in token_spans])
             tok_sequence = ' '.join(
-                ['{},{}'.format(ts.start, ts.end) for ts in token_spans])
+                ['{},{}'.format(ts.start - offset, ts.end - offset) for ts in token_spans])
             value = self.get_text_by_span(sentence_span)
             result.append(Sentence(md5sum=sentence_span.md5sum,
                                    sem_orient=sentence_span.sem_orient,
