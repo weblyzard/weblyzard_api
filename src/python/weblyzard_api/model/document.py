@@ -65,7 +65,9 @@ class Document(object):
         if self.content is None or len(self.content) == 0:
             return ''
         if self.TITLE_KEY in self.partitions:
-            self.partitions[self.TITLE_KEY]
+            title_spans = self.partitions[self.TITLE_KEY]
+            titles = [self.content[span.start:span.end] for span in title_spans]
+            return ' '.join(titles)
         return ''
 
     def set_title(self, title):
