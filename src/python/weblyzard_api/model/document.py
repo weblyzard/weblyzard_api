@@ -62,7 +62,9 @@ class Document(object):
         if self.content is None or len(self.content) == 0:
             return ''
         if self.TITLE_KEY in self.partitions:
-            self.partitions[self.TITLE_KEY]
+            title_spans = self.partitions[self.TITLE_KEY]
+            titles = [self.content[span.start:span.end] for span in title_spans]
+            return ' '.join(titles)
         return ''
 
     def set_title(self, title):
@@ -299,11 +301,15 @@ class Document(object):
             pos_sequence = ' '.join([ts.pos for ts in token_spans])
             tok_sequence = ' '.join(
                 ['{},{}'.format(ts.start - offset, ts.end - offset) for ts in token_spans])
+            try:
+                dep_sequence = ' '.join(['{}:{}'.format(*ts.dependency.values()) for ts in token_spans])
+            except AttributeError:
+                dep_sequence = None
             value = self.get_text_by_span(sentence_span)
             result.append(Sentence(md5sum=sentence_span.md5sum,
                                    sem_orient=sentence_span.sem_orient,
                                    significance=sentence_span.significance,
                                    pos=pos_sequence, token=tok_sequence,
-                                   value=value, is_title=is_title))
+                                   value=value, is_title=is_title, dependency=dep_sequence))
 
         return result

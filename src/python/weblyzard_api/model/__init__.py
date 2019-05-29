@@ -20,22 +20,32 @@ class SpanFactory(object):
 
     @classmethod
     def new_span(cls, span):
-        assert isinstance(span, dict) and 'span_type' in span
+        try:
+            assert isinstance(span, dict) and 'span_type' in span
+        except AssertionError as e:
+            raise e
 
         if span['span_type'] == 'CharSpan':
-            return CharSpan(span_type='CharSpan', start=span['start'], end=span['end'])
+            return CharSpan(span_type='CharSpan', start=span['start'],
+                            end=span['end'])
         elif span['span_type'] == 'TokenCharSpan':
             return TokenCharSpan(span_type='TokenCharSpan', start=span['start'],
-                                 end=span['end'], pos=span['pos'],
-                                 dependency=span['dependency'])
+                                 end=span['end'], pos=span.get('pos', None),
+                                 dependency=span.get('dependency', None))
         elif span['span_type'] == 'SentenceCharSpan':
-            return SentenceCharSpan(span_type='SentenceCharSpan', start=span['start'],
-                                    end=span['end'], sem_orient=span['sem_orient'],
-                                    md5sum=span['md5sum'], significance=span['significance'])
+            return SentenceCharSpan(span_type='SentenceCharSpan',
+                                    start=span['start'],
+                                    end=span['end'],
+                                    sem_orient=span.get('sem_orient', None),
+                                    md5sum=span.get('md5sum', span.get('id')),
+                                    significance=span.get('significance', None))
         raise Exception('Invalid Span Type: {}'.format(span['span_type']))
 
 
 class CharSpan(object):
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end'}
 
     def __init__(self, span_type, start, end):
         self.span_type = span_type
@@ -43,33 +53,61 @@ class CharSpan(object):
         self.end = end
 
     def to_dict(self):
-        return {'@type': self.span_type,
-                'start': self.start,
-                'end': self.end}
+        return {k: getattr(self, v) for k, v in self.DICT_MAPPING.items()}
+
+    @classmethod
+    def from_dict(cls, dict_):
+        mismatched_keys = {k: v for k, v in dict_.items() if
+                           k not in cls.DICT_MAPPING}
+        if mismatched_keys:
+            pass  # debugging
+        kwargs = {cls.DICT_MAPPING[k]: v for k, v in dict_.items()}
+        try:
+            return cls(**kwargs)
+        except TypeError as e:
+            raise e
+
+    def to_tuple(self):
+        return (self.start, self.end)
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
 
 
 class TokenCharSpan(CharSpan):
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'pos': 'pos',
+                    'dependency': 'dependency'}
+    DEFAULT_POS = 'XY'
 
-    def __init__(self, span_type, start, end, pos, dependency=None):
+    def __init__(self, span_type, start, end, pos=None, dependency=None):
         CharSpan.__init__(self, span_type, start, end)
+        if pos is None:
+            pos = self.DEFAULT_POS
         self.pos = pos
         self.dependency = dependency
 
-    def to_dict(self):
-        return {'@type': self.span_type,
-                'start': self.start,
-                'end': self.end,
-                'pos': self.pos,
-                'dependency': self.dependency}
+    # def to_dict(self):
+    #     return {'@type': self.span_type,
+    #             'start': self.start,
+    #             'end': self.end,
+    #             'pos': self.pos,
+    #             'dependency': self.dependency}
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
 
 
 class SentenceCharSpan(CharSpan):
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'md5sum': 'md5sum',
+                    'semOrient': 'sem_orient',
+                    'significance': 'significance',
+                    'id': 'md5sum'}
 
     def __init__(self, span_type, start, end, md5sum, sem_orient,
                  significance):
@@ -78,13 +116,13 @@ class SentenceCharSpan(CharSpan):
         self.sem_orient = sem_orient
         self.significance = significance
 
-    def to_dict(self):
-        return {'@type': self.span_type,
-                'start': self.start,
-                'end': self.end,
-                'md5sum': self.md5sum,
-                'semOrient': self.sem_orient,
-                'significance': self.significance}
+    # def to_dict(self):
+    #     return {'@type': self.span_type,
+    #             'start': self.start,
+    #             'end': self.end,
+    #             'md5sum': self.md5sum,
+    #             'semOrient': self.sem_orient,
+    #             'significance': self.significance}
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
@@ -132,7 +170,8 @@ class Sentence(object):
         }
     }
 
-    def __init__(self, md5sum=None, pos=None, sem_orient=None, significance=None,
+    def __init__(self, md5sum=None, pos=None, sem_orient=None,
+                 significance=None,
                  token=None, value=None, is_title=False, dependency=None):
 
         if not md5sum and value:
@@ -157,7 +196,8 @@ class Sentence(object):
         '''
         :returns: a dictionary representation of the sentence object.
         '''
-        return dict((k, v) for k, v in self.__dict__.iteritems() if not k.startswith('_'))
+        return dict((k, v) for k, v in self.__dict__.iteritems() if
+                    not k.startswith('_'))
 
     def get_sentence(self):
         return self.value
