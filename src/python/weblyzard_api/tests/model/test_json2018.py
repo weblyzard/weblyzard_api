@@ -315,6 +315,7 @@ class TestJSON2018Parser(unittest.TestCase):
         document = Document.from_json(self.JSON_2018)
         sentences = document.get_sentences()
         assert len(sentences) == 3
+        assert document.title == u'1 Corinthians 13:4-7'
 
     def test_full(self):
         document = Document.from_json(self.JSON_2018)
@@ -326,6 +327,8 @@ class TestJSON2018Parser(unittest.TestCase):
         pprint('================')
         pprint(json.dumps(result))
         assert result == expected_json
+
+
 
 
 if __name__ == '__main__':
