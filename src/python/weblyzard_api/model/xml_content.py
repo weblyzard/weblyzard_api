@@ -167,11 +167,14 @@ class XMLContent(object):
                                                                  features=features,
                                                                  relations=relations)
 
-    def get_plain_text(self):
+    def get_plain_text(self, include_title=False):
         ''' :returns: the plain text of the XML content '''
-        if not len(self.sentences):
+        if not len(self.all_sentences):
             return ''
-        return '\n'.join([s.value for s in self.sentences if not s.is_title])
+        if not include_title:
+            return '\n'.join([s.value for s in self.all_sentences if not s.is_title])
+        else:
+            return '\n'.join([s.value for s in self.all_sentences])
 
     @classmethod
     def get_text(cls, text):
@@ -359,8 +362,12 @@ class XMLContent(object):
         content_id = self._get_attribute('content_id')
         return int(content_id) if content_id else content_id
 
-    def get_sentences(self):
-        return self.sentence_objects
+    def get_sentences(self, include_title_sentences=False):
+        return self.titles * include_title_sentences +\
+               self.sentence_objects
+
+    def get_all_sentences(self):
+        return self.get_sentences(include_title_sentences=True)
 
     def update_sentences(self, sentences):
         ''' 
@@ -385,6 +392,7 @@ class XMLContent(object):
                         if new_value:
                             setattr(sentence, attrib, new_value)
 
+    all_sentences = property(get_all_sentences, update_sentences)
     sentences = property(get_sentences, update_sentences)
     plain_text = property(get_plain_text)
     nilsimsa = property(get_nilsimsa)
