@@ -298,6 +298,8 @@ class Document(object):
                                                       target_partition_key=self.TOKEN_KEY)
             is_title = len(self.get_partition_overlaps(search_span=sentence_span,
                                                        target_partition_key=self.TITLE_KEY)) > 0
+            
+            # serialize POS, tokens, and dependecy to string
             pos_sequence = ' '.join([ts.pos for ts in token_spans])
             tok_sequence = ' '.join(
                 ['{},{}'.format(ts.start - offset, ts.end - offset) for ts in token_spans])
@@ -305,11 +307,21 @@ class Document(object):
                 dep_sequence = ' '.join(['{}:{}'.format(*ts.dependency.values()) for ts in token_spans])
             except AttributeError:
                 dep_sequence = None
+
+            # prefer semOrient over sem_orient, if both are annotated
+            sem_orient = None
+            if hasattr(sentence_span, 'semOrient'):
+                sem_orient = sentence_span.semOrient
+            else:
+                sem_orient = sentence_span.sem_orient
+            
+            # finally, extract the sentence text.    
             value = self.get_text_by_span(sentence_span)
+                        
             result.append(Sentence(md5sum=sentence_span.md5sum,
-                                   sem_orient=sentence_span.sem_orient,
+                                   sem_orient=sem_orient,
                                    significance=sentence_span.significance,
                                    pos=pos_sequence, token=tok_sequence,
-                                   value=value, is_title=is_title, dependency=dep_sequence))
+                                   value=value, is_title=is_title))
 
         return result
