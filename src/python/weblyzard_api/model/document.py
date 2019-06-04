@@ -329,6 +329,7 @@ class Document(object):
                                    sem_orient=sem_orient,
                                    significance=sentence_span.significance,
                                    pos=pos_sequence, token=tok_sequence,
-                                   value=value, is_title=is_title))
+                                   value=value, is_title=is_title,
+                                   dependency=dep_sequence))
 
         return result
