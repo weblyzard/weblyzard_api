@@ -310,7 +310,7 @@ class Document(object):
 
             # prefer semOrient over sem_orient, if both are annotated
             sem_orient = None
-            if hasattr(sentence_span, 'semOrient'):
+            if getattr(sentence_span, 'semOrient', None) is not None:
                 sem_orient = sentence_span.semOrient
             else:
                 sem_orient = sentence_span.sem_orient
