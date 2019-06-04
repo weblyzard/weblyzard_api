@@ -252,7 +252,8 @@ class Document(object):
     @classmethod
     def overlapping(cls, spanA, spanB):
         ''' Return whether two spans overlap. '''
-        return spanB.start <= spanA.start and spanB.end >= spanA.end
+        return (spanB.start <= spanA.start and spanB.end >= spanA.end) or \
+                (spanA.start <= spanB.start and spanA.end >= spanB.end)
 
     def get_partition_overlaps(self, search_span, target_partition_key):
         ''' Return all spans from a given target_partition_key that overlap 
@@ -322,7 +323,7 @@ class Document(object):
             else:
                 sem_orient = sentence_span.sem_orient
 
-            # finally, extract the sentence text.    
+            # finally, extract the sentence text.
             value = self.get_text_by_span(sentence_span)
 
             result.append(Sentence(md5sum=sentence_span.md5sum,
