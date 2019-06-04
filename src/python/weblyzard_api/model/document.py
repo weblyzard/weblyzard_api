@@ -18,7 +18,6 @@ from weblyzard_api.model.exceptions import (MissingFieldException,
 
 
 class Document(object):
-
     # supported partition keys
     SENTENCE_KEY = u'SENTENCE'
     TITLE_KEY = u'TITLE'
@@ -124,8 +123,8 @@ class Document(object):
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
                         result[key] = value
-#             if not len(result):
-#                 return None
+            #             if not len(result):
+            #                 return None
             return result
         if isinstance(data, object):
             result = {}
@@ -175,18 +174,21 @@ class Document(object):
         # This is tricky ... the mapping cannot be easily inversed
         # making the md5sum to content_id conversion at the top level necessary
         inverse_mapping = {v: k for k,
-                           v in cls.MAPPING.items() if k != 'content_id'}
+                                    v in cls.MAPPING.items() if
+                           k != 'content_id'}
         parsed_content = Document._dict_transform(
             dict_, mapping=inverse_mapping)
         parsed_content['content_id'] = parsed_content.pop('md5sum')
 
         # populate default dicts:
         partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                      for label, spans in parsed_content['partitions'].iteritems()} \
+                      for label, spans in
+                      parsed_content['partitions'].iteritems()} \
             if 'partitions' in parsed_content else {}
 
         header = parsed_content['header'] \
-            if 'header' in parsed_content and parsed_content['header'] is not None else {}
+            if 'header' in parsed_content and parsed_content[
+            'header'] is not None else {}
 
         if not len(header):
             header = parsed_content['header'] \
@@ -282,6 +284,7 @@ class Document(object):
     def get_sentences(self, zero_based=False):
         """
         Legacy method to extract webLyzard sentences from content model.
+        :param zero_based: if True, enforce token indices starting at 0
         """
         result = []
         offset = 0
@@ -296,15 +299,19 @@ class Document(object):
             # get tokens
             token_spans = self.get_partition_overlaps(search_span=sentence_span,
                                                       target_partition_key=self.TOKEN_KEY)
-            is_title = len(self.get_partition_overlaps(search_span=sentence_span,
-                                                       target_partition_key=self.TITLE_KEY)) > 0
-            
+            is_title = len(
+                self.get_partition_overlaps(search_span=sentence_span,
+                                            target_partition_key=self.TITLE_KEY)) > 0
+
             # serialize POS, tokens, and dependecy to string
             pos_sequence = ' '.join([ts.pos for ts in token_spans])
             tok_sequence = ' '.join(
-                ['{},{}'.format(ts.start - offset, ts.end - offset) for ts in token_spans])
+                ['{},{}'.format(ts.start - offset, ts.end - offset) for ts in
+                 token_spans])
             try:
-                dep_sequence = ' '.join(['{}:{}'.format(*ts.dependency.values()) for ts in token_spans])
+                dep_sequence = ' '.join(
+                    ['{}:{}'.format(*ts.dependency.values()) for ts in
+                     token_spans])
             except AttributeError:
                 dep_sequence = None
 
@@ -314,10 +321,10 @@ class Document(object):
                 sem_orient = sentence_span.semOrient
             else:
                 sem_orient = sentence_span.sem_orient
-            
+
             # finally, extract the sentence text.    
             value = self.get_text_by_span(sentence_span)
-                        
+
             result.append(Sentence(md5sum=sentence_span.md5sum,
                                    sem_orient=sem_orient,
                                    significance=sentence_span.significance,
