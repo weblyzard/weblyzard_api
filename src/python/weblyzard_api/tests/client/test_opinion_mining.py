@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from builtins import object
 from os import getenv
 
+import unittest
 import pytest
 
 from weblyzard_api.client.opinion_mining import OpinionClient
@@ -43,7 +44,7 @@ class TestOpinionClient(object):
         print(result)
         document = Document.from_dict(dict_=result['content'])
         document_polarity = result['polarity']
-        assert document_polarity == 0.8606629658238704
+        assert document_polarity - 0.710669054519 < 1e-8
         for sentence in document.get_sentences():
             if sentence.value == 'Ehre sei dem Vater, dem Sohn und dem Heiligen Geist.':
                 assert sentence.sem_orient == 1.0

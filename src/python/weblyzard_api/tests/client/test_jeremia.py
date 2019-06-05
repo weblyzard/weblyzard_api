@@ -46,7 +46,7 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia()
 
         # this test requires Jeremia version 0.0.4+
-        if j.version() < "0.0.4":
+        if j.version() < b"0.0.4":
             return
 
         print('submitting document with annotations...')
@@ -205,8 +205,8 @@ class JeremiaTest(unittest.TestCase):
         assert 'dc:source="http://test.org"' in first['xml_content']
         assert 'dc:author="Ana"' in first['xml_content']
 
-        assert '<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="124" dc:format="text/html" xml:lang="de" wl:nilsimsa="8030473ac029f400680409349e47100e00a29585c04a25ec808342b4c0a1aec8">' in second[
-            'xml_content']
+        assert '<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="124" dc:format="text/html" xml:lang="de" wl:nilsimsa="8030473ac029f400680409349e47100e00a29585c04a25ec808342b4c0a1aec8">'.lower() in second[
+            'xml_content'].lower()
 
     def test_has_queued_threads(self):
         has_queued_threads = Jeremia().has_queued_threads()
