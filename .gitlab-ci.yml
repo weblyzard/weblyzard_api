@@ -1,0 +1,42 @@
+stages:
+  - test
+  - deploy
+
+sonarqube_preview:
+  script:
+    - git checkout origin/master
+    - git merge $CI_COMMIT_SHA --no-commit --no-ff
+    - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U
+    - mvn --batch-mode verify sonar:sonar -Dsonar.analysis.mode=preview -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_SHA
+  stage: test
+  except:
+    - develop
+    - master
+    - /^hotfix_.*$/
+    - /.*-hotfix$/
+  tags:
+    - java10
+
+sonarqube:
+  script:
+    - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U
+    - mvn --batch-mode verify sonar:sonar
+  stage: test
+  only:
+    - master
+    - develop
+  tags:
+    - java10
+
+code_semanticlab_net_deploy:
+  script:
+    - pwd
+    - echo "=================================="
+    - mvn clean
+    - mvn deploy -U
+    - echo "=================================="
+  stage: deploy
+  only:
+    - master
+  tags:
+    - java10
