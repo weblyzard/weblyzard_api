@@ -37,9 +37,8 @@ public class KeywordDocument implements Serializable {
 
     private void initKeywordsFromDocument() {
         if (document.getHeader() != null) {
-            this.keywords = Arrays
-                    .asList(document.getHeader().get(LegacyDocument.WL_KEYWORD_ATTR).split(";"))
-                    .stream().map(String::trim).collect(Collectors.toList());
+            this.keywords = Arrays.asList(document.getHeader().get(LegacyDocument.WL_KEYWORD_ATTR).split(";")).stream()
+                            .map(String::trim).collect(Collectors.toList());
 
         } else {
             this.keywords = new ArrayList<>();

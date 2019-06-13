@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -22,11 +21,9 @@ import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.Sentence;
 import com.weblyzard.api.model.joel.ClusterResult;
 
-/** @author norman.suesstrunk@htwchur.ch */
 public class JoelClientIT extends TestClientBase {
 
-    private static final String PSALMS_DOCS_WEBLYZARDFORMAT_JSON =
-            "resources/psalms-docs-weblyzardformat.json";
+    private static final String PSALMS_DOCS_WEBLYZARDFORMAT_JSON = "resources/psalms-docs-weblyzardformat.json";
 
     public List<LegacyDocument> psalmDocs;
 
@@ -54,13 +51,15 @@ public class JoelClientIT extends TestClientBase {
         }
     }
 
-    /** tests adding a document without keywords in the header */
+    /** 
+     * Tests adding a document without keywords in the header. 
+     */
     @Test
     public void testDocumentHeaderBadRequest() {
         assumeTrue(weblyzardServiceAvailable(joelClient));
-        Exception e = assertThrows(ClientErrorException.class, () -> { 
+        Exception e = assertThrows(ClientErrorException.class, () -> {
             joelClient.addDocuments(Arrays.asList(new LegacyDocument[] {
-                    new LegacyDocument().setSentences(Arrays.asList(new Sentence("Test")))}));
+                            new LegacyDocument().setSentences(Arrays.asList(new Sentence("Test")))}));
         });
         assertEquals(JoelClient.NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE, e.getMessage());
     }
@@ -72,9 +71,8 @@ public class JoelClientIT extends TestClientBase {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             return objectMapper.readValue(
-                    JoelClientIT.class.getClassLoader()
-                            .getResourceAsStream(PSALMS_DOCS_WEBLYZARDFORMAT_JSON),
-                    new TypeReference<List<LegacyDocument>>() {});
+                            JoelClientIT.class.getClassLoader().getResourceAsStream(PSALMS_DOCS_WEBLYZARDFORMAT_JSON),
+                            new TypeReference<List<LegacyDocument>>() {});
         } catch (JsonParseException e1) {
             e1.printStackTrace();
         } catch (JsonMappingException e1) {

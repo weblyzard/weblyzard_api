@@ -17,7 +17,7 @@ import com.weblyzard.api.model.document.partition.TokenCharSpan;
  */
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY)
 @JsonSubTypes({@Type(value = CharSpan.class), @Type(value = TokenCharSpan.class),
-        @Type(value = SentenceCharSpan.class)})
+                @Type(value = SentenceCharSpan.class)})
 public interface Span {
 
     /**

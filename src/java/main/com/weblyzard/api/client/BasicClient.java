@@ -40,21 +40,21 @@ public abstract class BasicClient {
         if (c.isDebug()) {
             // https://jersey.java.net/documentation/latest/user-guide.html#logging_chapter
             // -> Example 21.1. Logging on client-side
-            config.register(new LoggingFeature(logger, Level.SEVERE,
-                    LoggingFeature.Verbosity.PAYLOAD_TEXT, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+            config.register(new LoggingFeature(logger, Level.SEVERE, LoggingFeature.Verbosity.PAYLOAD_TEXT,
+                            LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
         }
         if (c.isUseCompression()) {
-            config.register(EncodingFilter.class).register(GZipEncoder.class)
-                    .property(ClientProperties.USE_ENCODING, "gzip");
+            config.register(EncodingFilter.class).register(GZipEncoder.class).property(ClientProperties.USE_ENCODING,
+                            "gzip");
         }
         if (c.getUsername() != null && c.getPassword() != null) {
-            config.register(HttpAuthenticationFeature.basicBuilder()
-                    .credentials(c.getUsername(), c.getPassword()).build());
+            config.register(HttpAuthenticationFeature.basicBuilder().credentials(c.getUsername(), c.getPassword())
+                            .build());
         }
 
         this.baseTarget = JerseyClientBuilder.createClient(config)
-                .target(c.getUrl() + c.getServicePrefix(defaultServicePrefix))
-                .register(new JacksonJsonProvider());
+                        .target(c.getUrl() + c.getServicePrefix(defaultServicePrefix))
+                        .register(new JacksonJsonProvider());
     }
 
     public WebTarget getTarget(String urlTemplate) {

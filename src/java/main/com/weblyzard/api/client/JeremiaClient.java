@@ -22,8 +22,8 @@ public class JeremiaClient extends BasicClient {
     private static final int DEFAULT_DOUBLE_SENTENCE_THRESHOLD = 10;
 
     private static final String SUBMIT_DOCUMENT_SERVICE_URL = "/rest/submit_document";
-    private static final String SUBMIT_DOCUMENTS_SERVICE_URL = "/rest/submit_documents/{"
-            + TEMPLATE_SOURCE_ID + "}/{" + TEMPLATE_DOUBLE_SENTENCE_THRESHOLD + "}";
+    private static final String SUBMIT_DOCUMENTS_SERVICE_URL =
+                    "/rest/submit_documents/{" + TEMPLATE_SOURCE_ID + "}/{" + TEMPLATE_DOUBLE_SENTENCE_THRESHOLD + "}";
     private static final GenericType<List<Document>> DOCUMENT_LIST_TYPE = new GenericType<>() {};
 
     public JeremiaClient(WebserviceClientConfig c) {
@@ -37,8 +37,8 @@ public class JeremiaClient extends BasicClient {
      * @return the corresponding {@link Document} object
      */
     public Document submitDocument(MirrorDocument request) throws WebApplicationException {
-        try (Response response = super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
+        try (Response response = super.getTarget(SUBMIT_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(request))) {
             super.checkResponseStatus(response);
             return response.readEntity(Document.class);
         }
@@ -51,13 +51,11 @@ public class JeremiaClient extends BasicClient {
      * @param sourceId used for sentence deduplication
      * @return a list of {@link Document} objects
      */
-    public List<Document> submitDocuments(List<MirrorDocument> request, String sourceId,
-            int doubleSentenceThreshold) {
+    public List<Document> submitDocuments(List<MirrorDocument> request, String sourceId, int doubleSentenceThreshold) {
         try (Response response = super.getTarget(SUBMIT_DOCUMENTS_SERVICE_URL)
-                .resolveTemplate(TEMPLATE_SOURCE_ID, sourceId)
-                .resolveTemplate(TEMPLATE_DOUBLE_SENTENCE_THRESHOLD,
-                        Integer.toString(doubleSentenceThreshold))
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
+                        .resolveTemplate(TEMPLATE_SOURCE_ID, sourceId)
+                        .resolveTemplate(TEMPLATE_DOUBLE_SENTENCE_THRESHOLD, Integer.toString(doubleSentenceThreshold))
+                        .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
             super.checkResponseStatus(response);
             return response.readEntity(DOCUMENT_LIST_TYPE);
         }

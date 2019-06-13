@@ -1,35 +1,24 @@
 package com.weblyzard.api.document;
 
-
-import com.weblyzard.api.model.annotation.Annotation;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
+import com.weblyzard.api.model.annotation.Annotation;
 
 public class AnnotationTest {
 
-    /** This test has been moved from Jeremia */
+    /** 
+     * This test has been moved from Jeremia. 
+     */
     @Test
     public void testConstructors() {
         final Annotation lcd1 = new Annotation();
-        final Annotation lcd2 =
-                Annotation.build("http://dbpedia.org/lcd_data_panel")
-                        .setSurfaceForm("LCD data panel")
-                        .setStart(672)
-                        .setEnd(686)
-                        .setSentence(0);
-        final Annotation lcd3 =
-                Annotation.build("http://dbpedia.org/lcd_data_panel")
-                        .setSurfaceForm("LCD data panel")
-                        .setStart(672)
-                        .setEnd(686)
-                        .setSentence(0)
-                        .setEntityType("Product_Feature")
-                        .annotation();
+        final Annotation lcd2 = Annotation.build("http://dbpedia.org/lcd_data_panel").setSurfaceForm("LCD data panel")
+                        .setStart(672).setEnd(686).setSentence(0);
+        final Annotation lcd3 = Annotation.build("http://dbpedia.org/lcd_data_panel").setSurfaceForm("LCD data panel")
+                        .setStart(672).setEnd(686).setSentence(0).setEntityType("Product_Feature").annotation();
 
         lcd1.setSurfaceForm("LCD data panel");
         lcd1.setStart(672);

@@ -26,8 +26,7 @@ public class InscriptisClient extends BasicClient {
      * @return the corresponding text representation
      */
     public String parseHtml(String html) {
-        try (Response response =
-                super.getTarget(GET_TEXT).request(MediaType.TEXT_HTML).post(Entity.text(html))) {
+        try (Response response = super.getTarget(GET_TEXT).request(MediaType.TEXT_HTML).post(Entity.text(html))) {
             super.checkResponseStatus(response);
             String parseResult = response.readEntity(String.class);
             return parseResult;
