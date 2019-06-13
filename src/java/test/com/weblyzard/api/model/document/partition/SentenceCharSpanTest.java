@@ -26,10 +26,8 @@ class SentenceCharSpanTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Test
-    void testSentencesWithoutAnnotations()
-                    throws JsonParseException, JsonMappingException, IOException {
-        List<SentenceCharSpan> sentenceCharSpanList =
-                        getSentenceCharSpan("sentence-without-annotations.json");
+    void testSentencesWithoutAnnotations() throws JsonParseException, JsonMappingException, IOException {
+        List<SentenceCharSpan> sentenceCharSpanList = getSentenceCharSpan("sentence-without-annotations.json");
         assertEquals(4, sentenceCharSpanList.size());
         int lastStartIndex = -1;
         int lastEndIndex = -1;
@@ -43,10 +41,8 @@ class SentenceCharSpanTest {
     }
 
     @Test
-    void testSentencesWithStandardAnnotations()
-                    throws JsonParseException, JsonMappingException, IOException {
-        List<SentenceCharSpan> sentenceCharSpanList =
-                        getSentenceCharSpan("sentence-with-standard-annotations.json");
+    void testSentencesWithStandardAnnotations() throws JsonParseException, JsonMappingException, IOException {
+        List<SentenceCharSpan> sentenceCharSpanList = getSentenceCharSpan("sentence-with-standard-annotations.json");
         assertEquals(4, sentenceCharSpanList.size());
         int lastStartIndex = -1;
         int lastEndIndex = -1;
@@ -62,10 +58,8 @@ class SentenceCharSpanTest {
     }
 
     @Test
-    void testSentencesWithExtendedAnnotations()
-                    throws JsonParseException, JsonMappingException, IOException {
-        List<SentenceCharSpan> sentenceCharSpanList =
-                        getSentenceCharSpan("sentence-with-extended-annotations.json");
+    void testSentencesWithExtendedAnnotations() throws JsonParseException, JsonMappingException, IOException {
+        List<SentenceCharSpan> sentenceCharSpanList = getSentenceCharSpan("sentence-with-extended-annotations.json");
         assertEquals(3, sentenceCharSpanList.size());
         int lastStartIndex = -1;
         int lastEndIndex = -1;
@@ -78,12 +72,9 @@ class SentenceCharSpanTest {
             assertEquals(0.1, numericSentenceProperties.get("semOrient"));
             assertEquals(0.9, numericSentenceProperties.get("significance"));
         }
-        assertEquals(0.8, sentenceCharSpanList.get(0).getNumericSentenceProperties()
-                        .get("mediaCriticismScore"));
-        assertEquals(0.6, sentenceCharSpanList.get(1).getNumericSentenceProperties()
-                        .get("veracityScore"));
-        assertEquals(0.8, sentenceCharSpanList.get(2).getNumericSentenceProperties()
-                        .get("mediaCriticismScore"));
+        assertEquals(0.8, sentenceCharSpanList.get(0).getNumericSentenceProperties().get("mediaCriticismScore"));
+        assertEquals(0.6, sentenceCharSpanList.get(1).getNumericSentenceProperties().get("veracityScore"));
+        assertEquals(0.8, sentenceCharSpanList.get(2).getNumericSentenceProperties().get("mediaCriticismScore"));
     }
 
     private static List<SentenceCharSpan> getSentenceCharSpan(String fname)

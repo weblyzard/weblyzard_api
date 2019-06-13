@@ -22,7 +22,7 @@ public class FlowClient extends BasicClient {
 
     public Response insertNewDocument(Request request) {
         try (javax.ws.rs.core.Response response = super.getTarget(WEBLYZARD_DOCUMENT_API_URL)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
+                        .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
 
             super.checkResponseStatus(response);
             Response result = response.readEntity(Response.class);

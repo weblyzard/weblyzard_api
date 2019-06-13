@@ -26,8 +26,8 @@ public class GenericAnnotatorClient extends BasicClient implements AnnotationSer
     @Override
     public Document annotateDocument(Document data) {
 
-        try (Response response = super.getTarget(ANNOTATE_DOCUMENT_SERVICE_URL)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data))) {
+        try (Response response = super.getTarget(ANNOTATE_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(data))) {
 
             super.checkResponseStatus(response);
             Document result = response.readEntity(Document.class);

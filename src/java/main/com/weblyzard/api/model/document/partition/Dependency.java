@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * A dependency with the index of the dependency's parent ("-1" indicates the root element) and the
- * corresponding label.
+ * A dependency with the index of the dependency's parent ("-1" indicates the root element) and the corresponding label.
  * 
  * @author Albert Weichselbraun
  */

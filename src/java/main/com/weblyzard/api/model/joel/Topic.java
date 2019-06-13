@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * A Topic is characterized by its "title" and a list of keywords that frequently occur in documents
- * covering the topic. Keywords are represented by their corresponding URLs.
+ * A Topic is characterized by its "title" and a list of keywords that frequently occur in documents covering the topic.
+ * Keywords are represented by their corresponding URLs.
  * 
  * @author Norman Suesstrunk
  * 
