@@ -31,8 +31,7 @@ public class DocumentInputStreamParser {
      * @param stream the input stream to parse
      * @return the parsed document list
      */
-    public static List<LegacyDocument> readDocumentFromStream(InputStream stream)
-            throws JAXBException {
+    public static List<LegacyDocument> readDocumentFromStream(InputStream stream) throws JAXBException {
         List<LegacyDocument> documentList = new ArrayList<>();
         try (JsonParser jp = jsonFactory.createParser(stream)) {
             jp.nextToken();
@@ -57,8 +56,7 @@ public class DocumentInputStreamParser {
      * @param stream the input stream to parse
      * @return the parsed document list
      */
-    public static List<LegacyDocument> readDocumentsFromStream(InputStream stream)
-            throws JAXBException {
+    public static List<LegacyDocument> readDocumentsFromStream(InputStream stream) throws JAXBException {
         List<LegacyDocument> documentList = new ArrayList<>();
         try (JsonParser jp = jsonFactory.createParser(stream)) {
             // read START_ARRAY

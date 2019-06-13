@@ -24,9 +24,8 @@ public class JohnDoeClient extends BasicClient {
      * @return {@link JohnDoeDocument} holds the annonymized content.
      */
     public JohnDoeDocument annonymizeContent(JohnDoeDocument document) {
-        try (Response response =
-                        super.getTarget(ANNON_SERVICE_URL).request(MediaType.APPLICATION_JSON).post(
-                                        Entity.entity(document, MediaType.APPLICATION_JSON))) {
+        try (Response response = super.getTarget(ANNON_SERVICE_URL).request(MediaType.APPLICATION_JSON)
+                        .post(Entity.entity(document, MediaType.APPLICATION_JSON))) {
             super.checkResponseStatus(response);
             return response.readEntity(JohnDoeDocument.class);
         }

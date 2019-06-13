@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * A {@link Cluster} with the corresponding {@link Topic}s as returned by the Joel clustering
- * service.
+ * A {@link Cluster} with the corresponding {@link Topic}s as returned by the Joel clustering service.
  * 
  * @author Norman Süsstrunk
  */

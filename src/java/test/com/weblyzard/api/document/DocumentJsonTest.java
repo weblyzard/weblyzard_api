@@ -1,32 +1,28 @@
 package com.weblyzard.api.document;
 
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.IOException;
+import java.net.URL;
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.weblyzard.api.model.document.LegacyDocument;
 import com.weblyzard.api.model.document.Sentence;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.net.URL;
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 /**
- * Tests the serialization to json and the deserialization from json. Tests specifically for the
- * Document.header field as this field uses custom serializers/deserializers
+ * Tests the serialization to json and the deserialization from json. Tests specifically for the Document.header field
+ * as this field uses custom serializers/deserializers
  *
  * @author Norman Süsstrunk
  */
 public class DocumentJsonTest {
 
     public static final URL WEBLYZARD_EXAMPLE_XML =
-            DocumentJsonTest.class.getClassLoader().getResource("reference/weblyzard-example.xml");
+                    DocumentJsonTest.class.getClassLoader().getResource("reference/weblyzard-example.xml");
 
     private LegacyDocument referenceDocument;
     private QName referenceKeywordQName;
@@ -36,13 +32,9 @@ public class DocumentJsonTest {
     public void before() throws IOException, JAXBException {
 
         // init mock objects
-        referenceDocument =
-                LegacyDocument.fromXml(
-                        Resources.toString(WEBLYZARD_EXAMPLE_XML, Charsets.UTF_8));
+        referenceDocument = LegacyDocument.fromXml(Resources.toString(WEBLYZARD_EXAMPLE_XML, Charsets.UTF_8));
 
-        referenceKeywordQName =
-                new QName(
-                        LegacyDocument.WL_KEYWORD_ATTR.getNamespaceURI(),
+        referenceKeywordQName = new QName(LegacyDocument.WL_KEYWORD_ATTR.getNamespaceURI(),
                         LegacyDocument.WL_KEYWORD_ATTR.getLocalPart());
 
         // set the header
