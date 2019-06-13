@@ -14,8 +14,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
- * A compact annotation contains the annotation's metadata and a list of all entities (i.e.
- * mentions) of that particular annotation.
+ * A compact annotation contains the annotation's metadata and a list of all entities (i.e. mentions) of that particular
+ * annotation.
  *
  * @author goebel@weblyzard.com
  */
@@ -40,10 +40,9 @@ public class CompactAnnotation extends EntityDescriptor {
 
     public CompactAnnotation(final Annotation a) {
         super(a.getKey());
-        setPreferredName(a.getPreferredName()).setEntityType(a.getEntityType())
-                .setEntityMetadata(a.getEntityMetadata()).compactAnnotation()
-                .addSurface(new AnnotationSurface(a.getStart(), a.getEnd(), a.getSentence(),
-                        a.getMd5sum(), a.getSurfaceForm(), a.getConfidence()));
+        setPreferredName(a.getPreferredName()).setEntityType(a.getEntityType()).setEntityMetadata(a.getEntityMetadata())
+                        .compactAnnotation().addSurface(new AnnotationSurface(a.getStart(), a.getEnd(), a.getSentence(),
+                                        a.getMd5sum(), a.getSurfaceForm(), a.getConfidence()));
     }
 
     public static CompactAnnotation build(String key) {

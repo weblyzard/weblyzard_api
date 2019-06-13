@@ -58,8 +58,8 @@ public class Document implements Serializable {
     private Map<DocumentPartition, List<Span>> partitions;
 
     /**
-     * This field contains all annotations after the document's finalization. (i.e. after
-     * titleAnnotations and bodyAnnotations have been merged)
+     * This field contains all annotations after the document's finalization. (i.e. after titleAnnotations and
+     * bodyAnnotations have been merged)
      */
     @JsonProperty("annotations")
     private List<Annotation> annotations;

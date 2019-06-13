@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -13,7 +12,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.bind.DatatypeConverter;
-
 import org.junit.jupiter.api.Test;
 
 public class MD5DigestTest {
@@ -33,9 +31,7 @@ public class MD5DigestTest {
     public void testFromText() {
         final String text = "Ringstrasse 34, 7000 Chur";
         MD5Digest m = MD5Digest.fromText(text);
-        String md5string =
-                DatatypeConverter.printHexBinary(
-                        MD5Digest.getMessageDigest().digest(text.getBytes()));
+        String md5string = DatatypeConverter.printHexBinary(MD5Digest.getMessageDigest().digest(text.getBytes()));
         assertEquals(md5string.toLowerCase(), m.toString());
     }
 
@@ -54,9 +50,8 @@ public class MD5DigestTest {
         time = System.nanoTime();
         List<String> digestString = new ArrayList<>(SAMPLE_SIZE);
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            digestString.add(
-                    DatatypeConverter.printHexBinary(
-                                    MD5Digest.getMessageDigest().digest(testData.get(i).getBytes()))
+            digestString.add(DatatypeConverter
+                            .printHexBinary(MD5Digest.getMessageDigest().digest(testData.get(i).getBytes()))
                             .toLowerCase());
         }
 
@@ -118,10 +113,7 @@ public class MD5DigestTest {
         assertEquals(Arrays.asList(mid, larger1, larger2), lst);
 
         // sorting using Comparable
-        lst =
-                Stream.of(larger2, mid, larger1)
-                        .sorted(Comparator.naturalOrder())
-                        .collect(Collectors.toList());
+        lst = Stream.of(larger2, mid, larger1).sorted(Comparator.naturalOrder()).collect(Collectors.toList());
         assertNotEquals(Arrays.asList(larger2, mid, larger1), lst);
         assertEquals(Arrays.asList(mid, larger1, larger2), lst);
     }

@@ -1,8 +1,8 @@
 /**
  * Java Service Interfaces.
  * 
- * This package contains interfaces that may be implemented by Java classes to provide 
- * services relevant to various use cases.
+ * This package contains interfaces that may be implemented by Java classes to provide services relevant to various use
+ * cases.
  * 
  * Example: {@link com.weblyzard.api.service.AnnotationService}
  * 
