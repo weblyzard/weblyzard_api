@@ -6,7 +6,7 @@ from setuptools.command import sdist
 
 setup(
     name='weblyzard_api',
-    version='0.7.20190613-dev',
+    version='0.7.20190701-dev',
     description=' Web services for weblyzard',
     author='Albert Weichselbraun, Heinz-Peter Lang, Max Göbel and Philipp Kuntschik',
     author_email='weichselbraun@weblyzard.com',
@@ -17,7 +17,7 @@ setup(
                       'nose',
                       'lxml',
                       'requests[security]>=2.13,<3',
-                      'pytest',
+                      'pytest<5',
                       'sparqlwrapper'],
     dependency_links=[
         'git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.12'],
