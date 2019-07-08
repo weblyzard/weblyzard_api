@@ -456,6 +456,21 @@ class TestSentence(unittest.TestCase):
         'polarity': 0.0,
     }
 
+    test_xml_wide_chars = XMLContent("""<?xml version="1.0" encoding="UTF-8"?>
+<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="192292" dc:format="html/text" xml:lang="de" wl:nilsimsa="65F61C10C028043C122928F05A310816E8126DD485A31F361561606986907211">
+   <wl:sentence wl:id="25c292892a6dc9bf63a122ffd6c72b58" wl:pos="XY XY PDS VVFIN $, PWAV ADJD PPOSAT NN VAFIN $." wl:dependency="-1:ROOT 3:nsubj 3:dobj 0:NMOD 3:p 6:advmod 9:advmod 8:poss 9:attr 3:csubj 0:p" wl:token="0,1 1,2 3,6 7,12 12,13 14,17 18,22 23,29 30,38 39,42 42,43" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[😀 das zeigt, wie toll unsere Software ist.]]></wl:sentence>
+</wl:page>
+""")
+
+    def test_sentence_tokens_unicode_chars(self):
+        from string import punctuation
+        sentence = self.test_xml_wide_chars.sentences[0]
+        tokens = list(sentence.get_tokens())
+        pass
+        for word in self.test_xml_wide_chars.plain_text.split():
+            assert word.strip(punctuation) in tokens
+
+
     def test_sentence_to_json(self):
         '''
         Tests that Sentence objects can successfully be serialized to
