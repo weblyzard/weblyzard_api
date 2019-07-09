@@ -255,11 +255,16 @@ class Sentence(object):
         '''
         if not self.token:
             raise StopIteration
-
+        correction_offset = 0
         for token_pos in self.token.split(' '):
-            start, end = map(int, token_pos.split(','))
-            # yield self.sentence.decode('utf8')[start:end]
-            yield unicode(self.sentence)[start:end]
+            start, end = [int(i) + correction_offset for i in token_pos.split(',')]
+            res = unicode(self.sentence)[start:end]
+            # de- and encoding sometimes leads to index errors with double-width
+            # characters - here we attempt to detect such cases and correct
+            if res.strip() != res:
+                correction_offset -= len(res) - len(res.strip())
+            else:
+                yield res
 
     def get_dependency_list(self):
         '''
