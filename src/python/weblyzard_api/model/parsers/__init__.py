@@ -19,6 +19,7 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             UnexpectedFieldException,
                                             MissingFieldException,
                                             UnsupportedValueException)
+from weblyzard_toolkit.html_tools.urls import validate_url
 
 
 logger = logging.getLogger('weblyzard_api.parsers')
@@ -135,6 +136,18 @@ class JSONParserBase(object):
             if unexpected_fields is not None:
                 raise UnexpectedFieldException("Got unexpected field(s): %s" %
                                                ', '.join(unexpected_fields))
+    @classmethod
+    def _validate_urls(cls, json_document):
+        flag = True
+        if 'uri' in json_document:
+            flag *= validate_url(json_document['uri'])
+        if 'relations' in json_document:
+            for (key, value) in json_document['relations'].iteritems():
+                if isinstance(value, str):
+                    value = [value]
+                for url in value:
+                    flag *= validate_url(url)
+        return flag
 
     @classmethod
     def _validate_document(cls, json_document, strict=True):
@@ -158,7 +171,8 @@ class JSONParserBase(object):
                                             (json_document['content_type'],
                                              cls.SUPPORTED_CONTENT_TYPES))
         meta_data = json_document.get('meta_data', {})
-
+        if not cls._validate_urls:
+            raise UnsupportedValueException("url in document is incorrect")
         valid_from = None
         if 'published_date' in meta_data:
             try:
