@@ -171,8 +171,8 @@ class JSONParserBase(object):
                                             (json_document['content_type'],
                                              cls.SUPPORTED_CONTENT_TYPES))
         meta_data = json_document.get('meta_data', {})
-        if not cls._validate_urls:
-            raise UnsupportedValueException("url in document is incorrect")
+        if not cls._validate_urls(json_document):
+            raise UnsupportedValueException("not a valid url")
         valid_from = None
         if 'published_date' in meta_data:
             try:
