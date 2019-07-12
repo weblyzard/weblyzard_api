@@ -13,10 +13,8 @@ public class JsonSerializerHelper {
         List<Field> currentClassFields = Arrays.asList(startClass.getDeclaredFields());
         Class<?> parentClass = startClass.getSuperclass();
 
-        if (parentClass != null
-                && (exclusiveParent == null || !(parentClass.equals(exclusiveParent)))) {
-            List<Field> parentClassFields =
-                    (List<Field>) getFieldsUpTo(parentClass, exclusiveParent);
+        if (parentClass != null && (exclusiveParent == null || !(parentClass.equals(exclusiveParent)))) {
+            List<Field> parentClassFields = (List<Field>) getFieldsUpTo(parentClass, exclusiveParent);
             currentClassFields.addAll(parentClassFields);
         }
 

@@ -318,9 +318,9 @@ class Document(object):
             except AttributeError:
                 dep_sequence = None
 
-            # prefer semOrient over sem_orient, if both are annotated
+            # prefer semOrient over sem_orient, if both are annotated and non-zero
             sem_orient = None
-            if getattr(sentence_span, 'semOrient', None) is not None:
+            if getattr(sentence_span, 'semOrient', None):
                 sem_orient = sentence_span.semOrient
             else:
                 sem_orient = sentence_span.sem_orient

@@ -38,9 +38,8 @@ import lombok.experimental.Accessors;
  * header</code> instance variable.
  *
  * <p>
- * The static helper function {@link LegacyDocument#toXml(LegacyDocument)} and
- * {@link LegacyDocument#fromXml(String)} translate between {@link LegacyDocument} objects and the
- * corresponding XML representations.
+ * The static helper function {@link LegacyDocument#toXml(LegacyDocument)} and {@link LegacyDocument#fromXml(String)}
+ * translate between {@link LegacyDocument} objects and the corresponding XML representations.
  *
  * @author Albert Weichselbraun
  */
@@ -83,8 +82,8 @@ public class LegacyDocument implements Serializable {
     private List<Sentence> sentences;
 
     /**
-     * This field contains all annotations after titleAnnotations and bodyAnnotations have been
-     * merged. (i.e. after the document's finalization)
+     * This field contains all annotations after titleAnnotations and bodyAnnotations have been merged. (i.e. after the
+     * document's finalization)
      */
     @JsonProperty("annotations")
     @XmlElement(name = "annotation", namespace = LegacyDocument.NS_WEBLYZARD)
@@ -103,9 +102,8 @@ public class LegacyDocument implements Serializable {
      */
     public static String toXml(LegacyDocument document) throws JAXBException {
         StringWriter stringWriter = new StringWriter();
-        JAXBElement<LegacyDocument> jaxbElement =
-                new JAXBElement<>(new QName(LegacyDocument.NS_WEBLYZARD, "page", "wl"),
-                        LegacyDocument.class, document);
+        JAXBElement<LegacyDocument> jaxbElement = new JAXBElement<>(
+                        new QName(LegacyDocument.NS_WEBLYZARD, "page", "wl"), LegacyDocument.class, document);
         JAXBContext jaxbContext = JAXBContext.newInstance(LegacyDocument.class);
         Marshaller xmlMarshaller = jaxbContext.createMarshaller();
         xmlMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
