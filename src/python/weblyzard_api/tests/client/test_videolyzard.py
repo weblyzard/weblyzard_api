@@ -9,6 +9,7 @@ Created on 16.04.2014
     :mod::`wl_data_scripts.projects.videolyzard.import_data`
 @author: heinz-peterlang
 '''
+from __future__ import unicode_literals
 import unittest
 
 from datetime import datetime, timedelta

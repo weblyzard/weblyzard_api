@@ -9,12 +9,19 @@ Created on 16.04.2014
     :mod::`wl_data_scripts.projects.videolyzard.import_data`
 @author: heinz-peterlang
 '''
+from __future__ import division
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import next
+from builtins import object
+from past.utils import old_div
 import csv
 import json
 import requests
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 
 class VideolyzardClient(object):
@@ -56,7 +63,7 @@ class VideolyzardClient(object):
         :returns: an integer timestamp e.g. 1396310400
         '''
         converted_time = time.mktime(
-            datetime_obj.timetuple()) + datetime_obj.microsecond / 1E6
+            datetime_obj.timetuple()) + old_div(datetime_obj.microsecond, 1E6)
         return int(converted_time)
 
     @classmethod
@@ -67,7 +74,7 @@ class VideolyzardClient(object):
         :returns: A dictionary with the fields portal_name, original_url, title and text.
         '''
         reader = csv.reader(file_obj)
-        titles = reader.next()
+        titles = next(reader)
 
         portal_idx = titles.index(
             'portal_name') if 'portal_name' in titles else None
@@ -172,7 +179,7 @@ class VideolyzardClient(object):
             parameters['filter'] = status
 
         url = self._prepare_url_with_user_credentials(self.VIDEO_DATA_URL)
-        parameters_str = urllib.urlencode(parameters)
+        parameters_str = urllib.parse.urlencode(parameters)
         url = url + parameters_str
         further_videos_exist = 200
 

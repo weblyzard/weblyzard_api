@@ -5,6 +5,11 @@ Created on May 14, 2018
 
 .. codeauthor: Max Göbel <goebel@weblyzard.com>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import map
+from builtins import str
+from builtins import object
 import json
 import hashlib
 
@@ -178,7 +183,7 @@ class Sentence(object):
             try:
                 m = hashlib.md5()
                 m.update(value.encode('utf-8')
-                         if isinstance(value, unicode) else str(value))
+                         if isinstance(value, str) else str(value))
                 md5sum = m.hexdigest()
             except Exception as e:
                 print(e)
@@ -196,7 +201,7 @@ class Sentence(object):
         '''
         :returns: a dictionary representation of the sentence object.
         '''
-        return dict((k, v) for k, v in self.__dict__.iteritems() if
+        return dict((k, v) for k, v in self.__dict__.items() if
                     not k.startswith('_'))
 
     def get_sentence(self):
@@ -258,13 +263,12 @@ class Sentence(object):
         correction_offset = 0
         for token_pos in self.token.split(' '):
             start, end = [int(i) + correction_offset for i in token_pos.split(',')]
-            res = unicode(self.sentence)[start:end]
+            res = self.sentence[start:end]
             # de- and encoding sometimes leads to index errors with double-width
             # characters - here we attempt to detect such cases and correct
             if res.strip() != res:
                 correction_offset -= len(res) - len(res.strip())
-            else:
-                yield res
+            yield res
 
     def get_dependency_list(self):
         '''
@@ -340,7 +344,7 @@ class Sentence(object):
         '''
         key_map = self.API_MAPPINGS[version]
         return {key_map[key]: value for key, value in
-                self.as_dict().iteritems() if key in key_map and
+                self.as_dict().items() if key in key_map and
                 value is not None}
 
     sentence = property(get_sentence, set_sentence)

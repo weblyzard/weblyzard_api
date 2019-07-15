@@ -4,8 +4,11 @@
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 import logging
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from time import sleep, time
 from random import random
@@ -125,7 +128,7 @@ class JeremiaNg(MultiRESTClient):
                 result = self.request(request, documents,
                                       pass_through_exceptions=True)
                 return result
-            except (urllib2.HTTPError, urllib2.URLError) as e:
+            except (urllib.error.HTTPError, urllib.error.URLError) as e:
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the

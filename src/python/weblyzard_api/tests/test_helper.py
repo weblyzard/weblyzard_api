@@ -8,12 +8,15 @@ Created on 19.04.2013
 Test helper module to load test files from TEST_DATA directory
 
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
 import os
+import io
 import pickle
 
 
 def get_test_data(fn, data_dir=None, return_file=False):
-    with open(get_full_path(fn, data_dir), 'rb') as f:
+    with io.open(get_full_path(fn, data_dir), 'r', encoding='utf-8') as f:  # [mig] removed 'b' option such that files are not read in binary format
 
         if return_file:
             return f
@@ -32,7 +35,7 @@ def get_full_path(fn, data_dir=None):
 
 
 def get_test_data_dir():
-    ''' returns the test_data_directory 
+    ''' returns the test_data_directory
 
     Usage:
     >>> get_test_data_dir() # doctest: +ELLIPSIS

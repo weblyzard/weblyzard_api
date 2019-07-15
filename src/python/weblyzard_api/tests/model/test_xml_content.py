@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import str
+from builtins import zip
 import unittest
 import json
 
@@ -90,7 +94,7 @@ class TestXMLContent(unittest.TestCase):
         print(xml.get_xml_document())
 
         for sentence in xml.sentences:
-            print(sentence.md5sum, sentence.value, sentence.significance)
+            print((sentence.md5sum, sentence.value, sentence.significance))
 
         xml.sentences = sentences
 
@@ -103,7 +107,7 @@ class TestXMLContent(unittest.TestCase):
         assert 'CDATA' in xml_out
 
     def test_double_sentences(self):
-        xml_content = ''' 
+        xml_content = '''
             <wl:page xmlns:wl="http://www.weblyzard.com/" content_id="228557824" content_type="text/html" lang="DE" title="Der ganze Wortlaut: Offener Brief an Niko Pelinka  | Heute.at   ">
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Der ganze Wortlaut]]></wl:sentence>
@@ -149,109 +153,109 @@ class TestXMLContent(unittest.TestCase):
     def test_supported_version(self):
 
         new_xml = '''
-    <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" 
-             xmlns:dc="http://purl.org/dc/elements/1.1/" 
-             wl:id="578351358" 
-             dc:format="text/html" 
-             xml:lang="de" 
+    <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#"
+             xmlns:dc="http://purl.org/dc/elements/1.1/"
+             wl:id="578351358"
+             dc:format="text/html"
+             xml:lang="de"
              wl:nilsimsa="37345e380610614cc7696ac08ed098e05fa64211755da1d4f525ef4cd762726e">
-        <wl:sentence 
-            wl:pos="NN $( NN APPR ADJA NN VVPP" wl:id="b42bb3f2cb7ed667ba311811823f37cf" 
-            wl:token="0,20 21,22 23,38 39,42 43,49 50,56 57,64" 
-            wl:sem_orient="0.0" 
-            wl:significance="0.0" 
+        <wl:sentence
+            wl:pos="NN $( NN APPR ADJA NN VVPP" wl:id="b42bb3f2cb7ed667ba311811823f37cf"
+            wl:token="0,20 21,22 23,38 39,42 43,49 50,56 57,64"
+            wl:sem_orient="0.0"
+            wl:significance="0.0"
             wl:is_title="true">
                 <![CDATA[Freihandelsgespr??che - Erleichterungen f??r kleine Firmen geplant]]>
         </wl:sentence>
-        <wl:sentence 
-            wl:pos="NE $( NE ( NE ) $( ADJA KON ADJA NN VMFIN APPR NN APPRART NN APPR ART NE VVFIN $." 
-            wl:id="05e9a90a82d67702cc19af457222c5b6" 
-            wl:token="0,7 7,8 8,18 19,20 20,27 27,28 29,30 31,37 38,41 42,50 51,62 63,69 70,73 74,89 90,94 95,101 102,105 106,109 110,113 114,120 120,121" 
+        <wl:sentence
+            wl:pos="NE $( NE ( NE ) $( ADJA KON ADJA NN VMFIN APPR NN APPRART NN APPR ART NE VVFIN $."
+            wl:id="05e9a90a82d67702cc19af457222c5b6"
+            wl:token="0,7 7,8 8,18 19,20 20,27 27,28 29,30 31,37 38,41 42,50 51,62 63,69 70,73 74,89 90,94 95,101 102,105 106,109 110,113 114,120 120,121"
             wl:sem_orient="0.0" wl:significance="0.0">
                 <![CDATA[Br??ssel/Washington (APA/dpa) - Kleine und mittlere Unternehmen k??nnen auf Erleichterungen beim Handel mit den USA hoffen.]]>
         </wl:sentence>
-        <wl:sentence 
-            wl:pos="APPR ART NN APPRART NN NN $( KON NN ( NE ) VVINF ART NN KON ART NE APPR ART ADJA NN $, PRELS PRF ADJA NN ( NE ) VVINF VMFIN $." 
-            wl:id="9469bb40cbcbb8fba2e31567e135d43d" 
-            wl:token="0,3 4,7 8,21 22,25 26,43 44,51 51,52 53,56 57,77 78,79 79,83 83,84 85,96 97,100 101,103 104,107 108,111 112,115 116,120 121,124 125,132 133,140 140,141 142,145 146,150 151,168 169,180 181,182 182,185 185,186 187,193 194,198 198,199" 
-            wl:sem_orient="0.0" 
+        <wl:sentence
+            wl:pos="APPR ART NN APPRART NN NN $( KON NN ( NE ) VVINF ART NN KON ART NE APPR ART ADJA NN $, PRELS PRF ADJA NN ( NE ) VVINF VMFIN $."
+            wl:id="9469bb40cbcbb8fba2e31567e135d43d"
+            wl:token="0,3 4,7 8,21 22,25 26,43 44,51 51,52 53,56 57,77 78,79 79,83 83,84 85,96 97,100 101,103 104,107 108,111 112,115 116,120 121,124 125,132 133,140 140,141 142,145 146,150 151,168 169,180 181,182 182,185 185,186 187,193 194,198 198,199"
+            wl:sem_orient="0.0"
             wl:significance="0.0">
                 <![CDATA[Bei den Verhandlungen zum Transatlantischen Handels- und Investitionsabkommen (TTIP) diskutieren die EU und die USA ??ber ein eigenes Kapitel, das sich mittelst??ndischen Unternehmen (KMU) widmen soll.]]>
         </wl:sentence>
-        <wl:sentence 
-            wl:pos="PDS VVFIN PIDAT NN APPR ART APPRART NN ADJA ADJA NN $." 
-            wl:id="a3e062af32c8b12f4c42ffd57063f531" 
-            wl:token="0,3 4,13 14,19 20,26 27,29 30,35 36,38 39,46 47,63 64,75 76,84 84,85" 
-            wl:sem_orient="0.0" 
+        <wl:sentence
+            wl:pos="PDS VVFIN PIDAT NN APPR ART APPRART NN ADJA ADJA NN $."
+            wl:id="a3e062af32c8b12f4c42ffd57063f531"
+            wl:token="0,3 4,13 14,19 20,26 27,29 30,35 36,38 39,46 47,63 64,75 76,84 84,85"
+            wl:sem_orient="0.0"
             wl:significance="0.0">
                 <![CDATA[Das schreiben beide Seiten in einem am Freitag ver??ffentlichten gemeinsamen Dokument.]]>
         </wl:sentence>
-        <wl:sentence 
-            wl:pos="ART NN VAFIN ART ADJA ADJA NN $." 
-            wl:id="90d951f171fa74fbda2177341906cb77" 
-            wl:token="0,3 4,8 9,12 13,16 17,27 28,41 42,53 53,54" 
-            wl:sem_orient="0.0" 
+        <wl:sentence
+            wl:pos="ART NN VAFIN ART ADJA ADJA NN $."
+            wl:id="90d951f171fa74fbda2177341906cb77"
+            wl:token="0,3 4,8 9,12 13,16 17,27 28,41 42,53 53,54"
+            wl:sem_orient="0.0"
             wl:significance="0.0">
                 <![CDATA[Das Ziel sei ein leichterer gegenseitiger Marktzugang.]]>
         </wl:sentence>
-        <wl:sentence 
-            wl:pos="NN NE NE VVFIN APPRART NN ART ADJA NN APPR NE $. &amp;quot; APPRART NN VVFIN PPER ADJD ADJD PTKVZ $. &amp;quot; ART ADJA NN VMFIN ADV APPR ART NN APPR NE VVFIN $, ART ADJD NN VVFIN APPR NN ADV PTKNEG PTKVZ $." 
-            wl:id="a4beee1292a24bfa73c7675a03f2d115" 
-            wl:token="0,21 22,25 26,34 35,40 41,44 45,54 55,58 59,66 67,84 85,87 88,95 95,96 97,98 98,100 101,107 108,114 115,118 119,127 128,131 132,137 137,138 138,139 140,143 144,152 153,162 163,169 170,174 175,178 179,182 183,189 190,192 193,203 204,215 215,216 217,220 221,228 229,235 236,241 242,246 247,257 258,262 263,268 269,273 273,274" 
-            wl:sem_orient="0.0" 
+        <wl:sentence
+            wl:pos="NN NE NE VVFIN APPRART NN ART ADJA NN APPR NE $. &amp;quot; APPRART NN VVFIN PPER ADJD ADJD PTKVZ $. &amp;quot; ART ADJA NN VMFIN ADV APPR ART NN APPR NE VVFIN $, ART ADJD NN VVFIN APPR NN ADV PTKNEG PTKVZ $."
+            wl:id="a4beee1292a24bfa73c7675a03f2d115"
+            wl:token="0,21 22,25 26,34 35,40 41,44 45,54 55,58 59,66 67,84 85,87 88,95 95,96 97,98 98,100 101,107 108,114 115,118 119,127 128,131 132,137 137,138 138,139 140,143 144,152 153,162 163,169 170,174 175,178 179,182 183,189 190,192 193,203 204,215 215,216 217,220 221,228 229,235 236,241 242,246 247,257 258,262 263,268 269,273 273,274"
+            wl:sem_orient="0.0"
             wl:significance="0.0">
                 <![CDATA[US-Verhandlungsf??hrer Dan Mullaney sagte zum Abschluss der vierten Verhandlungsrunde in Br??ssel: ???Im Moment kommen wir wirklich gut voran.??? Die n??chsten Gespr??che sollen noch vor dem Sommer in Washington stattfinden, ein genauer Termin steht nach EU-Angaben noch nicht fest.]]>
         </wl:sentence>
     </wl:page>'''
         old_xml = '''
-    <wl:page xmlns:wl="http://www.weblyzard.com/wl/2005" 
-             lang="de" 
-             title="Freihandelsgespr??che - Erleichterungen f??r kleine Firmen geplant" 
-             content_type="text/html" 
-             content_id="578351358" 
+    <wl:page xmlns:wl="http://www.weblyzard.com/wl/2005"
+             lang="de"
+             title="Freihandelsgespr??che - Erleichterungen f??r kleine Firmen geplant"
+             content_type="text/html"
+             content_id="578351358"
              nilsimsa="73345e38061061454f686ac08fd498e05fa6421175d5a1d5f525ef48d77a322e">
-        <wl:sentence 
-            pos_tags="None" 
-            sem_orient="0.721687836487" 
-            significance="839.529561215" 
-            md5sum="b6ec48367959b201fb07f421d0743e50" 
-            pos="NE $( NE ( NE ) $( ADJA KON ADJA NN VMFIN APPR NN APPRART NN APPR ART NE VVFIN $." 
+        <wl:sentence
+            pos_tags="None"
+            sem_orient="0.721687836487"
+            significance="839.529561215"
+            md5sum="b6ec48367959b201fb07f421d0743e50"
+            pos="NE $( NE ( NE ) $( ADJA KON ADJA NN VMFIN APPR NN APPRART NN APPR ART NE VVFIN $."
             token="0,7 7,8 8,18 19,20 20,27 27,28 29,30 31,37 38,41 42,50 51,62 63,69 70,73 74,89 90,94 95,101 102,105 106,109 110,113 114,120 120,121">
-                <![CDATA[Br??ssel/Washington (APA/dpa) - Kleine und mittlere Unternehmen k??nnen auf Erleichterungen beim Handel mit den USA hoffen.]]>    
+                <![CDATA[Br??ssel/Washington (APA/dpa) - Kleine und mittlere Unternehmen k??nnen auf Erleichterungen beim Handel mit den USA hoffen.]]>
         </wl:sentence>
-        <wl:sentence 
-            pos_tags="None" 
-            sem_orient="0.68041381744" 
-            significance="298.191028195" 
-            md5sum="c1940778e578e6748046fe6f5eb06a9b" 
-            pos="APPR ART NN APPRART NN NN $( KON NN ( NE ) VVINF ART NN KON ART NE APPR ART ADJA NN $, PRELS PRF ADJA NN ( NE ) VVINF VMFIN $." 
+        <wl:sentence
+            pos_tags="None"
+            sem_orient="0.68041381744"
+            significance="298.191028195"
+            md5sum="c1940778e578e6748046fe6f5eb06a9b"
+            pos="APPR ART NN APPRART NN NN $( KON NN ( NE ) VVINF ART NN KON ART NE APPR ART ADJA NN $, PRELS PRF ADJA NN ( NE ) VVINF VMFIN $."
             token="0,3 4,7 8,21 22,25 26,43 44,51 51,52 53,56 57,77 78,79 79,83 83,84 85,96 97,100 101,103 104,107 108,111 112,115 116,120 121,124 125,132 133,140 140,141 142,145 146,150 151,168 169,180 181,182 182,185 185,186 187,193 194,198 198,199">
                 <![CDATA[Bei den Verhandlungen zum Transatlantischen Handels- und Investitionsabkommen (TTIP) diskutieren die EU und die USA ??ber ein eigenes Kapitel, das sich mittelst??ndischen Unternehmen (KMU) widmen soll.]]>
         </wl:sentence>
-        <wl:sentence 
-            pos_tags="None" 
-            sem_orient="1.0" 
-            significance="197.953352851" 
-            md5sum="e865ac842126627352d778df347a16db" 
-            pos="PDS VVFIN PIDAT NN APPR ART APPRART NN ADJA ADJA NN $." 
+        <wl:sentence
+            pos_tags="None"
+            sem_orient="1.0"
+            significance="197.953352851"
+            md5sum="e865ac842126627352d778df347a16db"
+            pos="PDS VVFIN PIDAT NN APPR ART APPRART NN ADJA ADJA NN $."
             token="0,3 4,13 14,19 20,26 27,29 30,35 36,38 39,46 47,63 64,75 76,84 84,85">
                 <![CDATA[Das schreiben beide Seiten in einem am Freitag ver??ffentlichten gemeinsamen Dokument.]]>
         </wl:sentence>
-        <wl:sentence 
-            pos_tags="None" 
-            sem_orient="1.0" 
-            significance="0.0" 
-            md5sum="90d951f171fa74fbda2177341906cb77" 
-            pos="ART NN VAFIN ART ADJA ADJA NN $." 
+        <wl:sentence
+            pos_tags="None"
+            sem_orient="1.0"
+            significance="0.0"
+            md5sum="90d951f171fa74fbda2177341906cb77"
+            pos="ART NN VAFIN ART ADJA ADJA NN $."
             token="0,3 4,8 9,12 13,16 17,27 28,41 42,53 53,54">
                 <![CDATA[Das Ziel sei ein leichterer gegenseitiger Marktzugang.]]>
         </wl:sentence>
-        <wl:sentence 
-            pos_tags="None" 
-            sem_orient="0.785674201318" 
-            significance="1370.67991114" 
-            md5sum="27045cb5143ba9726e767d6df80afafd" 
-            pos="NN NE NE VVFIN APPRART NN ART ADJA NN APPR NE $. XY APPRART NN VVFIN PPER ADJD ADJD PTKVZ $. XY ART ADJA NN VMFIN ADV APPR ART NN APPR NE VVFIN $, ART ADJD NN VVFIN APPR NN ADV PTKNEG PTKVZ $." 
+        <wl:sentence
+            pos_tags="None"
+            sem_orient="0.785674201318"
+            significance="1370.67991114"
+            md5sum="27045cb5143ba9726e767d6df80afafd"
+            pos="NN NE NE VVFIN APPRART NN ART ADJA NN APPR NE $. XY APPRART NN VVFIN PPER ADJD ADJD PTKVZ $. XY ART ADJA NN VMFIN ADV APPR ART NN APPR NE VVFIN $, ART ADJD NN VVFIN APPR NN ADV PTKNEG PTKVZ $."
             token="0,21 22,25 26,34 35,40 41,44 45,54 55,58 59,66 67,84 85,87 88,95 95,96 97,98 98,100 101,107 108,114 115,118 119,127 128,131 132,137 137,138 138,139 140,143 144,152 153,162 163,169 170,174 175,178 179,182 183,189 190,192 193,203 204,215 215,216 217,220 221,228 229,235 236,241 242,246 247,257 258,262 263,268 269,273 273,274">
                 <![CDATA[US-Verhandlungsf??hrer Dan Mullaney sagte zum Abschluss der vierten Verhandlungsrunde in Br??ssel: ???Im Moment kommen wir wirklich gut voran.??? Die n??chsten Gespr??che sollen noch vor dem Sommer in Washington stattfinden, ein genauer Termin steht nach EU-Angaben noch nicht fest.]]>
         </wl:sentence>
@@ -335,7 +339,7 @@ class TestXMLContent(unittest.TestCase):
         assert len(result3['sentence']) == 2
 
     def test_2013_to_2005(self):
-        xml = '''<wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1234" dc:format="text/html" xml:lang="de" wl:nilsimsa="c131b2b10e82b95c36635540b7bbdf0704a7f8db022025e03a80b0c0205b5ea9">
+        xml = u'''<wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1234" dc:format="text/html" xml:lang="de" wl:nilsimsa="c131b2b10e82b95c36635540b7bbdf0704a7f8db022025e03a80b0c0205b5ea9">
    <wl:sentence wl:id="27c236ff13ce52930c4b3cbc47c63e0d" wl:pos="ADJA ADV ADJD $," wl:token="0,10 11,13 14,28 28,29" wl:is_title="true" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[@neuholder So eidesstattlich,]]></wl:sentence>
    <wl:sentence wl:id="0b1bd9b348e90e02738da7d20db09196" wl:pos="ADJA ADV ADJD $, PWAV ART NN ART ADJA NN" wl:token="0,10 11,13 14,28 28,29 30,33 34,37 38,47 48,51 52,58 59,65" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[@neuholder So eidesstattlich, wie die Erklärung der Wiener Grünen]]></wl:sentence>
    <wl:sentence wl:id="c02b4e7c55c7cc7a09770e1879a2c029" wl:pos="APPRART NN ART NN $." wl:token="0,3 4,20 21,24 25,35 35,36" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[zur Demokratisierung des Wahlrechts?]]></wl:sentence>
@@ -362,7 +366,7 @@ class TestXMLContent(unittest.TestCase):
         for sentence in xml.sentences:
             for token, reference_token in zip(sentence.tokens,
                                               self.sentence_tokens[sentence.md5sum]):
-                print(token, reference_token)
+                print((token, reference_token))
                 self.assertEqual(token, reference_token)
 
     def test_token_to_pos_mapping(self):
@@ -476,8 +480,11 @@ class TestSentence(unittest.TestCase):
         Tests that Sentence objects can successfully be serialized to
         JSON.
         '''
-        assert self.test_sentence.to_json(version=1.0) == \
-            json.dumps(self.test_sentence_dict)
+        # [mig] this tests seems a bit pointless, because the serialization order doesn't matter, but we're checking for it anyway
+        # [mig] so I will serialize the contents, then read them again and compare the dictionaries
+        serialized_dict = json.dumps(self.test_sentence_dict)
+        serialized_sentence = self.test_sentence.to_json(version=1.0)
+        assert json.loads(serialized_dict) == json.loads(serialized_sentence)
 
 
 if __name__ == '__main__':

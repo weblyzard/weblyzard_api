@@ -3,6 +3,9 @@ Created on 14.02.2014
 
 @author: heinz-peterlang
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import object
 from weblyzard_api.client.openrdf import OpenRdfClient
 
 
