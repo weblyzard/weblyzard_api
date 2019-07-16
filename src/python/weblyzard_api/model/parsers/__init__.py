@@ -24,7 +24,7 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             UnexpectedFieldException,
                                             MissingFieldException,
                                             UnsupportedValueException)
-
+from weblyzard_toolkit.html_tools.urls import validate_url
 
 logger = logging.getLogger('weblyzard_api.parsers')
 
@@ -142,6 +142,23 @@ class JSONParserBase(object):
                                                ', '.join(unexpected_fields))
 
     @classmethod
+    def _validate_urls(cls, json_document):
+        violating_url = ''
+        flag = True
+        if 'uri' in json_document:
+            flag *= validate_url(json_document['uri'])
+            violating_url = (1 - flag) * json_document['uri']
+        if 'relations' in json_document and violating_url == '':
+            for (key, value) in json_document['relations'].iteritems():
+                if isinstance(value, str):
+                    value = [value]
+                for url in value:
+                    flag *= validate_url(url)
+                    if not flag:
+                        return flag, url
+        return flag, violating_url
+
+    @classmethod
     def _validate_document(cls, json_document, strict=True):
         ''' '''
         cls._check_document_format(json_document, strict)
@@ -151,7 +168,7 @@ class JSONParserBase(object):
         elif 'content_type' in json_document and 'content' not in json_document:
             raise MissingFieldException(
                 "When field 'content_type' is set, 'content' must be set, too.")
-        elif 'content' not in json_document and 'content_type' not in json_document and\
+        elif 'content' not in json_document and 'content_type' not in json_document and \
                 'sentences' not in json_document:
             raise MissingFieldException(
                 "Either 'sentences' or 'content' and 'content_type' must be set.")
@@ -163,7 +180,9 @@ class JSONParserBase(object):
                                             (json_document['content_type'],
                                              cls.SUPPORTED_CONTENT_TYPES))
         meta_data = json_document.get('meta_data', {})
-
+        flag, url = cls._validate_urls(json_document)
+        if not flag:
+            raise UnsupportedValueException('URL {} is not valid'.format(url))
         valid_from = None
         if 'published_date' in meta_data:
             try:
@@ -183,7 +202,6 @@ class JSONParserBase(object):
 
 
 class XMLParser(object):
-
     VERSION = None
     SUPPORTED_NAMESPACE = None
     DOCUMENT_NAMESPACES = None

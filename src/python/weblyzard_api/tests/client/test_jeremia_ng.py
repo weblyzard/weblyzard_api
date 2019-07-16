@@ -44,7 +44,8 @@ class JeremiaTest(unittest.TestCase):
                'header': {}}
         print('submitting document...')
         result = self.client.submit_document(doc)
-
+        tockens = set([tocken['pos'] for tocken in result['partitions']['TOKEN']])
+        assert 'VNW|pers|pron|obl|red|3|ev|masc' not in tockens
         from pprint import pprint
         pprint(result)
         assert result['lang'] == 'NL'
