@@ -78,13 +78,14 @@ class TestValidURLs(unittest.TestCase):
 
         assert JSON10ParserDocument._validate_urls(valid_relations)[0]
 
-        assert not JSON10ParserDocument._validate_urls(non_valid_relations)[0]
-        assert not JSON10ParserDocument._validate_urls(non_valid_relations_array_error)[0]
-        assert not JSON10ParserDocument._validate_urls(non_valid_relations_path_error)[0]
+        assert JSON10ParserDocument._validate_urls(non_valid_relations) == (0, 'https:///random_thing')
+
+        assert JSON10ParserDocument._validate_urls(non_valid_relations_array_error) == (0, 'urls')
+        assert JSON10ParserDocument._validate_urls(non_valid_relations_path_error) == (0, 'http://google.com')
 
         assert JSON10ParserDocument._validate_urls(valid_url)[0]
 
-        assert not JSON10ParserDocument._validate_urls(non_valid_url)[0]
+        assert JSON10ParserDocument._validate_urls(non_valid_url) == (0, '/status/324623423432432325632')
 
 
 if __name__ == '__main__':
