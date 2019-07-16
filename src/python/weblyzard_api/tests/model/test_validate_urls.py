@@ -76,15 +76,15 @@ class TestValidURLs(unittest.TestCase):
             }
         }
 
-        assert JSON10ParserDocument._validate_urls(valid_relations)
+        assert JSON10ParserDocument._validate_urls(valid_relations)[0]
 
-        assert not JSON10ParserDocument._validate_urls(non_valid_relations)
-        assert not JSON10ParserDocument._validate_urls(non_valid_relations_array_error)
-        assert not JSON10ParserDocument._validate_urls(non_valid_relations_path_error)
+        assert not JSON10ParserDocument._validate_urls(non_valid_relations)[0]
+        assert not JSON10ParserDocument._validate_urls(non_valid_relations_array_error)[0]
+        assert not JSON10ParserDocument._validate_urls(non_valid_relations_path_error)[0]
 
-        assert JSON10ParserDocument._validate_urls(valid_url)
+        assert JSON10ParserDocument._validate_urls(valid_url)[0]
 
-        assert not JSON10ParserDocument._validate_urls(non_valid_url)
+        assert not JSON10ParserDocument._validate_urls(non_valid_url)[0]
 
 
 if __name__ == '__main__':
