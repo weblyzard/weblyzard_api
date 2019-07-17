@@ -102,8 +102,6 @@ class Document(object):
             return data
         if isinstance(data, long):
             return data
-        if isinstance(data, long):
-            return data
         if isinstance(data, bool):
             return data
         if isinstance(data, tuple):
