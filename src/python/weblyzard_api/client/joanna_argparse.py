@@ -5,10 +5,6 @@ Created on Oct 30, 2015
 
 @author: lucas
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import str
-from builtins import range
 import logging
 
 from time import sleep
@@ -52,7 +48,7 @@ def check_arguments(args):
             print('invalid arguments. Requires sourceId and portal_db')
             return
         if args.repeat_test:
-            for i in range(args.repeat_test):
+            for i in xrange(args.repeat_test):
                 reloaded = jo.reload_source_nilsimsa(
                     args.sourceId, args.portal_db,
                     daysBack=args.days_back)
@@ -81,11 +77,11 @@ def check_arguments(args):
             return
         else:
             if args.days_back is None:
-                print('Using days back default {}'.format(
-                    DAYS_BACK_DEFAULT))
+                print 'Using days back default {}'.format(
+                    DAYS_BACK_DEFAULT)
 
             nilsimsa_dict = {str(random_content_id()): i for i in args.nilsimsa_list}
-            print("Sending similar documents {}".format(nilsimsa_dict))
+            print "Sending similar documents {}".format(nilsimsa_dict)
 
             result = jo.similar_documents(
                 args.sourceId, args.portal_db, nilsimsa_dict,

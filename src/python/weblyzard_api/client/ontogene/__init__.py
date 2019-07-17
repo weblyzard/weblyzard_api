@@ -3,8 +3,6 @@
 """
 .. moduleauthor:: Adrian Brasoveanu <adrian.brasoveanu@htwchur.ch>
 """
-from __future__ import unicode_literals
-from builtins import object
 import logging
 import requests
 import json

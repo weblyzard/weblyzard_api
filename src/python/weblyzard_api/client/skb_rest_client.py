@@ -5,10 +5,7 @@ Created on Oct 24, 2016
 
 @author: stefan
 '''
-from __future__ import unicode_literals
 
-from past.builtins import basestring
-from builtins import object
 import json
 import requests
 import logging

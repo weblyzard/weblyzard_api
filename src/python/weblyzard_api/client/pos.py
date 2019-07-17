@@ -5,8 +5,6 @@ Part-of-speech (POS) tagging service
 
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
 import unittest
 
 from eWRT.ws.rest import RESTClient
