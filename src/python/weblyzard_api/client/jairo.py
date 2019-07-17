@@ -25,6 +25,9 @@ class JairoClient(MultiRESTClient):
 
     def set_profile(self, profile_name, profile):
         ''' '''
+        # latest jairo no longer supports profile types
+        if 'types' in profile:
+            del profile['types']
         return self.request('add_profile/{}'.format(profile_name), profile)
 
     def enrich_annotations(self, profile_name, annotations):
