@@ -3,8 +3,6 @@
 '''
 
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
 import unittest
 import pytest
 
@@ -38,13 +36,13 @@ class JoannaTest(unittest.TestCase):
         batch_results = self.joanna.similar_documents(
             self.source_id, self.test_db,
             data, 20)
-        for _, similar in list(batch_results.items()):
+        for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'false')
         # all are duplicates
         batch_results = self.joanna.similar_documents(
             self.source_id, self.test_db,
             data, 20)
-        for _, similar in list(batch_results.items()):
+        for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'true')
 
     def test_batch_request_same_nilsimsa_on_batch(self):
@@ -55,13 +53,13 @@ class JoannaTest(unittest.TestCase):
         batch_results = self.joanna.similar_documents(
             self.source_id, self.test_db,
             data, 20)
-        for _, similar in list(batch_results.items()):
+        for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'false')
         # all are duplicates
         batch_results = self.joanna.similar_documents(
             self.source_id, self.test_db,
             data, 20)
-        for _, similar in list(batch_results.items()):
+        for _, similar in batch_results.iteritems():
             self.assertEqual(similar, 'true')
 
 
@@ -99,7 +97,7 @@ class JoannaTest(unittest.TestCase):
         self.assertEqual(single_result, 'true')
         batch_result = self.joanna.similar_documents(
             self.source_id, self.test_db, [existing_doc])
-        for _, similar in list(batch_result.items()):
+        for _, similar in batch_result.iteritems():
             self.assertEqual(similar, 'true')
 
     @pytest.mark.skip(reason='TODO')

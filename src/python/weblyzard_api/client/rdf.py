@@ -48,7 +48,7 @@ NAMESPACES = {
 
 PREFIXES = '\n'.join([''] + ['PREFIX {value}: <{key}>'.format(value=value,
                                                               key=key)
-                             for key, value in list(NAMESPACES.items())])
+                             for key, value in NAMESPACES.items()])
 
 
 def prefix_uri(uri, namespaces=None):

@@ -4,7 +4,6 @@ Created on Jan 16, 2013
 
 @author: Philipp Kuntschik <philipp.kuntschik@htwchur.ch>
 """
-from __future__ import unicode_literals
 from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.client import (

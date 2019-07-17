@@ -6,12 +6,7 @@ Created on 07.04.2014
 @author: heinz-peterlang
 '''
 from __future__ import print_function
-from __future__ import unicode_literals
 
-from builtins import str
-from builtins import zip
-from past.builtins import basestring
-from builtins import object
 import json
 import logging
 import hashlib
@@ -34,7 +29,7 @@ class DatesToStrings(json.JSONEncoder):
         if isinstance(obj, dict):
             def transform_date(o):
                 return self._encode(o.isoformat() if isinstance(o, datetime) else o)
-            return {transform_date(k): transform_date(v) for k, v in list(obj.items())}
+            return {transform_date(k): transform_date(v) for k, v in obj.items()}
         else:
             return obj
 
@@ -123,7 +118,7 @@ class JSONParserBase(object):
     def _check_document_format(cls, api_dict, strict=True):
         '''
         Checks if the api_dict has all required fields and if there
-        are unexpected and unallowed keys.
+        are unexpected and unallowed keys. 
 
         :param api_dict: The dict to check.
         :type api_dict: dict
@@ -223,7 +218,7 @@ class XMLParser(object):
 
     @classmethod
     def encode_value(cls, value):
-        if isinstance(value, str):
+        if isinstance(value, unicode):
             return XMLParser.remove_control_characters(value)
         elif isinstance(value, str):
             return XMLParser.remove_control_characters(value.decode('utf-8'))
@@ -298,9 +293,9 @@ class XMLParser(object):
 
         if mapping == None:
             return result
-        invert_mapping = dict(list(zip(list(mapping.values()),
-                                  list(mapping.keys()))))
-        for key, value in list(invert_mapping.items()):
+        invert_mapping = dict(zip(mapping.values(),
+                                  mapping.keys()))
+        for key, value in invert_mapping.iteritems():
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
@@ -344,7 +339,7 @@ class XMLParser(object):
     def load_attributes(cls, attributes, mapping):
         new_attributes = {}
 
-        for key, value in list(attributes.items()):
+        for key, value in attributes.iteritems():
             if mapping and key in mapping:
                 key = mapping.get(key, key)
 
@@ -453,7 +448,7 @@ class XMLParser(object):
     def dump_xml_attributes(cls, attributes, mapping, resolve_namespaces=True):
         new_attributes = {}
 
-        for key, value in list(attributes.items()):
+        for key, value in attributes.iteritems():
 
             if mapping and key in mapping:
                 key = mapping[key]
@@ -477,7 +472,7 @@ class XMLParser(object):
     def clean_attributes(cls, attributes):
         ''' '''
         result = {}
-        for key, val in list(attributes.items()):
+        for key, val in attributes.iteritems():
             if key is None or val is None or isinstance(val, dict):
                 continue
             result[key] = val
@@ -570,7 +565,7 @@ class XMLParser(object):
                 annotations = cls.map_by_annotationtype(annotations)
 
             # add all annotations as body annotations
-            for a_type, a_items in list(annotations.items()):
+            for a_type, a_items in annotations.iteritems():
 
                 if a_items is None or len(a_items) == 0:
                     continue
@@ -585,7 +580,7 @@ class XMLParser(object):
                             entity['annotation_type'] = a_type
                             entity['key'] = annotation['key']
                             preferred_name = annotation['preferredName']
-                            if not isinstance(preferred_name, str):
+                            if not isinstance(preferred_name, unicode):
                                 preferred_name = preferred_name.decode('utf-8')
                             entity['preferredName'] = preferred_name
 
@@ -604,7 +599,7 @@ class XMLParser(object):
         if features is None:
             features = {}
         if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
-            for key, items in list(features.items()):
+            for key, items in features.iteritems():
                 feature_attributes = cls.dump_xml_attributes({'key': key},
                                                              mapping=cls.FEATURE_MAPPING)
                 if not isinstance(items, list):
@@ -628,16 +623,16 @@ class XMLParser(object):
         if relations is None:
             relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
-            for key, items in list(relations.items()):
+            for key, items in relations.iteritems():
 
                 rel_attributes = {'key': key}
                 rel_items = []
 
                 if isinstance(items, dict):
-                    for url, attributes in list(items.items()):
+                    for url, attributes in items.iteritems():
                         rel_attributes = {'key': key}
                         attributes = {key: value for (
-                            key, value) in list(attributes.items()) if key in cls.RELATION_MAPPING}
+                            key, value) in attributes.iteritems() if key in cls.RELATION_MAPPING}
                         rel_attributes.update(attributes)
                         rel_items.append((rel_attributes, url))
 
@@ -664,8 +659,7 @@ class XMLParser(object):
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
 
-        return etree.tostring(root, encoding='unicode', pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
-        # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :) 
+        return etree.tostring(root, encoding='UTF-8', pretty_print=True)
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):

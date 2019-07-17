@@ -5,7 +5,6 @@ Created on Jan 25, 2018
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
-from __future__ import unicode_literals
 
 
 class MissingContentException(Exception):

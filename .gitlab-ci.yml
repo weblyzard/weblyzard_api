@@ -1,73 +1,45 @@
-# CI config
-
-# shared key for the python jobs to not have redundant config parameters
-# PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
-# cp -no-clobber copies files but doesn't overwrite existing ones (e.g. sonar property settings)
-.python_defaults: &py_anchor  # using anchor magic
-    image: registry.gitlab.semanticlab.net/docker/py3base:latest
-    before_script:
-        - git submodule sync --recursive
-        - git submodule update --init --recursive --remote
-        - cp --no-clobber wl_python_utils/python3/* .
-        - sed -i s/-dev//g setup.py
-        - export PROJECT=$(/usr/bin/python3 -W ignore ./setup.py --name | awk 'NR==1{print $1}')
-        - export VERSION=$(/usr/bin/python3 -W ignore ./setup.py --version | awk 'NR==1{print $1}')
-        - export TESTSDIR=src/python/weblyzard_api/tests/model/
-        - export SRCDIR=src/python/weblyzard_api/
-    only:
-        - migration
-    tags:
-        - docker
-
 stages:
-    - test-python
-    - test-java
-    - build-package
+  - test
+  - deploy
 
-pytest:
-    <<: *py_anchor  # we reference the anchor here
-    stage: test-python
-    script:
-        - tox -e pytest
-        - sonar-scanner -D sonar.host.url=$sonarhost -D sonar.login=$sonarlogin
-
-pylint:
-    <<: *py_anchor
-    stage: test-python
-    script:
-        - tox -e pylint
-    when: manual
-
-vulture:
-    <<: *py_anchor
-    stage: test-python
-    script:
-        - tox -e vulture
-    when: manual
+sonarqube_preview:
+  script:
+    - git checkout origin/master
+    - git merge $CI_COMMIT_SHA --no-commit --no-ff
+    - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
+    - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U -DskipITs -Dgpg.skip
+    - mvn --batch-mode verify sonar:sonar -Dsonar.analysis.mode=preview -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_SHA -DskipITs -Dgpg.skip
+  stage: test
+  except:
+    - develop
+    - master
+    - /^hotfix_.*$/
+    - /.*-hotfix$/
+  tags:
+    - java10
 
 sonarqube:
-    stage: test-java
-    script:
-        - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
-        - cd java-examples/keyword-extraction; mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
-    only:
-        - migration
-    tags:
-        - java10
+  script:
+    - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
+    - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U -DskipITs -Dgpg.skip
+    - mvn --batch-mode verify sonar:sonar -DskipITs -Dgpg.skip
+  stage: test
+  only:
+    - master
+    - develop
+  tags:
+    - java10
 
-# the sed and exports needed are in the actual build-package.sh
-build:
-    stage: build-package
-    before_script:
-        - git submodule sync --recursive
-        - git submodule update --init --recursive --remote
-        - cp --no-clobber wl_python_utils/python3/* .
-        - sed -i s/-dev//g setup.py
-    script:
-        - chmod +x build-package.sh
-        - ./build-package.sh
-    only:
-        - migration
-    when: manual
-    tags:
-        - shell-runner
+code_semanticlab_net_deploy:
+  script:
+    - pwd
+    - echo "=================================="
+    - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
+    - mvn clean
+    - mvn deploy -U -DskipITs -Dgpg.skip
+    - echo "=================================="
+  stage: deploy
+  only:
+    - master
+  tags:
+    - java10

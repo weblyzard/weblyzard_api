@@ -3,7 +3,6 @@
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
-from __future__ import unicode_literals
 from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.client import (

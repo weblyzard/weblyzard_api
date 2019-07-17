@@ -4,8 +4,6 @@
 .. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
 from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.client import (
@@ -78,7 +76,7 @@ class JesajaNg(MultiRESTClient):
             {'the': 222, 'a': 200, ...}
         '''
         if matview_id is None:
-            raise ValueError('Please specify the matview for which the documents are designated.')
+            raise ValueError, 'Please specify the matview for which the documents are designated.'
         return self.request('add_csv/{}'.format(matview_id), keyword_count_map)
 
     def add_documents(self, matview_id, xml_documents):
@@ -91,7 +89,7 @@ class JesajaNg(MultiRESTClient):
             a list of weblyzard_xml documents [ xml_content, ... ]
         '''
         if matview_id is None:
-            raise ValueError('Please specify the matview for which the documents are designated.')
+            raise ValueError, 'Please specify the matview for which the documents are designated.'
         return self.request('add_documents/{}'.format(matview_id), xml_documents)
 
     def get_keyword_annotations(self, matview_id, xml_documents):

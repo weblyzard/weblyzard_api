@@ -17,9 +17,6 @@ Remove functions:
  - compatibility fixes for namespaces, encodings etc.
  - support for the old POS tags mapping.
 '''
-from __future__ import unicode_literals
-from builtins import str
-from builtins import object
 import json
 
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
@@ -125,7 +122,7 @@ class XMLContent(object):
         if not xml_content:
             return None
 
-        for version, xml_parser in list(cls.SUPPORTED_XML_VERSIONS.items()):
+        for version, xml_parser in cls.SUPPORTED_XML_VERSIONS.iteritems():
             if xml_parser.is_supported(xml_content):
                 return version
 
@@ -204,21 +201,21 @@ class XMLContent(object):
         if not new_attributes or not isinstance(new_attributes, dict):
             return
 
-        for k, v in list(new_attributes.items()):
+        for k, v in new_attributes.iteritems():
             self.attributes[str(k)] = v
 
     def update_features(self, new_features):
         if not new_features or not isinstance(new_features, dict):
             return
 
-        for k, v in list(new_features.items()):
+        for k, v in new_features.iteritems():
             self.features[str(k)] = v
 
     def update_relations(self, new_relations):
         if not new_relations or not isinstance(new_relations, dict):
             return
 
-        for k, v in list(new_relations.items()):
+        for k, v in new_relations.iteritems():
             self.relations[str(k)] = v
 
     def as_dict(self, mapping=None, ignore_non_sentence=False,
@@ -288,7 +285,7 @@ class XMLContent(object):
 
         if mapping:
             result = {}
-            for attr, value in list(attributes.items()):
+            for attr, value in attributes.iteritems():
                 if attr in mapping:
                     result[mapping[attr]] = value
 

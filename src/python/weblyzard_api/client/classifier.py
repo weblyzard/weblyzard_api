@@ -8,8 +8,6 @@ Created on Jan 16, 2013
 .. codeauthor: Philipp Kuntschik <philipp.kuntschik@htwchur.ch>
 
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
 import unittest
 
 from sys import argv
@@ -175,7 +173,7 @@ class TestClassifier(unittest.TestCase):
             self.get_search_agent_ids(search_agents))
 
         # for every search_agent are 'num_results' classes returned
-        for _search_agent, classes in list(result.items()):
+        for _search_agent, classes in result.items():
             assert len(classes) == num_results
 
         print(result)

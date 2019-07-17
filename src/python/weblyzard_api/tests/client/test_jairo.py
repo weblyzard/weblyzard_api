@@ -3,8 +3,6 @@
 '''
 .. codeauthor:: Max Goebel <goebel@weblyzard.com>
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
 import unittest
 
 from weblyzard_api.client.jairo import JairoClient
@@ -81,7 +79,7 @@ class JairoTest(unittest.TestCase):
 
     def set_profiles(self):
         ''' test setting a profile on the Jairo service. '''
-        for profile_name, profile in list(self.PROFILES.items()):
+        for profile_name, profile in self.PROFILES.iteritems():
             self.client.set_profile(
                 profile_name=profile_name, profile=profile)
 

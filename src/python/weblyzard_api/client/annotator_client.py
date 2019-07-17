@@ -2,11 +2,7 @@
 #!/usr/bin/env python
 
 """ barebone domain-specificity service """
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
-import urllib.request, urllib.error, urllib.parse
+import urllib2
 
 from json import dumps, loads
 
@@ -21,12 +17,12 @@ class Annotator(object):
     @staticmethod
     def _json_request(url, parameters):
         if parameters:
-            req = urllib.request.Request( url , dumps( parameters ), 
+            req = urllib2.Request( url , dumps( parameters ), 
                                    {'Content-Type': 'application/json'})
         else:
-            req = urllib.request.Request( url )
+            req = urllib2.Request( url )
             
-        f = urllib.request.urlopen(req)
+        f = urllib2.urlopen(req)
         response = f.read()
         f.close()
                 

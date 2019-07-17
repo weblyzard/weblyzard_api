@@ -5,9 +5,6 @@ Created on Jan 25, 2018
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
-from __future__ import unicode_literals
-from past.builtins import basestring
-from builtins import object
 import json
 
 from datetime import datetime
@@ -103,7 +100,7 @@ class Document(object):
             return data
         if isinstance(data, float):
             return data
-        if isinstance(data, int):
+        if isinstance(data, long):
             return data
         if isinstance(data, long):
             return data
@@ -122,7 +119,7 @@ class Document(object):
             return result
         if isinstance(data, dict):
             result = {}
-            for key, value in list(data.items()):
+            for key, value in data.iteritems():
                 key = mapping.get(key, key)
                 if value is not None:
                     value = cls._dict_transform(value, mapping=mapping)
@@ -133,7 +130,7 @@ class Document(object):
             return result
         if isinstance(data, object):
             result = {}
-            for key, value in list(data.__dict__.items()):
+            for key, value in data.__dict__.iteritems():
                 if key in mapping:
                     key = mapping[key]
                 elif key.startswith('_'):
@@ -170,7 +167,7 @@ class Document(object):
             if not required_field in dict_:
                 raise MissingFieldException(required_field)
 
-        for key in list(dict_.keys()):
+        for key in dict_.iterkeys():
             if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
                 raise UnexpectedFieldException(key)
 
@@ -187,7 +184,8 @@ class Document(object):
 
         # populate default dicts:
         partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                      for label, spans in parsed_content['partitions'].items()} \
+                      for label, spans in
+                      parsed_content['partitions'].iteritems()} \
             if 'partitions' in parsed_content else {}
 
         header = parsed_content['header'] \
@@ -201,7 +199,7 @@ class Document(object):
         annotations = parsed_content['annotations'] \
             if 'annotations' in parsed_content else {}
 
-        return Document(content_id=int(parsed_content['content_id']),
+        return Document(content_id=long(parsed_content['content_id']),
                         content=parsed_content.get('content'),
                         nilsimsa=parsed_content.get('nilsimsa'),
                         lang=parsed_content.get('lang'),
