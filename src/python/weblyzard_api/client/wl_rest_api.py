@@ -9,6 +9,9 @@ This module provides an easy client for the WL Document REST API.
 
 import json
 import requests
+import logging
+
+logger = logging.getLogger('weblyzard_api.client.wl_compute_rest_api_client')
 
 
 class WlComputeRestApiClient(object):
@@ -94,6 +97,16 @@ class WlComputeRestApiClient(object):
         """
         r = requests.get('/'.join([self.base_url, self.ENDPOINT_STATUS]))
         return r.json()
+
+    def check_active(self):
+        """ Check if the Compute API is up an healthy.
+        """
+        try:
+            r = requests.get('/'.join([self.base_url, self.ENDPOINT_STATUS])).status
+            return r.status_code == 200
+        except Exception as e:
+            logger.warn(e)
+        return False
 
 
 class WlSearchRestApiClient(object):
