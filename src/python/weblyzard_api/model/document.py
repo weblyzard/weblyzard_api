@@ -8,6 +8,7 @@ Created on Jan 25, 2018
 import json
 
 from datetime import datetime
+from decimal import Decimal
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import Sentence, SpanFactory
@@ -104,6 +105,8 @@ class Document(object):
             return data
         if isinstance(data, bool):
             return data
+        if isinstance(data, Decimal):
+            return str(data)  # needed for e.g. GEO coordinates
         if isinstance(data, tuple):
             if len(data) == 1:
                 return data[0]
