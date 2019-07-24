@@ -281,7 +281,7 @@ class Sentence(object):
             result = []
             deps = self.dependency.strip().split(' ')
             for index, dep in enumerate(deps):
-                [parent, label] = dep.split(':') if ':' in dep else [dep, None]
+                [parent, label] = dep.split(':', 1) if ':' in dep else [dep, None]
                 result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
                                                 label))
