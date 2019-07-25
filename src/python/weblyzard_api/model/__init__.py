@@ -157,7 +157,7 @@ class Sentence(object):
         * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
         * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
-    #:  Maps the keys of the attributes to the corresponding key for the API JSON
+    # Map attribute keys to corresponding the API JSON keys
     API_MAPPINGS = {
         1.0: {
             'md5sum': 'id',
@@ -169,6 +169,8 @@ class Sentence(object):
             'dependency': 'dep_tree',
         }
     }
+
+    DEPENDENCY_DELIMITER = '::'
 
     def __init__(self, md5sum=None, pos=None, sem_orient=None,
                  significance=None,
@@ -281,7 +283,8 @@ class Sentence(object):
             result = []
             deps = self.dependency.strip().split(' ')
             for index, dep in enumerate(deps):
-                [parent, label] = dep.split(':') if ':' in dep else [dep, None]
+                [parent, label] = dep.split(self.DEPENDENCY_DELIMITER) if \
+                            self.DEPENDENCY_DELIMITER in dep else [dep, None]
                 result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
                                                 label))
@@ -311,7 +314,8 @@ class Sentence(object):
         deps = []
         new_pos = []
         for dependency in dependencies:
-            deps.append(dependency.parent + ':' + dependency.label)
+            deps.append(self.DEPENDENCY_DELIMITER.join(
+                        [dependency.parent, dependency.label]))
             new_pos.append(dependency.pos)
         self.pos = ' '.join(new_pos)
         self.dependency = ' '.join(deps)
