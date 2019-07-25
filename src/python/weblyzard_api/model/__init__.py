@@ -157,7 +157,7 @@ class Sentence(object):
         * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
         * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
-    #:  Maps the keys of the attributes to the corresponding key for the API JSON
+    #  Maps the keys of the attributes to the corresponding key for the API JSON
     API_MAPPINGS = {
         1.0: {
             'md5sum': 'id',
@@ -169,6 +169,15 @@ class Sentence(object):
             'dependency': 'dep_tree',
         }
     }
+
+    # Delimiter between items (POS, TOKEN, DEPENDENCY)
+    ITEM_DELIMITER = ' '
+
+    # Delimiter for a single token
+    TOKEN_DELIMITER = ','
+
+    # Delimiter for a single dependency
+    DEPENDENCY_DELIMITER = ':'
 
     def __init__(self, md5sum=None, pos=None, sem_orient=None,
                  significance=None,
@@ -214,13 +223,13 @@ class Sentence(object):
         ['PRP', 'ADV', 'NN']
         '''
         if self.pos:
-            return self.pos.strip().split()
+            return self.pos.strip().split(self.ITEM_DELIMITER)
         else:
             return None
 
     def set_pos_tags(self, new_pos_tags):
         if isinstance(new_pos_tags, list):
-            new_pos_tags = ' '.join(new_pos_tags)
+            new_pos_tags = self.ITEM_DELIMITER.join(new_pos_tags)
         self.pos = new_pos_tags
 
     def get_pos_tags_list(self):
@@ -256,8 +265,9 @@ class Sentence(object):
         if not self.token:
             raise StopIteration
         correction_offset = 0
-        for token_pos in self.token.split(' '):
-            start, end = [int(i) + correction_offset for i in token_pos.split(',')]
+        for token_pos in self.token.split(self.ITEM_DELIMITER):
+            start, end = [int(i) + correction_offset for i \
+                          in token_pos.split(self.TOKEN_DELIMITER)]
             res = unicode(self.sentence)[start:end]
             # de- and encoding sometimes leads to index errors with double-width
             # characters - here we attempt to detect such cases and correct
@@ -275,13 +285,18 @@ class Sentence(object):
 
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
-        [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
+        [
+        LabeledDependency(parent='1', pos='RB', label='SUB'), 
+        LabeledDependency(parent='-1', pos='PRP', label='ROOT'), 
+        LabeledDependency(parent='1', pos='MD', label='OBJ')
+        ]
         '''
         if self.dependency:
             result = []
-            deps = self.dependency.strip().split(' ')
+            deps = self.dependency.strip().split(self.ITEM_DELIMITER)
             for index, dep in enumerate(deps):
-                [parent, label] = dep.split(':', 1) if ':' in dep else [dep, None]
+                [parent, label] = dep.split(self.DEPENDENCY_DELIMITER, 1) if \
+                            self.DEPENDENCY_DELIMITER in dep else [dep, None]
                 result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
                                                 label))
@@ -301,7 +316,9 @@ class Sentence(object):
 
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
-        [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
+        [LabeledDependency(parent='1', pos='RB', label='SUB'), 
+        LabeledDependency(parent='-1', pos='PRP', label='ROOT'), 
+        LabeledDependency(parent='1', pos='MD', label='OBJ')]
         >>> s.dependency_list = [LabeledDependency(parent='-1', pos='MD', label='ROOT'), ]
         >>> s.dependency_list
         [LabeledDependency(parent='-1', pos='MD', label='ROOT')]
@@ -311,10 +328,11 @@ class Sentence(object):
         deps = []
         new_pos = []
         for dependency in dependencies:
-            deps.append(dependency.parent + ':' + dependency.label)
+            deps.append(self.DEPENDENCY_DELIMITER.join(
+                        [dependency.parent, dependency.label]))
             new_pos.append(dependency.pos)
-        self.pos = ' '.join(new_pos)
-        self.dependency = ' '.join(deps)
+        self.pos = self.ITEM_DELIMITER.join(new_pos)
+        self.dependency = self.ITEM_DELIMITER.join(deps)
 
     def to_json(self, version=1.0):
         '''
