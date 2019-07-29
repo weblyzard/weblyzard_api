@@ -22,6 +22,7 @@ import json
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
+from weblyzard_api.model.parsers import EmptySentenceException
 from weblyzard_api.model import Sentence, Annotation
 
 
@@ -94,10 +95,13 @@ class XMLContent(object):
         sentence_objects = []
         annotation_objects = []
         parser = cls.SUPPORTED_XML_VERSIONS[xml_version]
-
-        attributes, sentences, title_annotations, body_annotations, features, \
-            relations = parser.parse(xml_content, remove_duplicates)
-
+        try:
+            attributes, sentences, title_annotations, body_annotations, features, \
+                relations = parser.parse(xml_content, remove_duplicates, raise_on_empty=True)
+        except EmptySentenceException as e:
+            raise EmptySentenceException('Empty sentence object: {}'.format(
+                xml_content
+            ))
         titles = []
         for sentence in sentences:
             sent_obj = Sentence(**sentence)

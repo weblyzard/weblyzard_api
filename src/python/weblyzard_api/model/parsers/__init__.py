@@ -22,6 +22,8 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
 
 logger = logging.getLogger('weblyzard_api.parsers')
 
+class EmptySentenceException(Exception):
+    pass
 
 class DatesToStrings(json.JSONEncoder):
     def _encode(self, obj):
@@ -284,7 +286,7 @@ class XMLParser(object):
         return result
 
     @classmethod
-    def parse(cls, xml_content, remove_duplicates=True):
+    def parse(cls, xml_content, remove_duplicates=True, raise_on_empty=True):
         ''' '''
         parser = etree.XMLParser(recover=True, strip_cdata=False)
         root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''),
@@ -299,7 +301,7 @@ class XMLParser(object):
             attributes = {}
 
         sentences = cls.load_sentences(
-            root, remove_duplicates=remove_duplicates)
+            root, remove_duplicates=remove_duplicates, raise_on_empty=raise_on_empty)
         title_sentence_ids = [sentence['md5sum'] for sentence in sentences
                               if 'is_title' in sentence and sentence['is_title']]
 
@@ -345,7 +347,7 @@ class XMLParser(object):
         return annotations
 
     @classmethod
-    def load_sentences(cls, root, remove_duplicates=True):
+    def load_sentences(cls, root, remove_duplicates=True, raise_on_empty=False):
         ''' '''
         sentences = []
         seen_sentences = []
@@ -354,10 +356,13 @@ class XMLParser(object):
 
         for sent_element in root.iterfind('{%s}sentence' % cls.get_default_ns(),
                                           namespaces=cls.DOCUMENT_NAMESPACES):
-
+            if sent_element.text:
+                sent_value = sent_element.text.strip()
+            else:
+                sent_value = ''
             sent_attributes = cls.load_attributes(sent_element.attrib,
                                                   mapping=sentence_mapping)
-            sent_attributes['value'] = sent_element.text.strip()
+            sent_attributes['value'] = sent_value
 
             if 'md5sum' in sent_attributes:
                 sent_id = sent_attributes['md5sum']
@@ -367,9 +372,13 @@ class XMLParser(object):
                 del sent_attributes['id']
             else:
                 sent_id = hashlib.md5(
-                    sent_element.text.encode('utf-8')).hexdigest()
+                    sent_value('utf-8')).hexdigest()
                 sent_attributes['md5sum'] = sent_id
 
+            if not sent_value:
+                logger.warn('empty attribute for sentence {}'.format(sent_id))
+                if raise_on_empty:
+                    raise EmptySentenceException
             if not sent_id in seen_sentences:
                 sentences.append(sent_attributes)
 
