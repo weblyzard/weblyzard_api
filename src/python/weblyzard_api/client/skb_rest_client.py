@@ -53,8 +53,10 @@ class SKBRESTClient(object):
         if uri.startswith('wl:'):
             lang, kw = uri.split(':')[1].split('/')
             uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
+        elif uri.startswith('http://weblyzard.com/skb/keyword/'):
+            lang = uri[len('http://weblyzard.com/skb/keyword/'):].split('/')[0]
         skb_relevant_data = {'uri': uri,
-                             'preferredName': kwargs.get('preferred_name', kwargs.get('preferredName', None)),
+                             'preferredName': '{}@{}'.format(kwargs.get('preferred_name', kwargs.get('preferredName', None)), lang),
                              'entityType': kwargs.get('entity_type', kwargs.get('entityType', None)),
                              'provenance': kwargs['provenance']}
         return skb_relevant_data
@@ -278,8 +280,6 @@ class SKBRESTClient(object):
                              uri,
                              e)
         return None
-
-
 
 
 class SKBSentimentDictionary(dict):
