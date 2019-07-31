@@ -377,7 +377,7 @@ class XMLParser(object):
                 del sent_attributes['id']
             else:
                 sent_id = hashlib.md5(
-                    sent_value('utf-8')).hexdigest()
+                    sent_value.encode('utf-8')).hexdigest()
                 sent_attributes['md5sum'] = sent_id
 
             if not sent_value:
