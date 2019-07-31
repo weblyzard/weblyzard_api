@@ -19,8 +19,7 @@ public class MD5DigestSerializer extends StdSerializer<MD5Digest> {
     }
 
     @Override
-    public void serialize(MD5Digest value, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException {
+    public void serialize(MD5Digest value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
         jgen.writeString(value.toString());
     }
 }

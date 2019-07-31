@@ -17,8 +17,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
- * An Annotation encodes a single occurrence of an entity that has been described with an
- * {@link EntityDescriptor}.
+ * An Annotation encodes a single occurrence of an entity that has been described with an {@link EntityDescriptor}.
  * 
  * @author Norman Süsstrunk
  */
