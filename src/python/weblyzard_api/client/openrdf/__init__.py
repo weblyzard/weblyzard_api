@@ -28,7 +28,7 @@ from pprint import pprint
 try:
     from urllib.parse import urlencode
 except ImportError:
-    from urllib.parse import urlencode
+    from urllib import urlencode
 
 QUERIES = {
     'configured_profiles': '''
@@ -93,7 +93,7 @@ class OpenRdfClient(object):
     def get_orphaned_analyzers(self):
         profiles = self.get_profiles()
         configured = []
-        for profile in list(profiles.values()):
+        for profile in profiles.values():
             configured.extend(profile['analyzers'])
 
         orphaned = []
@@ -161,9 +161,8 @@ class OpenRdfClient(object):
         profiles = self.get_profiles()
 
         if profile_name in profiles:
-            subject_uri = profiles[profile_name]
+            subject_uri = profiles[profile_name]['subject_uri']
 
-            # TODO: check why we need to fix this????
             if not subject_uri.endswith('>'):
                 subject_uri = '%s>' % subject_uri
 
@@ -205,16 +204,13 @@ class OpenRdfClient(object):
             if params:
                 function = '%s?%s' % (function, params)
 
-        print((method, '%{}/{}'.format(self.server_uri, function)))
+        print(method, '%{}/{}'.format(self.server_uri, function))
 
         r = requests.request(method,
                              '%s/%s' % (self.server_uri, function),
                              data=data,
                              headers=headers)
         text = r.text
-
-        if isinstance(text, str):
-            text = text.encode('utf-8')
 
         try:
             return json.loads(r.text) if r.text else r.text
@@ -225,7 +221,7 @@ class OpenRdfClient(object):
     def get_repo_size(self, repo_id):
         ''' '''
         result = self.request('repositories/%s/size' % repo_id)
-        print(('get_repo_size', result))
+        print('get_repo_size', result)
 
     def get_repositories(self):
         ''' '''
@@ -261,7 +257,7 @@ class OpenRdfClient(object):
             params['obj'] = obj
         if params:
             params = '&'.join(['%s=%s' % (k, v)
-                               for k, v in list(params.items())])
+                               for k, v in params.items()])
         else:
             params = None
 
@@ -368,7 +364,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         ''' '''
         profiles = self.get_profiles()
         configured = []
-        for profile in list(profiles.values()):
+        for profile in profiles.values():
             configured.extend(profile['analyzers'])
 
         orphaned = []
@@ -437,7 +433,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
 
         if profile_name in profiles:
             print(profile_name)
-            subject_uri = profiles[profile_name]
+            subject_uri = profiles[profile_name]['subject_uri']
 
             # TODO: check why we need to fix this????
             if not subject_uri.endswith('>'):
@@ -455,7 +451,9 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         repositories = self.get_repositories()
 
         if not self.config_repository in repositories:
-            print(('warning config repo "%s" does not exist') % self.config_repository)
+            print('warning config repo "{}" does not exist'.format(
+                self.config_repository)
+            )
 
     def create_template(self, entity, entity_type, language='en'):
         ''' '''
@@ -480,7 +478,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
                 '<{}> <http://www.w3.org/2000/01/rdf-schema#label> "{} {}"@{} . '.format(
                     entity, first_name, surname, language)
             ]
-        return '\n'.join(tuples)
+            return '\n'.join(tuples)
 
     def add_dbpedia_entity_to_repository(self, repository, label, entity_type,
                                          language=None):
