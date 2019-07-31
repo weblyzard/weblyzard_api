@@ -5,6 +5,7 @@ Created on Oct 22, 2018
 
 .. codeauthor:: Max Göbel <goebel@weblyzard.com>
 '''
+import os
 import unittest
 
 from weblyzard_api.client.jeremia_ng import JeremiaNg
@@ -19,7 +20,7 @@ class JeremiaTest(unittest.TestCase):
              'format': 'text/html',
              'header': {}} for content_id in xrange(1000, 1020)]
     def setUp(self):
-        service_url = 'localhost:63001'
+        service_url = os.getenv('JEREMIA_NG_SERVICE_URL', 'localhost:63001')
         self.client = JeremiaNg(url=service_url)
 
 
