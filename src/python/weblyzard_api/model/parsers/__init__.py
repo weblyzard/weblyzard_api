@@ -7,6 +7,7 @@ Created on 07.04.2014
 '''
 from __future__ import print_function
 
+import re
 import json
 import logging
 import hashlib
@@ -289,8 +290,12 @@ class XMLParser(object):
     def parse(cls, xml_content, remove_duplicates=True, raise_on_empty=True):
         ''' '''
         parser = etree.XMLParser(recover=True, strip_cdata=False)
-        root = etree.fromstring(xml_content.replace('encoding="UTF-8"', ''),
+        cleaned_xml_content = xml_content.replace('encoding="UTF-8"', '')
+        root = etree.fromstring(cleaned_xml_content,
                                 parser=parser)
+        if root is None:
+            raise ValueError(u'Failed to parse root of xml-content, check if '
+                             'this is valid xml: {}'.format(xml_content))
         try:
             invert_mapping = cls.invert_mapping(cls.ATTR_MAPPING)
             attributes = cls.load_attributes(root.attrib,

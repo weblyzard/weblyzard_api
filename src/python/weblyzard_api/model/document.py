@@ -9,6 +9,7 @@ import json
 
 from datetime import datetime
 from decimal import Decimal
+from itertools import chain
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import Sentence, SpanFactory
@@ -296,7 +297,9 @@ class Document(object):
         requested_keys = [self.SENTENCE_KEY] + include_title * [self.TITLE_KEY]
         if not any([key in self.partitions for key in requested_keys]):
             return result
-        sentence_spans = self.partitions[self.TITLE_KEY] * include_title + self.partitions[self.SENTENCE_KEY]
+        sentence_spans = chain(
+            *(self.partitions.get(key, []) for key in requested_keys)
+        )
         for sentence_span in sentence_spans:
             if zero_based:
                 offset = sentence_span.start
