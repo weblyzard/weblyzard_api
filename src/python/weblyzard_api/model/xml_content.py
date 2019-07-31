@@ -25,6 +25,7 @@ import json
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
+from weblyzard_api.model.parsers import EmptySentenceException
 from weblyzard_api.model import Sentence, Annotation
 
 
@@ -97,10 +98,13 @@ class XMLContent(object):
         sentence_objects = []
         annotation_objects = []
         parser = cls.SUPPORTED_XML_VERSIONS[xml_version]
-
-        attributes, sentences, title_annotations, body_annotations, features, \
-            relations = parser.parse(xml_content, remove_duplicates)
-
+        try:
+            attributes, sentences, title_annotations, body_annotations, features, \
+                relations = parser.parse(xml_content, remove_duplicates, raise_on_empty=True)
+        except EmptySentenceException as e:
+            raise EmptySentenceException('Empty sentence object: {}'.format(
+                xml_content
+            ))
         titles = []
         for sentence in sentences:
             sent_obj = Sentence(**sentence)
@@ -125,7 +129,7 @@ class XMLContent(object):
         if not xml_content:
             return None
 
-        for version, xml_parser in list(cls.SUPPORTED_XML_VERSIONS.items()):
+        for version, xml_parser in cls.SUPPORTED_XML_VERSIONS.items():
             if xml_parser.is_supported(xml_content):
                 return version
 
@@ -204,21 +208,21 @@ class XMLContent(object):
         if not new_attributes or not isinstance(new_attributes, dict):
             return
 
-        for k, v in list(new_attributes.items()):
+        for k, v in new_attributes.items():
             self.attributes[str(k)] = v
 
     def update_features(self, new_features):
         if not new_features or not isinstance(new_features, dict):
             return
 
-        for k, v in list(new_features.items()):
+        for k, v in new_features.items():
             self.features[str(k)] = v
 
     def update_relations(self, new_relations):
         if not new_relations or not isinstance(new_relations, dict):
             return
 
-        for k, v in list(new_relations.items()):
+        for k, v in new_relations.items():
             self.relations[str(k)] = v
 
     def as_dict(self, mapping=None, ignore_non_sentence=False,
@@ -288,7 +292,7 @@ class XMLContent(object):
 
         if mapping:
             result = {}
-            for attr, value in list(attributes.items()):
+            for attr, value in attributes.items():
                 if attr in mapping:
                     result[mapping[attr]] = value
 

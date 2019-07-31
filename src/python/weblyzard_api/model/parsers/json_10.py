@@ -39,7 +39,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         # This basically creates an empty XMLContent object
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
-        xml_content.update_attributes({key: value for key, value in list(api_dict.items()) if
+        xml_content.update_attributes({key: value for key, value in api_dict.items() if
                                        key not in ('sentences', 'annotations',
                                                    'language_id', 'features',
                                                    'relations', 'content')})

@@ -11,6 +11,8 @@ from builtins import object
 import json
 
 from datetime import datetime
+from decimal import Decimal
+from itertools import chain
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import Sentence, SpanFactory
@@ -107,6 +109,8 @@ class Document(object):
             return data
         if isinstance(data, bool):
             return data
+        if isinstance(data, Decimal):
+            return str(data)  # needed for e.g. GEO coordinates
         if isinstance(data, tuple):
             if len(data) == 1:
                 return data[0]
@@ -120,7 +124,7 @@ class Document(object):
             return result
         if isinstance(data, dict):
             result = {}
-            for key, value in list(data.items()):
+            for key, value in data.items():
                 key = mapping.get(key, key)
                 if value is not None:
                     value = cls._dict_transform(value, mapping=mapping)
@@ -131,7 +135,7 @@ class Document(object):
             return result
         if isinstance(data, object):
             result = {}
-            for key, value in list(data.__dict__.items()):
+            for key, value in data.__dict__.items():
                 if key in mapping:
                     key = mapping[key]
                 elif key.startswith('_'):
@@ -168,7 +172,7 @@ class Document(object):
             if not required_field in dict_:
                 raise MissingFieldException(required_field)
 
-        for key in list(dict_.keys()):
+        for key in dict_.keys():
             if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
                 raise UnexpectedFieldException(key)
 
@@ -284,16 +288,21 @@ class Document(object):
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based=False):
+    def get_sentences(self, zero_based=False, include_title=False):
         """
         Legacy method to extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
+        :param include_title: if True, include sentence
         """
         result = []
         offset = 0
-        if not self.SENTENCE_KEY in self.partitions:
+        requested_keys = [self.SENTENCE_KEY] + include_title * [self.TITLE_KEY]
+        if not any([key in self.partitions for key in requested_keys]):
             return result
-        for sentence_span in self.partitions[self.SENTENCE_KEY]:
+        sentence_spans = chain(
+            *(self.partitions.get(key, []) for key in requested_keys)
+        )
+        for sentence_span in sentence_spans:
             if zero_based:
                 offset = sentence_span.start
             if not sentence_span.span_type == 'SentenceCharSpan':
@@ -318,9 +327,9 @@ class Document(object):
             except AttributeError:
                 dep_sequence = None
 
-            # prefer semOrient over sem_orient, if both are annotated
+            # prefer semOrient over sem_orient, if both are annotated and non-zero
             sem_orient = None
-            if getattr(sentence_span, 'semOrient', None) is not None:
+            if getattr(sentence_span, 'semOrient', None):
                 sem_orient = sentence_span.semOrient
             else:
                 sem_orient = sentence_span.sem_orient
