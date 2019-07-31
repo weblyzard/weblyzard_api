@@ -63,14 +63,14 @@ class FusekiWrapper(object):
         '''
         Replaces a prefix known to FusekiWrapper by the full URI path.
         '''
-        for full_path, prefix in list(self.NAMESPACES.items()):
+        for full_path, prefix in self.NAMESPACES.items():
             prefix_colon = u'{}:'.format(prefix)
             if uri.startswith(prefix_colon):
                 return uri.replace(prefix_colon, full_path)
         return uri
 
     def prefix_uri(self, uri):
-        for full_path, prefix in list(self.NAMESPACES.items()):
+        for full_path, prefix in self.NAMESPACES.items():
             prefix_colon = u'{}:'.format(prefix)
             if uri.startswith(full_path):
                 return uri.replace(full_path, prefix_colon)
@@ -84,7 +84,10 @@ class FusekiWrapper(object):
         '''
         if isinstance(o, tuple) and len(o) == 3:
             return((self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2])))
-        elif isinstance(o, str) or isinstance(o, str):
+        
+        elif isinstance(o,  (str, bytes)):
+            if isinstance(o, bytes):
+                o = o.decode('utf-8')
             if o.startswith('http'):
                 return u'<{}>'.format(o)
             else:
@@ -96,7 +99,9 @@ class FusekiWrapper(object):
         '''
         if isinstance(value, int):
             return False
-        elif isinstance(value, str) or isinstance(value, str):
+        elif isinstance(value, (str, bytes)):
+            if isinstance(value, bytes):
+                value = value.decode('utf-8')
             for prefix in list(self.NAMESPACES.values()):
                 if value.startswith(prefix):
                     return True
