@@ -25,6 +25,7 @@ NAMESPACES = {
     'http://www.wikidata.org/prop/direct/': 'wdt',
     'http://www.wikidata.org/entity/': 'wd',
     'http://www.wikidata.org/prop/': 'p',
+    'http://www.wikidata.org/prop/statement/': 'ps',
     'http://www.wikidata.org/prop/qualifier/': 'pq',
     'http://sws.geonames.org/': 'gn',
     # weblyzard namespaces
