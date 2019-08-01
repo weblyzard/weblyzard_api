@@ -9,6 +9,7 @@ import json
 
 from datetime import datetime
 from decimal import Decimal
+from itertools import chain
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import Sentence, SpanFactory
@@ -285,16 +286,21 @@ class Document(object):
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based=False):
+    def get_sentences(self, zero_based=False, include_title=False):
         """
         Legacy method to extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
+        :param include_title: if True, include sentence
         """
         result = []
         offset = 0
-        if not self.SENTENCE_KEY in self.partitions:
+        requested_keys = [self.SENTENCE_KEY] + include_title * [self.TITLE_KEY]
+        if not any([key in self.partitions for key in requested_keys]):
             return result
-        for sentence_span in self.partitions[self.SENTENCE_KEY]:
+        sentence_spans = chain(
+            *(self.partitions.get(key, []) for key in requested_keys)
+        )
+        for sentence_span in sentence_spans:
             if zero_based:
                 offset = sentence_span.start
             if not sentence_span.span_type == 'SentenceCharSpan':
@@ -306,7 +312,8 @@ class Document(object):
             is_title = len(
                 self.get_partition_overlaps(search_span=sentence_span,
                                             target_partition_key=self.TITLE_KEY)) > 0
-
+            if is_title:
+                pass
             # serialize POS, tokens, and dependecy to string
             pos_sequence = ' '.join([ts.pos for ts in token_spans])
             tok_sequence = ' '.join(
