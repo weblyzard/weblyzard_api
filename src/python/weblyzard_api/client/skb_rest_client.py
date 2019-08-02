@@ -56,8 +56,14 @@ class SKBRESTClient(object):
         if uri.startswith('wl:'):
             lang, kw = uri.split(':')[1].split('/')
             uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
+        elif uri.startswith('http://weblyzard.com/skb/keyword/'):
+            lang = uri[len('http://weblyzard.com/skb/keyword/'):].split('/')[0]
+        else:
+            lang = None
+        preferredName = kwargs.get(
+            'preferred_name', kwargs.get('preferredName', None))
         skb_relevant_data = {'uri': uri,
-                             'preferredName': kwargs.get('preferred_name', kwargs.get('preferredName', None)),
+                             'preferredName': '{}@{}'.format(preferredName, lang) if lang else preferredName,
                              'entityType': kwargs.get('entity_type', kwargs.get('entityType', None)),
                              'provenance': kwargs['provenance']}
         return skb_relevant_data

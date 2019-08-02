@@ -12,6 +12,7 @@ from builtins import str
 from builtins import object
 import json
 import hashlib
+import logging
 
 from collections import namedtuple
 from weblyzard_api.model.parsers.xml_2005 import XML2005
@@ -20,6 +21,7 @@ from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
 LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 
+logger = logging.getLogger(__name__)
 
 class SpanFactory(object):
 
@@ -192,7 +194,7 @@ class Sentence(object):
             try:
                 m = hashlib.md5()
                 m.update(value.encode('utf-8')
-                         if isinstance(value, unicode) else str(value).encode('utf-8'))
+                         if isinstance(value, str) else str(value).encode('utf-8'))
                 md5sum = m.hexdigest()
             except Exception as e:
                 print(e)
@@ -271,8 +273,19 @@ class Sentence(object):
             raise StopIteration
         correction_offset = 0
         for token_pos in self.token.split(self.ITEM_DELIMITER):
-            start, end = [int(i) + correction_offset for i \
-                          in token_pos.split(self.TOKEN_DELIMITER)]
+            try:
+                start, end = [int(i) + correction_offset for i \
+                              in token_pos.split(self.TOKEN_DELIMITER)]
+            except ValueError as e:
+                # occasionally there appear to be missing spaces in token
+                # strings
+                logger.warn('Error parsing tokens for sentence {}; token '
+                                 'string was {}; individual token identifier '
+                                 'was {}. Original error was: {}'.format(
+                    self.value, self.token, token_pos, e
+                ), exc_info=True)
+                token_indices = map(int, token_pos.split())
+                start, end = token_indices[0], token_indices[-1]
             res = unicode(self.sentence)[start:end]
             # de- and encoding sometimes leads to index errors with double-width
             # characters - here we attempt to detect such cases and correct
