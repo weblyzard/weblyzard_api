@@ -2,7 +2,6 @@ package com.weblyzard.api.client.integration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +17,7 @@ import com.weblyzard.api.model.document.Document;
 
 public class JosephClientIT extends TestClientBase {
 
-    private static final String PSALMS_DOCS_WEBLYZARDFORMAT_JSON =
-            "resources/psalms-docs-weblyzardformat.json";
+    private static final String PSALMS_DOCS_WEBLYZARDFORMAT_JSON = "resources/psalms-docs-weblyzardformat.json";
 
     public List<Document> psalmDocs;
 
@@ -49,9 +47,8 @@ public class JosephClientIT extends TestClientBase {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             return objectMapper.readValue(
-                    JoelClientIT.class.getClassLoader()
-                            .getResourceAsStream(PSALMS_DOCS_WEBLYZARDFORMAT_JSON),
-                    new TypeReference<List<Document>>() {});
+                            JoelClientIT.class.getClassLoader().getResourceAsStream(PSALMS_DOCS_WEBLYZARDFORMAT_JSON),
+                            new TypeReference<List<Document>>() {});
         } catch (JsonParseException e1) {
             e1.printStackTrace();
         } catch (JsonMappingException e1) {

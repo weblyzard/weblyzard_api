@@ -12,6 +12,7 @@ from builtins import str
 from builtins import object
 import json
 import hashlib
+import logging
 
 from collections import namedtuple
 from weblyzard_api.model.parsers.xml_2005 import XML2005
@@ -20,6 +21,7 @@ from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
 LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 
+logger = logging.getLogger(__name__)
 
 class SpanFactory(object):
 
@@ -175,6 +177,15 @@ class Sentence(object):
         }
     }
 
+    # Delimiter between items (POS, TOKEN, DEPENDENCY)
+    ITEM_DELIMITER = ' '
+
+    # Delimiter for a single token
+    TOKEN_DELIMITER = ','
+
+    # Delimiter for a single dependency
+    DEPENDENCY_DELIMITER = ':'
+
     def __init__(self, md5sum=None, pos=None, sem_orient=None,
                  significance=None,
                  token=None, value=None, is_title=False, dependency=None):
@@ -183,7 +194,7 @@ class Sentence(object):
             try:
                 m = hashlib.md5()
                 m.update(value.encode('utf-8')
-                         if isinstance(value, str) else str(value))
+                         if isinstance(value, str) else str(value).encode('utf-8'))
                 md5sum = m.hexdigest()
             except Exception as e:
                 print(e)
@@ -219,13 +230,13 @@ class Sentence(object):
         ['PRP', 'ADV', 'NN']
         '''
         if self.pos:
-            return self.pos.strip().split()
+            return self.pos.strip().split(self.ITEM_DELIMITER)
         else:
             return None
 
     def set_pos_tags(self, new_pos_tags):
         if isinstance(new_pos_tags, list):
-            new_pos_tags = ' '.join(new_pos_tags)
+            new_pos_tags = self.ITEM_DELIMITER.join(new_pos_tags)
         self.pos = new_pos_tags
 
     def get_pos_tags_list(self):
@@ -260,11 +271,28 @@ class Sentence(object):
         '''
         if not self.token:
             raise StopIteration
-
-        for token_pos in self.token.split(' '):
-            start, end = list(map(int, token_pos.split(',')))
-            # yield self.sentence.decode('utf8')[start:end]
-            yield str(self.sentence)[start:end]
+        correction_offset = 0
+        for token_pos in self.token.split(self.ITEM_DELIMITER):
+            try:
+                start, end = [int(i) + correction_offset for i \
+                              in token_pos.split(self.TOKEN_DELIMITER)]
+            except ValueError as e:
+                # occasionally there appear to be missing spaces in token
+                # strings
+                logger.warn('Error parsing tokens for sentence {}; token '
+                                 'string was {}; individual token identifier '
+                                 'was {}. Original error was: {}'.format(
+                    self.value, self.token, token_pos, e
+                ), exc_info=True)
+                token_indices = map(int, token_pos.split())
+                start, end = token_indices[0], token_indices[-1]
+            res = unicode(self.sentence)[start:end]
+            # de- and encoding sometimes leads to index errors with double-width
+            # characters - here we attempt to detect such cases and correct
+            if res.strip() != res:
+                correction_offset -= len(res) - len(res.strip())
+            else:
+                yield res
 
     def get_dependency_list(self):
         '''
@@ -275,13 +303,18 @@ class Sentence(object):
 
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
-        [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
+        [
+        LabeledDependency(parent='1', pos='RB', label='SUB'),
+        LabeledDependency(parent='-1', pos='PRP', label='ROOT'),
+        LabeledDependency(parent='1', pos='MD', label='OBJ')
+        ]
         '''
         if self.dependency:
             result = []
-            deps = self.dependency.strip().split(' ')
+            deps = self.dependency.strip().split(self.ITEM_DELIMITER)
             for index, dep in enumerate(deps):
-                [parent, label] = dep.split(':') if ':' in dep else [dep, None]
+                [parent, label] = dep.split(self.DEPENDENCY_DELIMITER, 1) if \
+                            self.DEPENDENCY_DELIMITER in dep else [dep, None]
                 result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
                                                 label))
@@ -301,7 +334,9 @@ class Sentence(object):
 
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
-        [LabeledDependency(parent='1', pos='RB', label='SUB'), LabeledDependency(parent='-1', pos='PRP', label='ROOT'), LabeledDependency(parent='1', pos='MD', label='OBJ')]
+        [LabeledDependency(parent='1', pos='RB', label='SUB'),
+        LabeledDependency(parent='-1', pos='PRP', label='ROOT'),
+        LabeledDependency(parent='1', pos='MD', label='OBJ')]
         >>> s.dependency_list = [LabeledDependency(parent='-1', pos='MD', label='ROOT'), ]
         >>> s.dependency_list
         [LabeledDependency(parent='-1', pos='MD', label='ROOT')]
@@ -311,10 +346,11 @@ class Sentence(object):
         deps = []
         new_pos = []
         for dependency in dependencies:
-            deps.append(dependency.parent + ':' + dependency.label)
+            deps.append(self.DEPENDENCY_DELIMITER.join(
+                        [dependency.parent, dependency.label]))
             new_pos.append(dependency.pos)
-        self.pos = ' '.join(new_pos)
-        self.dependency = ' '.join(deps)
+        self.pos = self.ITEM_DELIMITER.join(new_pos)
+        self.dependency = self.ITEM_DELIMITER.join(deps)
 
     def to_json(self, version=1.0):
         '''

@@ -26,8 +26,8 @@ public class SentenceCharSpan extends CharSpan {
     @XmlJavaTypeAdapter(MD5Digest.class)
     private MD5Digest id;
     /**
-     * This field provides support for numericSentenceProperties such as semOrient, significance,
-     * mediaCriticismScore, veracityScore, etc.
+     * This field provides support for numericSentenceProperties such as semOrient, significance, mediaCriticismScore,
+     * veracityScore, etc.
      */
     private Map<String, Double> numericSentenceProperties;
 

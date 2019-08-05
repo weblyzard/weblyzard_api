@@ -29,11 +29,11 @@ def remove_all_profiles(service_url, config_repository):
     client.cleanup_config()
 
 
-def remove_profile(profile_name, service_url, config_repository):
+def remove_profile(profile_fn, service_url, config_repository):
     ''' '''
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
-    client.remove_profile(profile_name)
+    client.remove_profile(profile_fn)
 
 
 def upload_profile(profile_fn, service_url, config_repository):

@@ -8,6 +8,7 @@ Created on Oct 22, 2018
 from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import range
+import os
 import unittest
 
 from weblyzard_api.client.jeremia_ng import JeremiaNg
@@ -22,7 +23,7 @@ class JeremiaTest(unittest.TestCase):
              'format': 'text/html',
              'header': {}} for content_id in range(1000, 1020)]
     def setUp(self):
-        service_url = 'localhost:63001'
+        service_url = os.getenv('JEREMIA_NG_SERVICE_URL', 'localhost:63001')
         self.client = JeremiaNg(url=service_url)
 
 
@@ -44,7 +45,8 @@ class JeremiaTest(unittest.TestCase):
                'header': {}}
         print('submitting document...')
         result = self.client.submit_document(doc)
-
+        tockens = set([tocken['pos'] for tocken in result['partitions']['TOKEN']])
+        assert 'VNW|pers|pron|obl|red|3|ev|masc' not in tockens
         from pprint import pprint
         pprint(result)
         assert result['lang'] == 'NL'

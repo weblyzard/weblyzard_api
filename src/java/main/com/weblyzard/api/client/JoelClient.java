@@ -22,29 +22,27 @@ public class JoelClient extends BasicClient {
     private static final String CLUSTER_DOCUMENT_SERVICEURL = "/rest/cluster";
     private static final String FLUSH_DOCUMENT_SERVICE_URL = "/rest/flush";
 
-    public static final String NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE =
-                    "No Keyword in Document Header";
+    public static final String NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE = "No Keyword in Document Header";
 
     public JoelClient(WebserviceClientConfig c) {
         super(c, "/joel");
     }
 
     public Response addDocuments(List<LegacyDocument> documents) {
-        try (Response response = super.getTarget(ADDDOCUMENTS_SERVICE_URL)
-                        .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(documents))) {
+        try (Response response = super.getTarget(ADDDOCUMENTS_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.json(documents))) {
 
             super.checkResponseStatus(response);
             if (response.readEntity(String.class).equals(NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE)) {
-                throw new ClientErrorException(NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE,
-                                response.getStatus());
+                throw new ClientErrorException(NO_KEYWORD_IN_DOCUMENT_HEADER_MESSAGE, response.getStatus());
             }
             return response;
         }
     }
 
     public Response flush() {
-        try (Response response = super.getTarget(FLUSH_DOCUMENT_SERVICE_URL)
-                        .request(MediaType.APPLICATION_JSON_TYPE).get()) {
+        try (Response response =
+                        super.getTarget(FLUSH_DOCUMENT_SERVICE_URL).request(MediaType.APPLICATION_JSON_TYPE).get()) {
 
             super.checkResponseStatus(response);
             return response;
@@ -52,12 +50,11 @@ public class JoelClient extends BasicClient {
     }
 
     public List<ClusterResult> cluster() {
-        try (Response response = super.getTarget(CLUSTER_DOCUMENT_SERVICEURL)
-                        .request(MediaType.APPLICATION_JSON_TYPE).get()) {
+        try (Response response =
+                        super.getTarget(CLUSTER_DOCUMENT_SERVICEURL).request(MediaType.APPLICATION_JSON_TYPE).get()) {
 
             super.checkResponseStatus(response);
-            List<ClusterResult> clusterResults =
-                            response.readEntity(new GenericType<List<ClusterResult>>() {});
+            List<ClusterResult> clusterResults = response.readEntity(new GenericType<List<ClusterResult>>() {});
             return clusterResults == null ? Collections.emptyList() : clusterResults;
         }
     }

@@ -15,8 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * The {@link MirrorDocument} represents a document with separate title and body fields as created
- * by mirror processes.
+ * The {@link MirrorDocument} represents a document with separate title and body fields as created by mirror processes.
  *
  * @author Albert Weichselbraun
  */

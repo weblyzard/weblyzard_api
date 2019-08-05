@@ -183,7 +183,7 @@ class Joanna(object):
                 else:
                     attempts = max_retry_attempts
                     json_data = json.loads(data)
-                    for content_id, h in list(contentIds_nilsimsa_dict.items()):
+                    for content_id, h in contentIds_nilsimsa_dict.items():
                         if h not in json_data:
                             json_data[h] = 'true'
                     return json_data
