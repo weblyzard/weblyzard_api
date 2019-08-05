@@ -273,9 +273,10 @@ class Sentence(object):
             raise StopIteration
         correction_offset = 0
         for token_pos in self.token.split(self.ITEM_DELIMITER):
+            token_indices = token_pos.split(self.TOKEN_DELIMITER)
             try:
                 start, end = [int(i) + correction_offset for i \
-                              in token_pos.split(self.TOKEN_DELIMITER)]
+                              in token_indices]
             except ValueError as e:
                 # occasionally there appear to be missing spaces in token
                 # strings
