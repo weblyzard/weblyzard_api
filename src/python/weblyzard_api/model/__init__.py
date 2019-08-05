@@ -286,7 +286,7 @@ class Sentence(object):
                 ), exc_info=True)
                 token_indices = map(int, token_pos.split())
                 start, end = token_indices[0], token_indices[-1]
-            res = unicode(self.sentence)[start:end]
+            res = str(self.sentence)[start:end]
             # de- and encoding sometimes leads to index errors with double-width
             # characters - here we attempt to detect such cases and correct
             if res.strip() != res:
