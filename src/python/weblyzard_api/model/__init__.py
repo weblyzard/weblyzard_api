@@ -284,7 +284,7 @@ class Sentence(object):
                                  'was {}. Original error was: {}'.format(
                     self.value, self.token, token_pos, e
                 ), exc_info=True)
-                token_indices = map(int, token_pos.split())
+                token_indices = [int(tok) for tok in token_indices]
                 start, end = token_indices[0], token_indices[-1]
             res = str(self.sentence)[start:end]
             # de- and encoding sometimes leads to index errors with double-width
