@@ -14,8 +14,6 @@
         - export VERSION=$(/usr/bin/python3 -W ignore ./setup.py --version | awk 'NR==1{print $1}')
         - export TESTSDIR=src/python/weblyzard_api/tests/model/
         - export SRCDIR=src/python/weblyzard_api/
-    only:
-        - migration
     tags:
         - docker
 
@@ -27,6 +25,10 @@ stages:
 pytest:
     <<: *py_anchor  # we reference the anchor here
     stage: test-python
+    only:
+        - migration
+        - master
+        - develop
     script:
         - tox -e pytest
         - sonar-scanner -D sonar.host.url=$sonarhost -D sonar.login=$sonarlogin
@@ -34,26 +36,26 @@ pytest:
 pylint:
     <<: *py_anchor
     stage: test-python
+    only:
+        - migration
+        - master
+        - develop
     script:
         - tox -e pylint
+        - sonar-scanner -D sonar.host.url=$sonarhost  -D sonar.login=$sonarlogin
     when: manual
 
 vulture:
     <<: *py_anchor
     stage: test-python
+    only:
+        - migration
+        - master
+        - develop
     script:
         - tox -e vulture
     when: manual
 
-sonarqube:
-    stage: test-java
-    script:
-        - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
-        - cd java-examples/keyword-extraction; mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipITs -Dgpg.skip=true -Dmaven.test.failure.ignore=false sonar:sonar -Dsonar.login=$sonarlogin -Dsonar.host.url=$sonarhost
-    only:
-        - migration
-    tags:
-        - java10
 
 # the sed and exports needed are in the actual build-package.sh
 build:
@@ -68,6 +70,50 @@ build:
         - ./build-package.sh
     only:
         - migration
+        - master
     when: manual
     tags:
         - shell-runner
+
+sonarqube_preview:
+  script:
+    - git checkout origin/master
+    - git merge $CI_COMMIT_SHA --no-commit --no-ff
+    - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
+    - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U -DskipITs -Dgpg.skip
+    - mvn --batch-mode verify sonar:sonar -Dsonar.analysis.mode=preview -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_SHA -DskipITs -Dgpg.skip
+  stage: test
+  except:
+    - develop
+    - master
+    - /^hotfix_.*$/
+    - /.*-hotfix$/
+  tags:
+    - java10
+
+sonarqube:
+  script:
+    - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
+    - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U -DskipITs -Dgpg.skip
+    - mvn --batch-mode verify sonar:sonar -DskipITs -Dgpg.skip
+  stage: test
+  only:
+    - master
+    - develop
+  tags:
+    - java10
+
+code_semanticlab_net_deploy:
+  script:
+    - pwd
+    - echo "=================================="
+    - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
+    - mvn clean
+    - mvn deploy -U -DskipITs -Dgpg.skip
+    - echo "=================================="
+  stage: deploy
+  only:
+    - master
+  tags:
+    - java10
+  when: manual
