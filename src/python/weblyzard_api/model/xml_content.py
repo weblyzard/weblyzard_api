@@ -17,6 +17,9 @@ Remove functions:
  - compatibility fixes for namespaces, encodings etc.
  - support for the old POS tags mapping.
 '''
+from __future__ import unicode_literals
+from builtins import str
+from builtins import object
 import json
 
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated

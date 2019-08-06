@@ -5,9 +5,16 @@ Created on Oct 30, 2015
 
 @author: lucas
 '''
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.builtins import basestring
+from builtins import object
 import json
 import logging
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from random import random, randint
 from time import sleep
@@ -31,17 +38,17 @@ class PostRequest(object):
         self.headers = [{"Content-Type": "application/json"}]
 
     def request(self):
-        handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        req = urllib2.Request(url=self.url)
+        handler = urllib.request.HTTPHandler()
+        opener = urllib.request.build_opener(handler)
+        req = urllib.request.Request(url=self.url)
         req.add_header("Content-Type", "application/json")
         req.get_method = lambda: "POST"
         req.add_data(self.data)
         try:
             conn = opener.open(req)
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             conn = e
-        except urllib2.URLError as e:
+        except urllib.error.URLError as e:
             logger.error("Connection refused.. %s", e)
             raise e
         return conn
@@ -210,7 +217,7 @@ class Joanna(object):
         import os
         import binascii
         docs_to_send = []
-        for _ in xrange(num_docs):
+        for _ in range(num_docs):
             rand_str = str(binascii.b2a_hex(os.urandom(16)))
             docs_to_send.append(rand_str)
         return docs_to_send

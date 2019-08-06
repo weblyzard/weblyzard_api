@@ -4,6 +4,8 @@
 Created on Aug 29, 2016
 
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
 import unittest
 
 from pprint import pprint
@@ -92,14 +94,14 @@ class TestRecognize(unittest.TestCase):
             print(self.client.list_configured_profiles())
 #             print(self.client.add_profile(profile_name, force=True))
 
-            print('list_configured_profiles',
-                  self.client.list_configured_profiles())
+            print(('list_configured_profiles',
+                  self.client.list_configured_profiles()))
 #             self.client.add_profile('Cities.10000.en')
 
 #             self.client.search_documents(profile_names=profile_name,
 #                                          doc_list=geodocs, debug=True,
 #                                          output_format='standard')
-            print('list_profiles', self.client.list_profiles())
+            print(('list_profiles', self.client.list_profiles()))
 #             self.client.add_profile('Cities.10000.en', geodocs)
 #             self.client.add_profile('Cities.10000.en')
             result = self.client.search_text(

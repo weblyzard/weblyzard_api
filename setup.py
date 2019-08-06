@@ -6,7 +6,7 @@ from setuptools.command import sdist
 
 setup(
     name='weblyzard_api',
-    version='0.7.20190802.1-dev',
+    version='0.7.20190604.1-dev',
     description=' Web services for weblyzard',
     author='Albert Weichselbraun, Heinz-Peter Lang, Max Göbel and Philipp Kuntschik',
     author_email='weichselbraun@weblyzard.com',
@@ -14,13 +14,15 @@ setup(
     package_dir={'': 'src/python'},
     install_requires=['eWRT>=0.9.2.2',
                       'future',
-                      # 'nose',
+                      'nose',
                       'lxml',
                       'requests[security]>=2.13,<3',
+                      'pytest',
                       'sparqlwrapper'],
+    classifiers=['Programming Language :: Python :: 3.6',
+                 'Programming Language :: Python :: 3 :: Only'],
     dependency_links=[
         'git+https://github.com/weblyzard/ewrt.git#egg=eWRT-0.9.1.12'],
-    tests_require=['pytest<5'],
     zip_safe=False,
     include_package_data=True,
     scripts=['src/python/weblyzard_api/client/openrdf/wl_upload_repository.py', ]

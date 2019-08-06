@@ -5,6 +5,7 @@ Created on 07.04.2014
 
 @author: heinz-peterlang
 '''
+from __future__ import unicode_literals
 from weblyzard_api.model.parsers import XMLParser
 
 

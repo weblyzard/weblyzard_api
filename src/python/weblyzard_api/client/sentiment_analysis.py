@@ -3,6 +3,8 @@
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from eWRT.ws.rest import RESTClient
 from unittest import main, TestCase
@@ -132,7 +134,7 @@ class SentimentAnalysisTest(TestCase):
         doc_list = ['Schwimmen ist gut fuer die Knochen',
                     'Jujitsu ist schlecht fuer die Knochen']
         result = sa.parse_document_list(doc_list, self.TEST_LANG)
-        print('list', result)
+        print(('list', result))
         self.assertEqual(len(result), 2)
 
     def test_negation(self):
@@ -159,21 +161,21 @@ class SentimentAnalysisTest(TestCase):
         negDict = {'grossier': -1, 'grotesques': -1, 'inexistante': -1, 'honteuse': -1, 'confuse': -1, 'd\xc3\xa9bile': -1, 'ignoble': -1, 'lassantes': -1, 'foireuses': -1, 'inutilisable': -1, 'scandaleuses': -1, 'nul': -1, 'bancale': -1, 'nuls': -1, 'trompeuse': -1, 'incompl\xc3\xa8tes': -1, 'd\xc3\xa9fectueux': -1, 'catastrophiques': -1, 'inadmissible': -1, 'd\xc3\xa9plorables': -1, 'incompl\xc3\xa8te': -1, 'grotesque': -1, 'lamentable': -1, 'd\xc3\xa9cevant': -1, 'douteux': -1, 'rat\xc3\xa9es': -1, 'fade': -1, 'moches': -1, 'inint\xc3\xa9ressantes': -1, 'superficiels': -1, 'irr\xc3\xa9versible': -1, 'moche': -1, 'm\xc3\xa9diocres': -1, 'malheureuse': -1, 'anormaux': -1, 'm\xc3\xa9diocre': -1, 'lassant': -1, 'mauvaise': -1, 'd\xc3\xa9sesp\xc3\xa9r\xc3\xa9ment': -1, 'pr\xc3\xa9tentieuse': -1, 'd\xc3\xa9cevantes': -1, 'niaise': -1, 'p\xc3\xa9niblement': -1, 'ennuyeux': -1, 'lassants': -1, 'interminable': -1, 'grossiers': -1, 'fades': -1, 'inexistantes': -1, 'ignobles': -1, 'stupide': -1, 'risible': -1, 'mauvais': -1, 'pr\xc3\xa9tentieuses': -1, 'pire': -1, 'd\xc3\xa9sastreuse': -1, 'd\xc3\xa9sagr\xc3\xa9able': -1, 'bancal': -1, 'ennuyeuses': -1, 'ridicules': -1, 'superficiel': -1, 'mauvaises': -1, 'superficielles': -1, 'b\xc3\xaatement': -1, 'incompatible': -1, 'rat\xc3\xa9': -1, 'ex\xc3\xa9crables': -1, 'vainement': -1, 'stupides': -1, 'inadmissibles': -1, 'impossibles': -1, 'lassante': -1, 'd\xc3\xa9cevante': -1, 'horribles': -1,
                    'immondes': -1, 'decevantes': -1, 'inexistants': -1, 'd\xc3\xa9plorable': -1, 'grossi\xc3\xa8res': -1, 'decevants': -1, 'grossi\xc3\xa8re': -1, 'lamentables': -1, 'd\xc3\xa9cevants': -1, 'inutilisables': -1, 'cruellement': -1, 'immonde': -1, 'impossible': -1, 'decevante': -1, 'douteuse': -1, 'scandaleuse': -1, 'affligeant': -1, 'rat\xc3\xa9s': -1, 'rat\xc3\xa9e': -1, 'insupportables': -1, 'niais': -1, 'ex\xc3\xa9crable': -1, 'faiblarde': -1, 'inculte': -1, 'd\xc3\xa9cue': -1, 'inint\xc3\xa9ressants': -1, 'honteux': -1, 'd\xc3\xa9cu': -1, 'faiblards': -1, 'honteuses': -1, 'horrible': -1, 'tristement': -1, 'inint\xc3\xa9ressante': -1, 'catastrophique': -1, 'pires': -1, 'incompatibles': -1, 'anormale': -1, 'minable': -1, 'pitoyables': -1, 'insupportable': -1, 'nulle': -1, 'affreusement': -1, 'insipide': -1, 'irr\xc3\xa9versibles': -1, 'faiblard': -1, 'insipides': -1, 'pr\xc3\xa9tentieux': -1, 'd\xc3\xa9sastreux': -1, 'foireux': -1, 'minables': -1, 'r\xc3\xa9dhibitoire': -1, 'risibles': -1, 'incomplet': -1, 'affligeantes': -1, 'd\xc3\xa9sagr\xc3\xa9ables': -1, 'anormales': -1, 'anormal': -1, 'd\xc3\xa9biles': -1, 'superficielle': -1, 'incomplets': -1, 'interminables': -1, 'scandaleux': -1, 'affligeante': -1, 'inexistant': -1, 'nulles': -1, 'incultes': -1, 'foireuse': -1, 'faiblardes': -1, 'decevant': -1, 'inint\xc3\xa9ressant': -1, 'pitoyable': -1, 'ridicule': -1, 'd\xc3\xa9fectueuse': -1, 'confus': -1, 'affligeants': -1, 'bof': -1}
 
-        frDict = dict(posDict.items() + negDict.items())
+        frDict = dict(list(posDict.items()) + list(negDict.items()))
         #frDict = {'cristalline': 1, 'tristement':-1}
-        print(lang, 'lexicon size:', len(frDict))
+        print((lang, 'lexicon size:', len(frDict)))
         negations = {'ne': 'ne', 'n\'': 'n\''}
 
         frsa = SentimentAnalysis()
-        print('update lexicon', frsa.update_lexicon(frDict, lang))
-        print('update negations', frsa.update_negation(negations, lang))
+        print(('update lexicon', frsa.update_lexicon(frDict, lang)))
+        print(('update negations', frsa.update_negation(negations, lang)))
         text = "Il est cristalline et septique. Mais pas tristement"
         #text = "Schwimmen ist nicht gut fuer die Knochen"
         #text = "Schwimmen ist cristalline fuer die Knochen"
         #text = "Il est gut abc"
         #result =  frsa.parse_document("Schwimmen ist nicht gut fuer die Knochen", self.TEST_LANG)
         result = frsa.parse_document(text, lang)
-        print('french:', result)
+        print(('french:', result))
 
         # pos
         sent, cnt_pos, cnt_neg, _, _ = frsa.parse_document(
@@ -196,7 +198,7 @@ class SentimentAnalysisTest(TestCase):
             'Ce n\'est pas aimable', 'fr')
         sent, cnt_pos, cnt_neg, _, _ = frsa.parse_document(
             'Ce ne aimable', 'fr')
-        print("pos negation", sent, cnt_pos, cnt_neg)
+        print(("pos negation", sent, cnt_pos, cnt_neg))
         self.assertEqual(sent, -1.0)
         self.assertEqual(cnt_pos, 1)
         self.assertEqual(cnt_neg, 0)

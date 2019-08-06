@@ -5,10 +5,14 @@ Created on Aug 29, 2016
 
 .. codeauthor: max goebel <mcgoebel@gmail.com>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 import unittest
 
 from gzip import GzipFile
-from cPickle import load
+from pickle import load
 
 from weblyzard_api.client.jesaja_ng import JesajaNg
 from weblyzard_api.tests.test_helper import get_full_path

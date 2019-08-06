@@ -6,8 +6,12 @@ Created on 07.04.2014
 @author: heinz-peterlang
 '''
 from __future__ import print_function
+from __future__ import unicode_literals
 
-import re
+from builtins import str
+from builtins import zip
+from past.builtins import basestring
+from builtins import object
 import json
 import logging
 import hashlib
@@ -20,6 +24,7 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             UnexpectedFieldException,
                                             MissingFieldException,
                                             UnsupportedValueException)
+
 
 logger = logging.getLogger('weblyzard_api.parsers')
 
@@ -120,7 +125,7 @@ class JSONParserBase(object):
     def _check_document_format(cls, api_dict, strict=True):
         '''
         Checks if the api_dict has all required fields and if there
-        are unexpected and unallowed keys. 
+        are unexpected and unallowed keys.
 
         :param api_dict: The dict to check.
         :type api_dict: dict
@@ -138,7 +143,6 @@ class JSONParserBase(object):
                 raise UnexpectedFieldException("Got unexpected field(s): %s" %
                                                ', '.join(unexpected_fields))
 
-
     @classmethod
     def _validate_document(cls, json_document, strict=True):
         ''' '''
@@ -149,7 +153,7 @@ class JSONParserBase(object):
         elif 'content_type' in json_document and 'content' not in json_document:
             raise MissingFieldException(
                 "When field 'content_type' is set, 'content' must be set, too.")
-        elif 'content' not in json_document and 'content_type' not in json_document and \
+        elif 'content' not in json_document and 'content_type' not in json_document and\
                 'sentences' not in json_document:
             raise MissingFieldException(
                 "Either 'sentences' or 'content' and 'content_type' must be set.")
@@ -180,6 +184,7 @@ class JSONParserBase(object):
 
 
 class XMLParser(object):
+
     VERSION = None
     SUPPORTED_NAMESPACE = None
     DOCUMENT_NAMESPACES = None
@@ -201,7 +206,7 @@ class XMLParser(object):
 
     @classmethod
     def encode_value(cls, value):
-        if isinstance(value, unicode):
+        if isinstance(value, str):
             return XMLParser.remove_control_characters(value)
         elif isinstance(value, bytes):
             return XMLParser.remove_control_characters(value.decode('utf-8'))
@@ -574,7 +579,7 @@ class XMLParser(object):
                             entity['annotation_type'] = a_type
                             entity['key'] = annotation['key']
                             preferred_name = annotation['preferredName']
-                            if not isinstance(preferred_name, unicode):
+                            if not isinstance(preferred_name, str):
                                 preferred_name = preferred_name.decode('utf-8')
                             entity['preferredName'] = preferred_name
 
@@ -653,7 +658,8 @@ class XMLParser(object):
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
 
-        return etree.tostring(root, encoding='UTF-8', pretty_print=True)
+        return etree.tostring(root, encoding='unicode', pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
+        # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :) 
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):

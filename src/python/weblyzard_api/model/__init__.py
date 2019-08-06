@@ -5,6 +5,11 @@ Created on May 14, 2018
 
 .. codeauthor: Max Göbel <goebel@weblyzard.com>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import map
+from builtins import str
+from builtins import object
 import json
 import hashlib
 import logging
@@ -159,7 +164,7 @@ class Sentence(object):
         * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
         * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
-    #  Maps the keys of the attributes to the corresponding key for the API JSON
+    #:  Maps the keys of the attributes to the corresponding key for the API JSON
     API_MAPPINGS = {
         1.0: {
             'md5sum': 'id',
@@ -207,7 +212,7 @@ class Sentence(object):
         '''
         :returns: a dictionary representation of the sentence object.
         '''
-        return dict((k, v) for k, v in self.__dict__.iteritems() if
+        return dict((k, v) for k, v in self.__dict__.items() if
                     not k.startswith('_'))
 
     def get_sentence(self):
@@ -372,7 +377,7 @@ class Sentence(object):
         '''
         key_map = self.API_MAPPINGS[version]
         return {key_map[key]: value for key, value in
-                self.as_dict().iteritems() if key in key_map and
+                self.as_dict().items() if key in key_map and
                 value is not None}
 
     sentence = property(get_sentence, set_sentence)

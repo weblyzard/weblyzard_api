@@ -10,18 +10,23 @@ For details: `check Sesame REST API<http://openrdf.callimachus.net/sesame/2.7/do
 http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrdf-sesame-2.6.10/docs/system/ch08.html
 
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import ast
 import httplib2
 import json
 import os
 import requests
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import namedtuple
 from pprint import pprint
 try:
-    from urllib import urlencode
+    from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
 
@@ -280,7 +285,7 @@ class OpenRdfClient(object):
         }
         (response, content) = httplib2.Http().request(endpoint,
                                                       'POST',
-                                                      urllib.urlencode(params),
+                                                      urllib.parse.urlencode(params),
                                                       headers=headers)
 
 #         print("Response %s" % response.status)
