@@ -21,6 +21,7 @@ stages:
     - test-python
     - test-java
     - build-package
+    - deploy
 
 pytest:
     <<: *py_anchor  # we reference the anchor here
@@ -82,7 +83,7 @@ sonarqube_preview:
     - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
     - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U -DskipITs -Dgpg.skip
     - mvn --batch-mode verify sonar:sonar -Dsonar.analysis.mode=preview -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_SHA -DskipITs -Dgpg.skip
-  stage: test
+  stage: test-java
   except:
     - develop
     - master
@@ -96,7 +97,7 @@ sonarqube:
     - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
     - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false -U -DskipITs -Dgpg.skip
     - mvn --batch-mode verify sonar:sonar -DskipITs -Dgpg.skip
-  stage: test
+  stage: test-java
   only:
     - master
     - develop
