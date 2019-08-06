@@ -21,7 +21,7 @@ class JeremiaTest(unittest.TestCase):
                  content_id),
              'title': 'Hello "world" more ',
              'format': 'text/html',
-             'header': {}} for content_id in range(1000, 1020)]
+             'header': {}} for content_id in xrange(1000, 1020)]
     def setUp(self):
         service_url = os.getenv('JEREMIA_NG_SERVICE_URL', 'localhost:63001')
         self.client = JeremiaNg(url=service_url)

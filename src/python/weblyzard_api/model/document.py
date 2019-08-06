@@ -5,9 +5,6 @@ Created on Jan 25, 2018
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
-from __future__ import unicode_literals
-from past.builtins import basestring
-from builtins import object
 import json
 
 from datetime import datetime
@@ -105,7 +102,7 @@ class Document(object):
             return data
         if isinstance(data, float):
             return data
-        if isinstance(data, int):
+        if isinstance(data, long):
             return data
         if isinstance(data, bool):
             return data
@@ -189,7 +186,8 @@ class Document(object):
 
         # populate default dicts:
         partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                      for label, spans in parsed_content['partitions'].items()} \
+                      for label, spans in
+                      parsed_content['partitions'].iteritems()} \
             if 'partitions' in parsed_content else {}
 
         header = parsed_content['header'] \
@@ -203,7 +201,7 @@ class Document(object):
         annotations = parsed_content['annotations'] \
             if 'annotations' in parsed_content else {}
 
-        return Document(content_id=int(parsed_content['content_id']),
+        return Document(content_id=long(parsed_content['content_id']),
                         content=parsed_content.get('content'),
                         nilsimsa=parsed_content.get('nilsimsa'),
                         lang=parsed_content.get('lang'),
@@ -314,7 +312,8 @@ class Document(object):
             is_title = len(
                 self.get_partition_overlaps(search_span=sentence_span,
                                             target_partition_key=self.TITLE_KEY)) > 0
-
+            if is_title:
+                pass
             # serialize POS, tokens, and dependecy to string
             pos_sequence = ' '.join([ts.pos for ts in token_spans])
             tok_sequence = ' '.join(

@@ -5,8 +5,6 @@ Created on Aug 29, 2016
 
 .. codeauthor: max goebel <goebel@gweblyzard.com>
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
 import unittest
 
 from weblyzard_api.client.annotator_client import (Annotator,

@@ -5,10 +5,7 @@
 This module provides a class that provides some convenience methods
 to access a fuseki triplestore.
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
 
-from builtins import object
 import datetime
 import hashlib
 import io

@@ -6,10 +6,7 @@ This module provides an easy client for the WL Document REST API.
 
     .. moduleauthor: Fabian Fischer <fabian.fischer@modul.ac.at>
 """
-from __future__ import unicode_literals
 
-from builtins import str
-from builtins import object
 import json
 import requests
 import logging
@@ -105,7 +102,7 @@ class WlComputeRestApiClient(object):
         """ Check if the Compute API is up an healthy.
         """
         try:
-            r = requests.get('/'.join([self.base_url, self.ENDPOINT_STATUS])).status_code
+            r = requests.get('/'.join([self.base_url, self.ENDPOINT_STATUS])).status
             return r.status_code == 200
         except Exception as e:
             logger.warn(e)

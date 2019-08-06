@@ -3,14 +3,10 @@
 '''
 
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 import unittest
 
 from gzip import GzipFile
-from pickle import load
+from cPickle import load
 
 from weblyzard_api.client.jesaja import Jesaja
 from weblyzard_api.model.xml_content import XMLContent
@@ -71,8 +67,8 @@ class JesajaTest(unittest.TestCase):
             size_default = self.jesaja.get_corpus_size(self.PROFILE_NAME)
             size_stoplist = self.jesaja.get_corpus_size(
                 self.STOPLIST_PROFILE_NAME)
-            print(('Corpus "default" - corpus size : ', size_default))
-            print(('Corpus "stoplist" - corpus size: ', size_stoplist))
+            print('Corpus "default" - corpus size : ', size_default)
+            print('Corpus "stoplist" - corpus size: ', size_stoplist)
 
         else:
             print('WARNING: Webservice is offline --> not executing all tests!!')
