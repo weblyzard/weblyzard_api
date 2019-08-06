@@ -3,6 +3,8 @@
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
 import unittest
 
 from weblyzard_api.client.domain_specificity import DomainSpecificity

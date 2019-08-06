@@ -3,6 +3,7 @@
 """
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 """
+from __future__ import unicode_literals
 import logging
 
 from eWRT.ws.rest import MultiRESTClient

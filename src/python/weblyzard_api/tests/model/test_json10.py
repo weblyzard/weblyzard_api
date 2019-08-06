@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from builtins import object
 import json
 import pytest
 import unittest
@@ -139,7 +141,7 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
             xml_content = JSON10ParserXMLContent.from_api_dict(api_dict)
             assert xml_content == False
         except MalformedJSONException as e:
-            assert 'is_title' in e.message
+            assert 'is_title' in str(e)  # [mig] exception.message doesn't exist in python3 anymore
 
 
 class TestJSON10ParserSentence(object):

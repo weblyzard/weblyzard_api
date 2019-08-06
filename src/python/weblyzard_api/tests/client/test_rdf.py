@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import pytest
 
 from weblyzard_api.client.rdf import (

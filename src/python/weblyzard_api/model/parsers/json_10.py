@@ -6,6 +6,7 @@ JSON format.
 
     .. moduleauthor:: Fabian Fischer fabian.fischer@modul.ac.at
 '''
+from __future__ import unicode_literals
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers import JSONParserBase
 from weblyzard_api.model.exceptions import MalformedJSONException
@@ -20,7 +21,7 @@ class JSON10ParserXMLContent(JSONParserBase):
     '''
     FIELDS_REQUIRED = ['uri', 'title']
     FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations', 'confidence'] \
-        + XML2013.ATTR_MAPPING.keys()
+        + list(XML2013.ATTR_MAPPING.keys())
     API_VERSION = 1.0
 
     @classmethod
@@ -38,7 +39,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         # This basically creates an empty XMLContent object
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
         # add all items in api_dict unless they need special handling
-        xml_content.update_attributes({key: value for key, value in api_dict.iteritems() if
+        xml_content.update_attributes({key: value for key, value in api_dict.items() if
                                        key not in ('sentences', 'annotations',
                                                    'language_id', 'features',
                                                    'relations', 'content')})

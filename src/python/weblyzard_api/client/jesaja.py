@@ -4,6 +4,7 @@
 .. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
+from __future__ import unicode_literals
 
 from eWRT.ws.rest import MultiRESTClient
 
@@ -143,9 +144,9 @@ class Jesaja(MultiRESTClient):
         # convert the wlxml format to doc, if required
         if corpus_format == 'xml':
             if profile_name is None:
-                raise ValueError, 'Corpus_format "xml" requires spezifying a profile for tokenization'
+                raise ValueError('Corpus_format "xml" requires spezifying a profile for tokenization')
             elif not skip_profile_check and not self.has_profile(profile_name):
-                raise ValueError, 'profile "%s" missing!' % (profile_name)
+                raise ValueError('profile "%s" missing!' % (profile_name))
 
             corpus = self.get_documents(corpus)
             path = 'add_or_refresh_corpus/doc/%s/%s' % (corpus_name,
@@ -156,7 +157,7 @@ class Jesaja(MultiRESTClient):
         elif corpus_format == 'doc':
             raise Exception('Format "doc" not supported anymore')
         else:
-            raise ValueError, "Unsupported format."
+            raise ValueError("Unsupported format.")
 
         return self.request(path, corpus)
 

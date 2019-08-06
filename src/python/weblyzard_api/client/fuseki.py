@@ -5,7 +5,10 @@
 This module provides a class that provides some convenience methods
 to access a fuseki triplestore.
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import object
 import datetime
 import hashlib
 import io
@@ -81,7 +84,10 @@ class FusekiWrapper(object):
         '''
         if isinstance(o, tuple) and len(o) == 3:
             return((self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2])))
-        elif isinstance(o, str) or isinstance(o, unicode):
+        
+        elif isinstance(o,  (str, bytes)):
+            if isinstance(o, bytes):
+                o = o.decode('utf-8')
             if o.startswith('http'):
                 return u'<{}>'.format(o)
             else:
@@ -93,8 +99,10 @@ class FusekiWrapper(object):
         '''
         if isinstance(value, int):
             return False
-        elif isinstance(value, str) or isinstance(value, unicode):
-            for prefix in self.NAMESPACES.values():
+        elif isinstance(value, (str, bytes)):
+            if isinstance(value, bytes):
+                value = value.decode('utf-8')
+            for prefix in list(self.NAMESPACES.values()):
                 if value.startswith(prefix):
                     return True
             if value.startswith('<http') and value[-1:] == '>':

@@ -5,6 +5,11 @@ Created on May 14, 2018
 
 .. codeauthor: Max Göbel <goebel@weblyzard.com>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import map
+from builtins import str
+from builtins import object
 import json
 import hashlib
 import logging
@@ -159,7 +164,7 @@ class Sentence(object):
         * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
         * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
-    #  Maps the keys of the attributes to the corresponding key for the API JSON
+    #:  Maps the keys of the attributes to the corresponding key for the API JSON
     API_MAPPINGS = {
         1.0: {
             'md5sum': 'id',
@@ -189,7 +194,7 @@ class Sentence(object):
             try:
                 m = hashlib.md5()
                 m.update(value.encode('utf-8')
-                         if isinstance(value, unicode) else str(value))
+                         if isinstance(value, str) else str(value).encode('utf-8'))
                 md5sum = m.hexdigest()
             except Exception as e:
                 print(e)
@@ -207,7 +212,7 @@ class Sentence(object):
         '''
         :returns: a dictionary representation of the sentence object.
         '''
-        return dict((k, v) for k, v in self.__dict__.iteritems() if
+        return dict((k, v) for k, v in self.__dict__.items() if
                     not k.startswith('_'))
 
     def get_sentence(self):
@@ -268,9 +273,10 @@ class Sentence(object):
             raise StopIteration
         correction_offset = 0
         for token_pos in self.token.split(self.ITEM_DELIMITER):
+            token_indices = token_pos.split(self.TOKEN_DELIMITER)
             try:
                 start, end = [int(i) + correction_offset for i \
-                              in token_pos.split(self.TOKEN_DELIMITER)]
+                              in token_indices]
             except ValueError as e:
                 # occasionally there appear to be missing spaces in token
                 # strings
@@ -279,9 +285,9 @@ class Sentence(object):
                                  'was {}. Original error was: {}'.format(
                     self.value, self.token, token_pos, e
                 ), exc_info=True)
-                token_indices = map(int, token_pos.split())
+                token_indices = [int(tok) for tok in token_indices]
                 start, end = token_indices[0], token_indices[-1]
-            res = unicode(self.sentence)[start:end]
+            res = str(self.sentence)[start:end]
             # de- and encoding sometimes leads to index errors with double-width
             # characters - here we attempt to detect such cases and correct
             if res.strip() != res:
@@ -299,8 +305,8 @@ class Sentence(object):
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
         [
-        LabeledDependency(parent='1', pos='RB', label='SUB'), 
-        LabeledDependency(parent='-1', pos='PRP', label='ROOT'), 
+        LabeledDependency(parent='1', pos='RB', label='SUB'),
+        LabeledDependency(parent='-1', pos='PRP', label='ROOT'),
         LabeledDependency(parent='1', pos='MD', label='OBJ')
         ]
         '''
@@ -329,8 +335,8 @@ class Sentence(object):
 
         >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
         >>> s.dependency_list
-        [LabeledDependency(parent='1', pos='RB', label='SUB'), 
-        LabeledDependency(parent='-1', pos='PRP', label='ROOT'), 
+        [LabeledDependency(parent='1', pos='RB', label='SUB'),
+        LabeledDependency(parent='-1', pos='PRP', label='ROOT'),
         LabeledDependency(parent='1', pos='MD', label='OBJ')]
         >>> s.dependency_list = [LabeledDependency(parent='-1', pos='MD', label='ROOT'), ]
         >>> s.dependency_list
@@ -371,7 +377,7 @@ class Sentence(object):
         '''
         key_map = self.API_MAPPINGS[version]
         return {key_map[key]: value for key, value in
-                self.as_dict().iteritems() if key in key_map and
+                self.as_dict().items() if key in key_map and
                 value is not None}
 
     sentence = property(get_sentence, set_sentence)

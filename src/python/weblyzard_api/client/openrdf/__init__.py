@@ -10,20 +10,25 @@ For details: `check Sesame REST API<http://openrdf.callimachus.net/sesame/2.7/do
 http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrdf-sesame-2.6.10/docs/system/ch08.html
 
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import ast
 import httplib2
 import json
 import os
 import requests
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import namedtuple
 from pprint import pprint
 try:
-    from urllib import urlencode
-except ImportError:
     from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 QUERIES = {
     'configured_profiles': '''
@@ -88,7 +93,7 @@ class OpenRdfClient(object):
     def get_orphaned_analyzers(self):
         profiles = self.get_profiles()
         configured = []
-        for profile in profiles.itervalues():
+        for profile in profiles.values():
             configured.extend(profile['analyzers'])
 
         orphaned = []
@@ -156,9 +161,8 @@ class OpenRdfClient(object):
         profiles = self.get_profiles()
 
         if profile_name in profiles:
-            subject_uri = profiles[profile_name]
+            subject_uri = profiles[profile_name]['subject_uri']
 
-            # TODO: check why we need to fix this????
             if not subject_uri.endswith('>'):
                 subject_uri = '%s>' % subject_uri
 
@@ -208,9 +212,6 @@ class OpenRdfClient(object):
                              headers=headers)
         text = r.text
 
-        if isinstance(text, unicode):
-            text = text.encode('utf-8')
-
         try:
             return json.loads(r.text) if r.text else r.text
         except Exception as e:
@@ -256,7 +257,7 @@ class OpenRdfClient(object):
             params['obj'] = obj
         if params:
             params = '&'.join(['%s=%s' % (k, v)
-                               for k, v in params.iteritems()])
+                               for k, v in params.items()])
         else:
             params = None
 
@@ -284,7 +285,7 @@ class OpenRdfClient(object):
         }
         (response, content) = httplib2.Http().request(endpoint,
                                                       'POST',
-                                                      urllib.urlencode(params),
+                                                      urllib.parse.urlencode(params),
                                                       headers=headers)
 
 #         print("Response %s" % response.status)
@@ -363,7 +364,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         ''' '''
         profiles = self.get_profiles()
         configured = []
-        for profile in profiles.itervalues():
+        for profile in profiles.values():
             configured.extend(profile['analyzers'])
 
         orphaned = []
@@ -432,7 +433,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
 
         if profile_name in profiles:
             print(profile_name)
-            subject_uri = profiles[profile_name]
+            subject_uri = profiles[profile_name]['subject_uri']
 
             # TODO: check why we need to fix this????
             if not subject_uri.endswith('>'):
@@ -450,7 +451,9 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         repositories = self.get_repositories()
 
         if not self.config_repository in repositories:
-            print('warning config repo "%s" does not exist') % self.config_repository
+            print('warning config repo "{}" does not exist'.format(
+                self.config_repository)
+            )
 
     def create_template(self, entity, entity_type, language='en'):
         ''' '''
@@ -475,7 +478,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
                 '<{}> <http://www.w3.org/2000/01/rdf-schema#label> "{} {}"@{} . '.format(
                     entity, first_name, surname, language)
             ]
-        return '\n'.join(tuples)
+            return '\n'.join(tuples)
 
     def add_dbpedia_entity_to_repository(self, repository, label, entity_type,
                                          language=None):

@@ -3,6 +3,8 @@
 '''
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch> 
 '''
+from __future__ import unicode_literals
+from past.builtins import basestring
 import logging
 
 from eWRT.access.http import Retrieve

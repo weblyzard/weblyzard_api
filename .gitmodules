@@ -1,0 +1,4 @@
+[submodule "wl_python_utils"]
+	path = wl_python_utils
+	url = ../../core/wl_python_utils.git
+	branch = master

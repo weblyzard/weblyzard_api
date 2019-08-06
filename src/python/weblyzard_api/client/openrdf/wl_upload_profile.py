@@ -2,8 +2,12 @@
 Created on 14.02.2014
 @author: heinz-peterlang
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 import os
-import urlparse
+import urllib.parse
 
 from weblyzard_api.client.openrdf import RecognizeOpenRdfClient
 
@@ -25,11 +29,11 @@ def remove_all_profiles(service_url, config_repository):
     client.cleanup_config()
 
 
-def remove_profile(profile_name, service_url, config_repository):
+def remove_profile(profile_fn, service_url, config_repository):
     ''' '''
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
-    client.remove_profile(profile_name)
+    client.remove_profile(profile_fn)
 
 
 def upload_profile(profile_fn, service_url, config_repository):
@@ -57,7 +61,7 @@ def upload_profile(profile_fn, service_url, config_repository):
 
         print('Processing profile %s' % profile_name)
         if service_url:
-            url = urlparse.urlparse(service_url)
+            url = urllib.parse.urlparse(service_url)
             hostname = '%s://%s' % (url.scheme, url.netloc)
             profile_definition = profile_definition.replace(
                 '$HOSTNAME', hostname)

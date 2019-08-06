@@ -6,8 +6,12 @@ Created on 07.04.2014
 @author: heinz-peterlang
 '''
 from __future__ import print_function
+from __future__ import unicode_literals
 
-import re
+from builtins import str
+from builtins import zip
+from past.builtins import basestring
+from builtins import object
 import json
 import logging
 import hashlib
@@ -20,6 +24,7 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             UnexpectedFieldException,
                                             MissingFieldException,
                                             UnsupportedValueException)
+
 
 logger = logging.getLogger('weblyzard_api.parsers')
 
@@ -120,7 +125,7 @@ class JSONParserBase(object):
     def _check_document_format(cls, api_dict, strict=True):
         '''
         Checks if the api_dict has all required fields and if there
-        are unexpected and unallowed keys. 
+        are unexpected and unallowed keys.
 
         :param api_dict: The dict to check.
         :type api_dict: dict
@@ -138,7 +143,6 @@ class JSONParserBase(object):
                 raise UnexpectedFieldException("Got unexpected field(s): %s" %
                                                ', '.join(unexpected_fields))
 
-
     @classmethod
     def _validate_document(cls, json_document, strict=True):
         ''' '''
@@ -149,7 +153,7 @@ class JSONParserBase(object):
         elif 'content_type' in json_document and 'content' not in json_document:
             raise MissingFieldException(
                 "When field 'content_type' is set, 'content' must be set, too.")
-        elif 'content' not in json_document and 'content_type' not in json_document and \
+        elif 'content' not in json_document and 'content_type' not in json_document and\
                 'sentences' not in json_document:
             raise MissingFieldException(
                 "Either 'sentences' or 'content' and 'content_type' must be set.")
@@ -180,6 +184,7 @@ class JSONParserBase(object):
 
 
 class XMLParser(object):
+
     VERSION = None
     SUPPORTED_NAMESPACE = None
     DOCUMENT_NAMESPACES = None
@@ -201,9 +206,9 @@ class XMLParser(object):
 
     @classmethod
     def encode_value(cls, value):
-        if isinstance(value, unicode):
+        if isinstance(value, str):
             return XMLParser.remove_control_characters(value)
-        elif isinstance(value, str):
+        elif isinstance(value, bytes):
             return XMLParser.remove_control_characters(value.decode('utf-8'))
         elif isinstance(value, date):
             return value.isoformat()
@@ -278,7 +283,7 @@ class XMLParser(object):
             return result
         invert_mapping = dict(zip(mapping.values(),
                                   mapping.keys()))
-        for key, value in invert_mapping.iteritems():
+        for key, value in invert_mapping.items():
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
@@ -326,7 +331,7 @@ class XMLParser(object):
     def load_attributes(cls, attributes, mapping):
         new_attributes = {}
 
-        for key, value in attributes.iteritems():
+        for key, value in attributes.items():
             if mapping and key in mapping:
                 key = mapping.get(key, key)
 
@@ -442,7 +447,7 @@ class XMLParser(object):
     def dump_xml_attributes(cls, attributes, mapping, resolve_namespaces=True):
         new_attributes = {}
 
-        for key, value in attributes.iteritems():
+        for key, value in attributes.items():
 
             if mapping and key in mapping:
                 key = mapping[key]
@@ -466,7 +471,7 @@ class XMLParser(object):
     def clean_attributes(cls, attributes):
         ''' '''
         result = {}
-        for key, val in attributes.iteritems():
+        for key, val in attributes.items():
             if key is None or val is None or isinstance(val, dict):
                 continue
             result[key] = val
@@ -559,7 +564,7 @@ class XMLParser(object):
                 annotations = cls.map_by_annotationtype(annotations)
 
             # add all annotations as body annotations
-            for a_type, a_items in annotations.iteritems():
+            for a_type, a_items in annotations.items():
 
                 if a_items is None or len(a_items) == 0:
                     continue
@@ -574,7 +579,7 @@ class XMLParser(object):
                             entity['annotation_type'] = a_type
                             entity['key'] = annotation['key']
                             preferred_name = annotation['preferredName']
-                            if not isinstance(preferred_name, unicode):
+                            if not isinstance(preferred_name, str):
                                 preferred_name = preferred_name.decode('utf-8')
                             entity['preferredName'] = preferred_name
 
@@ -593,7 +598,7 @@ class XMLParser(object):
         if features is None:
             features = {}
         if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
-            for key, items in features.iteritems():
+            for key, items in features.items():
                 feature_attributes = cls.dump_xml_attributes({'key': key},
                                                              mapping=cls.FEATURE_MAPPING)
                 if not isinstance(items, list):
@@ -617,16 +622,16 @@ class XMLParser(object):
         if relations is None:
             relations = {}
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
-            for key, items in relations.iteritems():
+            for key, items in relations.items():
 
                 rel_attributes = {'key': key}
                 rel_items = []
 
                 if isinstance(items, dict):
-                    for url, attributes in items.iteritems():
+                    for url, attributes in items.items():
                         rel_attributes = {'key': key}
                         attributes = {key: value for (
-                            key, value) in attributes.iteritems() if key in cls.RELATION_MAPPING}
+                            key, value) in attributes.items() if key in cls.RELATION_MAPPING}
                         rel_attributes.update(attributes)
                         rel_items.append((rel_attributes, url))
 
@@ -653,7 +658,8 @@ class XMLParser(object):
                         print('Skipping bad cdata: %s (%s)' % (value, e))
                         continue
 
-        return etree.tostring(root, encoding='UTF-8', pretty_print=True)
+        return etree.tostring(root, encoding='unicode', pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
+        # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :) 
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):

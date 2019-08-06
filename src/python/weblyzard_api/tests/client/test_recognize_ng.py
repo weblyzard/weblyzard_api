@@ -5,6 +5,8 @@ Created on Aug 30, 2016
 
 .. codeauthor: max goebel <mcgoebel@gmail.com>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
 import unittest
 
 from weblyzard_api.client.recognize.ng import Recognize
