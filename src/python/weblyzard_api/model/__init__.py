@@ -23,6 +23,7 @@ LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 
 logger = logging.getLogger(__name__)
 
+
 class SpanFactory(object):
 
     @classmethod
@@ -194,7 +195,8 @@ class Sentence(object):
             try:
                 m = hashlib.md5()
                 m.update(value.encode('utf-8')
-                         if isinstance(value, str) else str(value).encode('utf-8'))
+                         if isinstance(value, str) else str(value).encode(
+                    'utf-8'))
                 md5sum = m.hexdigest()
             except Exception as e:
                 print(e)
@@ -281,8 +283,8 @@ class Sentence(object):
                 # occasionally there appear to be missing spaces in token
                 # strings
                 logger.warn('Error parsing tokens for sentence {}; token '
-                                 'string was {}; individual token identifier '
-                                 'was {}. Original error was: {}'.format(
+                            'string was {}; individual token identifier '
+                            'was {}. Original error was: {}'.format(
                     self.value, self.token, token_pos, e
                 ), exc_info=True)
                 token_indices = [int(tok) for tok in token_indices]
@@ -294,6 +296,15 @@ class Sentence(object):
                 correction_offset -= len(res) - len(res.strip())
                 res = res.strip()
             yield res
+
+    def is_digit(self, x):
+        """built in is_digit rejects negative number strings like -1 (used for
+        root in dependency annotations"""
+        try:
+            _ = int(x)
+            return True
+        except ValueError:
+            return False
 
     def get_dependency_list(self):
         '''
@@ -315,22 +326,38 @@ class Sentence(object):
             deps = self.dependency.strip().split(self.ITEM_DELIMITER)
             for index, dep in enumerate(deps):
                 if self.DEPENDENCY_DELIMITER in dep:
+
                     parent, label = dep.split(self.DEPENDENCY_DELIMITER, 1)
-                elif dep.isdigit():
+                    if not self.is_digit(parent):
+                        try:
+                            label, parent = parent, label
+                            assert self.is_digit(parent)
+                        except AssertionError:
+                            logger.info(
+                                'Unable to parse dependeny annotation {} for sentence '
+                                '{} with dependency string {} as tuple of '
+                                '(parent index, dependency label), treating it as '
+                                'parent index only'.format(dep, self.value,
+                                                           self.dependency))
+                            parent, label = -1, 'XX'
+                elif self.is_digit(dep):
                     parent, label = dep, None
                     logger.info(
                         'Unable to parse dependeny annotation {} for sentence '
                         '{} with dependency string {} as tuple of '
                         '(parent index, dependency label), treating it as '
-                        'parent index only'.format(dep, self.value, self.dependency))
+                        'parent index only'.format(dep, self.value,
+                                                   self.dependency))
                 else:
                     parent, dep = -1, dep
                     logger.info(
-                        'Unable to parse dependeny annotation {} for sentence '
+                        'Unable to parse dependeny annotation {} for sente'
+                        'nce '
                         '{} with dependency string {} as tuple of '
                         '(parent index, dependency label), treating it as '
-                        'dependency label only'.format(dep, self.value, self.dependency))
-                result.append(LabeledDependency(parent,
+                        'dependency label only'.format(dep, self.value,
+                                                       self.dependency))
+                result.append(LabeledDependency(    parent,
                                                 self.pos_tags_list[index],
                                                 label))
             return result
@@ -362,7 +389,7 @@ class Sentence(object):
         new_pos = []
         for dependency in dependencies:
             deps.append(self.DEPENDENCY_DELIMITER.join(
-                        [dependency.parent, dependency.label]))
+                [dependency.parent, dependency.label]))
             new_pos.append(dependency.pos)
         self.pos = self.ITEM_DELIMITER.join(new_pos)
         self.dependency = self.ITEM_DELIMITER.join(deps)

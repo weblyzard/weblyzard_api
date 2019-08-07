@@ -413,6 +413,7 @@ class TestXMLContent(unittest.TestCase):
         assert sentence.pos_tags_list == [
             'RB', 'PRP', 'MD', 'VB', 'IN', "'", 'CC', 'JJR', 'JJ', "'", 'CC', "'", 'NN', 'JJR', 'CD', "'", '.']
         assert sentence.pos_tag_string == "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ."
+
         assert sentence.dependency_list == [
             LabeledDependency(parent='2', pos='RB', label='ADV'),
             LabeledDependency(parent='2', pos='PRP', label='SBJ'),
@@ -434,6 +435,45 @@ class TestXMLContent(unittest.TestCase):
         tmp_dependency = sentence.dependency_list
         sentence.dependency_list = tmp_dependency
         assert sentence.dependency_list == tmp_dependency
+
+    def test_inverted_dependency(self):
+            '''
+            Test that the dependencies are correctly handled even when
+            the input has them in reversed order (dep_label:parent index)
+            by detecting whether a supposed parent index is numeric
+            '''
+            xml_content_string = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" dc:format="html/text" xml:lang="en" wl:id="192292" wl:nilsimsa="15d10438875d418899a17909c2ca05591252b24450b259006242105024d43de4">
+              <wl:sentence wl:dependency="ADV:2 SBJ:2 DEP:16 VC:2 OBJ:3 P:3 DEP:16 AMOD:8 DEP:16 P:8 COORD:8 P:10 CONJ:10 NMOD:14 COORD:12 P:14 ROOT:-1" wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ." wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46"><![CDATA[Therefore we could show that "x>y" and "y<z.".]]></wl:sentence>
+              </wl:page>'''
+            xml_content = XMLContent(xml_content_string)
+            sentence = xml_content.sentences[0]
+            assert sentence.pos_tags_list == [
+                'RB', 'PRP', 'MD', 'VB', 'IN', "'", 'CC', 'JJR', 'JJ', "'",
+                'CC', "'", 'NN', 'JJR', 'CD', "'", '.']
+            assert sentence.pos_tag_string == "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ."
+
+            assert sentence.dependency_list == [
+                LabeledDependency(parent='2', pos='RB', label='ADV'),
+                LabeledDependency(parent='2', pos='PRP', label='SBJ'),
+                LabeledDependency(parent='16', pos='MD', label='DEP'),
+                LabeledDependency(parent='2', pos='VB', label='VC'),
+                LabeledDependency(parent='3', pos='IN', label='OBJ'),
+                LabeledDependency(parent='3', pos="'", label='P'),
+                LabeledDependency(parent='16', pos='CC', label='DEP'),
+                LabeledDependency(parent='8', pos='JJR', label='AMOD'),
+                LabeledDependency(parent='16', pos='JJ', label='DEP'),
+                LabeledDependency(parent='8', pos="'", label='P'),
+                LabeledDependency(parent='8', pos='CC', label='COORD'),
+                LabeledDependency(parent='10', pos="'", label='P'),
+                LabeledDependency(parent='10', pos='NN', label='CONJ'),
+                LabeledDependency(parent='14', pos='JJR', label='NMOD'),
+                LabeledDependency(parent='12', pos='CD', label='COORD'),
+                LabeledDependency(parent='14', pos="'", label='P'),
+                LabeledDependency(parent='-1', pos='.', label='ROOT')]
+            tmp_dependency = sentence.dependency_list
+            sentence.dependency_list = tmp_dependency
+            assert sentence.dependency_list == tmp_dependency
+        
 
 
 class TestSentence(unittest.TestCase):
