@@ -292,8 +292,8 @@ class Sentence(object):
             # characters - here we attempt to detect such cases and correct
             if res.strip() != res:
                 correction_offset -= len(res) - len(res.strip())
-            else:
-                yield res
+                res = res.strip()
+            yield res
 
     def get_dependency_list(self):
         '''
@@ -314,8 +314,22 @@ class Sentence(object):
             result = []
             deps = self.dependency.strip().split(self.ITEM_DELIMITER)
             for index, dep in enumerate(deps):
-                [parent, label] = dep.split(self.DEPENDENCY_DELIMITER, 1) if \
-                            self.DEPENDENCY_DELIMITER in dep else [dep, None]
+                if self.DEPENDENCY_DELIMITER in dep:
+                    parent, label = dep.split(self.DEPENDENCY_DELIMITER, 1)
+                elif dep.isdigit():
+                    parent, label = dep, None
+                    logger.info(
+                        'Unable to parse dependeny annotation {} for sentence '
+                        '{} with dependency string {} as tuple of '
+                        '(parent index, dependency label), treating it as '
+                        'parent index only'.format(dep, self.value, self.dependency))
+                else:
+                    parent, dep = -1, dep
+                    logger.info(
+                        'Unable to parse dependeny annotation {} for sentence '
+                        '{} with dependency string {} as tuple of '
+                        '(parent index, dependency label), treating it as '
+                        'dependency label only'.format(dep, self.value, self.dependency))
                 result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
                                                 label))
