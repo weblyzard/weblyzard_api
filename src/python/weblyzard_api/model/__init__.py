@@ -297,6 +297,15 @@ class Sentence(object):
                 res = res.strip()
             yield res
 
+    def is_digit(self, x):
+        """built in is_digit rejects negative number strings like -1 (used for
+        root in dependency annotations"""
+        try:
+            _ = int(x)
+            return True
+        except ValueError:
+            return False
+
     def get_dependency_list(self):
         '''
         :returns: the dependencies of the sentence as a list of \
@@ -319,10 +328,10 @@ class Sentence(object):
                 if self.DEPENDENCY_DELIMITER in dep:
 
                     parent, label = dep.split(self.DEPENDENCY_DELIMITER, 1)
-                    if not parent.isdigit():
+                    if not self.is_digit(parent):
                         try:
                             label, parent = parent, label
-                            assert parent.isdigit()
+                            assert self.is_digit(parent)
                         except AssertionError:
                             logger.info(
                                 'Unable to parse dependeny annotation {} for sentence '
@@ -331,7 +340,7 @@ class Sentence(object):
                                 'parent index only'.format(dep, self.value,
                                                            self.dependency))
                             parent, label = -1, 'XX'
-                elif dep.isdigit():
+                elif self.is_digit(dep):
                     parent, label = dep, None
                     logger.info(
                         'Unable to parse dependeny annotation {} for sentence '
@@ -348,7 +357,7 @@ class Sentence(object):
                         '(parent index, dependency label), treating it as '
                         'dependency label only'.format(dep, self.value,
                                                        self.dependency))
-                result.append(LabeledDependency(parent,
+                result.append(LabeledDependency(    parent,
                                                 self.pos_tags_list[index],
                                                 label))
             return result
