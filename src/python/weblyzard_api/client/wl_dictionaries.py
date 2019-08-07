@@ -133,7 +133,7 @@ class WeblyzardDictionaries(object):
             if isinstance(content, bytes):
                 try:
                     content = content.decode('utf-8')
-                    with open(target_path, 'w') as f:
+                    with open(target_path, 'w', encoding='utf-8') as f:
                         f.write(content)
                 except Exception as e:
                     with open(target_path, 'wb') as f:
