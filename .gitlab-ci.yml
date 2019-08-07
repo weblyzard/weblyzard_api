@@ -20,8 +20,8 @@
 stages:
     - test-python
     - test-java
-    - build-package
     - deploy
+    - build-package
 
 pytest:
     <<: *py_anchor  # we reference the anchor here
@@ -117,4 +117,3 @@ code_semanticlab_net_deploy:
     - master
   tags:
     - java10
-  when: manual
