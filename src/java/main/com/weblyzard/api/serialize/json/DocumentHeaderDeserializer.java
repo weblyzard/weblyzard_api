@@ -11,7 +11,8 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.weblyzard.api.model.document.LegacyDocument;
 
 /**
- * Custom Map Key Serializer and Deserializer for header field in {@link LegacyDocument} model class.
+ * Custom Map Key Serializer and Deserializer for header field in {@link LegacyDocument} model
+ * class.
  * <p>
  * The header field in the Document has QName objects as keys
  *
@@ -43,6 +44,19 @@ public class DocumentHeaderDeserializer extends KeyDeserializer {
 
     @Override
     public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
+
+        // check if the QName is represented according to specification
+        if (key.startsWith("{")) {
+            QName tmp = QName.valueOf(key);
+
+            // if so, only the prefix has to be derived
+            Optional<Entry<String, String>> optionalNamespace = namespaces.entrySet().stream()
+                    .filter(entry -> tmp.getNamespaceURI().startsWith(entry.getValue()))
+                    .findFirst();
+            String prefix = (optionalNamespace.isPresent()) ? optionalNamespace.get().getKey() : "";
+
+            return new QName(tmp.getNamespaceURI(), tmp.getLocalPart(), prefix);
+        }
 
         // check if key represents a supported full qualified URI
         Optional<Entry<String, String>> optionalNamespace = namespaces.entrySet().stream()

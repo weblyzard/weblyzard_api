@@ -37,6 +37,15 @@ public class DocumentHeaderDeserializerTest {
     }
 
     @Test
+    public void testSupportedNamespaceInBrackets() throws JsonProcessingException, IOException {
+        QName result = (QName) deserializer
+                .deserializeKey("{http://www.weblyzard.com/wl/2013#}jonas_type", null);
+        assertTrue(result.getLocalPart().equals("jonas_type"));
+        assertTrue(result.getNamespaceURI().equals("http://www.weblyzard.com/wl/2013#"));
+        assertTrue(result.getPrefix().equals("wl"));
+    }
+
+    @Test
     public void testUnknownPrefix() throws JsonProcessingException, IOException {
         QName result = (QName) deserializer.deserializeKey("foo:bar", null);
         assertTrue(result.getLocalPart().equals("foo:bar"));
@@ -50,6 +59,14 @@ public class DocumentHeaderDeserializerTest {
         QName result = (QName) deserializer.deserializeKey("http://foo.bar/test#test", null);
         assertTrue(result.getLocalPart().equals("http://foo.bar/test#test"));
         assertTrue(result.getNamespaceURI().equals(""));
+        assertTrue(result.getPrefix().equals(""));
+    }
+
+    @Test
+    public void testUnknownNamespaceInBrackets() throws JsonProcessingException, IOException {
+        QName result = (QName) deserializer.deserializeKey("{http://foo.bar/test#}test", null);
+        assertTrue(result.getLocalPart().equals("test"));
+        assertTrue(result.getNamespaceURI().equals("http://foo.bar/test#"));
         assertTrue(result.getPrefix().equals(""));
     }
 
