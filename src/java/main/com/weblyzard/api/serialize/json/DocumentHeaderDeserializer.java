@@ -51,8 +51,7 @@ public class DocumentHeaderDeserializer extends KeyDeserializer {
 
             // if so, only the prefix has to be derived
             Optional<Entry<String, String>> optionalNamespace = namespaces.entrySet().stream()
-                    .filter(entry -> tmp.getNamespaceURI().startsWith(entry.getValue()))
-                    .findFirst();
+                    .filter(entry -> tmp.getNamespaceURI().equals(entry.getValue())).findFirst();
             String prefix = (optionalNamespace.isPresent()) ? optionalNamespace.get().getKey() : "";
 
             return new QName(tmp.getNamespaceURI(), tmp.getLocalPart(), prefix);
@@ -70,7 +69,7 @@ public class DocumentHeaderDeserializer extends KeyDeserializer {
 
         // check if key represents a supported prefixed URI
         String[] parts = key.split(":");
-        if (parts.length == 2) {
+        if (parts.length == 2 && !parts[0].startsWith("http")) {
             String prefix = parts[0];
             String local = parts[1];
             if (namespaces.containsKey(prefix)) {

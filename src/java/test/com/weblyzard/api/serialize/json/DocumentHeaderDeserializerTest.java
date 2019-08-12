@@ -53,7 +53,6 @@ public class DocumentHeaderDeserializerTest {
         assertTrue(result.getPrefix().equals(""));
     }
 
-
     @Test
     public void testUnknownNamespace() throws JsonProcessingException, IOException {
         QName result = (QName) deserializer.deserializeKey("http://foo.bar/test#test", null);
@@ -63,11 +62,35 @@ public class DocumentHeaderDeserializerTest {
     }
 
     @Test
+    public void testUnknownNamespaceExt() throws JsonProcessingException, IOException {
+        QName result =
+                (QName) deserializer.deserializeKey("http://schema.org/people/jonas_type", null);
+        assertTrue(result.getLocalPart().equals("http://schema.org/people/jonas_type"),
+                String.format("Expected input, but was '%s'", result.getLocalPart()));
+        assertTrue(result.getNamespaceURI().equals(""),
+                String.format("Expected empty string but was '%s'", result.getNamespaceURI()));
+        assertTrue(result.getPrefix().equals(""),
+                String.format("Expected empty string but was '%s'", result.getPrefix()));
+    }
+
+    @Test
     public void testUnknownNamespaceInBrackets() throws JsonProcessingException, IOException {
         QName result = (QName) deserializer.deserializeKey("{http://foo.bar/test#}test", null);
         assertTrue(result.getLocalPart().equals("test"));
         assertTrue(result.getNamespaceURI().equals("http://foo.bar/test#"));
         assertTrue(result.getPrefix().equals(""));
+    }
+
+    @Test
+    public void testUnknownNamespaceInBracketsExt() throws JsonProcessingException, IOException {
+        QName result =
+                (QName) deserializer.deserializeKey("{http://schema.org/people/}jonas_type", null);
+        assertTrue(result.getLocalPart().equals("jonas_type"),
+                String.format("Expected 'jonas_type' but was '%s'", result.getLocalPart()));
+        assertTrue(result.getNamespaceURI().equals("http://schema.org/people/"), String.format(
+                "Expected 'http://schema.org/people/' but was '%s'", result.getNamespaceURI()));
+        assertTrue(result.getPrefix().equals(""),
+                String.format("Expected empty string but was '%s'", result.getPrefix()));
     }
 
 }
