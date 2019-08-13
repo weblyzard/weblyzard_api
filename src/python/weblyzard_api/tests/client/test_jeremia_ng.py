@@ -51,6 +51,34 @@ class JeremiaTest(unittest.TestCase):
         pprint(result)
         assert result['lang'] == 'NL'
 
+    def test_token_annotations(self):
+        text = "Der Mensch besitzt gücklicherweise ein Herz"
+        doc = {'id': 1001,
+               'body': text,
+               'title': 'Dependency-Check',
+               'format': 'text/html',
+               'header': {}}
+        print('submitting document...')
+        result = self.client.submit_document(doc)
+        tokens = [token for token in result['partitions']['TOKEN']]
+        print(tokens)
+        # check part of speech tagging
+        pos = [token['pos'] for token in tokens]
+        assert pos == ['ART', 'NN', 'VVFIN', 'ADV', 'ART', 'NN']
+        # check correct indices (including title + 1 offset)
+        starts = [token['start'] - len(doc['title']) - 1 for token in tokens]
+        ends = [token['end']- len(doc['title']) -1 for token in tokens]
+        assert [text[slice(*char_range)] for char_range in zip(starts, ends)] == text.split()
+
+        # check dependency: articles as dependents of their
+        # respective nouns (dependency type 'det'), first noun phrase as subject
+        # (nsubj) of verb, second noun phrase as direct object (dobj) of verb,
+        # adverb as modifier of verb ('advmod')
+        parents = [token['dependency']['parent'] for token in tokens]
+        assert parents == [1, 2, -1, 2, 5, 2]
+        dependeny_labels = [token['dependency']['label'] for token in tokens]
+        assert dependeny_labels == ['det', 'nsubj', 'ROOT', 'advmod', 'det', 'dobj']
+
 
 if __name__ == '__main__':
     unittest.main()
