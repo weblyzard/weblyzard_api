@@ -75,9 +75,11 @@ class JeremiaTest(unittest.TestCase):
         # (nsubj) of verb, second noun phrase as direct object (dobj) of verb,
         # adverb as modifier of verb ('advmod')
         parents = [token['dependency']['parent'] for token in tokens]
-        assert parents == [1, 2, -1, 2, 5, 2]
+        assert parents ==              [1, 2, -1, 2, 5, 2]
+        #current erronous result:  [-1, 2, 3,  0, 3, 6]
         dependeny_labels = [token['dependency']['label'] for token in tokens]
-        assert dependeny_labels == ['det', 'nsubj', 'ROOT', 'advmod', 'det', 'dobj']
+        assert dependeny_labels ==  ['det', 'nsubj', 'ROOT', 'advmod', 'det', 'dobj']
+        # current erronous: ['null', 'det', 'nsubj', 'ROOT', 'advmod', 'det']
 
 
 if __name__ == '__main__':
