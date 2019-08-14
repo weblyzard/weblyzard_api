@@ -1,10 +1,6 @@
 package com.weblyzard.api.serialize.json;
 
-import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.InvalidPropertiesFormatException;
 import javax.xml.namespace.QName;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
@@ -20,63 +16,17 @@ import com.weblyzard.api.model.document.LegacyDocument;
  */
 public class DocumentHeaderDeserializer extends KeyDeserializer {
 
-    /**
-     * map of all namespaces, supported and used in any weblyzard component, see
-     * <code>src/python/weblyzard_api/model/parsers/xml_2013.py</code>.
-     */
-    //@formatter:off
-    private static final Map<String, String> namespaces = Map.ofEntries(
-        new AbstractMap.SimpleImmutableEntry<>("wl", "http://www.weblyzard.com/wl/2013#"),
-        new AbstractMap.SimpleImmutableEntry<>("dc", "http://purl.org/dc/elements/1.1/"),
-        new AbstractMap.SimpleImmutableEntry<>("xml", "http://www.w3.org/xml/1998/namespace"),
-        new AbstractMap.SimpleImmutableEntry<>("xsd", "http://www.w3.org/2001/xmlschema"),
-        new AbstractMap.SimpleImmutableEntry<>("sioc", "http://rdfs.org/sioc/ns#"),
-        new AbstractMap.SimpleImmutableEntry<>("skos", "http://www.w3.org/2004/02/skos/core#"),
-        new AbstractMap.SimpleImmutableEntry<>("foaf", "http://xmlns.com/foaf/0.1/"),
-        new AbstractMap.SimpleImmutableEntry<>("ma", "http://www.w3.org/ns/ma-ont#"),
-        new AbstractMap.SimpleImmutableEntry<>("po", "http://purl.org/ontology/po/"),
-        new AbstractMap.SimpleImmutableEntry<>("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
-        new AbstractMap.SimpleImmutableEntry<>("rdfs", "http://www.w3.org/2000/01/rdf-schema#"),
-        new AbstractMap.SimpleImmutableEntry<>("schema", "http://schema.org/")
-    );
-    //@formatter:on
-
-
     @Override
-    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
+    public Object deserializeKey(String key, DeserializationContext ctxt)
+            throws InvalidPropertiesFormatException {
 
         // check if the QName is represented according to specification
         if (key.startsWith("{")) {
-            QName tmp = QName.valueOf(key);
-
-            // if so, only the prefix has to be derived
-            Optional<Entry<String, String>> optionalNamespace = namespaces.entrySet().stream()
-                    .filter(entry -> tmp.getNamespaceURI().equals(entry.getValue())).findFirst();
-            String prefix = (optionalNamespace.isPresent()) ? optionalNamespace.get().getKey() : "";
-
-            return new QName(tmp.getNamespaceURI(), tmp.getLocalPart(), prefix);
+            return QName.valueOf(key);
         }
 
-        // check if key represents a supported full qualified URI
-        Optional<Entry<String, String>> optionalNamespace = namespaces.entrySet().stream()
-                .filter(entry -> key.startsWith(entry.getValue())).findFirst();
+        throw new InvalidPropertiesFormatException(String.format(
+                "could not deserialize key %s. Expected format is '{namespace}localpart'", key));
 
-        if (optionalNamespace.isPresent()) {
-            Entry<String, String> namespace = optionalNamespace.get();
-            String local = key.substring(namespace.getValue().length());
-            return new QName(namespace.getValue(), local, namespace.getKey());
-        }
-
-        // check if key represents a supported prefixed URI
-        String[] parts = key.split(":");
-        if (parts.length == 2 && !parts[0].startsWith("http")) {
-            String prefix = parts[0];
-            String local = parts[1];
-            if (namespaces.containsKey(prefix)) {
-                return new QName(namespaces.get(prefix), local, prefix);
-            }
-        }
-
-        return QName.valueOf(key);
     }
 }
