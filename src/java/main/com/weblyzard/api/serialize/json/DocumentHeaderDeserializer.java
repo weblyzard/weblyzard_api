@@ -20,13 +20,22 @@ public class DocumentHeaderDeserializer extends KeyDeserializer {
     public Object deserializeKey(String key, DeserializationContext ctxt)
             throws InvalidPropertiesFormatException {
 
-        // check if the QName is represented according to specification
-        if (key.startsWith("{")) {
-            return QName.valueOf(key);
+        try {
+            QName result = QName.valueOf(key);
+
+            // check if we were able to parse the QName into namespace and localpart:
+            if (result.getNamespaceURI().length() == 0) {
+                throw new InvalidPropertiesFormatException(String.format(
+                        "could not deserialize key %s. Expected format is '{namespace}localpart'",
+                        key));
+            }
+
+            return result;
+
+        } catch (IllegalArgumentException e) {
+            // catch any presence of IAE that could potentially be risen by `QName.valueOf`
+            throw new InvalidPropertiesFormatException(String
+                    .format("parsing qname %s raised an IllegalArgumentException: %s", key, e));
         }
-
-        throw new InvalidPropertiesFormatException(String.format(
-                "could not deserialize key %s. Expected format is '{namespace}localpart'", key));
-
     }
 }

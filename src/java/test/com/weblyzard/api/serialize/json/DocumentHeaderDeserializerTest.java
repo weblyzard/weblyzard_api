@@ -42,4 +42,10 @@ public class DocumentHeaderDeserializerTest {
         assertTrue(result.getPrefix().equals(""));
     }
 
+    @Test
+    public void qnametest() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> QName.valueOf("asdfasdf:/!/abas¹|48$fivurb"));
+    }
+
 }
