@@ -42,10 +42,19 @@ public class DocumentHeaderDeserializerTest {
         assertTrue(result.getPrefix().equals(""));
     }
 
+    /**
+     * this does test javax.xml.QName and no weblyzard code!
+     * 
+     * It is here to observe a potential change in behavior in exception handling in the used system
+     * class. Although the documentation specifies throwing an IAE if the value is not conform to
+     * the QName.toString formatting, this was never observed.
+     */
     @Test
-    public void qnametest() {
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> QName.valueOf("asdfasdf:/!/abas¹|48$fivurb"));
+    public void testQNameIllegalArgumentException() {
+        assertTrue(
+                QName.valueOf("asdfasdf:/!/abas¹|48$fivurb").getLocalPart()
+                        .equals("asdfasdf:/!/abas¹|48$fivurb"),
+                "not critical: QName.valueOf implementation changed");
     }
 
 }
