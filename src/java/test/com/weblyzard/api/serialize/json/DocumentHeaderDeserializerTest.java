@@ -16,19 +16,19 @@ public class DocumentHeaderDeserializerTest {
     @Test
     public void testSupportedPrefix() throws JsonProcessingException, IOException {
         Assertions.assertThrows(InvalidPropertiesFormatException.class,
-                () -> deserializer.deserializeKey("wl:jonas_type", null));
+                        () -> deserializer.deserializeKey("wl:jonas_type", null));
     }
 
     @Test
     public void testSupportedNamespace() throws JsonProcessingException, IOException {
         Assertions.assertThrows(InvalidPropertiesFormatException.class, () -> deserializer
-                .deserializeKey("http://www.weblyzard.com/wl/2013#jonas_type", null));
+                        .deserializeKey("http://www.weblyzard.com/wl/2013#jonas_type", null));
     }
 
     @Test
     public void testSupportedNamespaceInBrackets() throws JsonProcessingException, IOException {
         QName result = (QName) deserializer
-                .deserializeKey("{http://www.weblyzard.com/wl/2013#}jonas_type", null);
+                        .deserializeKey("{http://www.weblyzard.com/wl/2013#}jonas_type", null);
         assertTrue(result.getLocalPart().equals("jonas_type"));
         assertTrue(result.getNamespaceURI().equals("http://www.weblyzard.com/wl/2013#"));
         assertTrue(result.getPrefix().equals(""));
@@ -41,4 +41,17 @@ public class DocumentHeaderDeserializerTest {
         assertTrue(result.getNamespaceURI().equals("http://foo.bar/test#"));
         assertTrue(result.getPrefix().equals(""));
     }
+
+    @Test
+    public void testQNameIllegalArgumentException() {
+        InvalidPropertiesFormatException e;
+        e = Assertions.assertThrows(InvalidPropertiesFormatException.class,
+                        () -> deserializer.deserializeKey("{http://xxx", null));
+        assertTrue(e.getMessage().contains("raised an IllegalArgumentException"));
+
+        e = Assertions.assertThrows(InvalidPropertiesFormatException.class,
+                        () -> deserializer.deserializeKey("{http://{xxx", null));
+        assertTrue(e.getMessage().contains("raised an IllegalArgumentException"));
+    }
+
 }
