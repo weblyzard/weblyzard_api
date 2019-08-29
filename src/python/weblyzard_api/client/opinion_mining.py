@@ -28,7 +28,7 @@ class OpinionClient(MultiRESTClient):
                                  default_timeout=default_timeout)
 
     def get_polarity(self, content, content_format, annotations=None,
-                     allow_unsupported=False):
+                     allow_unsupported=False, ignored_entity_regexp=None):
         '''
         Sends the content in the content_format to the opinion mining server
         to calculate the polarity/sentiment of the content.
@@ -51,7 +51,8 @@ class OpinionClient(MultiRESTClient):
                                       parameters={'format': content_format,
                                                   'content': content,
                                                   'annotations': annotations,
-                                                  'allow_unsupported': allow_unsupported},
+                                                  'allow_unsupported': allow_unsupported,
+                                                  'ignored_entity_regexp': ignored_entity_regexp},
                                       return_plain=False)
                 break
             except Exception as e:

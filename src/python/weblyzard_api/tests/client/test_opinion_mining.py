@@ -14,7 +14,7 @@ from weblyzard_api.xml_content import XMLContent
 
 @pytest.fixture
 def client():
-    webservice_url = getenv('WL_TEST_OPINION_MINING', None)
+    webservice_url = getenv('WL_TEST_OPINION_MINING', 'http://localhost:5000')
     if webservice_url is None:
         return
     client = OpinionClient(url=webservice_url)
@@ -56,3 +56,35 @@ class TestOpinionClient(object):
         print('successfully run test against endpoint {}'.format(
             client.get_service_urls()
         ))
+
+    def test_blocking_entity(self, client):
+        """tests that having a sentiment-triggering word as part of the
+        surface form of an annotation blocks sentiment assignment"""
+        annotations = {u'GeoEntity': [
+            {u'annotationType': u'GeoEntity', u'confidence': 0.0,
+             u'entityType': u'GeoEntity', u'entities': [
+                {u'surfaceForm': u'Great Britain', u'start': 0,
+                 u'md5sum': u'42cc7210fab3eb504c398d811e01682c', u'end': 13,
+                 u'sentence': 0}, ], u'score': 0.0,
+             u'key': u'http://sws.geonames.org/2635167/',
+             u'profileName': u'en.geo.500000.ng',
+             u'preferredName': u'United Kingdom'}]}
+        xml_content_str = """<?xml version="1.0" encoding="UTF-8"?>
+        <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" wl:id="192292" dc:format="html/text" xml:lang="en" wl:nilsimsa="55231ABC048FCE9680BEE5C03804F1D8E26C723DB7F77E860E701F2776E756D7">
+           <wl:sentence wl:id="81719f8845536048e75a037a05ba39a3" wl:pos="JJ NNP VBZ RB JJ ." wl:dependency="1:NAME 2:SBJ -1:ROOT 4:AMOD 2:PRD 2:P" wl:token="0,5 6,13 14,16 17,22 23,25 25,26" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Great Britain is quite OK.]]></wl:sentence>
+        </wl:page>"""
+        # baseline: no annotations provided - 'great' -> 1.0
+        result_without_annotations = client.get_polarity(content=xml_content_str, content_format='xml')
+        assert result_without_annotations['polarity'] == 1.0
+
+        # annotations provided: GeoEntities are blocked by default
+        result_with_geo_entity = client.get_polarity(content=xml_content_str, content_format='xml', annotations=annotations)
+        assert result_with_geo_entity['polarity'] == 0.0
+
+        # non entity keywords are *not* blocked by default
+        result_with_non_entity_keyword = client.get_polarity(content=xml_content_str, content_format='xml', annotations={'NonEntityKeyword': annotations['GeoEntity']})
+        assert result_with_non_entity_keyword['polarity'] == 1.0
+
+        # defaults for annotation types that are blocked can be overwritten through API providing regexp
+        result_with_non_entity_keyword_whitelisted = client.get_polarity(content=xml_content_str, content_format='xml', annotations={'NonEntityKeyword': annotations['GeoEntity']}, ignored_entity_regexp=r'.*Entity.*')
+        assert result_with_non_entity_keyword_whitelisted['polarity'] == 0.0
