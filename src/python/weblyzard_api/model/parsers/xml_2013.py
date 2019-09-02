@@ -120,7 +120,6 @@ class XML2013(XMLParser):
         'followers': ('user_rating', 'wl'),  # twitter
         'plusoners': ('user_rating', 'wl'),  # G+
 
-
         # MULTIMEDIA ##########################################################
         'media_url': ('locator', 'ma'),
         'media_type': ('format', 'ma'),
@@ -160,8 +159,7 @@ class XML2013(XMLParser):
                           'confidence': ('confidence', 'wl')
                           }
 
-    FEATURE_MAPPING = {'key': ('key', 'wl'),
-                       'content': ('key', 'wl')}
+    FEATURE_MAPPING = {'key': ('key', 'wl')}
 
     RELATION_MAPPING = {'key': ('key', 'wl'),
                         'type': ('type', 'wl'),

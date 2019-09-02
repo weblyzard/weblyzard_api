@@ -25,17 +25,21 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             MissingFieldException,
                                             UnsupportedValueException)
 
-
 logger = logging.getLogger('weblyzard_api.parsers')
+
 
 class EmptySentenceException(Exception):
     pass
 
+
 class DatesToStrings(json.JSONEncoder):
+
     def _encode(self, obj):
         if isinstance(obj, dict):
+
             def transform_date(o):
                 return self._encode(o.isoformat() if isinstance(o, datetime) else o)
+
             return {transform_date(k): transform_date(v) for k, v in obj.items()}
         else:
             return obj
@@ -48,11 +52,11 @@ class JSONParserBase(object):
     '''
     JSON Parser base class.
     '''
-    #:  Override this constant in the subclasses based on requirements.
+    # :  Override this constant in the subclasses based on requirements.
     FIELDS_REQUIRED = []
-    #:  Override this constant in the subclasses based on requirements.
+    # :  Override this constant in the subclasses based on requirements.
     FIELDS_OPTIONAL = []
-    #:  Override this constant in the subclasses based on requirements.
+    # :  Override this constant in the subclasses based on requirements.
     API_VERSION = None
 
     @classmethod
@@ -474,6 +478,8 @@ class XMLParser(object):
         for key, val in attributes.items():
             if key is None or val is None or isinstance(val, dict):
                 continue
+            if '@' in key:
+                continue
             result[key] = val
         return result
 
@@ -659,7 +665,7 @@ class XMLParser(object):
                         continue
 
         return etree.tostring(root, encoding='unicode', pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
-        # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :) 
+        # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :)
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
