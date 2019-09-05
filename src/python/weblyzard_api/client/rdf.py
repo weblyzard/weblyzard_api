@@ -80,6 +80,8 @@ class Namespace(Enum):
             pass
 
 
+NAMESPACES = {item.value: item.name.lower() for item in Namespace}
+
 PREFIXES = '\n'.join([''] + ['PREFIX {value}: <{key}>'.format(value=item.name.lower(),
                                                               key=item.value)
                              for item in Namespace])
