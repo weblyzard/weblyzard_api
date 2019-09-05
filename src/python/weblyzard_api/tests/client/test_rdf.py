@@ -59,5 +59,5 @@ def test_prefix_uri(uri, prefixed):
         'http://weblyzard.com/skb/entity/': 'skbentity',
         'http://weblyzard.com/skb/entity/agent/': 'agent',
     }
-    result = prefix_uri(uri=uri, namespaces=namespaces)
+    result = prefix_uri(uri=uri)
     assert result == prefixed

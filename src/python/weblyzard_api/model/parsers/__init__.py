@@ -24,6 +24,7 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             UnexpectedFieldException,
                                             MissingFieldException,
                                             UnsupportedValueException)
+from weblyzard_api.client.rdf import Namespace
 
 logger = logging.getLogger('weblyzard_api.parsers')
 
@@ -291,7 +292,7 @@ class XMLParser(object):
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
-                    key = '{%s}%s' % (cls.DOCUMENT_NAMESPACES[namespace], key)
+                    key = '{%s}%s' % (Namespace.to_fully_qualified(namespace), key)
             result[key] = value
         return result
 
@@ -449,6 +450,11 @@ class XMLParser(object):
 
     @classmethod
     def dump_xml_attributes(cls, attributes, mapping, resolve_namespaces=True):
+        """
+        :param attributes:
+        :param mapping:
+        :param resovle_namespaces:
+        """
         new_attributes = {}
 
         for key, value in attributes.items():

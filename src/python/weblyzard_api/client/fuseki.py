@@ -9,7 +9,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from builtins import object
-import datetime
 import hashlib
 import io
 import json
@@ -20,7 +19,7 @@ import time
 from SPARQLWrapper import SPARQLWrapper, JSON
 import rdflib.term
 
-from weblyzard_api.client.rdf import PREFIXES, NAMESPACES
+from weblyzard_api.client.rdf import PREFIXES
 
 
 class FusekiWrapper(object):
@@ -28,7 +27,6 @@ class FusekiWrapper(object):
     provides methods to easily interface fuseki or other triple stores.
     '''
 
-    NAMESPACES = NAMESPACES
     PREFIXES = PREFIXES
 
     def __init__(self, sparql_endpoint, debug=False):
@@ -59,23 +57,23 @@ class FusekiWrapper(object):
         if self.debug_:
             print(string_)
 
-    def expand_prefix(self, uri):
-        '''
-        Replaces a prefix known to FusekiWrapper by the full URI path.
-        '''
-        for full_path, prefix in self.NAMESPACES.items():
-            prefix_colon = u'{}:'.format(prefix)
-            if uri.startswith(prefix_colon):
-                return uri.replace(prefix_colon, full_path)
-        return uri
-
-    def prefix_uri(self, uri):
-        for full_path, prefix in self.NAMESPACES.items():
-            prefix_colon = u'{}:'.format(prefix)
-            if uri.startswith(full_path):
-                return uri.replace(full_path, prefix_colon)
-        return uri
-
+# mcg: deprecated
+#     def expand_prefix(self, uri):
+#         '''
+#         Replaces a prefix known to FusekiWrapper by the full URI path.
+#         '''
+#         for full_path, prefix in self.NAMESPACES.items():
+#             prefix_colon = u'{}:'.format(prefix)
+#             if uri.startswith(prefix_colon):
+#                 return uri.replace(prefix_colon, full_path)
+#         return uri
+#
+#     def prefix_uri(self, uri):
+#         for full_path, prefix in self.NAMESPACES.items():
+#             prefix_colon = u'{}:'.format(prefix)
+#             if uri.startswith(full_path):
+#                 return uri.replace(full_path, prefix_colon)
+#         return uri
 
     def fix_uri(self, o):
         '''
@@ -84,8 +82,8 @@ class FusekiWrapper(object):
         '''
         if isinstance(o, tuple) and len(o) == 3:
             return((self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2])))
-        
-        elif isinstance(o,  (str, bytes)):
+
+        elif isinstance(o, (str, bytes)):
             if isinstance(o, bytes):
                 o = o.decode('utf-8')
             if o.startswith('http'):
@@ -111,8 +109,7 @@ class FusekiWrapper(object):
 
     def variable_to_python(self, variable_dict, add_language_tag=False):
         '''
-        Converts the given variable_dict to the closest python representation.
-
+        Convert a given variable_dict to the closest python representation.
         :param variable_dict: The dict representing the variable.
         :type variable_dict: `dict`
         :param add_language_tag: If a language-tagged string literal should \
@@ -152,12 +149,13 @@ class FusekiWrapper(object):
             return variable_dict['value']
 
     def execute_query(self, query, caching=False, on_fly_json_decoding=False):
+
         def parse_and_yield(result):
-            '''
+            """
             This is a hacky JSON parser that allows to parse the JSON
             response without parsing it all at once, but result line by
             result line.
-            '''
+            """
             row = ''
             in_bindings = False
             for line in result:
@@ -203,11 +201,9 @@ class FusekiWrapper(object):
 
     def run_query(self, query, no_prefix=False, batch_size=None,
                   order_by_stmt=None, caching=False):
-        '''
-        Run the given query and return the result's bindings.
-
+        """ Run a given query and return the result's bindings.
         :param query: The SPARQL query to run.
-        '''
+        """
         if not no_prefix:
             query = u'{}{}'.format(self.PREFIXES, query)
         if batch_size:
@@ -231,11 +227,9 @@ class FusekiWrapper(object):
                 yield row
 
     def run_update(self, query, no_prefix=False):
-        '''
-        Run the given update query on the update endpoint.
-
+        """ Run a given update query against the update endpoint.
         :param query: The query (insert, update) to run.
-        '''
+        """
         if not no_prefix:
             query = u'{}{}'.format(self.PREFIXES, query)
         self.debug(u'running the following update query against {endpoint}\n{query}'.format(
@@ -253,9 +247,9 @@ class FusekiWrapper(object):
             self.run_update(query=query, no_prefix=True)
 
     def exists(self, uri):
-        '''
-        Check if a given URI is already in the store.
-        '''
+        """ Check if a given URI is already in the store.
+        :param uri:
+        """
         if uri in self.uri_cache:
             return True
         query = u'''
@@ -285,11 +279,11 @@ class FusekiWrapper(object):
                 self.uri_cache.add(row['o']['value'])
 
     def get_new_URI(self, base_uri):
-        '''
-        Get a new URI that does not yet exist in the RDF graph. It appends
+        """ Get a new URI that does not yet exist in the RDF graph. It appends
         numerical, increasing suffixes to the base_uri until it finds a free
         URI.
-        '''
+        :param base_uri
+        """
         candidate_uri = base_uri
         if candidate_uri not in self.uri_cache and not self.exists(candidate_uri):
             return candidate_uri

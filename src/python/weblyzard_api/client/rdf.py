@@ -4,105 +4,145 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from enum import Enum
 
-NAMESPACES = {
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#': 'rdf',
-    'http://www.w3.org/2000/01/rdf-schema#': 'rdfs',
-    'http://www.w3.org/2001/XMLSchema#': 'xsd',
-    'http://www.w3.org/2002/07/owl#': 'owl',
-    'http://www.w3.org/2004/02/skos/core#': 'skos',
-    'http://www.w3.org/ns/prov#': 'prov',
-    'http://purl.org/dc/elements/1.1/': 'dc',
-    'http://purl.org/dc/terms/': 'dct',
-    'http://schema.org/': 'schema',
+
+class Namespace(Enum):
+    XML = 'http://www.w3.org/XML/1998/namespace#'
+    XSD = 'http://www.w3.org/2001/XMLSchema#'
+    RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+    RDFS = 'http://www.w3.org/2000/01/rdf-schema#'
+    OWL = 'http://www.w3.org/2002/07/owl#'
+    PROV = 'http://www.w3.org/ns/prov#'
+    DC = 'http://purl.org/dc/elements/1.1/'
+    DCT = 'http://purl.org/dc/terms/'
+    SCHEMA = 'http://schema.org/'
+
+    # special interest namespaces
+    SKOS = 'http://www.w3.org/2004/02/skos/core#'
+    FOAF = 'http://xmlns.com/foaf/0.1/'
+    MA = 'http://www.w3.org/ns/ma-ont#'
+    SIOC = 'http://rdfs.org/sioc/ns#'
+    PO = 'http://purl.org/ontology/po/'
+
     # lexical namespaces
-    'http://lemon-model.net/lemon#': 'lemon',
-    'http://www.lexinfo.net/ontology/2.0/lexinfo#': 'lexinfo',
-    'http://id.loc.gov/vocabulary/iso639-1/': 'lang',
+    LEMON = 'http://lemon-model.net/lemon#'
+    LEXINFO = 'http://www.lexinfo.net/ontology/2.0/lexinfo#'
+    LANG = 'http://id.loc.gov/vocabulary/iso639-1/'
+
     # wikidata, dbpedia, geo
-    'http://dbpedia.org/ontology/': 'dbo',
-    'http://www.opengis.net/ont/geosparql#': 'geo',
-    'http://www.wikidata.org/prop/direct/': 'wdt',
-    'http://www.wikidata.org/entity/': 'wd',
-    'http://www.wikidata.org/prop/': 'p',
-    'http://www.wikidata.org/prop/statement/': 'ps',
-    'http://www.wikidata.org/prop/qualifier/': 'pq',
-    'http://sws.geonames.org/': 'gn',
+    DBO = 'http://dbpedia.org/ontology/'
+    GEO = 'http://www.opengis.net/ont/geosparql#'
+    WDT = 'http://www.wikidata.org/prop/direct/'
+    WD = 'http://www.wikidata.org/entity/'
+    P = 'http://www.wikidata.org/prop/'
+    PS = 'http://www.wikidata.org/prop/statement/'
+    PQ = 'http://www.wikidata.org/prop/qualifier/'
+    GN = 'http://sws.geonames.org/'
+
     # weblyzard namespaces
-    'http://weblyzard.com/skb/lexicon/': 'skblex',
-    'http://weblyzard.com/skb/property/': 'skbprop',
-    'http://weblyzard.com/skb/entity/': 'skbentity',
-    'http://weblyzard.com/skb/entity/agent/': 'agent',
+    WL = 'http://www.weblyzard.com/wl/2013#'
+    SKBLEX = 'http://weblyzard.com/skb/lexicon/'
+    SKBPROP = 'http://weblyzard.com/skb/property/'
+    SKBENTITY = 'http://weblyzard.com/skb/entity/'
+    AGENT = 'http://weblyzard.com/skb/entity/agent/'
+
     # weblyzard keywords per language
-    'http://weblyzard.com/skb/keyword/en#': 'skbkwen',
-    'http://weblyzard.com/skb/keyword/de#': 'skbkwde',
-    'http://weblyzard.com/skb/keyword/fr#': 'skbkwfr',
-    'http://weblyzard.com/skb/keyword/es#': 'skbkwes',
-    'http://weblyzard.com/skb/keyword/it#': 'skbkwit',
-    'http://weblyzard.com/skb/keyword/pt#': 'skbkwpt',
-    'http://weblyzard.com/skb/keyword/zh#': 'skbkwzh',
-    'http://weblyzard.com/skb/keyword/ru#': 'skbkwru',
-    'http://weblyzard.com/skb/keyword/ar#': 'skbkwar',
-    'http://weblyzard.com/skb/keyword/nl#': 'skbkwnl',
-}
+    SKBKWEN = 'http://weblyzard.com/skb/keyword/en#'
+    SKBKWDE = 'http://weblyzard.com/skb/keyword/de#'
+    SKBKWFR = 'http://weblyzard.com/skb/keyword/fr#'
+    SKBKWES = 'http://weblyzard.com/skb/keyword/es#'
+    SKBKWIT = 'http://weblyzard.com/skb/keyword/it#'
+    SKBKWPT = 'http://weblyzard.com/skb/keyword/pt#'
+    SKBKWZH = 'http://weblyzard.com/skb/keyword/zh#'
+    SKBKWRU = 'http://weblyzard.com/skb/keyword/ru#'
+    SKBKWAR = 'http://weblyzard.com/skb/keyword/ar#'
+    SKBKWNL = 'http://weblyzard.com/skb/keyword/nl#'
 
-PREFIXES = '\n'.join([''] + ['PREFIX {value}: <{key}>'.format(value=value,
-                                                              key=key)
-                             for key, value in NAMESPACES.items()])
+    @classmethod
+    def to_fully_qualified(cls, prefix):
+        """ Look up short prefix and return fully-qualified URL if known.
+        :param prefix: the prefix to be resolved.
+        :returns the fully-qualified URL or the prefix if unknown.
+        """
+        prefix = prefix.upper()
+        if hasattr(Namespace, prefix):
+            return getattr(cls, prefix).value
+        return prefix
+
+    @classmethod
+    def to_prefix(cls, uri):
+        """ 
+        """
+        try:
+            return Namespace(uri).name.lower()
+        except Exception as e:
+            pass
 
 
-def prefix_uri(uri, namespaces=None):
-    '''
-    Replaces a sub-path from the uri with the most specific prefix as defined
-    in the namespaces.
+PREFIXES = '\n'.join([''] + ['PREFIX {value}: <{key}>'.format(value=item.name.lower(),
+                                                              key=item.value)
+                             for item in Namespace])
 
+
+def to_fully_qualified(attribute):
+    """ QName originates from the XML world, where it is used to reduce I/O by shortening 
+    namespaces (e.g. http://www.weblyzard.com/wl/2013#) to a prefix (e.g. wl) 
+    followed by the local part (e.g. jonas_type). The namespace-prefix relations 
+    are thereby defined in the XML-Head. This relation mapping does not exist in JSON, 
+    which is why we have to have the full qualified name (namespace + local part) 
+    to define an attribute. While the more readable way would be to just use the URI, 
+    the official standardized format is {namespace}localpart, having the major 
+    advantage of non-ambiguous namespace identification. Further, Java expects Qnames 
+    in this annotation format, which enables to simply use Qname.valueOf(key).
+    :param attribute: the attribute to resolve
+    :returns a fully-qualified version of the input attribute.
+    """
+    if len(attribute.split(':')) <= 1:
+        return attribute
+
+    namespace, attr_name = attribute.split(':')
+    return '{%s}%s' % (Namespace.to_fully_qualified(namespace), attr_name)
+
+
+def prefix_uri(uri):
+    """ Replace a sub-path from the uri with the most specific prefix as defined
+    in the Namespace.
     :param uri: The URI to modify.
     :type uri: str
-    :param namespaces: A mapping of namespace to prefix (without ':').
-    :type namespaces: `dict`
     :returns: The modified URI if applicable
     :rtype: str
-    '''
-    if namespaces is None:
-        namespaces = NAMESPACES
+    """
     if not uri.startswith('http'):
         return uri
     # replace most specific/longest prefix, hence sorted
-    for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
+    for namespace in sorted(list([ns.value for ns in Namespace]), key=len, reverse=True):
         if namespace in uri:
             replaced = uri.replace(
-                namespace, '{}:'.format(namespaces[namespace]))
+                namespace, '{}:'.format(Namespace.to_prefix(namespace)))
             if '/' in replaced or '#' in replaced:
                 # slashes or hashes in prefixed URIs not allowed
                 continue
-            else:
-                return replaced
+            return replaced
     return uri
 
 
-def replace_prefix(uri, namespaces=None):
-    '''
-    Replaces a prefix with the full namespace path.
-
+def replace_prefix(uri):
+    """ Replace a prefix with the fully-qualified namespace URL.
     :param uri: The URI to modify.
     :type uri: str
-    :param namespaces: A mapping of namespace to prefix (without ':').
-    :type namespaces: `dict`
     :returns: The modified URI if applicable
     :rtype: str
-    '''
-    if namespaces is None:
-        namespaces = NAMESPACES
-    for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
-        prefix = '{}:'.format(namespaces[namespace])
-        if uri.startswith(prefix):
-            return uri.replace(prefix, namespace)
+    """
+#     for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
+#         prefix = '{}:'.format(namespaces[namespace])
+#         if uri.startswith(prefix):
+#             return uri.replace(prefix, namespace)
     return uri
 
 
 def parse_language_tagged_string(value):
-    """
-    Check if the string value has a language tag @xx or @xxx
+    """ Check if a string value has a language tag @xx or @xxx
     and returns the string without the value tag and language
     as tuple. If no language tag -> language is None
     :param value
