@@ -19,7 +19,7 @@ class XML2013(XMLParser):
     DOCUMENT_NAMESPACES = {ns.name.lower(): ns.value for ns in Namespace}
 
     ATTR_MAPPING = {
-        'lang': ('lang', 'xml'),  # legacy
+        'language_id': ('lang', 'xml'),  # legacy
         'language': ('language', 'dc'),
         'content_type': ('format', 'dc'),
         'publication_date': ('issued', 'dc'),

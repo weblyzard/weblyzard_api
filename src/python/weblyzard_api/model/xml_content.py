@@ -28,7 +28,6 @@ from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers import EmptySentenceException
 from weblyzard_api.model import Sentence, Annotation
 
-
 SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
                        'pos', 'token', 'dependency')
 
@@ -40,6 +39,7 @@ class XMLContent(object):
                               XMLDeprecated.VERSION: XMLDeprecated}
     API_MAPPINGS = {
         1.0: {
+            'language_id': 'language_id',
             'lang': 'language_id',
             'xml:lang': 'language_id',
             'title': 'title',
@@ -53,6 +53,7 @@ class XMLContent(object):
                          'sentences': 'sentences',
                          'body_annotations': 'annotations',
                          'lang': 'xml:lang',
+                         'language_id': 'xml:lang',
                          'sentences_map': {'pos': 'pos',
                                            'token': 'token',
                                            'value': 'value',
@@ -370,7 +371,7 @@ class XMLContent(object):
         return int(content_id) if content_id else content_id
 
     def get_sentences(self, include_title_sentences=False):
-        return self.titles * include_title_sentences +\
+        return self.titles * include_title_sentences + \
                self.sentence_objects
 
     def get_all_sentences(self):

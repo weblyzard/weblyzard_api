@@ -292,7 +292,7 @@ class XMLParser(object):
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
-                    key = '{%s}%s' % (Namespace.to_fully_qualified(namespace), key)
+                    key = '{%s}%s' % (cls.DOCUMENT_NAMESPACES[namespace], key)
             result[key] = value
         return result
 
