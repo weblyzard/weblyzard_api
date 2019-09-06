@@ -115,7 +115,7 @@ class Recognize(MultiRESTClient):
         if not document:
             return
 
-        content_type = 'application/json'
+        content_type = 'application/json; charset=utf-8'
         search_command = 'search_document'
         return self.request(path=search_command,
                             parameters=document,

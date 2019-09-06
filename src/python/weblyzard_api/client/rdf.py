@@ -60,7 +60,7 @@ class Namespace(Enum):
     SKBKWNL = 'http://weblyzard.com/skb/keyword/nl#'
 
     @classmethod
-    def to_fully_qualified(cls, prefix):
+    def to_fully_qualified(cls, prefix: str) -> str:
         """ Look up short prefix and return fully-qualified URL if known.
         :param prefix: the prefix to be resolved.
         :returns the fully-qualified URL or the prefix if unknown.
@@ -71,7 +71,7 @@ class Namespace(Enum):
         return prefix
 
     @classmethod
-    def to_prefix(cls, uri):
+    def to_prefix(cls, uri: str) -> str:
         """ 
         """
         try:
@@ -85,7 +85,7 @@ PREFIXES = '\n'.join([''] + ['PREFIX {value}: <{key}>'.format(value=item.name.lo
                              for item in Namespace])
 
 
-def to_fully_qualified(attribute):
+def to_fully_qualified(attribute: str) -> str:
     """ QName originates from the XML world, where it is used to reduce I/O by shortening 
     namespaces (e.g. http://www.weblyzard.com/wl/2013#) to a prefix (e.g. wl) 
     followed by the local part (e.g. jonas_type). The namespace-prefix relations 
@@ -105,7 +105,7 @@ def to_fully_qualified(attribute):
     return '{%s}%s' % (Namespace.to_fully_qualified(namespace), attr_name)
 
 
-def prefix_uri(uri):
+def prefix_uri(uri: str) -> str:
     """ Replace a sub-path from the uri with the most specific prefix as defined
     in the Namespace.
     :param uri: The URI to modify.
@@ -141,7 +141,7 @@ def replace_prefix(uri):
     return uri
 
 
-def parse_language_tagged_string(value):
+def parse_language_tagged_string(value: str) -> tuple:
     """ Check if a string value has a language tag @xx or @xxx
     and returns the string without the value tag and language
     as tuple. If no language tag -> language is None
