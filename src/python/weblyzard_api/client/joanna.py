@@ -43,7 +43,7 @@ class PostRequest(object):
         req = urllib.request.Request(url=self.url)
         req.add_header("Content-Type", "application/json")
         req.get_method = lambda: "POST"
-        req.add_data(self.data)
+        req.data = self.data.encode('utf-8')
         try:
             conn = opener.open(req)
         except urllib.error.HTTPError as e:
