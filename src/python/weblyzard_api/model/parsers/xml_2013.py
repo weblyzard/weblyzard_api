@@ -7,6 +7,7 @@ Created on 07.04.2014
 '''
 from __future__ import unicode_literals
 from weblyzard_api.model.parsers import XMLParser
+from weblyzard_api.client.rdf import Namespace
 
 
 class XML2013(XMLParser):
@@ -15,21 +16,10 @@ class XML2013(XMLParser):
 
     SUPPORTED_NAMESPACE = 'http://www.weblyzard.com/wl/2013#'
 
-    DOCUMENT_NAMESPACES = {'wl': SUPPORTED_NAMESPACE,
-                           'dc': 'http://purl.org/dc/elements/1.1/',
-                           'xml': 'http://www.w3.org/XML/1998/namespace',
-                           'xsd': 'http://www.w3.org/2001/XMLSchema',
-                           'sioc': 'http://rdfs.org/sioc/ns#',
-                           'skos': 'http://www.w3.org/2004/02/skos/core#',
-                           'foaf': 'http://xmlns.com/foaf/0.1/',
-                           'ma': 'http://www.w3.org/ns/ma-ont#',
-                           'po': 'http://purl.org/ontology/po/',
-                           'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-                           'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
-                           'schema': 'http://schema.org/'}
+    DOCUMENT_NAMESPACES = {ns.name.lower(): ns.value for ns in Namespace}
 
     ATTR_MAPPING = {
-        'lang': ('lang', 'xml'),  # legacy
+        'language_id': ('lang', 'xml'),  # legacy
         'language': ('language', 'dc'),
         'content_type': ('format', 'dc'),
         'publication_date': ('issued', 'dc'),
