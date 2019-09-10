@@ -40,7 +40,7 @@ class SpanFactory(object):
             try:
                 return SPAN_TYPE_TO_CLASS[span['span_type']](**span)
             except TypeError as e:
-                raise e
+                return SPAN_TYPE_TO_CLASS[span['span_type']].from_dict(span)
         raise Exception('Invalid Span Type: {}'.format(span['span_type']))
 
 
@@ -131,11 +131,11 @@ class SentimentCharSpan(CharSpan):
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
-                    'sentiment_value': 'sentiment_value'}
+                    'value': 'value'}
 
     def __init__(self, span_type, start, end, value, **kwargs):
         super(SentimentCharSpan, self).__init__(span_type=span_type, start=start, end=end)
-        self.sentiment_value = value
+        self.value = value
 
 
 SPAN_TYPE_TO_CLASS = {
