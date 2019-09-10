@@ -24,31 +24,23 @@ LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 logger = logging.getLogger(__name__)
 
 
+
 class SpanFactory(object):
 
     @classmethod
     def new_span(cls, span):
-        try:
-            assert isinstance(span, dict) and 'span_type' in span
-        except AssertionError as e:
-            raise e
-
-        if span['span_type'] == 'CharSpan':
-            return CharSpan(span_type='CharSpan', start=span['start'],
-                            end=span['end'])
-        elif span['span_type'] == 'TokenCharSpan':
-            return TokenCharSpan(span_type='TokenCharSpan', start=span['start'],
-                                 end=span['end'], pos=span.get('pos', None),
-                                 dependency=span.get('dependency', None))
-        elif span['span_type'] == 'SentenceCharSpan':
+        if span['span_type'] == 'SentenceCharSpan':
             return SentenceCharSpan(span_type='SentenceCharSpan',
                                     start=span['start'],
                                     end=span['end'],
                                     sem_orient=span.get('sem_orient', None),
                                     md5sum=span.get('md5sum', span.get('id')),
                                     significance=span.get('significance', None))
-        elif span['span_type'] == 'NegationCharSpan':
-            return NegationCharSpan(**span)
+        elif span['span_type'] in SPAN_TYPE_TO_CLASS:
+            try:
+                return SPAN_TYPE_TO_CLASS[span['span_type']](**span)
+            except TypeError as e:
+                raise e
         raise Exception('Invalid Span Type: {}'.format(span['span_type']))
 
 
@@ -129,11 +121,30 @@ class SentenceCharSpan(CharSpan):
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
 
-class NegationCharSpan(CharSpan):
-    DICT_MAPPING = {'@type': 'span_type',
-     'start': 'start',
-     'end': 'end'}
 
+class NegationCharSpan(CharSpan):
+
+    def __init__(self, span_type, start, end, value=None):
+        super(NegationCharSpan, self).__init__(span_type=span_type, start=start, end=end)
+
+class SentimentCharSpan(CharSpan):
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'sentiment_value': 'sentiment_value'}
+
+    def __init__(self, span_type, start, end, value, **kwargs):
+        super(SentimentCharSpan, self).__init__(span_type=span_type, start=start, end=end)
+        self.sentiment_value = value
+
+
+SPAN_TYPE_TO_CLASS = {
+        'CharSpan': CharSpan,
+        'TokenCharSpan': TokenCharSpan,
+        'SentimentCharSpan': SentimentCharSpan,
+        'NegationCharSpan': NegationCharSpan,
+        'SentenceCharSpan': SentimentCharSpan
+    }
 
 class Annotation(object):
 
@@ -356,7 +367,7 @@ class Sentence(object):
                         '(parent index, dependency label), treating it as '
                         'dependency label only'.format(dep, self.value,
                                                        self.dependency))
-                result.append(LabeledDependency(    parent,
+                result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
                                                 label))
             return result
