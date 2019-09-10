@@ -47,6 +47,8 @@ class SpanFactory(object):
                                     sem_orient=span.get('sem_orient', None),
                                     md5sum=span.get('md5sum', span.get('id')),
                                     significance=span.get('significance', None))
+        elif span['span_type'] == 'NegationCharSpan':
+            return NegationCharSpan(**span)
         raise Exception('Invalid Span Type: {}'.format(span['span_type']))
 
 
@@ -124,16 +126,13 @@ class SentenceCharSpan(CharSpan):
         self.sem_orient = sem_orient
         self.significance = significance
 
-    # def to_dict(self):
-    #     return {'@type': self.span_type,
-    #             'start': self.start,
-    #             'end': self.end,
-    #             'md5sum': self.md5sum,
-    #             'semOrient': self.sem_orient,
-    #             'significance': self.significance}
-
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
+
+class NegationCharSpan(CharSpan):
+    DICT_MAPPING = {'@type': 'span_type',
+     'start': 'start',
+     'end': 'end'}
 
 
 class Annotation(object):
@@ -273,11 +272,11 @@ class Sentence(object):
         '''
         if not self.token:
             raise StopIteration
-        correction_offset = 0
+        correction_offset = int(self.token.split(',')[0] or 0)
         for token_pos in self.token.split(self.ITEM_DELIMITER):
             token_indices = token_pos.split(self.TOKEN_DELIMITER)
             try:
-                start, end = [int(i) + correction_offset for i \
+                start, end = [int(i) - correction_offset for i \
                               in token_indices]
             except ValueError as e:
                 # occasionally there appear to be missing spaces in token
@@ -293,7 +292,7 @@ class Sentence(object):
             # de- and encoding sometimes leads to index errors with double-width
             # characters - here we attempt to detect such cases and correct
             if res.strip() != res:
-                correction_offset -= len(res) - len(res.strip())
+                correction_offset += len(res) - len(res.strip())
                 res = res.strip()
             yield res
 
