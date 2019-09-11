@@ -24,26 +24,6 @@ LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 logger = logging.getLogger(__name__)
 
 
-
-class SpanFactory(object):
-
-    @classmethod
-    def new_span(cls, span):
-        if span['span_type'] == 'SentenceCharSpan':
-            return SentenceCharSpan(span_type='SentenceCharSpan',
-                                    start=span['start'],
-                                    end=span['end'],
-                                    sem_orient=span.get('sem_orient', None),
-                                    md5sum=span.get('md5sum', span.get('id')),
-                                    significance=span.get('significance', None))
-        elif span['span_type'] in SPAN_TYPE_TO_CLASS:
-            try:
-                return SPAN_TYPE_TO_CLASS[span['span_type']](**span)
-            except TypeError as e:
-                return SPAN_TYPE_TO_CLASS[span['span_type']].from_dict(span)
-        raise Exception('Invalid Span Type: {}'.format(span['span_type']))
-
-
 class CharSpan(object):
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
@@ -125,7 +105,9 @@ class SentenceCharSpan(CharSpan):
 class NegationCharSpan(CharSpan):
 
     def __init__(self, span_type, start, end, value=None):
-        super(NegationCharSpan, self).__init__(span_type=span_type, start=start, end=end)
+        super(NegationCharSpan, self).__init__(span_type=span_type, start=start,
+                                               end=end)
+
 
 class SentimentCharSpan(CharSpan):
     DICT_MAPPING = {'@type': 'span_type',
@@ -134,17 +116,39 @@ class SentimentCharSpan(CharSpan):
                     'value': 'value'}
 
     def __init__(self, span_type, start, end, value, **kwargs):
-        super(SentimentCharSpan, self).__init__(span_type=span_type, start=start, end=end)
+        super(SentimentCharSpan, self).__init__(span_type=span_type,
+                                                start=start, end=end)
         self.value = value
 
 
-SPAN_TYPE_TO_CLASS = {
+class SpanFactory(object):
+    SPAN_TYPE_TO_CLASS = {
         'CharSpan': CharSpan,
         'TokenCharSpan': TokenCharSpan,
         'SentimentCharSpan': SentimentCharSpan,
         'NegationCharSpan': NegationCharSpan,
         'SentenceCharSpan': SentimentCharSpan
     }
+
+    @classmethod
+    def new_span(cls, span):
+        if span['span_type'] == 'SentenceCharSpan':
+            return SentenceCharSpan(span_type='SentenceCharSpan',
+                                    start=span['start'],
+                                    end=span['end'],
+                                    sem_orient=span.get('sem_orient', None),
+                                    md5sum=span.get('md5sum', span.get('id')),
+                                    significance=span.get('significance', None))
+        elif span['span_type'] in cls.SPAN_TYPE_TO_CLASS:
+            try:
+                return cls.SPAN_TYPE_TO_CLASS[span['span_type']](**span)
+            except Exception as e:
+                logger.warning(
+                    "Unable to process  span {}. Error was {}".format(span, e),
+                    exc_info=True)
+                raise e
+        raise Exception('Invalid Span Type: {}'.format(span['span_type']))
+
 
 class Annotation(object):
 
