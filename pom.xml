@@ -113,7 +113,7 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav-jackrabbit</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.3</version>
 			</extension>
 		</extensions>
 		<resources>
