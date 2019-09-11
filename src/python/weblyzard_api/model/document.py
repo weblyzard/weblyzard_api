@@ -27,6 +27,8 @@ class Document(object):
     SENTENCE_KEY = u'SENTENCE'
     TITLE_KEY = u'TITLE'
     TOKEN_KEY = u'TOKEN'
+    SENTIMENT_KEY = u'SENTIMENT_SCOPE'
+    NEGATION_KEY = u'NEGATION_SCOPE'
 
     # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id",
