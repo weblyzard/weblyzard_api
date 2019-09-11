@@ -58,14 +58,19 @@ class SKBRESTClient(object):
             uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
         elif uri.startswith('http://weblyzard.com/skb/keyword/'):
             lang = uri[len('http://weblyzard.com/skb/keyword/'):].split('/')[0]
+            general_pos = uri[len(
+                'http://weblyzard.com/skb/keyword/'):].split('/')[1]
         else:
             lang = None
+            general_pos = None
         preferredName = kwargs.get(
             'preferred_name', kwargs.get('preferredName', None))
         skb_relevant_data = {'uri': uri,
                              'preferredName': '{}@{}'.format(preferredName, lang) if lang else preferredName,
                              'entityType': kwargs.get('entity_type', kwargs.get('entityType', None)),
                              'provenance': kwargs['provenance']}
+        if general_pos:
+            skb_relevant_data['lexinfo:partOfSpeech'] = general_pos
         return skb_relevant_data
 
     def clean_recognize_data(self, kwargs):
@@ -287,8 +292,6 @@ class SKBRESTClient(object):
                              uri,
                              e)
         return None
-
-
 
 
 class SKBSentimentDictionary(dict):
