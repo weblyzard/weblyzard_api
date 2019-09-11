@@ -1,4 +1,4 @@
-# CI config
+# CI config 
 
 # shared key for the python jobs to not have redundant config parameters
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
