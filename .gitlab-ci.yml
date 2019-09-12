@@ -1,10 +1,10 @@
-# CI config
+# CI config 
 
 # shared key for the python jobs to not have redundant config parameters
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
 # cp -no-clobber copies files but doesn't overwrite existing ones (e.g. sonar property settings)
 .python_defaults: &py_anchor  # using anchor magic
-    image: registry.gitlab.semanticlab.net/docker/py3base:latest
+    image: registry.gitlab.semanticlab.net/docker/py3full:latest
     before_script:
         - git submodule sync --recursive
         - git submodule update --init --recursive --remote
@@ -27,39 +27,27 @@ pytest:
     <<: *py_anchor  # we reference the anchor here
     stage: test-python
     only:
-        - migration
-        - master
-        - develop
+        - branches 
     script:
-        - tox -e pytest
-    after_script:
-        - export PROJECT=$(/usr/bin/python3 -W ignore ./setup.py --name | awk 'NR==1{print $1}')
-        - export VERSION=$(/usr/bin/python3 -W ignore ./setup.py --version | awk 'NR==1{print $1}')
-        - export TESTSDIR=src/python/weblyzard_api/tests/model/
-        - export SRCDIR=src/python/weblyzard_api/
-        - sonar-scanner -D sonar.host.url=$sonarhost -D sonar.login=$sonarlogin
+        - tox -q -e pytest
+        - sonar-scanner -D sonar.host.url=${sonarhost} -D sonar.login=${sonarlogin}
 
 pylint:
     <<: *py_anchor
     stage: test-python
     only:
-        - migration
-        - master
-        - develop
+        - branches 
     script:
-        - tox -e pylint
-        - sonar-scanner -D sonar.host.url=$sonarhost  -D sonar.login=$sonarlogin
+        - tox -q -e pylint
     when: manual
 
 vulture:
     <<: *py_anchor
     stage: test-python
     only:
-        - migration
-        - master
-        - develop
+        - branches 
     script:
-        - tox -e vulture
+        - tox -q -e vulture
     when: manual
 
 
@@ -75,9 +63,7 @@ build:
         - chmod +x build-package.sh
         - ./build-package.sh
     only:
-        - migration
         - master
-    when: manual
     tags:
         - shell-runner
 

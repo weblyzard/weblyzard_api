@@ -24,32 +24,6 @@ LabeledDependency = namedtuple("LabeledDependency", "parent pos label")
 logger = logging.getLogger(__name__)
 
 
-class SpanFactory(object):
-
-    @classmethod
-    def new_span(cls, span):
-        try:
-            assert isinstance(span, dict) and 'span_type' in span
-        except AssertionError as e:
-            raise e
-
-        if span['span_type'] == 'CharSpan':
-            return CharSpan(span_type='CharSpan', start=span['start'],
-                            end=span['end'])
-        elif span['span_type'] == 'TokenCharSpan':
-            return TokenCharSpan(span_type='TokenCharSpan', start=span['start'],
-                                 end=span['end'], pos=span.get('pos', None),
-                                 dependency=span.get('dependency', None))
-        elif span['span_type'] == 'SentenceCharSpan':
-            return SentenceCharSpan(span_type='SentenceCharSpan',
-                                    start=span['start'],
-                                    end=span['end'],
-                                    sem_orient=span.get('sem_orient', None),
-                                    md5sum=span.get('md5sum', span.get('id')),
-                                    significance=span.get('significance', None))
-        raise Exception('Invalid Span Type: {}'.format(span['span_type']))
-
-
 class CharSpan(object):
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
@@ -124,16 +98,56 @@ class SentenceCharSpan(CharSpan):
         self.sem_orient = sem_orient
         self.significance = significance
 
-    # def to_dict(self):
-    #     return {'@type': self.span_type,
-    #             'start': self.start,
-    #             'end': self.end,
-    #             'md5sum': self.md5sum,
-    #             'semOrient': self.sem_orient,
-    #             'significance': self.significance}
-
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
+
+
+class NegationCharSpan(CharSpan):
+
+    def __init__(self, span_type, start, end, value=None):
+        super(NegationCharSpan, self).__init__(span_type=span_type, start=start,
+                                               end=end)
+
+
+class SentimentCharSpan(CharSpan):
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'value': 'value'}
+
+    def __init__(self, span_type, start, end, value, **kwargs):
+        super(SentimentCharSpan, self).__init__(span_type=span_type,
+                                                start=start, end=end)
+        self.value = value
+
+
+class SpanFactory(object):
+    SPAN_TYPE_TO_CLASS = {
+        'CharSpan': CharSpan,
+        'TokenCharSpan': TokenCharSpan,
+        'SentimentCharSpan': SentimentCharSpan,
+        'NegationCharSpan': NegationCharSpan,
+        'SentenceCharSpan': SentimentCharSpan
+    }
+
+    @classmethod
+    def new_span(cls, span):
+        if span['span_type'] == 'SentenceCharSpan':
+            return SentenceCharSpan(span_type='SentenceCharSpan',
+                                    start=span['start'],
+                                    end=span['end'],
+                                    sem_orient=span.get('sem_orient', None),
+                                    md5sum=span.get('md5sum', span.get('id')),
+                                    significance=span.get('significance', None))
+        elif span['span_type'] in cls.SPAN_TYPE_TO_CLASS:
+            try:
+                return cls.SPAN_TYPE_TO_CLASS[span['span_type']](**span)
+            except Exception as e:
+                logger.warning(
+                    "Unable to process  span {}. Error was {}".format(span, e),
+                    exc_info=True)
+                raise e
+        raise Exception('Invalid Span Type: {}'.format(span['span_type']))
 
 
 class Annotation(object):
@@ -273,11 +287,11 @@ class Sentence(object):
         '''
         if not self.token:
             raise StopIteration
-        correction_offset = 0
+        correction_offset = int(self.token.split(',')[0] or 0)
         for token_pos in self.token.split(self.ITEM_DELIMITER):
             token_indices = token_pos.split(self.TOKEN_DELIMITER)
             try:
-                start, end = [int(i) + correction_offset for i \
+                start, end = [int(i) - correction_offset for i \
                               in token_indices]
             except ValueError as e:
                 # occasionally there appear to be missing spaces in token
@@ -293,7 +307,7 @@ class Sentence(object):
             # de- and encoding sometimes leads to index errors with double-width
             # characters - here we attempt to detect such cases and correct
             if res.strip() != res:
-                correction_offset -= len(res) - len(res.strip())
+                correction_offset += len(res) - len(res.strip())
                 res = res.strip()
             yield res
 
@@ -357,7 +371,7 @@ class Sentence(object):
                         '(parent index, dependency label), treating it as '
                         'dependency label only'.format(dep, self.value,
                                                        self.dependency))
-                result.append(LabeledDependency(    parent,
+                result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
                                                 label))
             return result

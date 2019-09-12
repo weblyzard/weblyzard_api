@@ -1,6 +1,9 @@
 dist: bionic
 language: java
 
+git:
+    submodules: false
+
 install: 
   - wget https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz
   - tar -xzf openjdk-10_linux-x64_bin.tar.gz
