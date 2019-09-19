@@ -127,7 +127,7 @@ class SpanFactory(object):
         'TokenCharSpan': TokenCharSpan,
         'SentimentCharSpan': SentimentCharSpan,
         'NegationCharSpan': NegationCharSpan,
-        'SentenceCharSpan': SentimentCharSpan
+        'SentenceCharSpan': SentenceCharSpan
     }
 
     @classmethod
@@ -179,7 +179,7 @@ class Sentence(object):
         * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
         * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
     '''
-    #:  Maps the keys of the attributes to the corresponding key for the API JSON
+    # :  Maps the keys of the attributes to the corresponding key for the API JSON
     API_MAPPINGS = {
         1.0: {
             'md5sum': 'id',
