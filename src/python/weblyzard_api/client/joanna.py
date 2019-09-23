@@ -10,13 +10,12 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import str
 from builtins import range
-from past.builtins import basestring
 from builtins import object
 import json
 import logging
-import urllib.request, urllib.error, urllib.parse
+import urllib.request, urllib.error
 
-from random import random, randint
+from random import random
 from time import sleep
 
 from eWRT.ws.rest import MultiRESTClient
@@ -151,7 +150,7 @@ class Joanna(object):
         if not (sourceId or contentIds_nilsimsa_dict):
             logger.error("Arguments missing")
             return
-        if isinstance(contentIds_nilsimsa_dict, basestring):
+        if isinstance(contentIds_nilsimsa_dict, str):
             logger.error("Expected dict. Please use single_document")
             raise ValueError('Expected a dictionary, got a string')
         if isinstance(contentIds_nilsimsa_dict, list):

@@ -4,7 +4,6 @@
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch> 
 '''
 from __future__ import unicode_literals
-from past.builtins import basestring
 import logging
 
 from eWRT.access.http import Retrieve
@@ -13,7 +12,6 @@ from eWRT.ws.rest import MultiRESTClient
 from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
-
 
 INTERNAL_PROFILE_PREFIX = 'extras.'
 LOGGER = logging.getLogger('weblyzard_api.client.recognize')
@@ -177,8 +175,8 @@ class Recognize(MultiRESTClient):
         :rtype: the tagged text
         '''
         assert output_format in self.OUTPUT_FORMATS
-        if isinstance(profile_names, basestring):
-            profile_names = (profile_names, )
+        if isinstance(profile_names, str):
+            profile_names = (profile_names,)
 
         for profile_name in profile_names:
             self.add_profile(profile_name)
@@ -226,7 +224,7 @@ class Recognize(MultiRESTClient):
         assert output_format in self.OUTPUT_FORMATS
         if not document:
             return
-        if isinstance(profile_names, basestring):
+        if isinstance(profile_names, str):
             profile_names = [profile_names, ]
 
         for profile_name in profile_names:
@@ -286,8 +284,8 @@ class Recognize(MultiRESTClient):
         assert output_format in self.OUTPUT_FORMATS
         if not doc_list or len(doc_list) == 0:
             return
-        if isinstance(profile_names, basestring):
-            profile_names = (profile_names, )
+        if isinstance(profile_names, str):
+            profile_names = (profile_names,)
 
         profiles_to_add = []
         for profile_name in profile_names:
@@ -319,7 +317,7 @@ class Recognize(MultiRESTClient):
             self.add_profile(profile_name)
 
         content_type = 'application/json'
-        if len(doc_list) and isinstance(doc_list[0], basestring):
+        if len(doc_list) and isinstance(doc_list[0], str):
             content_type = 'application/xml'
 
 #         if 'content_id' in doc_list[0]:
@@ -353,8 +351,8 @@ class Recognize(MultiRESTClient):
 
            http://localhost:8080/recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
         '''
-        if isinstance(profile_names, basestring):
-            profile_names = (profile_names, )
+        if isinstance(profile_names, str):
+            profile_names = (profile_names,)
 
         if not doc_list:
             return

@@ -7,7 +7,6 @@ Created on Oct 24, 2016
 '''
 from __future__ import unicode_literals
 
-from past.builtins import basestring
 from builtins import object
 import json
 import requests
@@ -270,7 +269,7 @@ class SKBRESTClient(object):
         uri = entity.get('uri', entity.get('key', None))
 
         same_as = entity.get('owl:sameAs', [])
-        if isinstance(same_as, basestring):
+        if isinstance(same_as, str):
             same_as = [same_as]
         for uri in [uri] + same_as:
             try:
