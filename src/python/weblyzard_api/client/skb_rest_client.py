@@ -179,7 +179,7 @@ class SKBRESTClient(object):
                                  data=json.dumps(entity_list),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
-            return json.loads(response.text)['success']
+            return json.loads(response.text)
         else:
             return None
 
