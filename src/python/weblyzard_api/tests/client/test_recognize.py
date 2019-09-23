@@ -252,7 +252,7 @@ class TestRecognize(unittest.TestCase):
 #             correct_urls = Recognize.fix_urls(urls, user, password)
 #             assert isinstance(correct_urls, list)
 #
-#             if isinstance(urls, basestring):
+#             if isinstance(urls, str):
 #                 assert len(correct_urls) == 1
 #             else:
 #                 assert len(urls) == len(correct_urls)
