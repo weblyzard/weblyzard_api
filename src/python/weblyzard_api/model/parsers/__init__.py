@@ -10,7 +10,6 @@ from __future__ import unicode_literals
 
 from builtins import str
 from builtins import zip
-from past.builtins import basestring
 from builtins import object
 import json
 import logging
@@ -150,7 +149,11 @@ class JSONParserBase(object):
 
     @classmethod
     def _validate_document(cls, json_document, strict=True):
-        ''' '''
+        ''' Validate a json document for correct format/content.
+        :param json_document: the document to verify.
+        :param strict: If set to true, an UnexpectedFieldException is raised \
+                if an unexpected key is contained in the dict.
+        '''
         cls._check_document_format(json_document, strict)
         if 'content' in json_document and 'content_type' not in json_document:
             raise MissingFieldException(
@@ -173,7 +176,7 @@ class JSONParserBase(object):
         valid_from = None
         if 'published_date' in meta_data:
             try:
-                if isinstance(meta_data['published_date'], basestring):
+                if isinstance(meta_data['published_date'], str):
                     from dateutil.parser import parse
                     valid_from = parse(meta_data['published_date'])
                 elif isinstance(meta_data['published_date'], float) or \

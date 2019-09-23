@@ -6,7 +6,6 @@ Created on Jan 25, 2018
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
 from __future__ import unicode_literals
-from past.builtins import basestring
 from builtins import object
 import json
 
@@ -94,14 +93,14 @@ class Document(object):
         ''' 
         Recursively transform a document object to a JSON serializable dict, 
         with MAPPING applied as well as empty results removed.
-        @param data, the data to be transformed to a dict
-        @return a dictionary of a document, ready for JSON serialization
+        :param data, the data to be transformed to a dict
+        :return a dictionary of a document, ready for JSON serialization
         '''
         if mapping is None:
             mapping = cls.MAPPING
         if data is None:
             return None
-        if isinstance(data, basestring):
+        if isinstance(data, str):
             return data
         if isinstance(data, int):
             return data
@@ -157,7 +156,7 @@ class Document(object):
     def from_json(cls, json_payload):
         ''' 
         Convert a JSON object into a content model.
-        @param json_payload, the string representation of the JSON content model
+        :param json_payload, the string representation of the JSON content model
         '''
         parsed_content = json.loads(json_payload, strict=False)
         return cls.from_dict(dict_=parsed_content)
@@ -167,7 +166,7 @@ class Document(object):
         '''
         Convert a `dict` object corresponding to the JSON serialisation
         into a Document object.
-        @param dict_, the `dict` representing the Document.
+        :param dict_, the `dict` representing the Document.
         '''
         # validation
         for required_field in cls.REQUIRED_FIELDS:
@@ -229,8 +228,8 @@ class Document(object):
     def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
         ''' 
         Serialize a document to XML.
-        @param ignore_titles, if set, titles will not be serialized
-        @param xml_version, the version of XML to be used (defaults to 2013)
+        :param ignore_titles, if set, titles will not be serialized
+        :param xml_version, the version of XML to be used (defaults to 2013)
         @return: the serialized XML
         '''
         if not hasattr(self, 'features'):
@@ -253,7 +252,7 @@ class Document(object):
     def get_text_by_span(self, span):
         ''' 
         Return the textual content of a span. 
-        @param span, the span to extract content for.
+        :param span, the span to extract content for.
         '''
         return self.content[span.start:span.end]
 
@@ -266,8 +265,8 @@ class Document(object):
     def get_partition_overlaps(self, search_span, target_partition_key):
         ''' Return all spans from a given target_partition_key that overlap 
         the search span. 
-        @param search_span, the span to search for overlaps by.
-        @param target_partition_key, the target partition'''
+        :param search_span, the span to search for overlaps by.
+        :param target_partition_key, the target partition'''
         result = []
 
         if not target_partition_key in self.partitions:
