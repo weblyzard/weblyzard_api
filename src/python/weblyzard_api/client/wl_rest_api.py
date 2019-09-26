@@ -105,7 +105,8 @@ class WlComputeRestApiClient(object):
         """ Check if the Compute API is up an healthy.
         """
         try:
-            r = requests.get('/'.join([self.base_url, self.ENDPOINT_STATUS])).status_code
+            r = requests.get(
+                '/'.join([self.base_url, self.ENDPOINT_STATUS])).status_code
             return r.status_code == 200
         except Exception as e:
             logger.warn(e)
@@ -117,7 +118,7 @@ class WlSearchRestApiClient(object):
     The client for the WL Search REST API.
     `Documentation <https://api.weblyzard.com/doc/ui/#!/Search_API>`_
     """
-    DOCUMENT_ENDPOINT = 'rest/com.weblyzard.api.search/'
+    DOCUMENT_ENDPOINT = 'search/'
     KEYWORD_ENDPOINT = 'rest/com.weblyzard.api.search/keywords'
     TOKEN_ENDPOINT = 'token'
 
@@ -155,28 +156,30 @@ class WlSearchRestApiClient(object):
 
         if not auth_token:
             auth_token = self.auth_token
+        if isinstance(auth_token, bytes):
+            auth_token = auth_token.decode('utf-8')
 
         assert auth_token is not None
 
         if not isinstance(sources, list):
             sources = [sources]
-        query = """{"bool" : {
-                          "must" : [
-                            {
-                              "date" : {
-                                "gte":"%s",
-                                "lte":"%s"
-                              }
-                            },<<term_query>>
-                          ]
-                        }}
-        """ % (start_date, end_date)
+        query = {
+            "sources": sources,
+            "fields": ["document.contentid"],  # could change this later, not necessary for compute task
+            "query": "<<query>>"
+        }
+        if start_date:
+            query["beginDate"] = start_date
 
-        term_query = ',%s' % term_query
-        query = query.replace(',<<term_query>>', term_query)
-        query = json.loads(query)
-        data = dict(sources=sources, query=query)
-        data = json.dumps(data)
+        if end_date:
+            query["endDate"] = end_date
+
+        query = json.dumps(query)
+
+        if isinstance(term_query, dict):
+            term_query = json.dumps(term_query)
+
+        data = query.replace('"<<query>>"', term_query)
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
         url = '/'.join([self.base_url, self.DOCUMENT_ENDPOINT])
@@ -322,9 +325,10 @@ class WlDocumentRestApiClient(object):
         """
         if isinstance(document, dict):
             document = json.dumps(document)
-        r = requests.post('/'.join([self.base_url, self.DOCUMENTS_ENDPOINT, portal_name]),
-                          data=document,
-                          headers={'Content-Type': 'application/json'})
+        r = requests.post(
+            '/'.join([self.base_url, self.DOCUMENTS_ENDPOINT, portal_name]),
+            data=document,
+            headers={'Content-Type': 'application/json'})
         return r.json()
 
     def retrieve_document(self, portal_name, content_id):
@@ -338,7 +342,8 @@ class WlDocumentRestApiClient(object):
         :rtype: str
         """
         r = requests.get(
-            '/'.join([self.base_url, self.DOCUMENTS_ENDPOINT, portal_name, str(content_id)]))
+            '/'.join([self.base_url, self.DOCUMENTS_ENDPOINT, portal_name,
+                      str(content_id)]))
         return r.json()
 
     def update_document(self, portal_name, content_id, document):
@@ -406,7 +411,7 @@ class WlDocumentRestApiClient(object):
                                     '+'.join(analyzer_steps)]),
                           data=document,
                           headers={'Content-Type': 'application/json'})
-        return(r.json())
+        return (r.json())
 
     def check_document(self, document):
         """
