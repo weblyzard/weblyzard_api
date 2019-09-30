@@ -141,7 +141,7 @@ class WlSearchRestApiClient(object):
         return r
 
     def search_documents(self, sources, term_query, auth_token=None,
-                         start_date=None, end_date=None):
+                         start_date=None, end_date=None, count=10, offset=0):
         """ 
         Search an index for documents matching the search parameters.
         :param sources
@@ -149,6 +149,8 @@ class WlSearchRestApiClient(object):
         :param auth_token, the webLyzard authentication token, if any
         :param start_date, result documents must be younger than this, if given (e.g. \"2018-08-01\")
         :param end_date, result documents must be older than this, if given
+        :param count, number of documents to return, default 10
+        :param offset, offset to search (use with combination with count and hints)
         :returns: The result documents as serialized JSON
         :rtype: str
         """
@@ -165,14 +167,17 @@ class WlSearchRestApiClient(object):
             sources = [sources]
         query = {
             "sources": sources,
-            "fields": ["document.contentid"],  # could change this later, not necessary for compute task
-            "query": "<<query>>"
+            "fields": ["document.contentid"],
+            # could change this later, not necessary for compute task
+            "query": "<<query>>",
+            "count": count,
+            "offset": offset
         }
         if start_date:
-            query["beginDate"] = start_date
+            query["beginDate"] = str(start_date)
 
         if end_date:
-            query["endDate"] = end_date
+            query["endDate"] = str(end_date)
 
         query = json.dumps(query)
 
