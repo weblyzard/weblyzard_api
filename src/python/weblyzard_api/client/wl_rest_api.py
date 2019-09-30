@@ -141,7 +141,8 @@ class WlSearchRestApiClient(object):
         return r
 
     def search_documents(self, sources, term_query, auth_token=None,
-                         start_date=None, end_date=None, count=10, offset=0):
+                         start_date=None, end_date=None, count=10, offset=0,
+                         fields=['document.contenid']):
         """ 
         Search an index for documents matching the search parameters.
         :param sources
@@ -151,6 +152,7 @@ class WlSearchRestApiClient(object):
         :param end_date, result documents must be older than this, if given
         :param count, number of documents to return, default 10
         :param offset, offset to search (use with combination with count and hints)
+        :param fields, list of fields of document to return, default just contentid
         :returns: The result documents as serialized JSON
         :rtype: str
         """
@@ -167,7 +169,7 @@ class WlSearchRestApiClient(object):
             sources = [sources]
         query = {
             "sources": sources,
-            "fields": ["document.contentid"],
+            "fields": fields,
             # could change this later, not necessary for compute task
             "query": "<<query>>",
             "count": count,
