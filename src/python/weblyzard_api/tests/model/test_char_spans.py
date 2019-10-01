@@ -10,7 +10,7 @@ import unittest
 import pytest
 
 from weblyzard_api.model import SpanFactory, CharSpan, TokenCharSpan, \
-    SentimentCharSpan, SentenceCharSpan, NegationCharSpan
+    SentimentCharSpan, SentenceCharSpan
 
 
 class TestSpanFactory(unittest.TestCase):
