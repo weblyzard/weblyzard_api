@@ -35,9 +35,10 @@ class TestSpanFactory(unittest.TestCase):
         assert isinstance(sentence_span, SentenceCharSpan)
         with pytest.raises(TypeError):
             dict_sentence_span = {"span_type": "SentenceCharSpan", "pos": "NN",
-                                  "start": 3, "end": 9,
-                                  "dependency": {"label": "DEP", "parent": 0}}
-            sentence_span = SpanFactory.new_span(sentence_span)
+                                      "start": 3, "end": 9,
+                                      "dependency": {"label": "DEP", "parent": 0}}
+            sentence_span = SpanFactory.new_span(dict_sentence_span)
+            # assert isinstance(sentence_span, SentenceCharSpan)
 
     def test_new_span_sentence_id(self):
         dict_sentence_span = {"span_type": "SentenceCharSpan", "start": 0,
