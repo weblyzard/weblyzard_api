@@ -142,7 +142,7 @@ class WlSearchRestApiClient(object):
 
     def search_documents(self, sources, term_query, auth_token=None,
                          start_date=None, end_date=None, count=10, offset=0,
-                         fields=['document.contenid']):
+                         fields=['document.contentid']):
         """ 
         Search an index for documents matching the search parameters.
         :param sources
