@@ -48,6 +48,7 @@ class XML2013(XMLParser):
         'reach': ('reach', 'wl'),
         'link_text': ('link_text', 'wl'),
         'tweet_id': ('tweet_id', 'wl'),
+        'word_count': ('word_count', 'wl'),
 
         'fbType': ('post_type', 'wl'),  # FB
         'thumbnail': ('thumbnail', 'wl'),
