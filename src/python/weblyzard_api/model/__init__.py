@@ -102,11 +102,17 @@ class SentenceCharSpan(CharSpan):
         return json.dumps(self.to_dict())
 
 
-class NegationCharSpan(CharSpan):
+class MultiplierCharSpan(CharSpan):
+
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'value': 'value'}
 
     def __init__(self, span_type, start, end, value=None):
-        super(NegationCharSpan, self).__init__(span_type=span_type, start=start,
+        super(MultiplierCharSpan, self).__init__(span_type=span_type, start=start,
                                                end=end)
+        self.value = value
 
 
 class SentimentCharSpan(CharSpan):
@@ -126,13 +132,22 @@ class SpanFactory(object):
         'CharSpan': CharSpan,
         'TokenCharSpan': TokenCharSpan,
         'SentimentCharSpan': SentimentCharSpan,
-        'NegationCharSpan': NegationCharSpan,
+        'MultiplierCharSpan': MultiplierCharSpan,
         'SentenceCharSpan': SentenceCharSpan
     }
 
     @classmethod
     def new_span(cls, span):
         if span['span_type'] == 'SentenceCharSpan':
+            try:
+                assert all(
+                    [k in list(SentenceCharSpan.DICT_MAPPING.values()) + ['id']
+                     for k in span.keys()])
+            except AssertionError:
+                logger.warning("Unable to process SentenceCharSpan for input "
+                            "span {}. Traceback: ".format(span), exc_info=True)
+                raise TypeError(
+                    'Unexpected parameters for SentenceCharSpan: {}')
             return SentenceCharSpan(span_type='SentenceCharSpan',
                                     start=span['start'],
                                     end=span['end'],
