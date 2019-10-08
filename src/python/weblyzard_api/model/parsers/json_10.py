@@ -21,7 +21,7 @@ class JSON10ParserXMLContent(JSONParserBase):
     '''
     FIELDS_REQUIRED = ['uri', 'title']
     FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations', 'confidence'] \
-        + list(XML2013.ATTR_MAPPING.keys())
+        +list(XML2013.ATTR_MAPPING.keys())
     API_VERSION = 1.0
 
     @classmethod
@@ -82,7 +82,7 @@ class JSON10ParserSentence(JSONParserBase):
     FIELDS_REQUIRED = ['id', 'value']
     FIELDS_OPTIONAL = ['is_title', 'pos_list', 'tok_list', 'dep_tree',
                        'sentence_number', 'paragraph_number', 'polarity',
-                       'polarity_class']
+                       'polarity_class', 'significance']
     API_VERSION = 1.0
 
     @classmethod

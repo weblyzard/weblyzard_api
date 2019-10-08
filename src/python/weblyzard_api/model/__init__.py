@@ -204,6 +204,7 @@ class Sentence(object):
             'token': 'tok_list',
             'is_title': 'is_title',
             'dependency': 'dep_tree',
+            'significance': 'significance'
         }
     }
 

@@ -190,6 +190,14 @@ class JSONParserBase(object):
                 raise UnsupportedValueException(
                     'Field published_date set but not parseable')
 
+    @classmethod
+    def convert_sentiment(cls, value):
+        if value <= -0.5:
+            return 'negative'
+        elif value >= 0.5:
+            return 'positive'
+        return 'neutral'
+
 
 class XMLParser(object):
 
