@@ -100,7 +100,7 @@ def to_fully_qualified(attribute: str) -> str:
     :param attribute: the attribute to resolve
     :returns a fully-qualified version of the input attribute.
     """
-    if len(attribute.split(':')) <= 1:
+    if len(attribute.split(':')) <= 1 or attribute.startswith('{'):
         return attribute
 
     namespace, attr_name = attribute.split(':')
