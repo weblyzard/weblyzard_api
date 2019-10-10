@@ -78,20 +78,18 @@ class Recognize(MultiRESTClient):
         """
         return self.request('list_profiles')
 
-    def search_text(self, profile_name, lang, text):
+    def get_searcher_content(self, profile_name, entity_url):
         """
-        Search text for entities specified in the given profiles.
+        Returns searcher content for entity url and profile.
         :param profile_name: the profile to search in
-        :param text: the text to search in
-        :param limit: maximum number of results to return
-        :rtype: the tagged text
+        :param entity_url: long entity URL.
         """
         content_type = 'application/json; charset=utf-8'
 
-        return self.request(path='corpus/annotate_unknown',
+        return self.request(path='getSearcherContent',
                             content_type=content_type,
                             query_parameters={'profileName': profile_name,
-                                              'lang': lang})
+                                              'entityKey': entity_url})
 
     def search_text(self, profile_name, lang, text):
         """
