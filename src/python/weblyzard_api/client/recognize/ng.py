@@ -86,6 +86,21 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         """
+        content_type = 'application/json; charset=utf-8'
+
+        return self.request(path='corpus/annotate_unknown',
+                            content_type=content_type,
+                            query_parameters={'profileName': profile_name,
+                                              'lang': lang})
+
+    def search_text(self, profile_name, lang, text):
+        """
+        Search text for entities specified in the given profiles.
+        :param profile_name: the profile to search in
+        :param text: the text to search in
+        :param limit: maximum number of results to return
+        :rtype: the tagged text
+        """
         content_type = 'application/json'
 
         return self.request(path='corpus/annotate_unknown',
