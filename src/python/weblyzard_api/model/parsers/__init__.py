@@ -73,6 +73,11 @@ class JSONParserBase(object):
             dict.
         '''
         try:
+            if isinstance(json_string, bytes):
+                json_string = json_string.decode('utf-8')
+
+            logger.debug(json_string)
+
             api_dict = json.loads(json_string)
         except Exception:
             raise MalformedJSONException('JSON could not be parsed')
