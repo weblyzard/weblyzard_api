@@ -19,7 +19,7 @@ import time
 from SPARQLWrapper import SPARQLWrapper, JSON
 import rdflib.term
 
-from weblyzard_api.client.rdf import PREFIXES
+from weblyzard_api.client.rdf import PREFIXES, NAMESPACES
 
 
 class FusekiWrapper(object):
@@ -39,7 +39,7 @@ class FusekiWrapper(object):
             self.query_endpoint = sparql_endpoint.replace('update', 'query')
         else:
             sparql_endpoint = sparql_endpoint[:-1] if sparql_endpoint.endswith('/') \
-                                                   else sparql_endpoint
+                else sparql_endpoint
             self.update_endpoint = '/'.join([sparql_endpoint, 'update'])
             self.query_endpoint = '/'.join([sparql_endpoint, 'query'])
         self.update_wrapper = SPARQLWrapper(self.update_endpoint)
@@ -100,7 +100,7 @@ class FusekiWrapper(object):
         elif isinstance(value, (str, bytes)):
             if isinstance(value, bytes):
                 value = value.decode('utf-8')
-            for prefix in list(self.NAMESPACES.values()):
+            for prefix in list(NAMESPACES.values()):
                 if value.startswith(prefix):
                     return True
             if value.startswith('<http') and value[-1:] == '>':
@@ -131,7 +131,8 @@ class FusekiWrapper(object):
             elif variable_dict.get('datatype', False):
                 datatype = variable_dict['datatype']
                 uri_ref = rdflib.term.URIRef(datatype)
-                mapping_function = rdflib.term._toPythonMapping.get(uri_ref, None)
+                mapping_function = rdflib.term._toPythonMapping.get(
+                    uri_ref, None)
                 if mapping_function is None:
                     return variable_dict['value']
                 else:
@@ -174,7 +175,8 @@ class FusekiWrapper(object):
                 query=query,
                 endpoint=self.query_endpoint))
             if caching:
-                filename = 'query_cache/{}.json'.format(hashlib.md5(query).hexdigest())
+                filename = 'query_cache/{}.json'.format(
+                    hashlib.md5(query).hexdigest())
                 if not os.path.isfile(filename):
                     result = self.query_wrapper.query()
                     with open(filename, 'ab') as f:
