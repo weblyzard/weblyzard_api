@@ -105,21 +105,20 @@ class SKBRESTClient(object):
         skb_relevant_data = self.clean_keyword_data(kwargs)
         return self.save_entity(entity_dict=skb_relevant_data)
 
-    def save_entity(self, entity_dict, force_update=False):
+    def save_entity(self, entity_dict, force_update=False, ignore_cache=False):
         '''
         Save an entity to the SKB, the Entity encoded as `dict`.
-        The `entity_dict` must contain a 'uri' and an 'entityType' entry.
-        Adding a 'provenance' entry is encouraged, this should contain an
-        identifier how the entity's information got obtained (e.g. profiles,
-        query/script etc. used.
+        The `entity_dict` must contain a 'uri' and an 'entityType' entry
+        and the 'provenance', i.e.an identifier how the entity's information 
+        got obtained (e.g. profiles, query/script etc. used).
 
         Only exception (at the moment) is AgentEntity, where the SKB compiles
-        the URI.
+        the URI. (deprecated)
 
         :param entity_dict: The entity as dict
         :type entity_dict: `dict`
         :returns: The entity's uri or None, if an error occurred.
-        :rtype: str or unicode or None.
+        :rtype: str or None
 
         >>> uri = skb_client.save_entity({
             "publisher": "You Don't Say",
@@ -139,8 +138,12 @@ class SKBRESTClient(object):
         '''
         assert 'entityType' in entity_dict
         urlpath = self.ENTITY_PATH
+        params = []
         if force_update:
-            urlpath = u'{}?force_update'.format(urlpath)
+            params.append('force_update')
+        if ignore_cache:
+            params.append('ignore_cache')
+        urlpath = u'{}?{}'.format(urlpath, '&'.join(params))
         response = requests.post('{}/{}'.format(self.url,
                                                 urlpath),
                                  data=json.dumps(entity_dict),
@@ -150,7 +153,7 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def save_entity_batch(self, entity_list, force_update=False):
+    def save_entity_batch(self, entity_list, force_update=False, ignore_cache=False):
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
         `dict`.
@@ -172,8 +175,12 @@ class SKBRESTClient(object):
         if len(entity_list) < 1:
             return None
         urlpath = self.ENTITY_BATCH_PATH
+        params = []
         if force_update:
-            urlpath = u'{}?force_update'.format(urlpath)
+            params.append('force_update')
+        if ignore_cache:
+            params.append('ignore_cache')
+        urlpath = u'{}?{}'.format(urlpath, '&'.join(params))
         response = requests.post('{}/{}'.format(self.url,
                                                 urlpath),
                                  data=json.dumps(entity_list),
