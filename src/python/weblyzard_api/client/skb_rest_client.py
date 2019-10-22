@@ -113,28 +113,49 @@ class SKBRESTClient(object):
         got obtained (e.g. profiles, query/script etc. used).
 
         Only exception (at the moment) is AgentEntity, where the SKB compiles
-        the URI. (deprecated)
+        the URI.
 
         :param entity_dict: The entity as dict
         :type entity_dict: `dict`
-        :returns: The entity's uri or None, if an error occurred.
-        :rtype: str or None
+        :returns: A status json response as dict or None, if an error occurred.
+        :rtype: dict or None
 
-        >>> uri = skb_client.save_entity({
+        >>> response = skb_client.save_entity({
+            "entityType": "AgentEntity",
+            "provenance": "save_entity_20190101",
             "publisher": "You Don't Say",
             "title": "Hello, world!",
             "url": "http://www.youdontsayaac.com/hello-world-2/",
             "charset": "UTF-8",
             "thumbnail": "https://s0.wp.com/i/blank.jpg",
             "locale": "en_US",
-            "last_modified": "2014-07-15T18:46:42+00:00",
             "page_type": "article",
             "published_date": "2014-07-15T18:46:42+00:00",
-            "twitter_site": "@mfm_Kay",
+            "twitter_site": "twitter@mfm_Kay",
             "twitter_card": "summary"
         })
-        >>> print(uri)
-        http://weblyzard.com/skb/entity/agent/you_don_t_say
+        >>> print(response) = {
+            "payload": {
+                  "entityType": "AgentEntity",
+                  "provenance": "save_entity_20190101",
+                  "publisher": "You Don't Say",
+                  "title": "Hello, world!",
+                  "url": "http://www.youdontsayaac.com/hello-world-2/",
+                  "charset": "UTF-8",
+                  "thumbnail": "https://s0.wp.com/i/blank.jpg",
+                  "locale": "en_US",
+                  "page_type": "article",
+                  "published_date": "2014-07-15T18:46:42+00:00",
+                  "twitter_site": "twitter@mfm_Kay",
+                  "twitter_card": "summary"
+            },
+            "uri": "http://weblyzard.com/skb/entity/agent/you_don_t_say",
+            "message": "success",
+            "info": "added entity",
+            "reason": null,
+            "status": 200
+            }
+
         '''
         assert 'entityType' in entity_dict
         urlpath = self.ENTITY_PATH
@@ -149,7 +170,7 @@ class SKBRESTClient(object):
                                  data=json.dumps(entity_dict),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
-            return json.loads(response.text)['uri']
+            return json.loads(response.text)
         else:
             return None
 
@@ -157,18 +178,31 @@ class SKBRESTClient(object):
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
         `dict`.
-        Each `entity_dict` must contain a 'uri' and an 'entityType' entry.
-        Adding a 'provenance' entry is encouraged, this should contain an
+        Each `entity_dict` must contain a 'uri', an 'entityType' and a 
+        'provenance' entry, this should contain an
         identifier how the entity's information got obtained (e.g. profiles,
-        query/script etc. used.
+        query/script etc. used).
 
         Only exception (at the moment) is AgentEntity, where the SKB compiles
         the URI.
 
         :param entity_list: The entities as list of dicts
         :type entity_dict: `list`
-        :returns: The entities' uris or None, if an error occurred.
-        :rtype: `list`
+        :returns: A status json response that contains status information
+            on each entity as well as a total `summary`, as dict or None, 
+            if an error occurred.
+        :rtype: dict or None
+
+        >>> print(response) = {
+            "data": { list of individual entity response dicts },
+            "message": "success/success - skipped entities/error",
+            "summary": {
+                "skipped": 1,
+                "success": 0,
+                "error": 0
+                "total": 1
+                }
+        }
         '''
         for entity in entity_list:
             assert 'entityType' in entity
