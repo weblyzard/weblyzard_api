@@ -52,7 +52,7 @@ from weblyzard_api.client.skb_rest_client import SKBRESTClient
 class TestSKBEntities(unittest.TestCase):
     def setUp(self):
         self.skb_client = SKBRESTClient(url=os.getenv(
-            'WL_SKB_UNITTEST_URL', 'http://localhost:5000'))
+            'WL_SKB_UNITTEST_URL', 'http://localhost:5555'))
 
     def test_clean_keyword_data(self):
         kw_annotation = {
@@ -122,6 +122,7 @@ class TestSKBEntities(unittest.TestCase):
             },
             "preferredName": "energy"
         }
+        kw_annotation['provenance'] = 'kw_test_workflow_20191022'
         assert(self.skb_client.save_doc_kw_skb(kw_annotation) ==
                'http://www.eionet.europa.eu/gemet/concept/2712')
 
@@ -136,7 +137,8 @@ class TestSKBEntities(unittest.TestCase):
             u"last_modified": u"2014-07-15T18:46:42+00:00",
             u"page_type": u"article",
             u"published_date": u"2014-07-15T18:46:42+00:00",
-            u"twitter_site": u"@mfm_Kay",
+            #@ at the beginning of values not allowed as it is reserved for language tags
+            # u"twitter_site": u"@mfm_Kay",
             u"twitter_card": u"summary"
         }
         try:
@@ -145,28 +147,47 @@ class TestSKBEntities(unittest.TestCase):
         except AssertionError:
             assert True
         entity_data['entityType'] = 'AgentEntity'
+        try:
+            response = self.skb_client.save_entity_batch(
+                entity_list=entity_data)
+            assert False  # provenance must be set -> assertion error must be raised
+        except AssertionError:
+            assert True
+        entity_data['provenance'] = 'agent_test_workflow_20191022'
         response = self.skb_client.save_entity(entity_dict=entity_data)
         assert response == 'http://weblyzard.com/skb/entity/agent/you_don_t_say'
         # Getting entity
         result = self.skb_client.get_entity(
             uri="http://weblyzard.com/skb/entity/agent/you_don_t_say")
-        entity_data[u'provenance'] = None
-        assert result == entity_data
+        entity_type = entity_data.pop(u'entityType')
+        provenance = entity_data.pop(u'provenance')  # provenance not returned
+        assert entity_type in result[u'entityType']
+        for k, v in entity_data.items():
+            assert k in list(result['properties'].keys())
+            assert v in result['properties'][k]['values']
         result = self.skb_client.get_entity(
             uri="agent:you_don_t_say")
-        assert result == entity_data
+        assert entity_type in result[u'entityType']
+        for k, v in entity_data.items():
+            assert k in list(result['properties'].keys())
+            assert v in result['properties'][k]['values']
         result = self.skb_client.get_entity_by_property(
             property_name='url',
             property_value='http://www.youdontsayaac.com/hello-world-2/',
             entity_type='AgentEntity')
         assert isinstance(result, list)
         assert len(result) == 1
-        assert result[0] == entity_data
+        assert entity_type in result[0][u'entityType']
+        for k, v in entity_data.items():
+            assert k in list(result[0]['properties'].keys())
+            assert v in result[0]['properties'][k]['values']
         result = self.skb_client.get_entity_by_property(
             property_value='http://www.youdontsayaac.com/hello-world-2/')
         assert isinstance(result, list)
         assert len(result) == 1
-        assert result[0] == entity_data
+        for k, v in entity_data.items():
+            assert k in list(result[0]['properties'].keys())
+            assert v in result[0]['properties'][k]['values']
 
     def test_save_entity_batch(self):
         entity_data = [{
@@ -179,7 +200,8 @@ class TestSKBEntities(unittest.TestCase):
             u"last_modified": u"2014-07-15T18:46:42+00:00",
             u"page_type": u"article",
             u"published_date": u"2014-07-15T18:46:42+00:00",
-            u"twitter_site": u"@mfm_Kay",
+            # @ at the beginning of values not allowed as it is reserved for language tags
+            # u"twitter_site": u"twitter@mfm_Kay",
             u"twitter_card": u"summary"
         }]
         try:
@@ -189,29 +211,47 @@ class TestSKBEntities(unittest.TestCase):
         except AssertionError:
             assert True
         entity_data[0]['entityType'] = 'AgentEntity'
+        try:
+            response = self.skb_client.save_entity_batch(
+                entity_list=entity_data)
+            assert False  # provenance must be set -> assertion error must be raised
+        except AssertionError:
+            assert True
+        entity_data[0]['provenance'] = 'agent_test_workflow_20191022'
         response = self.skb_client.save_entity_batch(entity_list=entity_data)
-        assert response == [
-            'http://weblyzard.com/skb/entity/agent/you_don_t_say', ]
+        assert(response['data'][0]['message'] in ['success', 'skipped'])
+        assert response['data'][0]['uri'] == 'http://weblyzard.com/skb/entity/agent/you_don_t_say'
         # Getting entity
         result = self.skb_client.get_entity(
             uri="http://weblyzard.com/skb/entity/agent/you_don_t_say")
-        entity_data[0][u'provenance'] = None
-        assert result == entity_data[0]
+        entity_type = entity_data[0].pop(u'entityType')
+        provenance = entity_data[0].pop(
+            u'provenance')  # provenance not returned
+        assert entity_type in result[u'entityType']
+        for k, v in entity_data[0].items():
+            assert k in list(result['properties'].keys())
+            assert v in result['properties'][k]['values']
         result = self.skb_client.get_entity(
             uri="agent:you_don_t_say")
-        assert result == entity_data[0]
+        for k, v in entity_data[0].items():
+            assert k in list(result['properties'].keys())
+            assert v in result['properties'][k]['values']
         result = self.skb_client.get_entity_by_property(
             property_name='url',
             property_value='http://www.youdontsayaac.com/hello-world-2/',
             entity_type='AgentEntity')
         assert isinstance(result, list)
         assert len(result) == 1
-        assert result[0] == entity_data[0]
+        for k, v in entity_data[0].items():
+            assert k in list(result[0]['properties'].keys())
+            assert v in result[0]['properties'][k]['values']
         result = self.skb_client.get_entity_by_property(
             property_value='http://www.youdontsayaac.com/hello-world-2/')
         assert isinstance(result, list)
         assert len(result) == 1
-        assert result[0] == entity_data[0]
+        for k, v in entity_data[0].items():
+            assert k in list(result[0]['properties'].keys())
+            assert v in result[0]['properties'][k]['values']
 
 
 if __name__ == '__main__':
