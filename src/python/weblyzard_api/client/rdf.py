@@ -136,10 +136,10 @@ def replace_prefix(uri):
     :returns: The modified URI if applicable
     :rtype: str
     """
-#     for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
-#         prefix = '{}:'.format(namespaces[namespace])
-#         if uri.startswith(prefix):
-#             return uri.replace(prefix, namespace)
+    for namespace in sorted(list(NAMESPACES.keys()), key=len, reverse=True):
+        prefix = '{}:'.format(NAMESPACES[namespace])
+        if uri.startswith(prefix):
+            return uri.replace(prefix, namespace)
     return uri
 
 
