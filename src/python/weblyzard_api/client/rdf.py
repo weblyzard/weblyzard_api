@@ -107,7 +107,7 @@ def to_fully_qualified(attribute: str) -> str:
     return '{%s}%s' % (Namespace.to_fully_qualified(namespace), attr_name)
 
 
-def prefix_uri(uri: str) -> str:
+def prefix_uri(uri: str, allow_partial: bool=False) -> str:
     """ Replace a sub-path from the uri with the most specific prefix as defined
     in the Namespace.
     :param uri: The URI to modify.
@@ -123,8 +123,9 @@ def prefix_uri(uri: str) -> str:
             replaced = uri.replace(
                 namespace, '{}:'.format(Namespace.to_prefix(namespace)))
             if '/' in replaced or '#' in replaced:
-                # slashes or hashes in prefixed URIs not allowed
-                continue
+                if not allow_partial:
+                    # slashes or hashes in prefixed URIs not allowed
+                    continue
             return replaced
     return uri
 
@@ -136,10 +137,10 @@ def replace_prefix(uri):
     :returns: The modified URI if applicable
     :rtype: str
     """
-#     for namespace in sorted(list(namespaces.keys()), key=len, reverse=True):
-#         prefix = '{}:'.format(namespaces[namespace])
-#         if uri.startswith(prefix):
-#             return uri.replace(prefix, namespace)
+    for namespace in sorted(list(NAMESPACES.keys()), key=len, reverse=True):
+        prefix = '{}:'.format(NAMESPACES[namespace])
+        if uri.startswith(prefix):
+            return uri.replace(prefix, namespace)
     return uri
 
 
