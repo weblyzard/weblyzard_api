@@ -14,7 +14,7 @@ import json
 import requests
 import logging
 
-logger = logging.getLogger('weblyzard_api.client.wl_compute_rest_api_client')
+logger = logging.getLogger(__name__)
 
 
 class WlComputeRestApiClient(object):
@@ -193,8 +193,13 @@ class WlSearchRestApiClient(object):
         r = requests.post(url,
                           data=data,
                           headers=headers)
-        if r.status_code == 200:
-            return json.loads(r.content)['result']
+        try:
+            if r.status_code == 200:
+                return json.loads(r.content)['result']
+        except Exception as e:
+            logger.error(
+                "accessing: {} : {} - {}".format(url, data, e), exc_info=True)
+            return r
         return r
 
     def search_keywords(self, sources, start_date, end_date, num_keywords=5,
@@ -236,11 +241,16 @@ class WlSearchRestApiClient(object):
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
         url = '/'.join([self.base_url, self.KEYWORD_ENDPOINT])
-        r = requests.post(url,
-                          data=data,
-                          headers=headers)
-        if r.status_code == 200:
-            return json.loads(r.content)['result']
+        try:
+            r = requests.post(url,
+                              data=data,
+                              headers=headers)
+            if r.status_code == 200:
+                return json.loads(r.content)['result']
+        except Exception as e:
+            logger.error(
+                "accessing: {} : {} - {}".format(url, data, e), exc_info=True)
+            return r
         return r
 
 
