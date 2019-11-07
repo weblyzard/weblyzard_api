@@ -23,18 +23,18 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class KeywordCalculationProfile {
 
-    /** A mapping of part-of-speech (POS) tags to the corresponding
-     *  grammar groups.
-     *  <p>
-     *  Examples: <code>Map.of("NN", "noun", "NNS", "noun", "VB", "verb");</code>
+    /**
+     * A mapping of part-of-speech (POS) tags to the corresponding grammar groups.
+     * <p>
+     * Examples: <code>Map.of("NN", "noun", "NNS", "noun", "VB", "verb");</code>
      */
     @JsonProperty("pos_grammar_group_mapping")
     private Map<String, String> posGrammarGroupMapping;
 
-    /** A {@link Set} of valid grammar group patterns used for the keyword
-     *  computation process.
-     *  <p>
-     *  Examples: <code>List.of("noun", "noun:noun", "noun:noun:noun")</code>
+    /**
+     * A {@link Set} of valid grammar group patterns used for the keyword computation process.
+     * <p>
+     * Examples: <code>List.of("noun", "noun:noun", "noun:noun:noun")</code>
      */
     @JsonProperty("valid_grammar_group_patterns")
     private List<String> validGrammarGroupPatterns;
@@ -67,5 +67,8 @@ public class KeywordCalculationProfile {
     @JsonProperty("ground_annotations")
     private boolean groundAnnotations;
 
+    /** Ignore titles. */
+    @JsonProperty("ignore_titles")
+    private boolean ignoreTitles;
 
 }
