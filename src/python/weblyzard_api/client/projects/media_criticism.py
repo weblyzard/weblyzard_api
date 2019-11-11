@@ -6,9 +6,11 @@ Created on Jan 16, 2013
 """
 from __future__ import unicode_literals
 from eWRT.ws.rest import MultiRESTClient
-
+import logging
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
+
+logger = logging.getLogger(__name__)
 
 
 class MediaCriticism(MultiRESTClient):
@@ -36,6 +38,16 @@ class MediaCriticism(MultiRESTClient):
              a tuple which is composed as follows
                (is_relevant, mediacriticism_score, num_recognized_entities)
         """
+        logger.warn("DEPRECATED: please use check_relevance instead")
         result = self.request(self.CLASSIFIER_WS_BASE_PATH
                               + 'checkDocumentRelevance', api_document)
         return result['relevantDocument'], result['mediacriticism']
+
+    def check_relevance(self, api_document, endpoint='checkDocumentRelevance', score_field='mediacriticism'):
+        """
+        Check the relevance of a document based on a custom API endpoint
+        and obtain a `score` based on the return response's field value
+        """
+        result = self.request(self.CLASSIFIER_WS_BASE_PATH +
+                              endpoint, api_document)
+        return result['relevantDocument'], result[score_field]
