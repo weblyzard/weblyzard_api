@@ -73,7 +73,7 @@ public class MD5Digest extends XmlAdapter<String, MD5Digest>
 
     @Override
     public MD5Digest unmarshal(String s) throws Exception {
-        return (s == null || s.isEmpty()) ? null : MD5Digest.fromHexDigest(s);
+        return (s == null || s == "") ? null : MD5Digest.fromHexDigest(s);
     }
 
     @Override
