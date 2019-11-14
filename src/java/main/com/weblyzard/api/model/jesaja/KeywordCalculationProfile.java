@@ -65,5 +65,8 @@ public class KeywordCalculationProfile {
     @JsonProperty("ground_annotations")
     private boolean groundAnnotations;
 
+    /** Ignore titles. */
+    @JsonProperty("ignore_titles")
+    private boolean ignoreTitles;
 
 }

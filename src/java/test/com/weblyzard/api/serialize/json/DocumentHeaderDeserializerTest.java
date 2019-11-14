@@ -2,7 +2,9 @@ package com.weblyzard.api.serialize.json;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
 import javax.xml.namespace.QName;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.KeyDeserializer;
@@ -13,44 +15,43 @@ public class DocumentHeaderDeserializerTest {
 
     @Test
     public void testSupportedPrefix() throws JsonProcessingException, IOException {
-        QName result = (QName) deserializer.deserializeKey("wl:jonas_type", null);
-        assertTrue(result.getLocalPart().equals("jonas_type"));
-        assertTrue(result.getNamespaceURI().equals("http://www.weblyzard.com/wl/2013#"));
-        assertTrue(result.getPrefix().equals("wl"));
-    }
-
-    @Test
-    public void testUppercasePrefix() throws JsonProcessingException, IOException {
-        QName result = (QName) deserializer.deserializeKey("WL:jonas_type", null);
-        assertTrue(result.getLocalPart().equals("WL:jonas_type"));
-        assertTrue(result.getNamespaceURI().equals(""));
-        assertTrue(result.getPrefix().equals(""));
+        Assertions.assertThrows(InvalidPropertiesFormatException.class,
+                        () -> deserializer.deserializeKey("wl:jonas_type", null));
     }
 
     @Test
     public void testSupportedNamespace() throws JsonProcessingException, IOException {
+        Assertions.assertThrows(InvalidPropertiesFormatException.class, () -> deserializer
+                        .deserializeKey("http://www.weblyzard.com/wl/2013#jonas_type", null));
+    }
+
+    @Test
+    public void testSupportedNamespaceInBrackets() throws JsonProcessingException, IOException {
         QName result = (QName) deserializer
-                .deserializeKey("http://www.weblyzard.com/wl/2013#jonas_type", null);
+                        .deserializeKey("{http://www.weblyzard.com/wl/2013#}jonas_type", null);
         assertTrue(result.getLocalPart().equals("jonas_type"));
         assertTrue(result.getNamespaceURI().equals("http://www.weblyzard.com/wl/2013#"));
-        assertTrue(result.getPrefix().equals("wl"));
-    }
-
-    @Test
-    public void testUnknownPrefix() throws JsonProcessingException, IOException {
-        QName result = (QName) deserializer.deserializeKey("foo:bar", null);
-        assertTrue(result.getLocalPart().equals("foo:bar"));
-        assertTrue(result.getNamespaceURI().equals(""));
         assertTrue(result.getPrefix().equals(""));
     }
 
+    @Test
+    public void testUnknownNamespaceInBrackets() throws JsonProcessingException, IOException {
+        QName result = (QName) deserializer.deserializeKey("{http://foo.bar/test#}test", null);
+        assertTrue(result.getLocalPart().equals("test"));
+        assertTrue(result.getNamespaceURI().equals("http://foo.bar/test#"));
+        assertTrue(result.getPrefix().equals(""));
+    }
 
     @Test
-    public void testUnknownNamespace() throws JsonProcessingException, IOException {
-        QName result = (QName) deserializer.deserializeKey("http://foo.bar/test#test", null);
-        assertTrue(result.getLocalPart().equals("http://foo.bar/test#test"));
-        assertTrue(result.getNamespaceURI().equals(""));
-        assertTrue(result.getPrefix().equals(""));
+    public void testQNameIllegalArgumentException() {
+        InvalidPropertiesFormatException e;
+        e = Assertions.assertThrows(InvalidPropertiesFormatException.class,
+                        () -> deserializer.deserializeKey("{http://xxx", null));
+        assertTrue(e.getMessage().contains("raised an IllegalArgumentException"));
+
+        e = Assertions.assertThrows(InvalidPropertiesFormatException.class,
+                        () -> deserializer.deserializeKey("{http://{xxx", null));
+        assertTrue(e.getMessage().contains("raised an IllegalArgumentException"));
     }
 
 }
