@@ -117,6 +117,10 @@ class Document(object):
             if len(data) == 1:
                 return data[0]
             return data
+        if isinstance(data, memoryview):
+            data = bytes(data)
+        if isinstance(data, bytes):
+            return data.decode("utf-8")
         if isinstance(data, datetime):
             return data.strftime("%Y-%m-%d %H:%M:%S")
         if isinstance(data, list):

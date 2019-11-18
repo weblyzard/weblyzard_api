@@ -323,7 +323,7 @@ class SKBRESTClient(object):
                     property_name='owl:sameAs',
                     entity_type=entity_type
                 )
-                if sameas_match is not None:
+                if sameas_match is not None and len(sameas_match):
                     logger.info(
                         u'Identified entity {} through sameAs match.'.format(uri))
                     return sameas_match[0]['uri']

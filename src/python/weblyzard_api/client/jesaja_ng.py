@@ -56,6 +56,7 @@ class JesajaNg(MultiRESTClient):
                     'max_ngram_length'               : 3,
                     'stoplists'                      : [],
                     'groundAnnotations'              : False,
+                    'ignore_titles'                  : False,
                 }
 
         .. note:: ``Available keyword_algorithms``
@@ -177,8 +178,8 @@ class JesajaNg(MultiRESTClient):
 
         .. note::
 
-        All shards are automatically rotated every 24 hourse. Call this
-        method to speed up the availablilty of a shart
+        All shards are automatically rotated every 24 hours. Call this
+        method to speed up the availability of a shard.
         '''
         if not matview_id:
             return self.request('rotate_shard')
