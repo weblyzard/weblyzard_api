@@ -364,6 +364,8 @@ class XMLContent(object):
         return self._get_attribute('title')
 
     def get_lang(self):
+        if self._get_attribute('language_id') is not None:
+            return self._get_attribute('language_id')
         return self._get_attribute('lang')
 
     def get_content_id(self):
