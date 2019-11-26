@@ -125,6 +125,19 @@ class SentimentCharSpan(CharSpan):
         super(SentimentCharSpan, self).__init__(span_type=span_type,
                                                 start=start, end=end)
         self.value = value
+        
+class OtherSentimentCharSpan(CharSpan):
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'value': 'value',
+                    'sentiment_category':'sentiment_category'}
+
+    def __init__(self, span_type, start, end, value, sentiment_category, **kwargs):
+        super(OtherSentimentCharSpan, self).__init__(span_type=span_type,
+                                                start=start, end=end)
+        self.value = value
+        self.sentiment_category=sentiment_category
 
 
 class ParagraphCharSpan(CharSpan):
@@ -145,6 +158,7 @@ class SpanFactory(object):
         'CharSpan': CharSpan,
         'TokenCharSpan': TokenCharSpan,
         'SentimentCharSpan': SentimentCharSpan,
+        'OtherSentimentCharSpan': OtherSentimentCharSpan,
         'MultiplierCharSpan': MultiplierCharSpan,
         'SentenceCharSpan': SentenceCharSpan,
         'ParagraphCharSpan': ParagraphCharSpan
