@@ -5,8 +5,8 @@ Created on 15.12.2014
 
 '''
 from __future__ import unicode_literals
-from eWRT.ws.rest import MultiRESTClient
 
+from eWRT.ws.rest import MultiRESTClient
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
@@ -14,7 +14,6 @@ SERVER_URL_PATH = '/rest/polarity/document'
 
 
 class OpinionClient(MultiRESTClient):
-
     URL_PATH = '/'.join(SERVER_URL_PATH.split('/')[:-1])
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
@@ -28,7 +27,8 @@ class OpinionClient(MultiRESTClient):
                                  default_timeout=default_timeout)
 
     def get_polarity(self, content, content_format, annotations=None,
-                     allow_unsupported=False, ignored_entity_regexp=None):
+                     allow_unsupported=False, ignored_entity_regexp=None,
+                     extra_categories=None):
         '''
         Sends the content in the content_format to the opinion mining server
         to calculate the polarity/sentiment of the content.
@@ -52,7 +52,8 @@ class OpinionClient(MultiRESTClient):
                                                   'content': content,
                                                   'annotations': annotations,
                                                   'allow_unsupported': allow_unsupported,
-                                                  'ignored_entity_regexp': ignored_entity_regexp},
+                                                  'ignored_entity_regexp': ignored_entity_regexp,
+                                                  'extra_categories': extra_categories},
                                       return_plain=False)
                 break
             except Exception as e:
