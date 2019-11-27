@@ -127,13 +127,27 @@ class SentimentCharSpan(CharSpan):
         self.value = value
 
 
+class ParagraphCharSpan(CharSpan):
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'title': 'title',
+                    'level': 'level'}
+
+    def __init__(self, span_type, start, end, title, level):
+        CharSpan.__init__(self, span_type=span_type, start=start, end=end)
+        self.title = title
+        self.level = level
+
+
 class SpanFactory(object):
     SPAN_TYPE_TO_CLASS = {
         'CharSpan': CharSpan,
         'TokenCharSpan': TokenCharSpan,
         'SentimentCharSpan': SentimentCharSpan,
         'MultiplierCharSpan': MultiplierCharSpan,
-        'SentenceCharSpan': SentenceCharSpan
+        'SentenceCharSpan': SentenceCharSpan,
+        'ParagraphCharSpan': ParagraphCharSpan
     }
 
     @classmethod
