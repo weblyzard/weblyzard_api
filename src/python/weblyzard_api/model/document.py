@@ -29,7 +29,7 @@ class Document(object):
     SENTIMENT_KEY = u'SENTIMENT_SCOPE'
     # NEGATION_KEY = u'NEGATION_SCOPE'
     MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
-    OTHER_SENTIMENT_KEY = 'OTHER_SENTIMENT'
+    MULTIMODAL_SENTIMENT_KEY = 'MULTIMODAL_SENTIMENT_SCOPE'
 
     # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id",
@@ -37,7 +37,8 @@ class Document(object):
                "span_type": "@type",
                "header": "header",
                "content_type": "format",
-               "sem_orient": "semOrient"}
+               "sem_orient": "semOrient",
+               "multimodal_sentiment": "multimodal_sentiment"}
 
     # list of required attributes
     REQUIRED_FIELDS = ['id', 'format', 'lang',

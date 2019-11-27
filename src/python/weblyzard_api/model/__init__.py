@@ -7,14 +7,14 @@ Created on May 14, 2018
 '''
 from __future__ import print_function
 from __future__ import unicode_literals
-from builtins import map
-from builtins import str
-from builtins import object
-import json
-import hashlib
-import logging
 
+import hashlib
+import json
+import logging
+from builtins import object
+from builtins import str
 from collections import namedtuple
+
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
@@ -89,29 +89,31 @@ class SentenceCharSpan(CharSpan):
                     'md5sum': 'md5sum',
                     'semOrient': 'sem_orient',
                     'significance': 'significance',
+                    'multimodal_sentiment': 'multimodal_sentiment',
                     'id': 'md5sum'}
 
     def __init__(self, span_type, start, end, md5sum, sem_orient,
-                 significance):
+                 significance, multimodal_sentiment=None):
         CharSpan.__init__(self, span_type, start, end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
+        self.multimodal_sentiment = multimodal_sentiment
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
 
 
 class MultiplierCharSpan(CharSpan):
-
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
                     'value': 'value'}
 
     def __init__(self, span_type, start, end, value=None):
-        super(MultiplierCharSpan, self).__init__(span_type=span_type, start=start,
-                                               end=end)
+        super(MultiplierCharSpan, self).__init__(span_type=span_type,
+                                                 start=start,
+                                                 end=end)
         self.value = value
 
 
@@ -119,25 +121,29 @@ class SentimentCharSpan(CharSpan):
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
-                    'value': 'value'}
+                    'value': 'value',
+                    'modality': 'modality'}
 
-    def __init__(self, span_type, start, end, value, **kwargs):
+    def __init__(self, span_type, start, end, value, modality='polarity'):
         super(SentimentCharSpan, self).__init__(span_type=span_type,
                                                 start=start, end=end)
         self.value = value
-        
-class OtherSentimentCharSpan(CharSpan):
-    DICT_MAPPING = {'@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end',
-                    'value': 'value',
-                    'sentiment_category':'sentiment_category'}
+        self.modality=modality
 
-    def __init__(self, span_type, start, end, value, sentiment_category, **kwargs):
-        super(OtherSentimentCharSpan, self).__init__(span_type=span_type,
-                                                start=start, end=end)
-        self.value = value
-        self.sentiment_category=sentiment_category
+#
+# class OtherSentimentCharSpan(CharSpan):
+#     DICT_MAPPING = {'@type': 'span_type',
+#                     'start': 'start',
+#                     'end': 'end',
+#                     'value': 'value',
+#                     'sentiment_category': 'sentiment_category'}
+#
+#     def __init__(self, span_type, start, end, value, sentiment_category,
+#                  **kwargs):
+#         super(OtherSentimentCharSpan, self).__init__(span_type=span_type,
+#                                                      start=start, end=end)
+#         self.value = value
+#         self.sentiment_category = sentiment_category
 
 
 class SpanFactory(object):
@@ -145,7 +151,6 @@ class SpanFactory(object):
         'CharSpan': CharSpan,
         'TokenCharSpan': TokenCharSpan,
         'SentimentCharSpan': SentimentCharSpan,
-        'OtherSentimentCharSpan': OtherSentimentCharSpan,
         'MultiplierCharSpan': MultiplierCharSpan,
         'SentenceCharSpan': SentenceCharSpan
     }
@@ -159,7 +164,8 @@ class SpanFactory(object):
                      for k in span.keys()])
             except AssertionError:
                 logger.warning("Unable to process SentenceCharSpan for input "
-                            "span {}. Traceback: ".format(span), exc_info=True)
+                               "span {}. Traceback: ".format(span),
+                               exc_info=True)
                 raise TypeError(
                     'Unexpected parameters for SentenceCharSpan: {}')
             return SentenceCharSpan(span_type='SentenceCharSpan',
@@ -215,6 +221,7 @@ class Sentence(object):
             'value': 'value',
             'pos': 'pos_list',
             'sem_orient': 'polarity',
+            'multimodal_sentiment': 'multimodal_sentiment',
             'token': 'tok_list',
             'is_title': 'is_title',
             'dependency': 'dep_tree',
@@ -233,7 +240,8 @@ class Sentence(object):
 
     def __init__(self, md5sum=None, pos=None, sem_orient=None,
                  significance=None,
-                 token=None, value=None, is_title=False, dependency=None):
+                 token=None, value=None, is_title=False, dependency=None,
+                 multimodal_sentiment=None):
 
         if not md5sum and value:
             try:
@@ -253,6 +261,7 @@ class Sentence(object):
         self.value = value
         self.is_title = is_title
         self.dependency = dependency
+        self.multimodal_sentiment = multimodal_sentiment
 
     def as_dict(self):
         '''
