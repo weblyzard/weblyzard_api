@@ -36,8 +36,7 @@ class Document(object):
                "span_type": "@type",
                "header": "header",
                "content_type": "format",
-               "sem_orient": "semOrient",
-               "multimodal_sentiment": "multimodal_sentiment"}
+               "sem_orient": "semOrient"}
 
     # list of required attributes
     REQUIRED_FIELDS = ['id', 'format', 'lang',
