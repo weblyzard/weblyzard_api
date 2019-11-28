@@ -29,7 +29,6 @@ class Document(object):
     SENTIMENT_KEY = u'SENTIMENT_SCOPE'
     # NEGATION_KEY = u'NEGATION_SCOPE'
     MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
-    MULTIMODAL_SENTIMENT_KEY = 'MULTIMODAL_SENTIMENT_SCOPE'
 
     # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id",
