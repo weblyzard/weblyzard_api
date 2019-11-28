@@ -7,14 +7,14 @@ Created on May 14, 2018
 '''
 from __future__ import print_function
 from __future__ import unicode_literals
-
-import hashlib
-import json
-import logging
-from builtins import object
+from builtins import map
 from builtins import str
-from collections import namedtuple
+from builtins import object
+import json
+import hashlib
+import logging
 
+from collections import namedtuple
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
@@ -128,22 +128,7 @@ class SentimentCharSpan(CharSpan):
         super(SentimentCharSpan, self).__init__(span_type=span_type,
                                                 start=start, end=end)
         self.value = value
-        self.modality=modality
-
-#
-# class OtherSentimentCharSpan(CharSpan):
-#     DICT_MAPPING = {'@type': 'span_type',
-#                     'start': 'start',
-#                     'end': 'end',
-#                     'value': 'value',
-#                     'sentiment_category': 'sentiment_category'}
-#
-#     def __init__(self, span_type, start, end, value, sentiment_category,
-#                  **kwargs):
-#         super(OtherSentimentCharSpan, self).__init__(span_type=span_type,
-#                                                      start=start, end=end)
-#         self.value = value
-#         self.sentiment_category = sentiment_category
+        self.modality = modality
 
 
 class ParagraphCharSpan(CharSpan):
@@ -235,7 +220,6 @@ class Sentence(object):
             'value': 'value',
             'pos': 'pos_list',
             'sem_orient': 'polarity',
-            'multimodal_sentiment': 'multimodal_sentiment',
             'token': 'tok_list',
             'is_title': 'is_title',
             'dependency': 'dep_tree',
@@ -254,8 +238,7 @@ class Sentence(object):
 
     def __init__(self, md5sum=None, pos=None, sem_orient=None,
                  significance=None,
-                 token=None, value=None, is_title=False, dependency=None,
-                 multimodal_sentiment=None):
+                 token=None, value=None, is_title=False, dependency=None):
 
         if not md5sum and value:
             try:
@@ -275,7 +258,6 @@ class Sentence(object):
         self.value = value
         self.is_title = is_title
         self.dependency = dependency
-        self.multimodal_sentiment = multimodal_sentiment
 
     def as_dict(self):
         '''
