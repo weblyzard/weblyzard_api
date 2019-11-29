@@ -265,7 +265,7 @@ class Document(object):
     def overlapping(cls, spanA, spanB):
         ''' Return whether two spans overlap. '''
         return (spanB.start <= spanA.start and spanB.end >= spanA.end) or \
-               (spanA.start <= spanB.start and spanA.end >= spanB.end)
+                (spanA.start <= spanB.start and spanA.end >= spanB.end)
 
     def get_partition_overlaps(self, search_span, target_partition_key):
         ''' Return all spans from a given target_partition_key that overlap 
@@ -342,10 +342,6 @@ class Document(object):
 
             # finally, extract the sentence text.
             value = self.get_text_by_span(sentence_span)
-            multimodal_sentiment = getattr(sentence_span,
-                                           'multimodal_sentiment',
-                                           {}
-                                           )
 
             result.append(Sentence(md5sum=sentence_span.md5sum,
                                    sem_orient=sem_orient,
