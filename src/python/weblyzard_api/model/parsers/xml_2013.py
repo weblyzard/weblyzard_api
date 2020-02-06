@@ -94,8 +94,8 @@ class XML2013(XMLParser):
         'user_view_count': ('user_view_count', 'wl'),  # YT
         'num_tweets': ('user_post_count', 'wl'),  # TW
         'user_created': ('user_created', 'wl'),  # TW
-        'user_id': ('user_id', 'wl'),  # FB, G+
-        'user_url': ('user_id', 'wl'),  # YT, twitter
+        'user_id': ('user_id', 'wl'),  # FB, G+, twitter, YT
+        'user_url': ('user_url', 'wl'),
         'user_name': ('user_name', 'wl'),
         'user_type': ('user_type', 'wl'),
         'current_status': ('user_status', 'wl'),  # twitter
