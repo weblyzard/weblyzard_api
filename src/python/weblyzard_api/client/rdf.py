@@ -38,7 +38,8 @@ class Namespace(Enum):
     P = 'http://www.wikidata.org/prop/'
     PS = 'http://www.wikidata.org/prop/statement/'
     PQ = 'http://www.wikidata.org/prop/qualifier/'
-    GN = 'http://sws.geonames.org/'
+    GN = 'http://www.geonames.org/ontology#'
+    GEONAMES = 'http://sws.geonames.org/'
 
     # weblyzard namespaces
     WL = 'http://www.weblyzard.com/wl/2013#'
@@ -117,6 +118,8 @@ def prefix_uri(uri: str, allow_partial: bool=False) -> str:
     """
     if not uri.startswith('http'):
         return uri
+    if uri.endswith('/'):  # geoname uris end with "/"
+        uri = uri[:-1]
     # replace most specific/longest prefix, hence sorted
     for namespace in sorted(list([ns.value for ns in Namespace]), key=len, reverse=True):
         if namespace in uri:
