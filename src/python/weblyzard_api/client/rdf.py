@@ -38,7 +38,8 @@ class Namespace(Enum):
     P = 'http://www.wikidata.org/prop/'
     PS = 'http://www.wikidata.org/prop/statement/'
     PQ = 'http://www.wikidata.org/prop/qualifier/'
-    GN = 'http://sws.geonames.org/'
+    GEONAMES = 'http://sws.geonames.org/'
+    GN = 'http://www.geonames.org/ontology#'
 
     # weblyzard namespaces
     WL = 'http://www.weblyzard.com/wl/2013#'
@@ -112,6 +113,8 @@ def prefix_uri(uri: str, allow_partial: bool=False) -> str:
     in the Namespace.
     :param uri: The URI to modify.
     :type uri: str
+    :param allow_partial: if True allow partial replacements
+    :type allow_partial: bool
     :returns: The modified URI if applicable
     :rtype: str
     """
@@ -122,9 +125,10 @@ def prefix_uri(uri: str, allow_partial: bool=False) -> str:
         if namespace in uri:
             replaced = uri.replace(
                 namespace, '{}:'.format(Namespace.to_prefix(namespace)))
-            if '/' in replaced or '#' in replaced:
+            if '/' in replaced[:-1] or '#' in replaced[:-1]:
                 if not allow_partial:
-                    # slashes or hashes in prefixed URIs not allowed
+                    # slashes or hashes in prefixed URIs only allowed at the
+                    # end
                     continue
             return replaced
     return uri
