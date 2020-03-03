@@ -18,13 +18,17 @@ from weblyzard_api.client.rdf import (
          'skbentity:xyz'),
         ('http://example.com/something',
          'http://example.com/something'),
+        ('http://www.wikidata.org/prop/statement/my_statement',
+         'ps:my_statement'),
+        ('http://dbpedia.org/ontology/building/house',
+         'dbo:building/house'),
+        ('http://dbpedia.org/ontology/building/house',
+         'dbo:building/house'),
+        ('http://sws.geonames.org/130758/',
+         'geonames:130758/')
     ])
 def test_replace_prefix(uri, prefixed):
-    namespaces = {
-        'http://weblyzard.com/skb/entity/': 'skbentity',
-        'http://weblyzard.com/skb/entity/agent/': 'agent',
-    }
-    result = replace_prefix(uri=prefixed, namespaces=namespaces)
+    result = replace_prefix(uri=prefixed)
     assert result == uri
 
 
@@ -32,9 +36,10 @@ def test_replace_prefix(uri, prefixed):
                          [('test@en', ('test', 'en')),
                           ('test@eng', ('test', 'eng')),
                           ('test@en-us', ('test', 'en-us')),
-                          ('fabian.fischer@modul.ac.at', ('fabian.fischer@modul.ac.at', None)),
+                          ('fabian.fischer@modul.ac.at',
+                           ('fabian.fischer@modul.ac.at', None)),
                           ('@xy', ('@xy', None))
-                         ])
+                          ])
 def test_parse_single_string(value, expected):
     assert parse_language_tagged_string(value) == expected
 
@@ -53,11 +58,40 @@ def test_parse_single_string(value, expected):
         # no prefix configured for this namespace, return unchanged
         ('http://example.com/something',
          'http://example.com/something'),
+        # do not replace partial prefix dbo:building/house
+        ('http://dbpedia.org/ontology/building/house',
+         'http://dbpedia.org/ontology/building/house'),
+        # replace if / at the end
+        ('http://sws.geonames.org/130758/',
+         'geonames:130758/')
     ])
 def test_prefix_uri(uri, prefixed):
-    namespaces = {
-        'http://weblyzard.com/skb/entity/': 'skbentity',
-        'http://weblyzard.com/skb/entity/agent/': 'agent',
-    }
     result = prefix_uri(uri=uri)
     assert result == prefixed
+
+
+@pytest.mark.parametrize(
+    "uri,partially_prefixed",
+    [
+        # # replace partial prefix
+        ('http://weblyzard.com/skb/entity/agent/derstandard/sperl',
+         'agent:derstandard/sperl'),
+        # agent:derstandard should be used instead of skbentity: prefix
+        ('http://weblyzard.com/skb/entity/agent/derstandard',
+         'agent:derstandard'),
+        # replace partial prefix
+        ('http://weblyzard.com/skb/entity/xyz/abc',
+         'skbentity:xyz/abc'),
+        # no prefix configured for this namespace, return unchanged
+        ('http://example.com/something',
+         'http://example.com/something'),
+        # replace partial prefix
+        ('http://dbpedia.org/ontology/building/house',
+         'dbo:building/house'),
+        # replace if / at the end
+        ('http://sws.geonames.org/130758/',
+         'geonames:130758/')
+    ])
+def test_partial_prefix_uri(uri, partially_prefixed):
+    result = prefix_uri(uri=uri, allow_partial=True)
+    assert result == partially_prefixed
