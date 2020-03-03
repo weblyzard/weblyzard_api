@@ -38,7 +38,8 @@ class Namespace(Enum):
     P = 'http://www.wikidata.org/prop/'
     PS = 'http://www.wikidata.org/prop/statement/'
     PQ = 'http://www.wikidata.org/prop/qualifier/'
-    GN = 'http://sws.geonames.org/'
+    GEONAMES = 'http://sws.geonames.org/'
+    GN = 'http://www.geonames.org/ontology#'
 
     # weblyzard namespaces
     WL = 'http://www.weblyzard.com/wl/2013#'
