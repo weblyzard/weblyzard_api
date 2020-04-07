@@ -142,7 +142,7 @@ class WlSearchRestApiClient(object):
 
     def search_documents(self, sources, term_query, auth_token=None,
                          start_date=None, end_date=None, count=10, offset=0,
-                         fields=['document.contentid']):
+                         max_docs=-1, fields=['document.contentid']):
         """ 
         Search an index for documents matching the search parameters.
         :param sources
@@ -181,25 +181,33 @@ class WlSearchRestApiClient(object):
         if end_date:
             query["endDate"] = str(end_date)
 
-        query = json.dumps(query)
-
-        if isinstance(term_query, dict):
-            term_query = json.dumps(term_query)
-
-        data = query.replace('"<<query>>"', term_query)
+        query["query"] = term_query
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
         url = '/'.join([self.base_url, self.DOCUMENT_ENDPOINT])
-        r = requests.post(url,
-                          data=data,
-                          headers=headers)
-        try:
-            if r.status_code == 200:
-                return json.loads(r.content)['result']
-        except Exception as e:
-            logger.error(
-                "accessing: {} : {} - {}".format(url, data, e), exc_info=True)
-            return r
+
+        result_count = 0
+        total = 1
+
+        while result_count < total:
+            query["offset"] = result_count
+            squery = json.dumps(query)
+            r = requests.post(url, data=squery, headers=headers)
+            try:
+                if r.status_code == 200:
+                    response = json.loads(r.content)['result']
+                    total = response['total']
+                    if max_docs > 0:
+                        total = max_docs
+                    hits = response['hits']
+                    result_count += len(hits)
+                    yield hits
+            except Exception as e:
+                logger.error(
+                    "accessing: {} : {} - {}".format(url, squery, e),
+                    exc_info=True)
+                return r
+
         return r
 
     def search_keywords(self, sources, start_date, end_date, num_keywords=5,

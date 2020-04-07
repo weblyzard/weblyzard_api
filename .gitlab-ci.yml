@@ -62,6 +62,8 @@ build:
     script:
         - chmod +x build-package.sh
         - ./build-package.sh
+        - echo ':triggering build of py3full'
+        - curl -X POST -F token=$PY3FULL_TOKEN -F ref=master https://gitlab.semanticlab.net/api/v4/projects/650/trigger/pipeline
     only:
         - master
     tags:
