@@ -22,6 +22,7 @@ class SKBRESTClient(object):
     TITLE_TRANSLATION_PATH = '{}/skb/title_translation?'.format(VERSION)
     ENTITY_PATH = '{}/skb/entity'.format(VERSION)
     ENTITY_BATCH_PATH = '{}/skb/entity_batch'.format(VERSION)
+    ENTITY_URI_BATCH_PATH = '{}/skb/entity_uri_batch'.format(VERSION)
     ENTITY_BY_PROPERTY_PATH = '{}/skb/entity_by_property'.format(VERSION)
 
     def __init__(self, url):
@@ -168,6 +169,20 @@ class SKBRESTClient(object):
         response = requests.post('{}/{}'.format(self.url,
                                                 urlpath),
                                  data=json.dumps(entity_dict),
+                                 headers={'Content-Type': 'application/json'})
+        if response.status_code < 400:
+            return json.loads(response.text)
+        else:
+            return None
+
+    def save_entity_uri_batch(self, uri_list, language):
+        """ """
+        if len(uri_list) < 1:
+            return None
+        urlpath = f'{self.ENTITY_URI_BATCH_PATH}?language={language}'
+        response = requests.post('{}/{}'.format(self.url,
+                                                urlpath),
+                                 data=json.dumps(uri_list),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code < 400:
             return json.loads(response.text)
