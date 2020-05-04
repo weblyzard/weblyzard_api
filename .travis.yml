@@ -1,4 +1,5 @@
 dist: bionic
+language: java
 
 # do not use the openjdk 11.0.2 which comes with travis since it does
 # not work with TLS 1.3 servers.
