@@ -61,6 +61,8 @@ class OgerClient(object):
            "id": docid,
            "header": {"{http://purl.org/dc/elements/1.1/}identifier": docid,
                       "{http://www.weblyzard.com/wl/2013#}jonas_type": "http"},
+           "partitions": {},
+           "annotations": [],
            "content": doctext
         }
 
