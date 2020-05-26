@@ -25,7 +25,7 @@ class OgerClient(object):
     and retrieves an annotated version of the document.
     '''
     # available endpoints
-    ANNOTATE_PATH = 'upload/txt/bioc_json'
+    ANNOTATE_PATH = 'upload'  # /txt/bioc_json
     STATUS_PATH = 'status'
 
     def __init__(self, url=OGER_API_URL,
@@ -76,7 +76,7 @@ class OgerClient(object):
         '''
         weblyzard_document = OgerClient.generate_weblyzard_document(docid,
                                                                     doctext)
-        return self.annotate_weblyzard_json(weblyzard_document)
+        return self.annotate_weblyzard_document(weblyzard_document)
 
     def annotate_weblyzard_document(self, weblyzard_document):
         '''
@@ -92,7 +92,7 @@ class OgerClient(object):
             return json.loads(r.content)
         else:
             logging.warn("OGER server returned status code "
-                         + str(r.status_code) + " and message "
-                         + str(r.content))
+                         +str(r.status_code) + " and message "
+                         +str(r.content))
             logging.warn("Falling back to the unannotated content.")
             return weblyzard_document
