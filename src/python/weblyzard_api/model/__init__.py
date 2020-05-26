@@ -89,29 +89,31 @@ class SentenceCharSpan(CharSpan):
                     'md5sum': 'md5sum',
                     'semOrient': 'sem_orient',
                     'significance': 'significance',
+                    'multimodal_sentiment': 'multimodal_sentiment',
                     'id': 'md5sum'}
 
     def __init__(self, span_type, start, end, md5sum, sem_orient,
-                 significance):
+                 significance, multimodal_sentiment=None):
         CharSpan.__init__(self, span_type, start, end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
+        self.multimodal_sentiment = multimodal_sentiment
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
 
 
 class MultiplierCharSpan(CharSpan):
-
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
                     'value': 'value'}
 
     def __init__(self, span_type, start, end, value=None):
-        super(MultiplierCharSpan, self).__init__(span_type=span_type, start=start,
-                                               end=end)
+        super(MultiplierCharSpan, self).__init__(span_type=span_type,
+                                                 start=start,
+                                                 end=end)
         self.value = value
 
 
@@ -119,12 +121,14 @@ class SentimentCharSpan(CharSpan):
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
-                    'value': 'value'}
+                    'value': 'value',
+                    'modality': 'modality'}
 
-    def __init__(self, span_type, start, end, value, **kwargs):
+    def __init__(self, span_type, start, end, value, modality='polarity'):
         super(SentimentCharSpan, self).__init__(span_type=span_type,
                                                 start=start, end=end)
         self.value = value
+        self.modality = modality
 
 
 class ParagraphCharSpan(CharSpan):
@@ -159,7 +163,8 @@ class SpanFactory(object):
                      for k in span.keys()])
             except AssertionError:
                 logger.warning("Unable to process SentenceCharSpan for input "
-                            "span {}. Traceback: ".format(span), exc_info=True)
+                               "span {}. Traceback: ".format(span),
+                               exc_info=True)
                 raise TypeError(
                     'Unexpected parameters for SentenceCharSpan: {}')
             return SentenceCharSpan(span_type='SentenceCharSpan',

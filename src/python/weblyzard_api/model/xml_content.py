@@ -108,7 +108,10 @@ class XMLContent(object):
             ))
         titles = []
         for sentence in sentences:
-            sent_obj = Sentence(**sentence)
+            try:
+                sent_obj = Sentence(**sentence)
+            except:
+                sent_obj = Sentence(**{k:v for k,v in sentence.items() if k in Sentence.API_MAPPINGS[1.0]})
 
             if sent_obj.is_title:
                 titles.append(sent_obj)
