@@ -175,11 +175,13 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def save_entity_uri_batch(self, uri_list, language):
+    def save_entity_uri_batch(self, uri_list, language, force_update=False):
         """ """
         if len(uri_list) < 1:
             return None
         urlpath = f'{self.ENTITY_URI_BATCH_PATH}?language={language}'
+        if force_update:
+            urlpath = f'{urlpath}&force_update'
         response = requests.post('{}/{}'.format(self.url,
                                                 urlpath),
                                  data=json.dumps(uri_list),
