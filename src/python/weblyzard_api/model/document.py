@@ -40,11 +40,11 @@ class Document(object):
 
     # list of required attributes
     REQUIRED_FIELDS = ['id', 'format', 'lang',
-                       'nilsimsa', 'content']
+                       'content']
 
     # list of optional attributes
     OPTIONAL_FIELDS = ['partitions', 'annotations', 'encoding',
-                       'features', 'relations', 'header']
+                       'features', 'relations', 'header', 'nilsimsa']
 
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
