@@ -302,7 +302,7 @@ class Document(object):
         """
         result = []
         offset = 0
-        requested_keys = [self.SENTENCE_KEY] + include_title * [self.TITLE_KEY]
+        requested_keys = [self.SENTENCE_KEY]
         if not any([key in self.partitions for key in requested_keys]):
             return result
         sentence_spans = chain(
