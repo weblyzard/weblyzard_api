@@ -294,7 +294,7 @@ class Document(object):
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based=False, include_title=False):
+    def get_sentences(self, zero_based=False, include_title=True):
         """
         Legacy method to extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
