@@ -40,11 +40,11 @@ class Document(object):
 
     # list of required attributes
     REQUIRED_FIELDS = ['id', 'format', 'lang',
-                       'nilsimsa', 'content']
+                       'content']
 
     # list of optional attributes
     OPTIONAL_FIELDS = ['partitions', 'annotations', 'encoding',
-                       'features', 'relations', 'header']
+                       'features', 'relations', 'header', 'nilsimsa']
 
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
@@ -294,7 +294,7 @@ class Document(object):
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based=False, include_title=False):
+    def get_sentences(self, zero_based=False, include_title=True):
         """
         Legacy method to extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
@@ -302,7 +302,7 @@ class Document(object):
         """
         result = []
         offset = 0
-        requested_keys = [self.SENTENCE_KEY] + include_title * [self.TITLE_KEY]
+        requested_keys = [self.SENTENCE_KEY]
         if not any([key in self.partitions for key in requested_keys]):
             return result
         sentence_spans = chain(
