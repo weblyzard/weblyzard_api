@@ -28,7 +28,7 @@ public class JosephClient extends BasicClient {
     private static final String CLASSIFY_SERVICE_URL =
                     "/rest/classify/{" + TEMPLATE_PROFILE_NAME + "}";
     private static final String CLASSIFY_BATCH_SERVICE_URL =
-                    "/rest/classify_batch/{" + TEMPLATE_PROFILE_NAME + "}";
+                    "/rest/classifyBatch/{" + TEMPLATE_PROFILE_NAME + "}";
     private static final String TRAIN_SERVICE_URL =
                     "/rest/train/{" + TEMPLATE_PROFILE_NAME + "}/{" + TEMPLATE_CATEGORY + "}";
     private static final String RETRAIN_SERVICE_URL =
@@ -144,7 +144,6 @@ public class JosephClient extends BasicClient {
         try (Response response = super.getTarget(CLASSIFY_BATCH_SERVICE_URL)
                         .resolveTemplate(TEMPLATE_PROFILE_NAME, profileName)
                         .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(request))) {
-
             super.checkResponseStatus(response);
             List<Document> result = response.readEntity(new GenericType<List<Document>>() {});
             return result;
