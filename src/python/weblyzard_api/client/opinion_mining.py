@@ -28,7 +28,7 @@ class OpinionClient(MultiRESTClient):
 
     def get_polarity(self, content, content_format, annotations=None,
                      allow_unsupported=False, ignored_entity_regexp=None,
-                     extra_categories=None):
+                     extra_categories=None, **kwargs):
         '''
         Sends the content in the content_format to the opinion mining server
         to calculate the polarity/sentiment of the content.
@@ -44,16 +44,18 @@ class OpinionClient(MultiRESTClient):
         result = None
         retrycount = 1
         retries = 0
-        while retries <= retrycount:
-            retries += 1
-            try:
-                result = self.request('document',
-                                      parameters={'format': content_format,
+        parameters = {'format': content_format,
                                                   'content': content,
                                                   'annotations': annotations,
                                                   'allow_unsupported': allow_unsupported,
                                                   'ignored_entity_regexp': ignored_entity_regexp,
-                                                  'extra_categories': extra_categories},
+                                                  'extra_categories': extra_categories}
+        parameters.update({k:v for k, v in kwargs.items()})
+        while retries <= retrycount:
+            retries += 1
+            try:
+                result = self.request('document',
+                                      parameters=parameters,
                                       return_plain=False)
                 break
             except Exception as e:
