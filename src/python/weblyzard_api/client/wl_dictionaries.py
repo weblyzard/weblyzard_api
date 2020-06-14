@@ -21,7 +21,7 @@ from socket import gethostbyname, gaierror
 
 from eWRT.access.http import Retrieve
 
-LOCAL_DIR = '/opt/weblyzard/dictionaries/'
+LOCAL_DIR = '/tmp/weblyzard/dictionaries/'
 SERVER_URL = 'https://services.weblyzard.com/repo/resources/'
 MAX_AGE_HOURS = 24
 
