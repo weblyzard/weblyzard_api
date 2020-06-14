@@ -8,6 +8,8 @@ Created on Oct 24, 2016
 from __future__ import unicode_literals
 
 from builtins import object
+from typing import List
+
 import json
 import requests
 import logging
@@ -175,11 +177,21 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def save_entity_uri_batch(self, uri_list, language):
-        """ """
+    def save_entity_uri_batch(self, uri_list:List, language:str,
+                              force_update:bool=False, ignore_cache:bool=False) -> dict:
+        """ Send a batch of entity URIs to the SKB for storage.
+        :param uri_list: the URIs to store.
+        :param language: language filter for preferredName result.
+        :param force_update: update existing SKB values via Jairo.
+        :param ignore_cache: do not rely on cached results.
+        """
         if len(uri_list) < 1:
             return None
         urlpath = f'{self.ENTITY_URI_BATCH_PATH}?language={language}'
+        if force_update:
+            urlpath = f'{urlpath}&force_update'
+        if ignore_cache:
+            urlpath = f'{urlpath}&ignore_cache'
         response = requests.post('{}/{}'.format(self.url,
                                                 urlpath),
                                  data=json.dumps(uri_list),
