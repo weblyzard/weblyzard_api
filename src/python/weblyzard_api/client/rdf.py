@@ -40,6 +40,7 @@ class Namespace(Enum):
     PQ = 'http://www.wikidata.org/prop/qualifier/'
     GEONAMES = 'http://sws.geonames.org/'
     GN = 'http://www.geonames.org/ontology#'
+    OSM = 'http://www.openstreetmap.org/way/'
 
     # weblyzard namespaces
     WL = 'http://www.weblyzard.com/wl/2013#'
