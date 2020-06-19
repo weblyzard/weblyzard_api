@@ -1,23 +1,24 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from future import standard_library
+from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.model.xml_content import XMLContent
+from weblyzard_api.client import (
+    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
+from time import sleep, time
+from random import random
+import urllib.request
+import urllib.error
+import urllib.parse
+import logging
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 '''
-from __future__ import unicode_literals
-from future import standard_library
+
 standard_library.install_aliases()
-import logging
-import urllib.request, urllib.error, urllib.parse
 
-from time import sleep, time
-from random import random
-
-from eWRT.ws.rest import MultiRESTClient
-
-from weblyzard_api.model.xml_content import XMLContent
-from weblyzard_api.client import (
-    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 logger = logging.getLogger('weblyzard_api.client.jeremia')
 
@@ -88,12 +89,36 @@ class Jeremia(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
-    def submit_document(self, document):
+    def submit_document(self, document,
+                        wait_time=DEFAULT_WAIT_TIME,
+                        max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
+                        max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
         '''
         processes a single document with jeremia (annotates a single document)
 
         :param document: the document to be processed
         '''
+
+        # wait until the web service has available threads for processing
+        # the request
+        attempts = 0
+        start_time = time()
+        while time() - start_time < wait_time and attempts < max_retry_attempts:
+            # wait until threads are available
+            while self.has_queued_threads() and time() - start_time < wait_time:
+                sleep(max_retry_delay * random())
+
+            # submit the request
+            try:
+                logger.debug('submit_document: {}'.format(document))
+                result = self.request(
+                    'submit_document', document, pass_through_exceptions=True)
+                return result
+            except (urllib.error.HTTPError, urllib.error.URLError) as e:
+                attempts = attempts + 1
+
+        # this access most certainly causes an exception since the
+        # requests above have failed.
         return self.request('submit_document', document)
 
     def submit_documents(self, documents, source_id=-1,
