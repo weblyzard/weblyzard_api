@@ -23,6 +23,7 @@ from weblyzard_api.model.exceptions import (MissingFieldException,
 
 class Document(object):
     # supported partition keys
+    FRAGMENT_KEY = 'FRAGMENT'
     SENTENCE_KEY = u'SENTENCE'
     TITLE_KEY = u'TITLE'
     TOKEN_KEY = u'TOKEN'
@@ -181,8 +182,6 @@ class Document(object):
         for key in dict_.keys():
             if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
                 raise UnexpectedFieldException(key)
-
-        parsed_content = dict_
 
         # This is tricky ... the mapping cannot be easily inversed
         # making the md5sum to content_id conversion at the top level necessary
