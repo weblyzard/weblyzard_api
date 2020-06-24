@@ -77,14 +77,15 @@ class XML2013(XMLParser):
 
         # DOCUMENT METRICS ####################################################
         'user_mentions': ('user_mentions', 'wl'),
-        'rating_average': ('num_likes', 'wl'),  # YT
-        'num_likes': ('num_likes', 'wl'),  # twitter
+#         'rating_average': ('num_likes', 'wl'),  # YT
+        'num_likes': ('num_likes', 'wl'),  # twitter, YT
         'statistics_likecount': ('num_likes', 'wl'),  # youtube
         'statistics_dislikecount': ('num_dislikes', 'wl'),  # youtube
         'viewcount': ('num_views', 'wl'),  # vimeo/daily
         'statistics_viewcount': ('num_views', 'wl'),  # youtube
         'comment_count': ('num_replies', 'wl'),
         'num_reshares': ('num_reshares', 'wl'),  # twitter
+        'tw_update': ('tw_update', 'wl'),  # twitter
 
         # USER MAPPINGS #######################################################
         'user_verified': ('user_verified', 'wl'),  # TW

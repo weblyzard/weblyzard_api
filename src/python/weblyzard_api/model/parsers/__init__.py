@@ -79,8 +79,8 @@ class JSONParserBase(object):
             logger.debug(json_string)
 
             api_dict = json.loads(json_string)
-        except Exception:
-            raise MalformedJSONException('JSON could not be parsed')
+        except Exception as e:
+            raise MalformedJSONException(f'JSON could not be parsed: {e}')
         return cls.from_api_dict(api_dict)
 
     @classmethod
