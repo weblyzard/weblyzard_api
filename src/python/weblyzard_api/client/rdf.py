@@ -49,7 +49,7 @@ class Namespace(Enum):
     SKBENTITY = 'http://weblyzard.com/skb/entity/'
     SKBPERSON = 'http://weblyzard.com/skb/entity/person/'
     SKBORG = 'http://weblyzard.com/skb/entity/organization/'
-    SKBGEO = 'http://weblyzard.com/skb/entity/person/'
+    SKBGEO = 'http://weblyzard.com/skb/entity/geo/'
     SKBEVENT = 'http://weblyzard.com/skb/event/'
     SKBCAT = 'http://weblyzard.com/skb/entity/category/'
     AGENT = 'http://weblyzard.com/skb/entity/agent/'
