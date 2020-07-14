@@ -116,10 +116,7 @@ class JeremiaNg(MultiRESTClient):
         attempts = 0
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
-            # wait until threads are available
-            while self.has_queued_threads() and time() - start_time < wait_time:
-                sleep(max_retry_delay * random())
-
+            
             # submit the request
             # - here we need to check for a 502 and 503 error in
             #   case that has_queued_threads has not been
@@ -129,6 +126,7 @@ class JeremiaNg(MultiRESTClient):
                                       pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
+                sleep(max_retry_delay * random())
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the

@@ -104,9 +104,6 @@ class Jeremia(MultiRESTClient):
         attempts = 0
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
-            # wait until threads are available
-            while self.has_queued_threads() and time() - start_time < wait_time:
-                sleep(max_retry_delay * random())
 
             # submit the request
             try:
@@ -115,6 +112,8 @@ class Jeremia(MultiRESTClient):
                     'submit_document', document, pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
+                logger.warn(f'submit_document failed... Sleeping before retry...')
+                sleep(max_retry_delay * random())
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the
