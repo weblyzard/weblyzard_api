@@ -47,6 +47,11 @@ class Namespace(Enum):
     SKBLEX = 'http://weblyzard.com/skb/lexicon/'
     SKBPROP = 'http://weblyzard.com/skb/property/'
     SKBENTITY = 'http://weblyzard.com/skb/entity/'
+    SKBPERSON = 'http://weblyzard.com/skb/entity/person/'
+    SKBORG = 'http://weblyzard.com/skb/entity/organization/'
+    SKBGEO = 'http://weblyzard.com/skb/entity/geo/'
+    SKBEVENT = 'http://weblyzard.com/skb/event/'
+    SKBCAT = 'http://weblyzard.com/skb/entity/category/'
     AGENT = 'http://weblyzard.com/skb/entity/agent/'
 
     # weblyzard keywords per language

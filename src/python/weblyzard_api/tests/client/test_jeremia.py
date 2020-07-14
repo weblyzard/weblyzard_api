@@ -50,7 +50,7 @@ class JeremiaTest(unittest.TestCase):
             return
 
         print('submitting document with annotations...')
-        result = j.submit_document(DOC)
+        result = j.submit_document(document=DOC, wait_time=30)
 
         # check: all annotations have been preserved
         print(result)
@@ -73,13 +73,13 @@ class JeremiaTest(unittest.TestCase):
 
     def test_batch_processing(self):
         j = Jeremia()
-        docs = j.submit_documents(self.DOCS)
+        docs = j.submit_documents(documents=self.DOCS, wait_time=30)
         self.assertEqual(len(docs), 20)
 
     def test_sentence_splitting(self):
         j = Jeremia()
 
-        for doc in j.submit_documents(self.DOCS[:1]):
+        for doc in j.submit_documents(documents=self.DOCS[:1], wait_time=30):
             # extract sentences
             print(doc)
             xml_obj = XMLContent(doc['xml_content'])
@@ -99,7 +99,7 @@ class JeremiaTest(unittest.TestCase):
                  'header': {}}]
 
         j = Jeremia()
-        for doc in j.submit_documents(DOCS):
+        for doc in j.submit_documents(documents=DOCS, wait_time=30):
             xml = XMLContent(doc['xml_content'])
             print(doc['xml_content'])
             assert xml.sentences[0].sentence != None
@@ -108,7 +108,7 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia()
 
         with self.assertRaises(ValueError):
-            j.submit_documents([])
+            j.submit_documents(documents=[], wait_time=30)
 
     def test_missing_space_tokenattribute(self):
         def text_as_doc(text):
@@ -127,7 +127,7 @@ class JeremiaTest(unittest.TestCase):
         }
 
         for text, token_number in list(test_texts.items()):
-            result = j.submit_documents(documents=text_as_doc(text))
+            result = j.submit_documents(documents=text_as_doc(text), wait_time=30)
             res_xml = list(result)[0]['xml_content']
             assert len(
                 list(XMLContent(res_xml).sentences[0].tokens)) == token_number
@@ -158,7 +158,7 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia()
         j.update_blacklist(source_id=source_id, blacklist=blacklist)
         sentences = self._get_sentences(
-            j.submit_documents(docs, source_id=source_id)).pop()
+            j.submit_documents(documents=docs, source_id=source_id), wait_time=30).pop()
         assert 'Hier wird die Zensur zuschlagen.' not in sentences
         assert 'Der zweite Satz ist aber okay.' in sentences
 
@@ -166,14 +166,14 @@ class JeremiaTest(unittest.TestCase):
         assert blacklist == j.get_blacklist(source_id)
 
         # no blacklist
-        sentences = self._get_sentences(j.submit_documents(docs)).pop()
+        sentences = self._get_sentences(j.submit_documents(documents=docs,wait_time=30)).pop()
         assert 'Hier wird die Zensur zuschlagen.' in sentences
         assert 'Der zweite Satz ist aber okay.' in sentences
 
         # clear blacklist
         j.clear_blacklist(source_id)
         sentences = self._get_sentences(
-            j.submit_documents(docs, source_id=source_id)).pop()
+            j.submit_documents(documents=docs, source_id=source_id, wait_time=30)).pop()
         assert 'Hier wird die Zensur zuschlagen.' in sentences
         assert 'Der zweite Satz ist aber okay.' in sentences
 
@@ -197,7 +197,7 @@ class JeremiaTest(unittest.TestCase):
                 )
 
         j = Jeremia()
-        first, second = j.submit_documents(docs)
+        first, second = j.submit_documents(documents=docs, wait_time=30)
         # swap documents, if required
         if first['content_id'] == '124':
             first, second = second, first
@@ -238,13 +238,13 @@ class JeremiaTest(unittest.TestCase):
 
         # document list
         j = Jeremia()
-        result = j.submit_documents(DOCS)
+        result = j.submit_documents(documents=DOCS, wait_time=30)
         result.sort()
         REFERENCE_MULTI.sort()
         assert REFERENCE_MULTI == result
 
         # single document
-        result = j.submit_document(DOCS[0])
+        result = j.submit_document(document=DOCS[0], wait_time=30)
         assert REFERENCE_SINGLE == result
 
 
