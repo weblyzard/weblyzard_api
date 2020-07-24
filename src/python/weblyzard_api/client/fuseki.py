@@ -51,7 +51,7 @@ class FusekiWrapper(object):
         self.update_wrapper.setReturnFormat(JSON)
         self.update_wrapper.setTimeout(600000000)
 
-        self.query_wrapper = SPARQLWrapper(self.query_endpoint, agent="ecoresearch (ecoresearch.net/sparql)")
+        self.query_wrapper = SPARQLWrapper(self.query_endpoint, agent="Mozilla/5.0 (compatible; ecoresearchSparlClient/0.9; +http://www.ecoresearch.net)")
         self.query_wrapper.setReturnFormat(JSON)
         self.query_wrapper.setTimeout(600000000)
 
