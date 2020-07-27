@@ -70,7 +70,7 @@ public class KeywordCalculationProfile {
     private boolean ignoreTitles;
 
     /** Dynamically rotate reference corpus if true. */
-    @JsonProperty("is_online")
-    private boolean isOnline;
+    @JsonProperty("update_online")
+    private boolean updateOnline;
 
 }
