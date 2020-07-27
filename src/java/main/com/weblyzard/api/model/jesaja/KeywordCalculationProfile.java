@@ -71,6 +71,6 @@ public class KeywordCalculationProfile {
 
     /** Dynamically rotate reference corpus if true. */
     @JsonProperty("update_online")
-    private boolean updateOnline;
+    private boolean updateOnline = true;
 
 }
