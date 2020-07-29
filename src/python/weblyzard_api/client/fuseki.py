@@ -79,6 +79,7 @@ class FusekiWrapper(object):
 #                 return uri.replace(full_path, prefix_colon)
 #         return uri
 
+    @classmethod
     def _retry_with_backoff(decorated):
         def decorator(*args, **kwargs):
             max_retries = 14 # 2^(max_retries+1) seconds until error
