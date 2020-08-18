@@ -115,7 +115,7 @@ class TestJesajaNeks(unittest.TestCase):
             self.jesaja.set_matview_profile(
                 self.MATVIEW_NAME, self.PROFILE_NAME)
 
-            xml_documents = [self.xml_content]
+            documents = [self.xml_content]
 
             # create the reference corpus
             if not self.jesaja.has_corpus(matview_id=self.MATVIEW_NAME):
@@ -123,7 +123,7 @@ class TestJesajaNeks(unittest.TestCase):
                     #                     csv_corpus = {'keystone':25, 'energy': 123, 'ana': 12, 'tom': 22, 'petra': 3, 'clima':5, 'Shihab': 12, 'Kirche':10}
                     #                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
                     self.jesaja.add_documents(
-                        matview_id=self.MATVIEW_NAME, xml_documents=xml_documents)
+                        matview_id=self.MATVIEW_NAME, documents=documents)
         else:
             print('WARNING: Webservice is offline --> not executing all tests!!')
 

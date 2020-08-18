@@ -77,7 +77,7 @@ class JesajaNgTest(unittest.TestCase):
                     self.jesaja.add_csv(
                         matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus)
                     self.jesaja.add_documents(
-                        matview_id=self.MATVIEW_NAME, xml_documents=sample_corpus)
+                        matview_id=self.MATVIEW_NAME, documents=sample_corpus)
         else:
             print('WARNING: Webservice is offline --> not executing all tests!!')
 

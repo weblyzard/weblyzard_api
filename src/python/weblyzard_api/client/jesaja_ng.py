@@ -82,20 +82,20 @@ class JesajaNg(MultiRESTClient):
             raise ValueError('Please specify the matview for which the documents are designated.')
         return self.request('add_csv/{}'.format(matview_id), keyword_count_map)
 
-    def add_documents(self, matview_id, xml_documents):
+    def add_documents(self, matview_id, documents):
         '''
         Adds reference documents for Jesaja.
 
         :param matview_id:
             matview_id for which the documents are relevant
-        :param xml_documents:
-            a list of weblyzard_xml documents [ xml_content, ... ]
+        :param documents:
+            a list of weblyzard documents
         '''
         if matview_id is None:
             raise ValueError('Please specify the matview for which the documents are designated.')
-        return self.request('add_documents/{}'.format(matview_id), xml_documents)
+        return self.request('add_documents/{}'.format(matview_id), documents)
 
-    def get_keyword_annotations(self, matview_id, xml_documents):
+    def get_keyword_annotations(self, matview_id, documents, num_keywords=None):
         '''
         :param matview_id: the matview id for which the keywords are computed
         :param xml_documents:
@@ -104,19 +104,24 @@ class JesajaNg(MultiRESTClient):
         if not self.has_matview(matview_id):
             raise Exception(
                 'Cannot compute keywords - unknown matview {}'.format(matview_id))
-        return self.request('get_nek_annotations/{}'.format(matview_id), xml_documents)
 
-    def get_keywords(self, matview_id, xml_documents):
+        endpoint = f'get_nek_annotations/{matview_id}'
+        if num_keywords is not None:
+            endpoint = f'{endpoint}?num_keywords={num_keywords}'
+
+        return self.request(endpoint, documents)
+
+    def get_keywords(self, matview_id, documents):
         '''
         :param matview_id: the matview id for which the keywords are computed
-        :param xml_documents:
+        :param documents:
             a list of weblyzard_xml documents [ xml_content, ... ]
 
         '''
         if not self.has_matview(matview_id):
             raise Exception(
                 'Cannot compute keywords - unknown matview {}'.format(matview_id))
-        return self.request('get_keywords/{}'.format(matview_id), xml_documents)
+        return self.request('get_keywords/{}'.format(matview_id), documents)
 
     def has_matview(self, matview_id):
         return matview_id in self.list_matviews()
