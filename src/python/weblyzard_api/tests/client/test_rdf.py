@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 import pytest
 
 from weblyzard_api.client.rdf import (
-    prefix_uri, replace_prefix, parse_language_tagged_string)
+    prefix_uri, replace_prefix, parse_language_tagged_string,
+    NORMALIZED_NAMESPACE)
 
 
 @pytest.mark.parametrize(
@@ -95,3 +96,14 @@ def test_prefix_uri(uri, prefixed):
 def test_partial_prefix_uri(uri, partially_prefixed):
     result = prefix_uri(uri=uri, allow_partial=True)
     assert result == partially_prefixed
+
+
+def test_normalized_namespace():
+    # hardcoded mapping from uris encountered on the web to namespace
+    assert NORMALIZED_NAMESPACE['https://www.wikidata.org/wiki/Q42'] == 'http://www.wikidata.org/entity/Q42'
+    # default replacement of https->http
+    assert NORMALIZED_NAMESPACE['https://en.wikipedia.org/wiki/Longyearbyen'] == 'http://en.wikipedia.org/wiki/Longyearbyen'
+    # no replacement: non-matching strings and non-strings
+    assert NORMALIZED_NAMESPACE['abchttps'] == 'abchttps'
+    assert NORMALIZED_NAMESPACE[1] == 1
+    assert prefix_uri('https://www.wikidata.org/wiki/Q42') == 'wd:Q42'
