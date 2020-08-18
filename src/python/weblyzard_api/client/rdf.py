@@ -100,7 +100,7 @@ class NormalizedNamespace(dict):
         try:
             for web, ns in self.items():
                 if k.startswith(web):
-                    return k.replace(web, ns)
+                    return re.sub(web, ns, k)
             else:
                 return re.sub(*self.DEFAULT_SUBSTITUTION, k)
         except Exception as e:
@@ -116,9 +116,9 @@ PREFIXES = '\n'.join(
 
 NORMALIZED_NAMESPACE = NormalizedNamespace(
     {
-        re.compile(r'https://www.wikidata.org/wiki/Property:'): 'http://www.wikidata.org/prop/direct',
-        re.compile(r'https://www.geonames.org/'): 'http://sws.geonames.org/',
-        re.compile(r'https://www.wikidata.org/wiki/'): 'http://www.wikidata.org/entity/',
+        'https://www.wikidata.org/wiki/Property:': 'http://www.wikidata.org/prop/direct',
+        'https://www.geonames.org/': 'http://sws.geonames.org/',
+        'https://www.wikidata.org/wiki/': 'http://www.wikidata.org/entity/',
     }
 )
 
