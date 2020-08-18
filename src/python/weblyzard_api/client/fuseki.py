@@ -15,11 +15,14 @@ import json
 import os
 import socket
 import time
+import logging
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 import rdflib.term
 
 from weblyzard_api.client.rdf import PREFIXES, NAMESPACES
+
+logger = logging.getLogger(__name__)
 
 
 class FusekiWrapper(object):
@@ -47,7 +50,8 @@ class FusekiWrapper(object):
         self.update_wrapper.setReturnFormat(JSON)
         self.update_wrapper.setTimeout(600000000)
 
-        self.query_wrapper = SPARQLWrapper(self.query_endpoint)
+        self.query_wrapper = SPARQLWrapper(
+            self.query_endpoint, agent="Mozilla/5.0 (compatible; ecoresearchSparlClient/0.9; +http://www.ecoresearch.net)")
         self.query_wrapper.setReturnFormat(JSON)
         self.query_wrapper.setTimeout(600000000)
 
@@ -74,6 +78,26 @@ class FusekiWrapper(object):
 #             if uri.startswith(full_path):
 #                 return uri.replace(full_path, prefix_colon)
 #         return uri
+
+    def _retry_with_backoff(decorated):  # @NoSelf
+        def decorator(*args, **kwargs):
+            max_retries = 8  # 2^(max_retries+1) seconds until error
+            num_retries = 0
+            retry_delay = 1
+            success = False
+            while (not success) and num_retries < max_retries:
+                try:
+                    return decorated(*args, **kwargs)
+                    success = True
+                except Exception as e:
+                    logger.warning(
+                        f'retrying {decorated.__name__} in {retry_delay} seconds...')
+                    time.sleep(retry_delay)
+                    num_retries = num_retries + 1
+                    retry_delay = retry_delay * 2
+            # last try without catching the exception
+            return decorated(*args, **kwargs)
+        return decorator
 
     def fix_uri(self, o):
         '''
@@ -149,6 +173,7 @@ class FusekiWrapper(object):
         else:
             return variable_dict['value']
 
+    @_retry_with_backoff
     def execute_query(self, query, caching=False, on_fly_json_decoding=False):
 
         def parse_and_yield(result):
@@ -196,10 +221,9 @@ class FusekiWrapper(object):
                     for r in res['results']['bindings']:
                         yield r
         except socket.error as e:
-            print('socket error, waiting and retrying')
-            time.sleep(5)
-            for row in self.execute_query(query=query):
-                yield row
+            logger.warning(
+                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+            raise(e)
 
     def run_query(self, query, no_prefix=False, batch_size=None,
                   order_by_stmt=None, caching=False):
@@ -228,6 +252,7 @@ class FusekiWrapper(object):
             for row in self.execute_query(query, caching=caching):
                 yield row
 
+    @_retry_with_backoff
     def run_update(self, query, no_prefix=False):
         """ Run a given update query against the update endpoint.
         :param query: The query (insert, update) to run.
@@ -244,9 +269,9 @@ class FusekiWrapper(object):
             self.update_wrapper.setQuery(query)
             self.update_wrapper.query()
         except socket.error as e:
-            print('socket error, waiting and retrying')
-            time.sleep(5)
-            self.run_update(query=query, no_prefix=True)
+            logger.warning(
+                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+            raise(e)
 
     def exists(self, uri):
         """ Check if a given URI is already in the store.
