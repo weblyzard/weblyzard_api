@@ -69,4 +69,8 @@ public class KeywordCalculationProfile {
     @JsonProperty("ignore_titles")
     private boolean ignoreTitles;
 
+    /** Dynamically rotate reference corpus if true. */
+    @JsonProperty("update_online")
+    private boolean updateOnline = true;
+
 }
