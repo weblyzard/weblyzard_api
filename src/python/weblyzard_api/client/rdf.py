@@ -99,8 +99,8 @@ class NormalizedNamespace(dict):
     def __getitem__(self, k):
         try:
             for web, ns in self.items():
-                if k.startswith(wild):
-                    return k.replace(wild, tame)
+                if k.startswith(web):
+                    return k.replace(web, ns)
             else:
                 return re.sub(*self.DEFAULT_SUBSTITUTION, k)
         except Exception as e:
