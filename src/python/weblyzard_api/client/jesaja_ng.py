@@ -106,7 +106,7 @@ class JesajaNg(MultiRESTClient):
                 'Cannot compute keywords - unknown matview {}'.format(matview_id))
 
         endpoint = f'get_nek_annotations/{matview_id}'
-        if num_keywords is not None:
+        if num_keywords is not None and num_keywords > 0:
             endpoint = f'{endpoint}?num_keywords={num_keywords}'
 
         return self.request(endpoint, documents)
