@@ -168,7 +168,7 @@ def prefix_uri(uri: str, allow_partial: bool = False) -> str:
                     # end
                     continue
             return replaced
-    return uri
+    return normalized_uri
 
 
 def replace_prefix(uri):
