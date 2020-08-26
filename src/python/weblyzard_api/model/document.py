@@ -26,6 +26,7 @@ class Document(object):
     FRAGMENT_KEY = 'FRAGMENT'
     SENTENCE_KEY = u'SENTENCE'
     TITLE_KEY = u'TITLE'
+    BODY_KEY = u'BODY'
     TOKEN_KEY = u'TOKEN'
     SENTIMENT_KEY = u'SENTIMENT_SCOPE'
     # NEGATION_KEY = u'NEGATION_SCOPE'
@@ -64,6 +65,15 @@ class Document(object):
         self.partitions = partitions if partitions else {}
         self.header = header if header else {}
         self.annotations = annotations if annotations else []
+
+    def get_body(self):
+        if self.content is None or len(self.content) == 0:
+            return ''
+        if self.BODY_KEY in self.partitions:
+            body_spans = self.partitions[self.BODY_KEY]
+            spans = [self.content[span.start:span.end] for span in body_spans]
+            return ' '.join(spans)
+        return ''
 
     def get_title(self):
         if self.content is None or len(self.content) == 0:
