@@ -4,6 +4,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import re
 from enum import Enum
 
 
@@ -87,11 +88,39 @@ class Namespace(Enum):
             pass
 
 
+class NormalizedNamespace(dict):
+    """Map uris as encountered on the web to the namespace they represent.
+    As a default, replace 'https' with 'http'"""
+    DEFAULT_SUBSTITUTION = (re.compile(r'^https'), 'http')
+
+    def __init__(self, data):
+        dict.__init__(self, data)
+
+    def __getitem__(self, k):
+        try:
+            for web, ns in self.items():
+                if k.startswith(web):
+                    return re.sub(web, ns, k)
+            else:
+                return re.sub(*self.DEFAULT_SUBSTITUTION, k)
+        except Exception as e:
+            return k
+
+
 NAMESPACES = {item.value: item.name.lower() for item in Namespace}
 
-PREFIXES = '\n'.join([''] + ['PREFIX {value}: <{key}>'.format(value=item.name.lower(),
-                                                              key=item.value)
-                             for item in Namespace])
+PREFIXES = '\n'.join(
+    [''] + ['PREFIX {value}: <{key}>'.format(value=item.name.lower(),
+                                             key=item.value)
+            for item in Namespace])
+
+NORMALIZED_NAMESPACE = NormalizedNamespace(
+    {
+        'https://www.wikidata.org/wiki/Property:': 'http://www.wikidata.org/prop/direct',
+        'https://www.geonames.org/': 'http://sws.geonames.org/',
+        'https://www.wikidata.org/wiki/': 'http://www.wikidata.org/entity/',
+    }
+)
 
 
 def to_fully_qualified(attribute: str) -> str:
@@ -114,7 +143,7 @@ def to_fully_qualified(attribute: str) -> str:
     return '{%s}%s' % (Namespace.to_fully_qualified(namespace), attr_name)
 
 
-def prefix_uri(uri: str, allow_partial: bool=False) -> str:
+def prefix_uri(uri: str, allow_partial: bool = False) -> str:
     """ Replace a sub-path from the uri with the most specific prefix as defined
     in the Namespace.
     :param uri: The URI to modify.
@@ -127,9 +156,11 @@ def prefix_uri(uri: str, allow_partial: bool=False) -> str:
     if not uri.startswith('http'):
         return uri
     # replace most specific/longest prefix, hence sorted
-    for namespace in sorted(list([ns.value for ns in Namespace]), key=len, reverse=True):
-        if namespace in uri:
-            replaced = uri.replace(
+    normalized_uri = NORMALIZED_NAMESPACE[uri]
+    for namespace in sorted(list([ns.value for ns in Namespace]), key=len,
+                            reverse=True):
+        if namespace in normalized_uri:
+            replaced = normalized_uri.replace(
                 namespace, '{}:'.format(Namespace.to_prefix(namespace)))
             if '/' in replaced[:-1] or '#' in replaced[:-1]:
                 if not allow_partial:
@@ -137,7 +168,7 @@ def prefix_uri(uri: str, allow_partial: bool=False) -> str:
                     # end
                     continue
             return replaced
-    return uri
+    return normalized_uri
 
 
 def replace_prefix(uri):
