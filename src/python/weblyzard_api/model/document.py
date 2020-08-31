@@ -273,8 +273,8 @@ class Document(object):
     @classmethod
     def overlapping(cls, spanA, spanB):
         ''' Return whether two spans overlap. '''
-        return (spanB.start <= spanA.start and spanB.end >= spanA.end) or \
-                (spanA.start <= spanB.start and spanA.end >= spanB.end)
+        return (spanB.start <= spanA.start and spanB.end > spanA.start) or \
+                (spanA.start <= spanB.start and spanA.end > spanB.start)
 
     def get_partition_overlaps(self, search_span, target_partition_key):
         ''' Return all spans from a given target_partition_key that overlap 
