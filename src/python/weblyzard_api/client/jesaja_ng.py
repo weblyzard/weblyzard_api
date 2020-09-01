@@ -95,18 +95,18 @@ class JesajaNg(MultiRESTClient):
             raise ValueError('Please specify the matview for which the documents are designated.')
         return self.request('add_documents/{}'.format(matview_id), documents)
 
-    def get_keyword_annotations(self, matview_id, documents, num_keywords=None):
+    def get_keyword_annotations(self, matview_id, documents, num_keywords:int=None):
         '''
         :param matview_id: the matview id for which the keywords are computed
-        :param xml_documents:
-            a list of weblyzard_xml documents [ xml_content, ... ]
+        :param documents:  a list of weblyzard documents
+        :param num_keywords:
         '''
         if not self.has_matview(matview_id):
             raise Exception(
                 'Cannot compute keywords - unknown matview {}'.format(matview_id))
 
         endpoint = f'get_nek_annotations/{matview_id}'
-        if num_keywords is not None and num_keywords > 0:
+        if num_keywords is not None and int(num_keywords) > 0:
             endpoint = f'{endpoint}?num_keywords={num_keywords}'
 
         return self.request(endpoint, documents)
