@@ -153,6 +153,7 @@ class Jeremia(MultiRESTClient):
                                       pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
+                logger.warning(f'will retry (num_attempts:{attempts}) due to {e}')
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the
