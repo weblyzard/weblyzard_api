@@ -311,7 +311,7 @@ class Document(object):
         """
         result = []
         offset = 0
-        requested_keys = [self.SENTENCE_KEY]
+        requested_keys = [self.SENTENCE_KEY, self.FRAGMENT_KEY]
         if not any([key in self.partitions for key in requested_keys]):
             return result
         sentence_spans = chain(
@@ -358,5 +358,7 @@ class Document(object):
                                    pos=pos_sequence, token=tok_sequence,
                                    value=value, is_title=is_title,
                                    dependency=dep_sequence))
+
+        result = sorted(result, key=lambda sentence: sentence.start)
 
         return result
