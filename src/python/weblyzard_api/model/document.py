@@ -317,6 +317,8 @@ class Document(object):
         sentence_spans = chain(
             *(self.partitions.get(key, []) for key in requested_keys)
         )
+        result = sorted(result, key=lambda span: span.start)
+
         for sentence_span in sentence_spans:
             if zero_based:
                 offset = sentence_span.start
@@ -358,7 +360,5 @@ class Document(object):
                                    pos=pos_sequence, token=tok_sequence,
                                    value=value, is_title=is_title,
                                    dependency=dep_sequence))
-
-        result = sorted(result, key=lambda sentence: sentence.start)
 
         return result
