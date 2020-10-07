@@ -311,12 +311,14 @@ class Document(object):
         """
         result = []
         offset = 0
-        requested_keys = [self.SENTENCE_KEY]
+        requested_keys = [self.SENTENCE_KEY, self.FRAGMENT_KEY]
         if not any([key in self.partitions for key in requested_keys]):
             return result
         sentence_spans = chain(
             *(self.partitions.get(key, []) for key in requested_keys)
         )
+        result = sorted(result, key=lambda span: span.start)
+
         for sentence_span in sentence_spans:
             if zero_based:
                 offset = sentence_span.start
