@@ -8,14 +8,17 @@ Created on Aug 30, 2016
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
+import re
 
 from weblyzard_api.client.recognize.ng import Recognize
 
 
 class TestRecognizeNg(unittest.TestCase):
 
-    SERVICE_URL = 'localhost:63007/rest'
-    PROFILE_NAME = 'wl_full_international_en'
+    REQUIRED_REGEXPS = []
+
+    SERVICE_URL = 'http://gecko6.wu.ac.at:8089/rest'
+    PROFILE_NAME = 'en_full_all'
     DOCUMENTS = [{u'annotations': [],
                   u'content': u'Hello "world" more \nDonald Trump and Barack Obama are presidents in the United States. Vienna is the capital of Austria, Berlin is the capital of Germany. Linz also is in Austria" 1000',
                   u'format': u'text/html',
@@ -309,9 +312,58 @@ class TestRecognizeNg(unittest.TestCase):
             annotations = result['annotations']
             from pprint import pprint
             pprint(annotations)
-
             assert len(annotations) > 0
+            if self.REQUIRED_REGEXPS:
+                for regexp in self.REQUIRED_REGEXPS:
+                    assert any([re.match(regexp, entity['key']) for entity in annotations])
 
+class TestRecognizeWien(TestRecognizeNg):
+
+    # SERVICE_URL = 'http://gecko6.wu.ac.at:8089/rest'
+    SERVICE_URL = 'http://localhost:63007/rest'
+    PROFILE_NAME = 'test_street_disambiguation2'
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': u'Die Hufgasse in Wien ist alles mögliche, aber nicht ist die bekannteste Einkaufsstraße im Westen von Deutschland.',
+                   u'format': u'text/html',
+                   u'header': {},
+                   u'id': u'1000',
+                   u'lang': u'DE',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+class TestRecognizeDisambiguation(TestRecognizeNg):
+    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
+    SERVICE_URL = 'http://localhost:63007/rest'
+    # SERVICE_URL = 'http://gecko6.wu.ac.at:8089/rest'
+    PROFILE_NAME = 'test_street_disambiguation2'
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': u'Die Waidhausenstraße in Wien - die bekannteste Einkaufsstraße Österreichs - ist seit 20. August 2020 um eine Attraktion reicher.',
+                   u'format': u'text/html',
+                   u'header': {},
+                   u'id': u'1000',
+                   u'lang': u'DE',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+class TestRecognizeOsmNl(TestRecognizeNg):
+    REQUIRED_REGEXPS = [re.compile(r'.*openstreetmap.*')]
+    SERVICE_URL = 'http://gecko6.wu.ac.at:8089/rest'
+    PROFILE_NAME = 'wl_full_osm_date_nl'
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': u'Met de aankondiging van de sluiting van Schrameijer Meubelen komt er een einde aan een tijdperk. In 1976 begonnen Hennie en Gea Schrameijer met een antiekzaak. Dat was in het pand aan de Overdiepse-Polderweg waar nu La Cuisine is gevestigd. Later kwamen daar grenen meubelen bij; Hennie ging naar Duitsland voor de inkoop, Gea had de winkel onder haar hoede.',
+                   u'format': u'text/html',
+                   u'header': {},
+                   u'id': u'1000',
+                   u'lang': u'NL',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+class TestRecognizeOsmNl2(TestRecognizeOsmNl):
+    REQUIRED_REGEXPS = [re.compile(r'.*openstreetmap.*')]
+    PROFILE_NAME =  'wl_full_osm_date_nl'
+    DOCUMENTS = TestRecognizeOsmNl.DOCUMENTS
+    DOCUMENTS[0]['content'] = """En passant slaat Sjors nog een gratis knipbeurt af. ,,Nee dat hoef niet, ik ga maar één keer per jaar naar de kapper.''. Udo, die tijdens zijn geboorte een hersenbeschadiging opliep, vergaarde roem met 'het fietspompje' op de website Dumpert.nl . Rapper Sjors heeft zijn bekendheid vooral te danken aan het bezoek van tv-programma Man Bijt Hond aan zijn ouderlijk huis in 2013. Ook haalde hij het nieuws met optredens die niet helemaal goed verliepen en zijn strijd tegen kanker . Udo heeft zondag al snel last van de warmte: ,,Ik heb het zweet tussen mijn bilnaat zitten.'' De cameraman reageert met een verrassende kwinkslag naar de gewelddadige drillraps: ,,Oh wacht, we doen een drillbilrap.''. Burgemeesteres Bruls. De twee hadden de grootste schik samen. Terwijl ze door de Marikenstraat lopen bespreken ze de grootste hiphop-legendes van Nederland. Rapper Sjors: ,,Je hebt Udo de Beatboxer, Udo de Beatboxer 2.0 en Udo de Beatboxer met de rode pet.''. Tot rappen en beatboxen komen de twee niet, maar Sjors heeft nog wel een boodschap voor 'burgemeesteres Bruls'. ,,Hij moet niet zoveel brullen.''."""
 
 if __name__ == '__main__':
     unittest.main()
