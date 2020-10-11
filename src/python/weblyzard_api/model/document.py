@@ -303,15 +303,19 @@ class Document(object):
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based=False, include_title=True):
+    def get_sentences(self, zero_based=False, include_title=True,
+                      include_fragments=False):
         """
         Legacy method to extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
-        :param include_title: if True, include sentence
+        :param include_title: if True, include title sentences
+        :param include_fragments: if True, include fragments (non-sentence text)
         """
         result = []
         offset = 0
-        requested_keys = [self.SENTENCE_KEY, self.FRAGMENT_KEY]
+        requested_keys = [self.SENTENCE_KEY]
+        if include_fragments:
+            requested_keys.append(self.FRAGMENT_KEY)
         if not any([key in self.partitions for key in requested_keys]):
             return result
         sentence_spans = chain(
