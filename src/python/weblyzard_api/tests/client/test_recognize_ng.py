@@ -10,6 +10,8 @@ from __future__ import unicode_literals
 import unittest
 import re
 
+from collections import OrderedDict
+
 from weblyzard_api.client.recognize.ng import Recognize
 
 
@@ -19,6 +21,7 @@ class TestRecognizeNg(unittest.TestCase):
 
     SERVICE_URL = 'http://gecko6.wu.ac.at:8089/rest'
     PROFILE_NAME = 'en_full_all'
+    URLS_PROFILES_MAPPING = None
     DOCUMENTS = [{u'annotations': [],
                   u'content': u'Hello "world" more \nDonald Trump and Barack Obama are presidents in the United States. Vienna is the capital of Austria, Berlin is the capital of Germany. Linz also is in Austria" 1000',
                   u'format': u'text/html',
@@ -306,16 +309,23 @@ class TestRecognizeNg(unittest.TestCase):
 #         assert len(result) == 6
 
     def test_annotate_document(self):
+        if not self.URLS_PROFILES_MAPPING:
+            urls_profiles_mapping = [(self.SERVICE_URL, self.PROFILE_NAME)]
+        else:
+            urls_profiles_mapping = self.URLS_PROFILES_MAPPING
         for document in self.DOCUMENTS:
-            result = self.client.search_document(profile_name=self.PROFILE_NAME,
-                                                 document=document, limit=0)
-            annotations = result['annotations']
-            from pprint import pprint
-            pprint(annotations)
-            assert len(annotations) > 0
+            for url, profile in urls_profiles_mapping:
+                client =  Recognize(url)
+                result = client.search_document(profile_name=profile,
+                                                     document=document, limit=0)
+                annotations = result['annotations']
+                from pprint import pprint
+                pprint(annotations)
+                assert len(annotations) > 0
+                document = result
             if self.REQUIRED_REGEXPS:
-                for regexp in self.REQUIRED_REGEXPS:
-                    assert any([re.match(regexp, entity['key']) for entity in annotations])
+                    for regexp in self.REQUIRED_REGEXPS:
+                        assert any([re.match(regexp, entity['key']) for entity in annotations])
 
 class TestRecognizeWien(TestRecognizeNg):
 
@@ -332,12 +342,18 @@ class TestRecognizeWien(TestRecognizeNg):
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
 
 class TestRecognizeDisambiguation(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.
+    (WIP as of 2020-10-10)."""
     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
     SERVICE_URL = 'http://localhost:63007/rest'
-    # SERVICE_URL = 'http://gecko6.wu.ac.at:8089/rest'
-    PROFILE_NAME = 'test_street_disambiguation2'
+    PROFILE_NAME = 'test_street_disambiguation3'
+    # PROFILE_NAME = 'de_full_all'
+
+    # wien gn id: http://sws.geonames.org/2761333
+    # wels gn id http://sws.geonames.org/2761524
     DOCUMENTS = [{u'annotations': [],
-                   u'content': u'Die Waidhausenstraße in Wien - die bekannteste Einkaufsstraße Österreichs - ist seit 20. August 2020 um eine Attraktion reicher.',
+                   u'content': u'Die Waidhausenstraße in Wien  (http://sws.geonames.org/2761369/) ist seit 20. August 2020 um eine Attraktion reicher.',
                    u'format': u'text/html',
                    u'header': {},
                    u'id': u'1000',
