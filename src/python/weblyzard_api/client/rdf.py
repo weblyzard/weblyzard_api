@@ -117,7 +117,6 @@ PREFIXES = '\n'.join(
 NORMALIZED_NAMESPACE = NormalizedNamespace(
     {
         'https://www.wikidata.org/wiki/Property:': 'http://www.wikidata.org/prop/direct',
-        'https://www.geonames.org/': 'http://sws.geonames.org/',
         'https://www.wikidata.org/wiki/': 'http://www.wikidata.org/entity/',
     }
 )
@@ -143,7 +142,7 @@ def to_fully_qualified(attribute: str) -> str:
     return '{%s}%s' % (Namespace.to_fully_qualified(namespace), attr_name)
 
 
-def prefix_uri(uri: str, allow_partial: bool = False) -> str:
+def prefix_uri(uri: str, allow_partial: bool=False) -> str:
     """ Replace a sub-path from the uri with the most specific prefix as defined
     in the Namespace.
     :param uri: The URI to modify.
