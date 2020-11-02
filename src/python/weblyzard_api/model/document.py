@@ -239,12 +239,14 @@ class Document(object):
         result = self._dict_transform(self)
         return result
 
-    def to_xml(self, ignore_title=False, xml_version=XML2013.VERSION):
+    def to_xml(self, ignore_title=False, include_fragments=False,
+               xml_version=XML2013.VERSION):
         ''' 
         Serialize a document to XML.
-        :param ignore_titles, if set, titles will not be serialized
-        :param xml_version, the version of XML to be used (defaults to 2013)
-        @return: the serialized XML
+        :param ignore_titles: if set, titles will not be serialized.
+        :param include_fragments: non-sentence fragments will be included.
+        :param xml_version: the version of XML to be used (defaults to 2013)
+        :return: the serialized XML
         '''
         if not hasattr(self, 'features'):
             self.features = {}
@@ -261,7 +263,7 @@ class Document(object):
         return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(
             titles=titles,
             attributes=self.header,
-            sentences=self.get_sentences())
+            sentences=self.get_sentences(include_fragments=include_fragments))
 
     def get_text_by_span(self, span):
         ''' 
@@ -314,6 +316,7 @@ class Document(object):
         result = []
         offset = 0
         requested_keys = [self.SENTENCE_KEY]
+
         if include_fragments:
             requested_keys.append(self.FRAGMENT_KEY)
         if not any([key in self.partitions for key in requested_keys]):
@@ -321,7 +324,7 @@ class Document(object):
         sentence_spans = chain(
             *(self.partitions.get(key, []) for key in requested_keys)
         )
-        result = sorted(result, key=lambda span: span.start)
+        sentence_spans = sorted(sentence_spans, key=lambda span: span.start)
 
         for sentence_span in sentence_spans:
             if zero_based:
@@ -335,6 +338,8 @@ class Document(object):
             is_title = len(
                 self.get_partition_overlaps(search_span=sentence_span,
                                             target_partition_key=self.TITLE_KEY)) > 0
+            if not include_title and is_title:
+                continue
 
             # serialize POS, tokens, and dependecy to string
             pos_sequence = ' '.join([ts.pos for ts in token_spans])
