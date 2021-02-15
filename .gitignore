@@ -69,3 +69,4 @@ coverage.xml
 # Checkstyle         #
 ######################
 .checkstyle
+/.pytest_cache/
