@@ -258,6 +258,21 @@ class FusekiWrapper(object):
                 f'socket error {self.query_endpoint}: {e}', exc_info=True)
             raise(e)
 
+    def ask(self, query, no_prefix=False):
+        if not no_prefix:
+            query = u'{}{}'.format(self.PREFIXES, query)
+        self.debug(u'running the following ask query against {endpoint}\n{query}'.format(
+            query=query,
+            endpoint=self.query_endpoint))
+        try:
+            self.query_wrapper.setQuery(query)
+            res = self.query_wrapper.query().convert()
+            return res["boolean"]
+        except socket.error as e:
+            logger.warning(
+                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+            raise(e)
+
     def exists(self, uri):
         """ Check if a given URI is already in the store.
         :param uri:
