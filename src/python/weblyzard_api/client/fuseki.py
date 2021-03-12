@@ -258,7 +258,12 @@ class FusekiWrapper(object):
                 f'socket error {self.query_endpoint}: {e}', exc_info=True)
             raise(e)
 
-    def ask(self, query, no_prefix=False):
+    def ask(self, query:str, no_prefix:bool=False) -> bool:
+        '''
+        Run a given ask query against the query endpoint.
+        :param query: the ask query to run
+        :param no_prefix: do not preface with rdf PREFIXES
+        '''
         if not no_prefix:
             query = u'{}{}'.format(self.PREFIXES, query)
         self.debug(u'running the following ask query against {endpoint}\n{query}'.format(
