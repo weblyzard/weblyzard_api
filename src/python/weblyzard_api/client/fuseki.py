@@ -52,6 +52,7 @@ class FusekiWrapper(object):
 
         self.query_wrapper = SPARQLWrapper(
             self.query_endpoint, agent="Mozilla/5.0 (compatible; ecoresearchSparlClient/0.9; +http://www.ecoresearch.net)")
+        self.query_wrapper.method = 'GET'
         self.query_wrapper.setReturnFormat(JSON)
         self.query_wrapper.setTimeout(600000000)
 
@@ -61,25 +62,8 @@ class FusekiWrapper(object):
         if self.debug_:
             print(string_)
 
-# mcg: deprecated
-#     def expand_prefix(self, uri):
-#         '''
-#         Replaces a prefix known to FusekiWrapper by the full URI path.
-#         '''
-#         for full_path, prefix in self.NAMESPACES.items():
-#             prefix_colon = u'{}:'.format(prefix)
-#             if uri.startswith(prefix_colon):
-#                 return uri.replace(prefix_colon, full_path)
-#         return uri
-#
-#     def prefix_uri(self, uri):
-#         for full_path, prefix in self.NAMESPACES.items():
-#             prefix_colon = u'{}:'.format(prefix)
-#             if uri.startswith(full_path):
-#                 return uri.replace(full_path, prefix_colon)
-#         return uri
-
     def _retry_with_backoff(decorated):  # @NoSelf
+
         def decorator(*args, **kwargs):
             max_retries = 8  # 2^(max_retries+1) seconds until error
             num_retries = 0
@@ -97,6 +81,7 @@ class FusekiWrapper(object):
                     retry_delay = retry_delay * 2
             # last try without catching the exception
             return decorated(*args, **kwargs)
+
         return decorator
 
     def fix_uri(self, o):
@@ -268,6 +253,26 @@ class FusekiWrapper(object):
         try:
             self.update_wrapper.setQuery(query)
             self.update_wrapper.query()
+        except socket.error as e:
+            logger.warning(
+                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+            raise(e)
+
+    def ask(self, query:str, no_prefix:bool=False) -> bool:
+        '''
+        Run a given ask query against the query endpoint.
+        :param query: the ask query to run
+        :param no_prefix: do not preface with rdf PREFIXES
+        '''
+        if not no_prefix:
+            query = u'{}{}'.format(self.PREFIXES, query)
+        self.debug(u'running the following ask query against {endpoint}\n{query}'.format(
+            query=query,
+            endpoint=self.query_endpoint))
+        try:
+            self.query_wrapper.setQuery(query)
+            res = self.query_wrapper.query().convert()
+            return res["boolean"]
         except socket.error as e:
             logger.warning(
                 f'socket error {self.query_endpoint}: {e}', exc_info=True)
