@@ -62,9 +62,11 @@ class Document(object):
         self.nilsimsa = nilsimsa
 
         # populate default dicts:
-        self.partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                                for label, spans in partitions.items()} \
-                                    if len(partitions) else {}
+        if partitions is None:
+            self.partitions = {}
+        else:
+            self.partitions = {label: [SpanFactory.new_span(span) for span in spans]
+                                for label, spans in partitions.items()}
         self.header = header if header else {}
         self.annotations = annotations if annotations else []
 
