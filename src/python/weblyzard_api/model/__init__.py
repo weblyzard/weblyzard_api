@@ -92,7 +92,7 @@ class SentenceCharSpan(CharSpan):
                     'multimodal_sentiment': 'multimodal_sentiment',
                     'id': 'md5sum'}
 
-    def __init__(self, span_type, start, end, md5sum, sem_orient=0.0,
+    def __init__(self, span_type, start, end, md5sum=None, sem_orient=0.0,
                  significance=0.0, multimodal_sentiment=None):
         CharSpan.__init__(self, span_type, start, end)
         self.md5sum = md5sum
