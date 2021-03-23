@@ -19,7 +19,6 @@ import logging
 
 standard_library.install_aliases()
 
-
 logger = logging.getLogger('weblyzard_api.client.jeremia')
 
 # number of seconds to wait if the web service is occupied
@@ -107,12 +106,12 @@ class Jeremia(MultiRESTClient):
 
             # submit the request
             try:
-                logger.debug('submit_document: {}'.format(document))
+                logger.debug('Submit_document: %s', document)
                 result = self.request(
                     'submit_document', document, pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                logger.warn(f'submit_document failed... Sleeping before retry...')
+                logger.warning('Submit_document failed... Sleeping before retry...')
                 sleep(max_retry_delay * random())
                 attempts = attempts + 1
 
