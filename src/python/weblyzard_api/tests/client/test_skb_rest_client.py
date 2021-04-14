@@ -5,7 +5,6 @@ import os
 import pytest
 import unittest
 
-
 from weblyzard_api.client.skb_rest_client import SKBRESTClient
 #
 #
@@ -50,6 +49,7 @@ from weblyzard_api.client.skb_rest_client import SKBRESTClient
 
 
 class TestSKBEntities(unittest.TestCase):
+
     def setUp(self):
         self.skb_client = SKBRESTClient(url=os.getenv(
             'WL_SKB_UNITTEST_URL', 'http://localhost:5555'))
@@ -101,6 +101,36 @@ class TestSKBEntities(unittest.TestCase):
             "lexinfo:partOfSpeech": "noun"
         }
 
+        # missing pos
+        kw_annotation = {
+            "entityType": "NonEntityKeyword",
+            "key": "http://weblyzard.com/skb/keyword/fr/privé",
+            "provenance": "save_skb_entities",
+            "preferredName": "privé"
+        }
+        cleaned = self.skb_client.clean_keyword_data(kw_annotation)
+        assert cleaned == {
+            "entityType": "NonEntityKeyword",
+            "uri": "http://weblyzard.com/skb/keyword/fr/privé",
+            "provenance": "save_skb_entities",
+            "preferredName": "privé@fr",
+        }
+
+        # missing lang
+        kw_annotation = {
+            "entityType": "NonEntityKeyword",
+            "key": "http://weblyzard.com/skb/keyword/solo",
+            "provenance": "save_skb_entities",
+            "preferredName": "solo"
+        }
+        cleaned = self.skb_client.clean_keyword_data(kw_annotation)
+        assert cleaned == {
+            "entityType": "NonEntityKeyword",
+            "uri": "http://weblyzard.com/skb/keyword/solo",
+            "provenance": "save_skb_entities",
+            "preferredName": "solo",
+        }
+
     def test_save_keyword(self):
         kw_annotation = {
             "topEntityId": "energy",
@@ -137,7 +167,7 @@ class TestSKBEntities(unittest.TestCase):
             u"last_modified": u"2014-07-15T18:46:42+00:00",
             u"page_type": u"article",
             u"published_date": u"2014-07-15T18:46:42+00:00",
-            #@ at the beginning of values not allowed as it is reserved for language tags
+            # @ at the beginning of values not allowed as it is reserved for language tags
             # u"twitter_site": u"@mfm_Kay",
             u"twitter_card": u"summary"
         }
