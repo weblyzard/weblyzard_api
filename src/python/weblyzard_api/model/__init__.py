@@ -131,15 +131,17 @@ class SentimentCharSpan(CharSpan):
         self.modality = modality
 
 
-class ParagraphCharSpan(CharSpan):
+class LayoutCharSpan(CharSpan):
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
+                    'layout': 'layout',
                     'title': 'title',
                     'level': 'level'}
 
-    def __init__(self, span_type, start, end, title, level):
+    def __init__(self, span_type, start, end, layout, title, level):
         CharSpan.__init__(self, span_type=span_type, start=start, end=end)
+        self.layout = layout
         self.title = title
         self.level = level
 
@@ -151,7 +153,7 @@ class SpanFactory(object):
         'SentimentCharSpan': SentimentCharSpan,
         'MultiplierCharSpan': MultiplierCharSpan,
         'SentenceCharSpan': SentenceCharSpan,
-        'ParagraphCharSpan': ParagraphCharSpan
+        'LayoutCharSpan': LayoutCharSpan
     }
 
     @classmethod
