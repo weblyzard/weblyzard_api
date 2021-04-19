@@ -329,7 +329,7 @@ class FusekiWrapper(object):
                 candidate_uri = u'{}_{}'.format(base_uri, suffix)
             return candidate_uri
 
-    def insert_triples(self, triple_list):
+    def insert_triples(self, triple_list, graph_name=None):
         slice_size = 250
         lower = 0
         num_triples = len(triple_list)
@@ -346,24 +346,32 @@ class FusekiWrapper(object):
                     break
             sub_list = [self.fix_uri(t) for t in sub_list]
             triples = '.\n'.join([' '.join(triple) for triple in sub_list])
+            graph_specification = f'graph <{graph_name}>' if graph else ''
             query = u"""
             INSERT DATA {{
-              {triples}
+              {graph_specification} {{ {triples} }}
             }}
-            """.format(triples=triples)
+            """.format(graph_specification=graph_graph_specification,
+                       triples=triples)
             lower = upper
             upper = min(num_triples, upper + slice_size)
             self.run_update(query=query)
         [self.uri_cache.add(t[0]) for t in triple_list]
         [self.uri_cache.add(t[2]) for t in triple_list if self.is_uri(t[2])]
 
-    def insert_triple(self, s, p, o):
+    def insert_triple(self, s, p, o, graph_name=None):
         triple = ' '.join([self.fix_uri(s), self.fix_uri(p), self.fix_uri(o)])
+        graph_specification = f'graph <{graph_name}>' if graph_name else ''
         query = u"""
         INSERT DATA {{
-          {triple}
+        {graph_specification}
+          {{
+            {triple}
+          }}
         }}
-        """.format(triple=triple)
+        """.format(graph_specification=graph_specification, triple=triple)
+        if graph_name is not None:
+            query = query.replace(f'{triple}', f'graph <{graph_name}> {{ {triple} }}')
         self.run_update(query=query)
         self.uri_cache.add(s)
         if self.is_uri(o):
