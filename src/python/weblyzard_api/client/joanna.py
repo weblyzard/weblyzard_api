@@ -188,7 +188,7 @@ class Joanna(object):
                     return json_data
             elif conn.code == 204:
                 data = conn.read()
-                logger.info('No content found attempts {} {}', attempts, data)
+                logger.info('No content found attempts %s %s', attempts, data)
             elif conn.code == 400:
                 logger.error('Bad request.. 404 error')
                 data = conn.read()

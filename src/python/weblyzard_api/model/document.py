@@ -14,7 +14,7 @@ from decimal import Decimal
 from itertools import chain
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
-from weblyzard_api.model import Sentence, SpanFactory
+from weblyzard_api.model import Sentence, SpanFactory, TokenCharSpan
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.exceptions import (MissingFieldException,
@@ -28,6 +28,7 @@ class Document(object):
     TITLE_KEY = u'TITLE'
     BODY_KEY = u'BODY'
     TOKEN_KEY = u'TOKEN'
+    LAYOUT_KEY = u'LAYOUT'
     SENTIMENT_KEY = u'SENTIMENT_SCOPE'
     # NEGATION_KEY = u'NEGATION_SCOPE'
     MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
@@ -61,8 +62,12 @@ class Document(object):
         self.lang = lang.lower() if lang else lang
         self.nilsimsa = nilsimsa
 
-        # five dictionaries
-        self.partitions = partitions if partitions else {}
+        # populate default dicts:
+        if partitions is None:
+            self.partitions = {}
+        else:
+            self.partitions = {label: [SpanFactory.new_span(span) for span in spans]
+                                for label, spans in partitions.items()}
         self.header = header if header else {}
         self.annotations = annotations if annotations else []
 
@@ -195,11 +200,10 @@ class Document(object):
 
         # This is tricky ... the mapping cannot be easily inversed
         # making the md5sum to content_id conversion at the top level necessary
-        inverse_mapping = {v: k for k,
-                                    v in cls.MAPPING.items() if
-                           k != 'content_id'}
-        parsed_content = Document._dict_transform(
-            dict_, mapping=inverse_mapping)
+        inverse_mapping = {v: k for k, v in cls.MAPPING.items() if
+                                                    k != 'content_id'}
+        parsed_content = Document._dict_transform(dict_,
+                                                  mapping=inverse_mapping)
         parsed_content['content_id'] = parsed_content.pop('md5sum')
 
         # populate default dicts:

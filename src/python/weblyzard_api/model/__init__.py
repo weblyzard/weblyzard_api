@@ -39,11 +39,11 @@ class CharSpan(object):
 
     @classmethod
     def from_dict(cls, dict_):
-        mismatched_keys = {k: v for k, v in dict_.items() if
-                           k not in cls.DICT_MAPPING}
-        if mismatched_keys:
-            pass  # debugging
-        kwargs = {cls.DICT_MAPPING[k]: v for k, v in dict_.items()}
+        # mismatched_keys = {k: v for k, v in dict_.items() if
+        #                   k not in cls.DICT_MAPPING}
+        # if mismatched_keys:
+        #    pass  # debugging
+        kwargs = {cls.DICT_MAPPING.get(k, k): v for k, v in dict_.items()}
         try:
             return cls(**kwargs)
         except TypeError as e:
@@ -92,8 +92,8 @@ class SentenceCharSpan(CharSpan):
                     'multimodal_sentiment': 'multimodal_sentiment',
                     'id': 'md5sum'}
 
-    def __init__(self, span_type, start, end, md5sum, sem_orient,
-                 significance, multimodal_sentiment=None):
+    def __init__(self, span_type, start, end, md5sum=None, sem_orient=0.0,
+                 significance=0.0, multimodal_sentiment=None):
         CharSpan.__init__(self, span_type, start, end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
@@ -131,15 +131,17 @@ class SentimentCharSpan(CharSpan):
         self.modality = modality
 
 
-class ParagraphCharSpan(CharSpan):
+class LayoutCharSpan(CharSpan):
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
+                    'layout': 'layout',
                     'title': 'title',
                     'level': 'level'}
 
-    def __init__(self, span_type, start, end, title, level):
+    def __init__(self, span_type, start, end, layout, title, level):
         CharSpan.__init__(self, span_type=span_type, start=start, end=end)
+        self.layout = layout
         self.title = title
         self.level = level
 
@@ -151,37 +153,59 @@ class SpanFactory(object):
         'SentimentCharSpan': SentimentCharSpan,
         'MultiplierCharSpan': MultiplierCharSpan,
         'SentenceCharSpan': SentenceCharSpan,
-        'ParagraphCharSpan': ParagraphCharSpan
+        'LayoutCharSpan': LayoutCharSpan
     }
 
     @classmethod
     def new_span(cls, span):
-        if span['span_type'] == 'SentenceCharSpan':
+        if isinstance(span, CharSpan):
+            return span
+
+        span_type = None
+        if '@type' in span:
+            span_type = span['@type']
+        elif 'span_type' in span:
+            span_type = span['span_type']
+
+        if span_type is not None and span_type in cls.SPAN_TYPE_TO_CLASS:
             try:
-                assert all(
-                    [k in list(SentenceCharSpan.DICT_MAPPING.values()) + ['id']
-                     for k in span.keys()])
-            except AssertionError:
-                logger.warning("Unable to process SentenceCharSpan for input "
-                               "span {}. Traceback: ".format(span),
-                               exc_info=True)
-                raise TypeError(
-                    'Unexpected parameters for SentenceCharSpan: {}')
-            return SentenceCharSpan(span_type='SentenceCharSpan',
-                                    start=span['start'],
-                                    end=span['end'],
-                                    sem_orient=span.get('sem_orient', None),
-                                    md5sum=span.get('md5sum', span.get('id')),
-                                    significance=span.get('significance', None))
-        elif span['span_type'] in cls.SPAN_TYPE_TO_CLASS:
-            try:
-                return cls.SPAN_TYPE_TO_CLASS[span['span_type']](**span)
+                return cls.SPAN_TYPE_TO_CLASS[span_type].from_dict(span)
             except Exception as e:
-                logger.warning(
-                    "Unable to process  span {}. Error was {}".format(span, e),
-                    exc_info=True)
+                logger.warning("Unable to process span %s. Error was %s",
+                               span, e, exc_info=True)
                 raise e
-        raise Exception('Invalid Span Type: {}'.format(span['span_type']))
+
+        result = CharSpan.from_dict(span)
+        return result
+
+#         if '@type' in span:
+#             span['span_type'] = span['@type']
+#             del span['@type']
+#         if span['span_type'] == 'SentenceCharSpan':
+#             try:
+#                 assert all(
+#                     [k in list(SentenceCharSpan.DICT_MAPPING.values()) + ['id']
+#                      for k in span.keys()])
+#             except AssertionError:
+#                 logger.warning("Unable to process SentenceCharSpan for input "
+#                                "span %s. Traceback: ", span,
+#                                exc_info=True)
+#                 raise TypeError(
+#                     'Unexpected parameters for SentenceCharSpan: {}')
+#             return SentenceCharSpan(span_type='SentenceCharSpan',
+#                                     start=span['start'],
+#                                     end=span['end'],
+#                                     sem_orient=span.get('sem_orient', None),
+#                                     md5sum=span.get('md5sum', span.get('id')),
+#                                     significance=span.get('significance', None))
+#         elif span['span_type'] in cls.SPAN_TYPE_TO_CLASS:
+#             try:
+#                 return cls.SPAN_TYPE_TO_CLASS[span['span_type']](**span)
+#             except Exception as e:
+#                 logger.warning("Unable to process  span %s. Error was %s",
+#                                span, e, exc_info=True)
+#                 raise e
+#         raise Exception('Invalid Span Type: {}'.format(span['span_type']))
 
 
 class Annotation(object):
