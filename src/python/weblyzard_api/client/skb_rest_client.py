@@ -55,16 +55,22 @@ class SKBRESTClient(object):
         :param kwargs
         """
         uri = kwargs['key']
+        
+        lang = None
+        general_pos = None
+
         if uri.startswith('wl:'):
             lang, kw = uri.split(':')[1].split('/')
             uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
         elif uri.startswith('http://weblyzard.com/skb/keyword/'):
-            lang = uri[len('http://weblyzard.com/skb/keyword/'):].split('/')[0]
-            general_pos = uri[len(
-                'http://weblyzard.com/skb/keyword/'):].split('/')[1]
-        else:
-            lang = None
-            general_pos = None
+            stripped_uri = uri[len('http://weblyzard.com/skb/keyword/'):]
+            uri_elements = stripped_uri.split('/')
+            if len(uri_elements) == 3:  # lang, pos, kw
+                lang = uri_elements[0]
+                general_pos = uri_elements[1]
+            elif len(uri_elements) == 2 and len(uri_elements[0]) == 2:  # lang, kw
+                lang = uri_elements[0]
+
         preferredName = kwargs.get(
             'preferred_name', kwargs.get('preferredName', None))
         skb_relevant_data = {'uri': uri,
