@@ -346,7 +346,7 @@ class FusekiWrapper(object):
                     break
             sub_list = [self.fix_uri(t) for t in sub_list]
             triples = '.\n'.join([' '.join(triple) for triple in sub_list])
-            graph_specification = f'graph <{graph_name}>' if graph else ''
+            graph_specification = f'graph <{graph_name}>' if graph_name   else ''
             query = u"""
             INSERT DATA {{
               {graph_specification} {{ {triples} }}
