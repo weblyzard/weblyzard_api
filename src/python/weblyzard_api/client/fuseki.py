@@ -370,8 +370,7 @@ class FusekiWrapper(object):
           }}
         }}
         """.format(graph_specification=graph_specification, triple=triple)
-        if graph_name is not None:
-            query = query.replace(f'{triple}', f'graph <{graph_name}> {{ {triple} }}')
+
         self.run_update(query=query)
         self.uri_cache.add(s)
         if self.is_uri(o):
