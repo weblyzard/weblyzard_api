@@ -351,7 +351,7 @@ class FusekiWrapper(object):
             INSERT DATA {{
               {graph_specification} {{ {triples} }}
             }}
-            """.format(graph_specification=graph_graph_specification,
+            """.format(graph_specification=graph_specification,
                        triples=triples)
             lower = upper
             upper = min(num_triples, upper + slice_size)
