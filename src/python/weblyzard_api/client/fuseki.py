@@ -346,13 +346,22 @@ class FusekiWrapper(object):
                     break
             sub_list = [self.fix_uri(t) for t in sub_list]
             triples = '.\n'.join([' '.join(triple) for triple in sub_list])
-            graph_specification = f'graph <{graph_name}>' if graph_name else ''
+
+            if graph_name:
+                query_body = f"""
+                graph <{graph_name}>
+                    {{
+                      {triples}
+                    }}
+            """
+            else:
+                query_body = triples
+
             query = u"""
             INSERT DATA {{
-              {graph_specification} {{ {triples} }}
+              {query_body}
             }}
-            """.format(graph_specification=graph_specification,
-                       triples=triples)
+            """.format(query_body=query_body)
             lower = upper
             upper = min(num_triples, upper + slice_size)
             self.run_update(query=query)
@@ -361,15 +370,20 @@ class FusekiWrapper(object):
 
     def insert_triple(self, s, p, o, graph_name=None):
         triple = ' '.join([self.fix_uri(s), self.fix_uri(p), self.fix_uri(o)])
-        graph_specification = f'graph <{graph_name}>' if graph_name else ''
+        if graph_name:
+            query_body = f"""
+            graph <{graph_name}> 
+                {{ 
+                  {triple}
+                }}
+        """
+        else:
+            query_body = triple
         query = u"""
         INSERT DATA {{
-        {graph_specification}
-          {{
-            {triple}
-          }}
+        {query_body}
         }}
-        """.format(graph_specification=graph_specification, triple=triple)
+        """.format(query_body=query_body)
 
         self.run_update(query=query)
         self.uri_cache.add(s)
