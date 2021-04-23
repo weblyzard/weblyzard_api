@@ -54,7 +54,7 @@ class LemmatizerClient(MultiRESTClient):
         return self.request(path=self.LEMMATIZER_PATH, parameters=doc)
 
     def _get_lemmas_tuples(self, language: str,
-                           form_pos_pairs: List[Tuple[str]],
+                           form_pos_pairs: List[Tuple[str, str]],
                            check_unique: bool=True, **kwargs: dict):
         """
         Helper function for Sentence input
