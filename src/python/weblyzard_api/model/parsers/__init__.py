@@ -59,6 +59,8 @@ class JSONParserBase(object):
     # :  Override this constant in the subclasses based on requirements.
     API_VERSION = None
 
+    SUPPORTED_CONTENT_TYPES = {}
+
     @classmethod
     def from_json_string(cls, json_string):
         '''
@@ -208,13 +210,13 @@ class XMLParser(object):
 
     VERSION = None
     SUPPORTED_NAMESPACE = None
-    DOCUMENT_NAMESPACES = None
+    DOCUMENT_NAMESPACES = {}
 
-    ATTR_MAPPING = None
-    SENTENCE_MAPPING = None
-    ANNOTATION_MAPPING = None
-    FEATURE_MAPPING = None
-    RELATION_MAPPING = None
+    ATTR_MAPPING = {}
+    SENTENCE_MAPPING = {}
+    ANNOTATION_MAPPING = {}
+    FEATURE_MAPPING = {}
+    RELATION_MAPPING = {}
     DEFAULT_NAMESPACE = 'wl'
 
     @classmethod
@@ -478,9 +480,11 @@ class XMLParser(object):
             if mapping and key in mapping:
                 key = mapping[key]
             elif ':' in key:
-                continue
+                s_key = key.split(':')
+                s_key.reverse()
+                key = tuple(s_key)
 
-            if isinstance(key, tuple):
+            if isinstance(key, tuple) and len(key) == 2:
                 key, namespace = key
                 if namespace is not None:
                     if resolve_namespaces:
@@ -560,7 +564,7 @@ class XMLParser(object):
         try:
             attributes = cls.clean_attributes(attributes)
         except Exception as e:
-            logger.warn(e)
+            logger.warning(e)
         root = etree.Element('{%s}page' % cls.get_default_ns(),
                              attrib=attributes,
                              nsmap=required_namespaces)
@@ -584,7 +588,7 @@ class XMLParser(object):
             try:
                 sent_elem.text = etree.CDATA(value)
             except Exception as e:
-                print('Skipping bad cdata: %s (%s)' % (value, e))
+                logger.debug('Skipping bad cdata: %s (%s)', value, e)
                 continue
 
         if annotations:
@@ -683,10 +687,12 @@ class XMLParser(object):
                         rel_elem.text = etree.CDATA(urls)
 
                     except Exception as e:
-                        print('Skipping bad cdata: %s (%s)' % (value, e))
+                        logger.warning('Skipping bad cdata: %s (%s)', value, e)
                         continue
 
-        return etree.tostring(root, encoding='unicode', pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
+        return etree.tostring(root,
+                              encoding='unicode',
+                              pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
         # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :)
 
     @classmethod
