@@ -28,17 +28,32 @@ class XML2013(XMLParser):
         'published_date': ('issued', 'dc'),
         'last_modified': ('modified', 'dc'),
         'url': ('identifier', 'dc'),
+        'twitter:url': ('identifier', 'dc'),
         'uri': ('identifier', 'dc'),
         'license': ('license', 'dc'),
         'creator': ('creator', 'dc'),
         'author': ('creator', 'dc'),
         'publisher': ('publisher', 'dc'),
+
+        'og:site_name': ('publisher', 'dc'),
+        'application-name': ('publisher', 'dc'),
+
         'keywords': ('subject', 'dc'),
         'articleSection': ('articleSection', 'schema'),
         'tags': ('subject', 'dc'),  # twitter
+
         'title': ('title', 'dc'),
+        'og:title': ('title', 'dc'),
+        'twitter:title': ('title', 'dc'),
         'content': ('description', 'dc'),
+
         'description': ('description', 'dc'),
+        'og:description': ('description', 'dc'),
+        'twitter:description': ('description', 'dc'),
+
+        'thumbnail': ('thumbnail', 'wl'),
+        'twitter:image:src': ('thumbnail', 'wl'),
+        'og:image': ('thumbnail', 'wl'),
 
         # internal
         'nilsimsa': ('nilsimsa', 'wl'),
@@ -51,7 +66,6 @@ class XML2013(XMLParser):
         'word_count': ('word_count', 'wl'),
 
         'fbType': ('post_type', 'wl'),  # FB
-        'thumbnail': ('thumbnail', 'wl'),
         'picture': ('thumbnail', 'wl'),  # FB, YT
         'org_picture': ('thumbnail', 'wl'),  # FB
         'group_picture': ('thumbnail', 'wl'),  # FB
