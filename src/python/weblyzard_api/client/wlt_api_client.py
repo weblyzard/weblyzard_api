@@ -39,7 +39,7 @@ class WltApiClient(object):
         :param username, as provided by webLyzard
         :param password, as provided by webLyzard
         """
-        url = '/'.join([self.base_url, self.version, self.TOKEN_ENDPOINT])
+        url = '/'.join([self.base_url, str(self.version), self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
         if r.status_code == 200:
             return r.content

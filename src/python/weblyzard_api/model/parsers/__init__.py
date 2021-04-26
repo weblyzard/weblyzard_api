@@ -25,7 +25,7 @@ from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             UnsupportedValueException)
 from weblyzard_api.client.rdf import Namespace
 
-logger = logging.getLogger('weblyzard_api.parsers')
+logger = logging.getLogger(__name__)
 
 
 class EmptySentenceException(Exception):
@@ -59,6 +59,8 @@ class JSONParserBase(object):
     # :  Override this constant in the subclasses based on requirements.
     API_VERSION = None
 
+    SUPPORTED_CONTENT_TYPES = {}
+
     @classmethod
     def from_json_string(cls, json_string):
         '''
@@ -80,7 +82,7 @@ class JSONParserBase(object):
 
             api_dict = json.loads(json_string)
         except Exception as e:
-            raise MalformedJSONException(f'JSON could not be parsed: {e}')
+            raise MalformedJSONException(f'JSON could not be parsed: {e}') from e
         return cls.from_api_dict(api_dict)
 
     @classmethod
@@ -208,13 +210,13 @@ class XMLParser(object):
 
     VERSION = None
     SUPPORTED_NAMESPACE = None
-    DOCUMENT_NAMESPACES = None
+    DOCUMENT_NAMESPACES = {}
 
-    ATTR_MAPPING = None
-    SENTENCE_MAPPING = None
-    ANNOTATION_MAPPING = None
-    FEATURE_MAPPING = None
-    RELATION_MAPPING = None
+    ATTR_MAPPING = {}
+    SENTENCE_MAPPING = {}
+    ANNOTATION_MAPPING = {}
+    FEATURE_MAPPING = {}
+    RELATION_MAPPING = {}
     DEFAULT_NAMESPACE = 'wl'
 
     @classmethod
@@ -239,7 +241,7 @@ class XMLParser(object):
             try:
                 return json.dumps(value)
             except Exception as e:
-                logger.error('could not encode {}: {}'.format(value, e))
+                logger.error('Could not encode %s: %s', value, e)
                 return
 
     @classmethod
@@ -327,8 +329,8 @@ class XMLParser(object):
             attributes = cls.load_attributes(root.attrib,
                                              mapping=invert_mapping)
         except Exception as e:
-            logger.warn('could not process mapping {}: {}'.format(
-                cls.ATTR_MAPPING, e))
+            logger.warning('Could not process mapping %s: %s',
+                           cls.ATTR_MAPPING, e)
             attributes = {}
 
         sentences = cls.load_sentences(
@@ -407,7 +409,7 @@ class XMLParser(object):
                 sent_attributes['md5sum'] = sent_id
 
             if not sent_value:
-                logger.warn('empty attribute for sentence {}'.format(sent_id))
+                logger.warning('Empty attribute for sentence %s', sent_id)
                 if raise_on_empty:
                     raise EmptySentenceException
             if not sent_id in seen_sentences:
@@ -479,11 +481,16 @@ class XMLParser(object):
                 key = mapping[key]
             elif ':' in key:
                 continue
+                # s_key = key.split(':')
+                # s_key.reverse()
+                # key = tuple(s_key)
 
-            if isinstance(key, tuple):
+            if isinstance(key, tuple) and len(key) == 2:
                 key, namespace = key
                 if namespace is not None:
-                    if resolve_namespaces:
+                    if namespace not in cls.DOCUMENT_NAMESPACES:
+                        continue
+                    elif resolve_namespaces:
                         key = '{%s}%s' % (
                             cls.DOCUMENT_NAMESPACES[namespace], key)
                     else:
@@ -498,6 +505,12 @@ class XMLParser(object):
         ''' '''
         result = {}
         for key, val in attributes.items():
+            if not isinstance(key, str):
+                continue
+            if any(k in key for k in ('(', '@')):
+                continue
+            if any(k in val for k in ('{')):
+                continue
             if key is None or val is None or isinstance(val, dict):
                 continue
             if '@' in key:
@@ -544,9 +557,11 @@ class XMLParser(object):
         return result
 
     @classmethod
-    def dump_xml(cls, titles, attributes, sentences, annotations=[],
+    def dump_xml(cls, titles, attributes, sentences, annotations=None,
                  features=None, relations=None):
         ''' returns a webLyzard XML document '''
+        if annotations is None:
+            annotations = []
         required_namespaces = cls.get_required_namespaces(attributes)
         attributes, sentences = cls.pre_xml_dump(titles=titles,
                                                  attributes=attributes,
@@ -560,7 +575,7 @@ class XMLParser(object):
         try:
             attributes = cls.clean_attributes(attributes)
         except Exception as e:
-            logger.warn(e)
+            logger.warning(e)
         root = etree.Element('{%s}page' % cls.get_default_ns(),
                              attrib=attributes,
                              nsmap=required_namespaces)
@@ -575,16 +590,16 @@ class XMLParser(object):
                 continue
 
             value = cls.get_xml_value(value)
-            sent_attributes = cls.dump_xml_attributes(sent,
+            sent_attributes = cls.dump_xml_attributes(attributes=sent,
                                                       mapping=cls.SENTENCE_MAPPING)
             sent_elem = etree.SubElement(root,
                                          '{%s}sentence' % cls.get_default_ns(),
                                          attrib=sent_attributes,
-                                         nsmap={})
+                                         nsmap=required_namespaces)
             try:
                 sent_elem.text = etree.CDATA(value)
             except Exception as e:
-                print('Skipping bad cdata: %s (%s)' % (value, e))
+                logger.debug('Skipping bad cdata: %s (%s)', value, e)
                 continue
 
         if annotations:
@@ -615,10 +630,11 @@ class XMLParser(object):
                                 entity, mapping=cls.ANNOTATION_MAPPING)
 
                             try:
-                                etree.SubElement(root,
-                                                 '{%s}annotation' % cls.get_default_ns(),
-                                                 attrib=annotation_attributes,
-                                                 nsmap={})
+                                etree.SubElement(
+                                        root,
+                                        f'{cls.get_default_ns()}annotation',
+                                        attrib=annotation_attributes,
+                                        nsmap=required_namespaces)
                             except Exception as e:
                                 continue
 
@@ -683,10 +699,12 @@ class XMLParser(object):
                         rel_elem.text = etree.CDATA(urls)
 
                     except Exception as e:
-                        print('Skipping bad cdata: %s (%s)' % (value, e))
+                        logger.warning('Skipping bad cdata: %s (%s)', value, e)
                         continue
 
-        return etree.tostring(root, encoding='unicode', pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
+        return etree.tostring(root,
+                              encoding='unicode',
+                              pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
         # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :)
 
     @classmethod
