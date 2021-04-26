@@ -507,7 +507,7 @@ class XMLParser(object):
         for key, val in attributes.items():
             if not isinstance(key, str):
                 continue
-            if any(k in key for k in ('(', ':', '@')):
+            if any(k in key for k in ('(', '@')):
                 continue
             if any(k in val for k in ('{')):
                 continue
