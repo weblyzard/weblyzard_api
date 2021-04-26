@@ -13,10 +13,11 @@ from weblyzard_api.client import (
 
 SERVER_URL_PATH = '/rest/polarity/document'
 
-DEFAULT_EMOTIONAL_CATEGORIES = 'glove_lemmatized'
+
 
 class EmotionClassifierClient(MultiRESTClient):
     URL_PATH = '/'.join(SERVER_URL_PATH.split('/')[:-1])
+    DEFAULT_EMOTIONAL_CATEGORIES = 'glove_lemmatized'
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
@@ -28,7 +29,7 @@ class EmotionClassifierClient(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
-    def get_polarity(self, content, content_format,
+    def get_emotions(self, content, content_format,
                      emotional_categories=DEFAULT_EMOTIONAL_CATEGORIES):
         '''
         Sends the content in the content_format to the opinion mining server
