@@ -372,6 +372,7 @@ class Document(object):
                                    significance=sentence_span.significance,
                                    pos=pos_sequence, token=tok_sequence,
                                    value=value, is_title=is_title,
-                                   dependency=dep_sequence))
+                                   dependency=dep_sequence,
+                                   emotions=sentence_span.emotions))
 
         return result
