@@ -14,6 +14,7 @@ from weblyzard_api.client.emotion_classifier_client import EmotionClassifierClie
 
 from weblyzard_api.model.document import Document
 from weblyzard_api.xml_content import XMLContent
+from wl_core_ng.analyzers.emotion_classifier import EmotionClassifier
 
 @pytest.fixture
 def client():
@@ -210,9 +211,11 @@ class TestOpinionClient(object):
         print(result)
         document = Document.from_dict(dict_=result['content'])
         document_polarity = result['polarity']
+        assert result['emotions']
+        assert result['emotions']['attitude'] > 0.5
         assert document_polarity > 0.5
         assert (
-            set(result['dominant_emotion'].keys()) == {'attitude-new'}
+            set(result['dominant_emotion'].keys()) == {'attitude'}
         )
 
         print('successfully run test against endpoint {}'.format(
