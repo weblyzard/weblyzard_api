@@ -222,7 +222,7 @@ class Document(object):
         annotations = parsed_content['annotations'] \
             if 'annotations' in parsed_content else {}
 
-        return Document(content_id=int(parsed_content['content_id']),
+        return cls(content_id=int(parsed_content['content_id']),
                         content=parsed_content.get('content'),
                         nilsimsa=parsed_content.get('nilsimsa'),
                         lang=parsed_content.get('lang'),
