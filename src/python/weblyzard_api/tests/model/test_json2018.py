@@ -48,21 +48,24 @@ class TestJSON2018Parser(unittest.TestCase):
             "end": 20,
             "id": "asdfasdmasdnsd23232",
             "semOrient": 1.0,
-            "significance": 0.1231
+            "significance": 0.1231,
+            "emotions": {}
         }, {
             "@type": "SentenceCharSpan",
             "start": 21,
             "end": 51,
             "id": "asdfasdmasdnsd23233",
             "semOrient": 1.0,
-            "significance": 0.1231
+            "significance": 0.1231,
+            "emotions": {}
         }, {
             "@type": "SentenceCharSpan",
             "start": 52,
             "end": 106,
             "id": "asdfasdmasdnsd23231",
             "semOrient": 1.0,
-            "significance": 0.1231
+            "significance": 0.1231,
+            "emotions": {}
         }],
         "TOKEN": [{
             "@type": "TokenCharSpan",
