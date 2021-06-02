@@ -14,7 +14,6 @@ from weblyzard_api.client.emotion_classifier_client import EmotionClassifierClie
 
 from weblyzard_api.model.document import Document
 from weblyzard_api.xml_content import XMLContent
-from wl_core_ng.analyzers.emotion_classifier import EmotionClassifier
 
 @pytest.fixture
 def client():
