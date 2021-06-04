@@ -89,16 +89,19 @@ class SentenceCharSpan(CharSpan):
                     'md5sum': 'md5sum',
                     'semOrient': 'sem_orient',
                     'significance': 'significance',
-                    'multimodal_sentiment': 'multimodal_sentiment',
+                    'emotions': 'emotions',
                     'id': 'md5sum'}
 
     def __init__(self, span_type, start, end, md5sum=None, sem_orient=0.0,
-                 significance=0.0, multimodal_sentiment=None):
+                 significance=0.0, emotions=None, multimodal_sentiment=None):
         CharSpan.__init__(self, span_type, start, end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
-        self.multimodal_sentiment = multimodal_sentiment
+        self.emotions = emotions or {}
+        if not emotions and multimodal_sentiment:
+            logger.warn('Deprecated parameter `multimodal_sentiment`, use `emotions`instead!')
+            self.emotions = multimodal_sentiment
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
@@ -262,7 +265,8 @@ class Sentence(object):
 
     def __init__(self, md5sum=None, pos=None, sem_orient=None,
                  significance=None,
-                 token=None, value=None, is_title=False, dependency=None):
+                 token=None, value=None, is_title=False, dependency=None,
+                 emotions=None):
 
         if not md5sum and value:
             try:
@@ -282,6 +286,7 @@ class Sentence(object):
         self.value = value
         self.is_title = is_title
         self.dependency = dependency
+        self.emotions = emotions
 
     def as_dict(self):
         '''
