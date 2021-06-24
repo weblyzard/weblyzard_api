@@ -7,7 +7,7 @@ Created on November 14, 2019
 '''
 from itertools import chain
 
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 from eWRT.ws.rest import MultiRESTClient
 
 from weblyzard_api.model import Sentence
@@ -25,8 +25,9 @@ class LemmatizerClient(MultiRESTClient):
         self.url = url
         MultiRESTClient.__init__(self, service_urls=url)
 
-    def get_unique_lemmas_string(self, language: str, plain_text: str,
-                                 **kwargs: dict):
+    def get_unique_lemmas_string(self, language: str, plain_text: str= '',
+                                 forms:Optional[list]=None,
+                                 **kwargs):
         """
         Returns dict of term: lemma but only if the term has a unique lemma,
         independent of pos.
@@ -36,18 +37,22 @@ class LemmatizerClient(MultiRESTClient):
         :return: dict term: lemma, str:str
         """
         res = self._get_lemmas_plaintext(language=language,
-                                         plain_text=plain_text, **kwargs)
+                                         plain_text=plain_text,
+                                         forms=forms, **kwargs)
         return {k: v['lemma'] for k, v in res.get('result', {}).items() if
                 'lemma' in v}
         pass
 
-    def _get_lemmas_plaintext(self, language: str, plain_text: str, **kwargs):
+    def _get_lemmas_plaintext(self, language: str, plain_text: str,
+                              forms: Optional[list]=None, **kwargs):
         doc = {
             'lang': language,
             'plain_text': plain_text,
-            'return_base_forms_only': True
+            'return_base_forms_only': True,
+            'forms': forms
 
         }
+        doc = {k: v for k, v in doc.items() if v is not None}
         if kwargs:
             doc.update(kwargs)
 
@@ -81,7 +86,8 @@ class LemmatizerClient(MultiRESTClient):
 
         return self.request(path=self.LEMMATIZER_PATH, parameters=doc)
 
-    def get_all_lemmas(self, language: str, plain_text: str, **kwargs: dict):
+    def get_all_lemmas(self, language: str, plain_text: str,
+                       forms: Optional[list]=None, **kwargs: dict):
         """
         Get lemmas, including potentially ambiguous ones
         :param language:
@@ -90,7 +96,8 @@ class LemmatizerClient(MultiRESTClient):
         :return: dict with terms as keys, lists of candidate lemmas as values
         """
         raw = self._get_lemmas_plaintext(language=language,
-                                         plain_text=plain_text, **kwargs)
+                                         plain_text=plain_text,
+                                         forms=forms, **kwargs)
         res = {}
         for term, termresult in raw.get('result', {}).items():
             if 'lemma' in termresult:
