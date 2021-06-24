@@ -210,12 +210,9 @@ class TestOpinionClient(object):
         print(result)
         document = Document.from_dict(dict_=result['content'])
         document_polarity = result['polarity']
-        assert result['emotions']
-        assert result['emotions']['attitude'] > 0.5
+        assert result['sentiment_values']
+        assert result['sentiment_values']['attitude-new'] > 0.5
         assert document_polarity > 0.5
-        assert (
-            set(result['dominant_emotion'].keys()) == {'attitude'}
-        )
 
         print('successfully run test against endpoint {}'.format(
             client.get_service_urls()

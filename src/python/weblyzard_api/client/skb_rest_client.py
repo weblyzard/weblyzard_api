@@ -384,3 +384,14 @@ class SKBSentimentDictionary(dict):
             dict.__init__(self, data)
         else:
             dict.__init__(self, {})
+
+
+class SKBSimpleBaseFormsDictionary(dict):
+    BASE_FORMS_PATH = '{}/skb/baseforms'.format(SKBRESTClient.VERSION)
+
+    def __init__(self, url):
+        self.url = '{}/{}'.format(url, self.BASE_FORMS_PATH)
+        res = res = requests.get(self.url)
+        if res.status_code < 400:
+            response = json.loads(res.text)
+            dict.__init__(self, response)
