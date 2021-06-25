@@ -5,7 +5,6 @@ Created on Oct 24, 2016
 
 @author: stefan
 '''
-from __future__ import unicode_literals
 
 from builtins import object
 from typing import List
@@ -14,6 +13,7 @@ import json
 import requests
 import logging
 
+from ast import literal_eval
 logger = logging.getLogger(__name__)
 
 
@@ -394,4 +394,11 @@ class SKBSimpleBaseFormsDictionary(dict):
         res = res = requests.get(self.url)
         if res.status_code < 400:
             response = json.loads(res.text)
-            dict.__init__(self, response)
+            data = self.reconstruct(response)
+            dict.__init__(self, data)
+
+    def reconstruct(self, response):
+        return_value = {}
+        for k, v in response.items():
+            return_value[k] = self.reconstruct(v) if isinstance(v, dict) else (set(v) if isinstance(v, list) else v)
+        return return_value
