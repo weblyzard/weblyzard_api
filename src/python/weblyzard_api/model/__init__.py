@@ -100,7 +100,8 @@ class SentenceCharSpan(CharSpan):
         self.significance = significance
         self.emotions = emotions or {}
         if not emotions and multimodal_sentiment:
-            logger.warn('Deprecated parameter `multimodal_sentiment`, use `emotions`instead!')
+            logger.warning('Deprecated parameter `multimodal_sentiment` '
+                           'use `emotions` instead!')
             self.emotions = multimodal_sentiment
 
     def __repr__(self, *args, **kwargs):

@@ -480,10 +480,9 @@ class XMLParser(object):
             if mapping and key in mapping:
                 key = mapping[key]
             elif ':' in key:
-                continue
-                # s_key = key.split(':')
-                # s_key.reverse()
-                # key = tuple(s_key)
+                s_key = key.split(':')
+                s_key.reverse()
+                key = tuple(s_key)
 
             if isinstance(key, tuple) and len(key) == 2:
                 key, namespace = key
