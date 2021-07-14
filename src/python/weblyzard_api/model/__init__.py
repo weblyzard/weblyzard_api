@@ -99,10 +99,13 @@ class SentenceCharSpan(CharSpan):
         self.sem_orient = sem_orient
         self.significance = significance
         self.emotions = emotions or {}
-        if not emotions and multimodal_sentiment:
-            logger.warning('Deprecated parameter `multimodal_sentiment` '
-                           'use `emotions` instead!')
-            self.emotions = multimodal_sentiment
+        if not emotions:
+            try:
+                assert not multimodal_sentiment
+            except AssertionError:
+                logger.warning('Deprecated parameter `multimodal_sentiment` '
+                           'use `emotions` instead!', exc_info=True)
+                self.emotions = multimodal_sentiment
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
