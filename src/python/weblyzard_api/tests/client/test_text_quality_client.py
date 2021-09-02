@@ -5,10 +5,10 @@ from client.textqualityclient.client_text_quality import TextQualityClient
 
 class TestTextQualityClient(unittest.TestCase):
     TEST_CASES = [
-        ("This is just a text. It was supposed to be funny",
+        ("@RT This is just a text. It was supposed to be funny",
          "it was supposed to be you in this case"),
 
-        ("The wind is blowing. he is sopposed to cover us",
+        ("#love The wind is blowing. he is sopposed to cover us",
          "this is supposed to happen today"),
 
         ]
