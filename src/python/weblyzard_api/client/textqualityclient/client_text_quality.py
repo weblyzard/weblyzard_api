@@ -1,3 +1,4 @@
+import unittest
 from eWRT.ws.rest import MultiRESTClient
 
 
@@ -8,7 +9,7 @@ class TextQualityClient(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url)
 
     def get_document_text_quality(self, body: str, fetch_passive: bool = True,
-                                  fetch_transition_words: bool = False):
+                                  fetch_transition_words: bool = True):
 
         """
         "fetch_passive" means that the tokens indicating passive voice and
@@ -43,11 +44,28 @@ class TextQualityClient(MultiRESTClient):
                                  'webservice timed out %d times' % retries}
         return result
 
+    def get_sentences_count_from_text(self, body: str):
+        if body:
+            result = self.get_document_text_quality(body=body)
+            return len(result['raw_annotation']['partitions']['SENTENCE'])
+
+    def get_passive_sentences_count_from_text(self, body: str):
+        if body:
+            result = self.get_document_text_quality(body=body)
+            count = 0
+            for value in result['passive']:
+                if value['@type'] == 'SentenceCharSpan':
+                    count += 1
+        return count
+
     # accept input sentence, returns True if passive Flase otherwise
     def is_single_sentence_passive(self, sentence: str):
         if sentence:
             result = self.get_document_text_quality(body=sentence)
-            out = False if len(result['passive']) > 0 else True
+            if len(result['passive']) > 0:
+                out = True
+            else:
+                out = False
         return out
 
     # return a list of words indicating the passive content
@@ -64,19 +82,3 @@ class TextQualityClient(MultiRESTClient):
                     words.append(sentence[word_start:word_end])
         return words
 
-
-if __name__ == '__main__':
-    from pprint import pprint
-
-    text_quality = TextQualityClient(
-        'http://skb-viewer-lexical.prod.i.weblyzard.net:8443')
-
-    res = text_quality.get_document_text_quality(
-        body='it was considered a tool. I did not see how they made it',
-        fetch_passive=True, fetch_transition_words=True)
-
-    res2 = text_quality.get_single_sentence_passive_words(
-        sentence='it was considered a tool. I did not see how they made it')
-
-    print(res2)
-    pprint(res)
