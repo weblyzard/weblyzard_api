@@ -1,4 +1,3 @@
-import unittest
 from eWRT.ws.rest import MultiRESTClient
 
 
@@ -53,9 +52,10 @@ class TextQualityClient(MultiRESTClient):
         if body:
             result = self.get_document_text_quality(body=body)
             count = 0
-            for value in result['passive']:
-                if value['@type'] == 'SentenceCharSpan':
-                    count += 1
+            if "passive" in result:
+                for value in result['passive']:
+                    if value['@type'] == 'SentenceCharSpan':
+                        count += 1
         return count
 
     # accept input sentence, returns True if passive Flase otherwise
