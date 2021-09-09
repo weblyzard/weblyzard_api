@@ -1,6 +1,6 @@
 import unittest
 
-from client.textqualityclient.client_text_quality import TextQualityClient
+from weblyzard_api.client.textqualityclient.client_text_quality import TextQualityClient
 
 
 class TestTextQualityClient(unittest.TestCase):
