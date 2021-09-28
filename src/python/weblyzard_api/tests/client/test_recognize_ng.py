@@ -577,17 +577,12 @@ class TestRecognizeJournalistsDe(TestRecognizeNg):
     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
 
-#     SERVICE_URL = 'http://gecko6.wu.ac.at:8089/rest'
-    SERVICE_URL = 'http://localhost:63007/rest'
-    PROFILE_NAME = 'journalists_test'
-#     PROFILE_NAME = 'journalists_test_SA'
-#     PROFILE_NAME = 'journalists_test_no_URIDDA'
+    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+    PROFILE_NAME = 'de_full_all'
+
     DOCUMENTS = [{u'annotations': [],
-                'content': 'Armin Wolf, Florian Klenk, Ingrid Thurnher und Karim El-Gawhary sind österreichische Journalisten.' +
+                'content': 'Armin Wolf, Florian Klenk, Isabell Widek, Su Sametinger, Ingrid Thurnher und Karim El-Gawhary sind alle österreichische Journalisten.' +
                             'Bernd Affenzeller auch. Vielleicht ist auch Karim El Gawhary ein Journalist?',
-#
-#                 'content': 'Florian Klenk ist ein österreichischer Jurist, Enthüllungsjournalist und Buchautor. Seit Anfang' +
-#                 'Juni 2012 ist er Chefredakteur und seit Dezember 2020 Mitgesellschafter der österreichischen Wochenzeitung Falter.',
                   u'format': u'text/html',
                   u'header': {},
                   u'id': u'1000',
