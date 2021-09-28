@@ -67,7 +67,7 @@ class TestRecognizeNg(unittest.TestCase):
                                   u'TITLE': [{u'@type': u'CharSpan', u'end': 19, u'start': 0}],
                                   u'TOKEN': [{u'@type': u'TokenCharSpan',
                                               u'dependency': {u'label': u'null',
-                                                              u'parent': -1},
+                                                              u'parent':-1},
                                               u'end': 5,
                                               u'pos': u'UH',
                                               u'start': 0},
@@ -97,7 +97,7 @@ class TestRecognizeNg(unittest.TestCase):
                                               u'start': 14},
                                              {u'@type': u'TokenCharSpan',
                                               u'dependency': {u'label': u'null',
-                                                              u'parent': -1},
+                                                              u'parent':-1},
                                               u'end': 26,
                                               u'pos': u'NNP',
                                               u'start': 20},
@@ -169,7 +169,7 @@ class TestRecognizeNg(unittest.TestCase):
                                               u'start': 85},
                                              {u'@type': u'TokenCharSpan',
                                               u'dependency': {u'label': u'null',
-                                                              u'parent': -1},
+                                                              u'parent':-1},
                                               u'end': 93,
                                               u'pos': u'NNP',
                                               u'start': 87},
@@ -252,7 +252,7 @@ class TestRecognizeNg(unittest.TestCase):
                                               u'start': 153},
                                              {u'@type': u'TokenCharSpan',
                                               u'dependency': {u'label': u'null',
-                                                              u'parent': -1},
+                                                              u'parent':-1},
                                               u'end': 159,
                                               u'pos': u'NNP',
                                               u'start': 155},
@@ -319,7 +319,7 @@ class TestRecognizeNg(unittest.TestCase):
             urls_profiles_mapping = self.URLS_PROFILES_MAPPING
         for document in self.DOCUMENTS:
             for url, profile in urls_profiles_mapping:
-                client =  Recognize(url)
+                client = Recognize(url)
                 result = client.search_document(profile_name=profile,
                                                      document=document, limit=0)
                 annotations = result['annotations']
@@ -333,8 +333,8 @@ class TestRecognizeNg(unittest.TestCase):
                     for regexp in self.REQUIRED_REGEXPS:
                         assert any([re.match(regexp, entity['key']) for entity in annotations])
 
-class TestRecognizeWien(TestRecognizeNg):
 
+class TestRecognizeWien(TestRecognizeNg):
 
     PROFILE_NAME = 'de_full_all'
     DOCUMENTS = [{u'annotations': [],
@@ -369,12 +369,12 @@ class TestRecognizeDisambiguation(TestRecognizeNg):
     """
     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
 
-    PROFILE_NAME= 'de_full_all'
+    PROFILE_NAME = 'de_full_all'
 
     DOCUMENTS = [{u'annotations': [],
                    u'content': 'In der Waidhausenstraße in Wien ist ab dem 25. Januar 2021 eine Baustelle.',
                    u'format': u'text/html',
-                   u'header': {},#
+                   u'header': {},  #
                    u'id': u'1000',
                    u'lang': u'DE',
                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
@@ -394,7 +394,7 @@ class TestDisambiguationOsmEn(TestRecognizeNg):
     DOCUMENTS = [{u'annotations': [],
                    u'content': 'In the United Kingdom, Downing Street is more than just a street name.',
                    u'format': u'text/html',
-                   u'header': {},#
+                   u'header': {},  #
                    u'id': u'1000',
                    u'lang': u'EN',
                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
@@ -414,11 +414,12 @@ class TestDisambiguationOsmEnAlternate(TestRecognizeNg):
     DOCUMENTS = [{u'annotations': [],
                    u'content': 'There is another Downing Street in New Zealand.',
                    u'format': u'text/html',
-                   u'header': {},#
+                   u'header': {},  #
                    u'id': u'1000',
                    u'lang': u'EN',
                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
 
 class TestDisambiguationOsmEs(TestRecognizeNg):
     """Test contextual disambiguation of string-identical streets
@@ -437,6 +438,7 @@ class TestDisambiguationOsmEs(TestRecognizeNg):
                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
 
+
 class TestDisambiguationOsmFr(TestRecognizeNg):
     """Test contextual disambiguation of string-identical streets
     based on their parent attributes (cities) when occurring in the same text.
@@ -454,11 +456,12 @@ class TestDisambiguationOsmFr(TestRecognizeNg):
     DOCUMENTS = [{u'annotations': [],
                    u'content': 'Rue Alphonse Daudet en Marseille c\'é un attraction principale.',
                    u'format': u'text/html',
-                   u'header': {},#
+                   u'header': {},  #
                    u'id': u'1000',
                    u'lang': u'FR',
                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
 
 class TestRecognizeOsmNl(TestRecognizeNg):
     REQUIRED_REGEXPS = [re.compile(r'.*openstreetmap.*')]
@@ -490,8 +493,9 @@ class TestRecognizeEvents(TestRecognizeNg):
                   u'lang': u'DE',
                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
     def test_annotate_document(self):
-        for year in range(2017,2023):
+        for year in range(2017, 2023):
             for countryname, country in {
                 'austria': 'http://sws.geonames.org/2782113/',
                 'greece': 'http://sws.geonames.org/390903/'
@@ -537,8 +541,9 @@ class TestRecognizeEventsEn(TestRecognizeNg):
                   u'lang': u'DE',
                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
     def test_annotate_document(self):
-        for year in range(2017,2023):
+        for year in range(2017, 2023):
             for countryname, country in {
                 'austria': 'http://sws.geonames.org/2782113/',
                 'greece': 'http://sws.geonames.org/390903/'}.items():
@@ -549,6 +554,42 @@ class TestRecognizeEventsEn(TestRecognizeNg):
                               }
                 self.REQUIRED_REGEXPS = [re.compile(r'.*Easter.*#{year}.*'.format(year=year))]
                 TestRecognizeNg.test_annotate_document(self)
+
+
+class TestRecognizeCustomDe(TestRecognizeNg):
+    REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
+                        re.compile(r'http://www.wikidata.org/entity/Q688378')]
+
+    SERVICE_URL = 'http://localhost:63007/rest'
+    PROFILE_NAME = 'journalists_test'
+    DOCUMENTS = [{u'annotations': [],
+                  # 'content': 'Boris Becker is a famous tennis player.',
+                  'content': 'Armin Wolf ist ein österreichischer Journalist, der für den ORF arbeitet. Immer wieder berichtet er auch über den Klimawandel.',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+class TestRecognizeJournalistsDe(TestRecognizeNg):
+    REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
+                        re.compile(r'http://www.wikidata.org/entity/Q688378')]
+
+    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+    PROFILE_NAME = 'de_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                'content': 'Armin Wolf, Florian Klenk, Isabell Widek, Su Sametinger, Ingrid Thurnher und Karim El-Gawhary sind alle österreichische Journalisten.' +
+                            'Bernd Affenzeller auch. Vielleicht ist auch Karim El Gawhary ein Journalist?',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
 
 if __name__ == '__main__':
     unittest.main()
