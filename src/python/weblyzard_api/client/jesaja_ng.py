@@ -68,21 +68,21 @@ class JesajaNg(MultiRESTClient):
         return self.request('set_keyword_profile/{}'.format(profile_name),
                             keyword_calculation_profile)
 
-    def add_csv(self, matview_id, keyword_count_map):
+    def add_csv(self, profile_name, keyword_count_map):
         '''
         Adds reference documents for Jesaja.
 
-        :param matview_id:
-            matview_id for which the documents are relevant
+        :param profile_name:
+            profile_name for which the documents are relevant
         :param keyword_count_map:
             a map of keywords and the corresponding counts
             {'the': 222, 'a': 200, ...}
         '''
-        if matview_id is None:
-            raise ValueError('Please specify the matview for which the documents are designated.')
-        return self.request('add_csv/{}'.format(matview_id), keyword_count_map)
+        if profile_name is None:
+            raise ValueError('Please specify the profile_name which the documents are designated.')
+        return self.request('add_csv/{}'.format(profile_name), keyword_count_map)
 
-    def add_documents(self, matview_id, documents):
+    def add_documents(self, profile_name, documents):
         '''
         Adds reference documents for Jesaja.
 
@@ -91,57 +91,65 @@ class JesajaNg(MultiRESTClient):
         :param documents:
             a list of weblyzard documents
         '''
-        if matview_id is None:
-            raise ValueError('Please specify the matview for which the documents are designated.')
-        return self.request('add_documents/{}'.format(matview_id), documents)
+        if profile_name is None:
+            raise ValueError('Please specify the profile_name for which the documents are designated.')
+        return self.request('add_documents/{}'.format(profile_name), documents)
 
-    def get_keyword_annotations(self, matview_id, documents, num_keywords:int=None):
+    def get_keyword_annotations(self, profile_name, documents,
+                                num_keywords:int=None, add_ngrams=True):
         '''
-        :param matview_id: the matview id for which the keywords are computed
+        :param matview_id: the profile_name for which the keywords are computed
         :param documents:  a list of weblyzard documents
-        :param num_keywords:
+        :param num_keywords: the amount of keywords to be returned
+        :param add_ngrams: if set, new ngrams are added to the reference corpus
         '''
-        if not self.has_matview(matview_id):
+        if not self.has_profile(profile_name):
             raise Exception(
-                'Cannot compute keywords - unknown matview {}'.format(matview_id))
+                'Cannot compute keywords - unknown profile_name {}'.format(profile_name))
 
-        endpoint = f'get_nek_annotations/{matview_id}'
+        endpoint = f'get_nek_annotations/{profile_name}'
         if num_keywords is not None and int(num_keywords) > 0:
             endpoint = f'{endpoint}?num_keywords={num_keywords}'
+        if not add_ngrams:
+            separator = '?'
+            if '?' in endpoint:
+                separator = '&'
+            endpoint = f'{endpoint}{separator}add_ngrams=false'
 
         return self.request(endpoint, documents)
 
-    def get_keywords(self, matview_id, documents):
+    def get_keywords(self, profile_name, documents):
         '''
-        :param matview_id: the matview id for which the keywords are computed
+        :param profile_name: the profile_name for which the keywords are computed
         :param documents:
             a list of weblyzard_xml documents [ xml_content, ... ]
 
         '''
-        if not self.has_matview(matview_id):
+        if not self.has_profile(profile_name):
             raise Exception(
-                'Cannot compute keywords - unknown matview {}'.format(matview_id))
-        return self.request('get_keywords/{}'.format(matview_id), documents)
+                'Cannot compute keywords - unknown profile_name {}'.format(profile_name))
+        return self.request('get_keywords/{}'.format(profile_name), documents)
 
-    def has_matview(self, matview_id):
-        return matview_id in self.list_matviews()
+    def has_profile(self, profile_name):
+        return profile_name in self.list_profiles()
 
-    def has_corpus(self, matview_id):
+    def has_corpus(self, profile_name):
         available_completed_shards = self.request(
-            'list_shards/complete/{}'.format(matview_id))
-        return len(available_completed_shards[matview_id]) > 0
+            'list_shards/complete/{}'.format(profile_name))
+        return len(available_completed_shards[profile_name]) > 0
 
-    def remove_matview_profile(self, matview_id):
-        if not self.has_matview(matview_id):
-            print('No profile {} found'.format(matview_id))
+    def remove_matview_profile(self, profile_name):
+        if not self.has_profile(profile_name):
+            print('No profile {} found'.format(profile_name))
             return
-        return self.request('remove_profile/{}/{}'.format(matview_id, matview_id), return_plain=True)
+        return self.request('remove_profile/{}'.format(profile_name),
+                            return_plain=True)
 
-    def get_corpus_size(self, matview_id):
+    def get_corpus_size(self, profile_name):
         available_completed_shards = self.request(
-            'list_shards/complete/{}'.format(matview_id))
+            'list_shards/complete/{}'.format(profile_name))
         total = 0
-        for shard in available_completed_shards[matview_id]:
+        for shard in available_completed_shards[profile_name]:
             total = total + shard['wordCount']
         return total
 
@@ -177,16 +185,16 @@ class JesajaNg(MultiRESTClient):
         '''
         return self.request('list_stoplists')
 
-    def rotate_shard(self, matview_id=None):
+    def rotate_shard(self, profile_name=None):
         '''
-        :param matview_id: an optional matview_id of the shard to be rotated
+        :param profile_name: an optional profile_name of the shard to be rotated
 
         .. note::
 
         All shards are automatically rotated every 24 hours. Call this
         method to speed up the availability of a shard.
         '''
-        if not matview_id:
+        if not profile_name:
             return self.request('rotate_shard')
         else:
-            return self.request('rotate_shard/{}'.format(matview_id))
+            return self.request('rotate_shard/{}'.format(profile_name))
