@@ -1,9 +1,10 @@
 import unittest
+import pytest
 
-from client.textqualityclient.client_text_quality import TextQualityClient
+from weblyzard_api.client.textqualityclient.client_text_quality import TextQualityClient
 
 
-class TestTextQualityClient(unittest.TestCase):
+class TestTextQualityClient(object):
     """
     Each test tuple has:
 
@@ -16,69 +17,55 @@ class TestTextQualityClient(unittest.TestCase):
     - Sixth item: bool, true if single sentence is passive
     """
 
-    TEST_CASES = [
-
-        ("@RT This is just a text. It was supposed to be funny",
-         1, 2,
-         "it was supposed to be you in this case",
-         2, True),
-
-        ("apple is releasing a new software update. The savannah is roamed by "
-         "beautiful giraffes.",
-         1, 2,
-         "At dinner, six shrimp were eaten by Harry",
-         2, True),
-
-        ("I ran the obstacle course in record time."
-         " The crew paved the entire stretch of highway.",
-         0, 2,
-         "it was supposed to be you in this case",
-         2, True),
-
-        ("The entire house was painted by Tom.. It was supposed to look nice",
-         2, 2,
-         "it was supposed to be you in this case",
-         2, True),
-
-        ("Susan will bake two dozen cupcakes for the bake sale."
-         " The wedding planner is making all the reservations. "
-         "The science class viewed the comet.",
-         0, 3,
-         "Thousands of tourists visit the Grand Canyon every year.",
-         0, False),
-
-        ("The homeowners remodeled the house to help it sell."
-         " The metal beams were corroded by the saltwater. "
-         "I will clean the house every Saturday.",
-         1, 3,
-         "Harry ate six shrimp at dinner.",
-         0, False),
-        ]
+    TEST_CASES_FULL_TEXT = [
+         ('@RT This is just a text. It was supposed to be funny', 1, 2),
+         ('Susan will bake two dozen cupcakes for the bake sale. The wedding planner '
+          'is making all the reservations. The science class viewed the comet.',
+          0,
+          3),
+         ('The homeowners remodeled the house to help it sell. The metal beams were '
+          'corroded by the saltwater. I will clean the house every Saturday.',
+          1,
+          3),
+         ('apple is releasing a new software update. The savannah is roamed by '
+          'beautiful giraffes.',
+          1,
+          2),
+         ('The entire house was painted by Tom.. It was supposed to look nice', 2, 2),
+         ('I ran the obstacle course in record time. The crew paved the entire stretch '
+          'of highway.',
+          0,
+          2)
+    ]
+    TEST_CASES_SINGLE_SENTENCE = [
+        ('At dinner, six shrimp were eaten by Harry', 2, True),
+        ('Harry ate six shrimp at dinner.', 0, False),
+        ('it was supposed to be you in this case', 2, True),
+        ('Thousands of tourists visit the Grand Canyon every year.', 0, False)
+    ]
 
     TEXTQUALITYINSTANCE = TextQualityClient(
         'http://skb-viewer-lexical.prod.i.weblyzard.net:8443')
 
-    # testing on single sentence
-    def test_text_quality_sentence(self):
-        for value in self.TEST_CASES:
+    @pytest.mark.parametrize('text,word_count,_is_passive', TEST_CASES_SINGLE_SENTENCE)
+    def test_text_quality_sentence(self, text, word_count, _is_passive):
             passive_words = self.TEXTQUALITYINSTANCE. \
-                get_single_sentence_passive_words(value[3])
-            assert len(passive_words) == value[4]
+                get_single_sentence_passive_words(text)
+            assert len(passive_words) == word_count
 
             is_passive = self.TEXTQUALITYINSTANCE. \
-                is_single_sentence_passive(value[3])
-            assert is_passive == value[5]
+                is_single_sentence_passive(text)
+            assert is_passive == _is_passive
 
-    # testing on full text
-    def test_text_quality_full_text(self):
-        for value in self.TEST_CASES:
+    @pytest.mark.parametrize('text,passive_sentences,all_sentences', TEST_CASES_FULL_TEXT)
+    def test_text_quality_full_text(self, text, passive_sentences, all_sentences):
             passive_sent_cnt = self.TEXTQUALITYINSTANCE. \
-                get_passive_sentences_count_from_text(value[0])
-            assert passive_sent_cnt == value[1]
+                get_passive_sentences_count_from_text(text)
+            assert passive_sent_cnt == passive_sentences
 
             sent_cnt = self.TEXTQUALITYINSTANCE. \
-                get_sentences_count_from_text(value[0])
-            assert sent_cnt == value[2]
+                get_sentences_count_from_text(text)
+            assert sent_cnt == all_sentences
 
 
 if __name__ == '__main__':

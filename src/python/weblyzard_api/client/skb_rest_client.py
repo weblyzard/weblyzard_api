@@ -55,7 +55,7 @@ class SKBRESTClient(object):
         :param kwargs
         """
         uri = kwargs['key']
-        
+
         lang = None
         general_pos = None
 
@@ -257,7 +257,8 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def get_entity_by_property(self, property_value, property_name=None, entity_type=None):
+    def get_entity_by_property(self, property_value, property_name=None,
+                               entity_type=None):
         '''
         Get an entity by a property's value. I.e. one can search for a twitter username
         and get a list of entities and their properties as result. Optionally, one can filter

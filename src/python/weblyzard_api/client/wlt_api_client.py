@@ -8,8 +8,6 @@ This module provides a python client for the WLT REST API.
 """
 from __future__ import unicode_literals
 
-from builtins import str
-from builtins import object
 import json
 import requests
 import logging
@@ -118,7 +116,7 @@ class WltSearchRestApiClient(WltApiClient):
                     yield hits
             except Exception as e:
                 logger.error(
-                    "accessing: {} : {} - {}".format(url, squery, e),
+                    "Accessing: {} : {} - {}".format(url, squery, e),
                     exc_info=True)
                 return r
 
@@ -171,7 +169,7 @@ class WltSearchRestApiClient(WltApiClient):
                 return json.loads(r.content)['result']
         except Exception as e:
             logger.error(
-                "accessing: {} : {} - {}".format(url, data, e), exc_info=True)
+                "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
             return r
         return r
 
