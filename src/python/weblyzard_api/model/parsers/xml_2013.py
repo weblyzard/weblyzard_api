@@ -64,6 +64,7 @@ class XML2013(XMLParser):
         'link_text': ('link_text', 'wl'),
         'tweet_id': ('tweet_id', 'wl'),
         'word_count': ('word_count', 'wl'),
+        'pub_date_class': ('pub_date_class', 'wl'),
 
         'fbType': ('post_type', 'wl'),  # FB
         'picture': ('thumbnail', 'wl'),  # FB, YT
