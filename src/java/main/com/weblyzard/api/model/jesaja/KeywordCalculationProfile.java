@@ -63,11 +63,11 @@ public class KeywordCalculationProfile {
 
     /** NEKs ground annotation entities as keywords. */
     @JsonProperty("ground_annotations")
-    private boolean groundAnnotations;
+    private boolean groundAnnotations = false;
 
     /** Ignore titles. */
     @JsonProperty("ignore_titles")
-    private boolean ignoreTitles;
+    private boolean ignoreTitles = false;
 
     /** Dynamically rotate reference corpus if true. */
     @JsonProperty("update_online")
