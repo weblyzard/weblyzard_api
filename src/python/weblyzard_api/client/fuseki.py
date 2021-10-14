@@ -86,19 +86,21 @@ class FusekiWrapper(object):
 
     def fix_uri(self, o):
         '''
-        If a uri is only the full ury, i.e. not prefixed, it needs
+        If a uri is only the full uri, i.e. not prefixed, it needs
         to be enclosed in angled brackets.
+        If a value is not a str it needs to be converted.
         '''
-        if isinstance(o, tuple) and len(o) == 3:
-            return((self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2])))
 
+        if isinstance(o, tuple) and len(o) == 3:
+            return(self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2]))
         elif isinstance(o, (str, bytes)):
             if isinstance(o, bytes):
                 o = o.decode('utf-8')
             if o.startswith('http'):
-                return u'<{}>'.format(o)
-            else:
-                return o
+                o = u'<{}>'.format(o)
+            return o
+        else:
+            return str(o)
 
     def is_uri(self, value):
         '''
@@ -346,7 +348,6 @@ class FusekiWrapper(object):
                     break
             sub_list = [self.fix_uri(t) for t in sub_list]
             triples = '.\n'.join([' '.join(triple) for triple in sub_list])
-
             if graph_name:
                 query_body = f"""
                 graph <{graph_name}>

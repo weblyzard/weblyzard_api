@@ -37,7 +37,7 @@ class WltApiClient(object):
         :param username, as provided by webLyzard
         :param password, as provided by webLyzard
         """
-        url = '/'.join([self.base_url, str(self.version), self.TOKEN_ENDPOINT])
+        url = '/'.join([self.base_url, self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
         if r.status_code == 200:
             return r.content
@@ -96,7 +96,7 @@ class WltSearchRestApiClient(WltApiClient):
         query["query"] = term_query
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.version, self.DOCUMENT_ENDPOINT])
+        url = '/'.join([self.base_url, self.DOCUMENT_ENDPOINT])
 
         result_count = 0
         total = 1
@@ -115,9 +115,8 @@ class WltSearchRestApiClient(WltApiClient):
                     result_count += len(hits)
                     yield hits
             except Exception as e:
-                logger.error(
-                    "Accessing: {} : {} - {}".format(url, squery, e),
-                    exc_info=True)
+                logger.error("Accessing: %s : %s - %s", url, squery, e,
+                             exc_info=True)
                 return r
 
         return r

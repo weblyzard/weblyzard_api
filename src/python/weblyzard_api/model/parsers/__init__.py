@@ -494,7 +494,7 @@ class XMLParser(object):
                             cls.DOCUMENT_NAMESPACES[namespace], key)
                     else:
                         key = '%s:%s' % (namespace, key)
-            if value and value not in ('None', 'null', '0.0'):
+            if value is not None and value not in ('None', 'null', '0.0'):
                 new_attributes[key] = cls.encode_value(value)
 
         return new_attributes

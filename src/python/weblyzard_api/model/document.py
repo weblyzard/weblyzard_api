@@ -25,6 +25,7 @@ class Document(object):
     # supported partition keys
     FRAGMENT_KEY = 'FRAGMENT'
     SENTENCE_KEY = u'SENTENCE'
+    DUPLICATE_KEY = u'DUPLICATE'
     TITLE_KEY = u'TITLE'
     BODY_KEY = u'BODY'
     TOKEN_KEY = u'TOKEN'
