@@ -114,6 +114,8 @@ class WltSearchRestApiClient(WltApiClient):
                     hits = response['hits']
                     result_count += len(hits)
                     yield hits
+                else:
+                    return r
             except Exception as e:
                 logger.error("Accessing: %s : %s - %s", url, squery, e,
                              exc_info=True)
