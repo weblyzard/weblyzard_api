@@ -61,6 +61,9 @@ class JSONParserBase(object):
 
     SUPPORTED_CONTENT_TYPES = {}
 
+    TEXT_FORMATS = ('text/plain', 'text', 'txt', 'txt/plain')
+    HTML_FORMATS = ('html')
+
     @classmethod
     def from_json_string(cls, json_string):
         '''
@@ -169,7 +172,7 @@ class JSONParserBase(object):
             raise MissingFieldException(
                 "When field 'content_type' is set, 'content' must be set, too.")
         elif 'content' not in json_document and 'content_type' not in json_document and\
-                'sentences' not in json_document:
+                'sentences' not in json_document and 'uri' not in json_document:
             raise MissingFieldException(
                 "Either 'sentences' or 'content' and 'content_type' must be set.")
         if 'content' in json_document and 'sentences' in json_document:
