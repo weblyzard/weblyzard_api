@@ -20,7 +20,6 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
     '''
     test_xmlcontent_minimal_dict = {
         'uri': 'derstandard.at/',
-        'title': 'Test title'
     }
     test_xmlcontent_maximal_dict = {
         'uri': 'derstandard.at/',

@@ -19,8 +19,9 @@ class JSON10ParserXMLContent(JSONParserBase):
     This class is the parser class for JSON documents conforming to
     the Weblyzard API 1.0 definition.
     '''
-    FIELDS_REQUIRED = ['uri', 'title']
-    FIELDS_OPTIONAL = ['language_id', 'sentences', 'content', 'features', 'relations', 'confidence'] \
+    FIELDS_REQUIRED = ['uri']
+    FIELDS_OPTIONAL = ['title', 'language_id', 'sentences', 'content',
+                       'features', 'relations', 'confidence'] \
         +list(XML2013.ATTR_MAPPING.keys())
     API_VERSION = 1.0
 
