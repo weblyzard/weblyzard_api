@@ -6,7 +6,7 @@
 '''
 from __future__ import unicode_literals
 
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (

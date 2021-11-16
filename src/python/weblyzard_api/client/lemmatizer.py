@@ -8,7 +8,7 @@ Created on November 14, 2019
 from itertools import chain
 
 from typing import Tuple, List, Optional
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 from weblyzard_api.model import Sentence
 

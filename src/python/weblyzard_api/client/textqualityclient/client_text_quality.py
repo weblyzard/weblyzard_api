@@ -1,4 +1,4 @@
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 
 class TextQualityClient(MultiRESTClient):
