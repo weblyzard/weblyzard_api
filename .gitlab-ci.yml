@@ -12,7 +12,7 @@
         - sed -i s/-dev/".$(date +%Y%m%d.%H%M)"/g setup.py
         - export PROJECT=$(/usr/bin/python3 -W ignore ./setup.py --name | awk 'NR==1{print $1}')
         - export VERSION=$(/usr/bin/python3 -W ignore ./setup.py --version | awk 'NR==1{print $1}')
-        - export TESTSDIR=src/python/weblyzard_api/tests/model/
+        - export TESTSDIR=src/python/weblyzard_api/tests/always_run/
         - export SRCDIR=src/python/weblyzard_api/
     tags:
         - docker
