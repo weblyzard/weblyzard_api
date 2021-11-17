@@ -17,7 +17,7 @@ class TestXMLParser(unittest.TestCase):
     def test_illegal_document_headers_for_lxml(self):
         test_data_path = os.path.join(
             os.path.dirname(__file__),
-            '../data',
+            '../../data',
             'xml_content_with_illegal_header_attributes.pkl')
         with open(test_data_path, 'rb') as f:  # [mig] readig binary files needs to be specified now ('rb')
             xml_content = load(f)
