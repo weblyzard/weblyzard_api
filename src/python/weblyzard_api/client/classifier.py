@@ -14,8 +14,8 @@ import unittest
 
 from sys import argv
 
-from eWRT.ws.rest import MultiRESTClient
-from eWRT.util.module_path import get_resource
+from weblyzard_api.client import MultiRESTClient
+from weblyzard_api.util.module_path import get_resource
 
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)

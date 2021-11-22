@@ -7,7 +7,7 @@ Created on April 15, 2021
 '''
 
 
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 

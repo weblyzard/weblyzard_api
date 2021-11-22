@@ -219,7 +219,7 @@ class JeremiaTest(unittest.TestCase):
 
     def test_docs_serialization_format(self):
         import json
-        from eWRT.util.module_path import get_resource
+        from weblyzard_api.util.module_path import get_resource
 
         DOCS = [{'id': 7,
                  'body': 'Ehre sei Gott.',

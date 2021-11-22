@@ -13,7 +13,7 @@ import urllib.request, urllib.error, urllib.parse
 from time import sleep, time
 from random import random
 
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (

@@ -6,7 +6,7 @@
 from __future__ import unicode_literals
 import logging
 
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
