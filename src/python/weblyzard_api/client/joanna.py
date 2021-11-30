@@ -18,7 +18,7 @@ import urllib.request, urllib.error
 from random import random
 from time import sleep
 
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 logger = logging.getLogger('weblyzard_api.client.joanna')
 DEFAULT_MAX_RETRY_DELAY = 15

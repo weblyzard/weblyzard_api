@@ -4,7 +4,7 @@
 .. moduleauthor:: Max Goebel <goebel@weblyzard.com>
 '''
 from __future__ import unicode_literals
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)

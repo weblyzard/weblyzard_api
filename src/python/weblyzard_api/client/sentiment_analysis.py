@@ -6,7 +6,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from eWRT.ws.rest import RESTClient
+from weblyzard_api.client import RESTClient
 from unittest import main, TestCase
 
 #SENTIMENT_ANALYSIS_URL = "http://localhost:8000"

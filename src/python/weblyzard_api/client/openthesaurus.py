@@ -14,7 +14,7 @@ http://gecko8.wu.ac.at:8081/synonyme/search?format=application/json&q=lockerung
 from collections import defaultdict
 from itertools import chain
 
-from eWRT.ws.rest import MultiRESTClient
+from weblyzard_api.client import MultiRESTClient
 
 
 class OpenThesaurusClient(MultiRESTClient):

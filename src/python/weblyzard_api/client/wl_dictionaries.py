@@ -19,7 +19,7 @@ import urllib.parse
 from datetime import datetime, timedelta
 from socket import gethostbyname, gaierror
 
-from eWRT.access.http import Retrieve
+from weblyzard_api.util.http import Retrieve
 
 LOCAL_DIR = '/opt/weblyzard/dictionaries/'
 SERVER_URL = 'https://services.weblyzard.com/repo/resources/'

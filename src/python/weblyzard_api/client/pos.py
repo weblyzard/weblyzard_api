@@ -9,7 +9,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
 
-from eWRT.ws.rest import RESTClient
+from weblyzard_api.client import RESTClient
 
 POS_URL = "http://voyager.srv.weblyzard.net/ws"
 

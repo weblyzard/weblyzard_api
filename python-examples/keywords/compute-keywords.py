@@ -20,8 +20,6 @@ from json import dump as jdump
 from time import time
 from re import compile
 
-from eWRT.util.module_path import get_resource
-
 from weblyzard_api.client.jesaja_ng import JesajaNg as Jesaja
 from weblyzard_api.client.jeremia import Jeremia
 from weblyzard_api.model.xml_content import XMLContent
