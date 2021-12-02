@@ -6,10 +6,10 @@ Created on May 15, 2020;
 @author: jakob <jakob.steixner@modul.ac.at>
 
 Client for OpenThesaurus, a community generated tool for generating
-synonyms for German. The pulbic API endpoint is available at
+synonyms for German. The public API endpoint is available at
 https://www.openthesaurus.de/, so this client can be used out of a box
 by initializing it with
-http://gecko8.wu.ac.at:8081/synonyme/search?format=application/json&q=lockerung
+<HOST>/synonyme/search?format=application/json&q=lockerung
 '''
 from collections import defaultdict
 from itertools import chain
@@ -19,7 +19,7 @@ from weblyzard_api.client import MultiRESTClient
 
 class OpenThesaurusClient(MultiRESTClient):
     """Client for OpenThesaurus, a community generated tool for generating
-    synonyms for German. The pulbic API endpoint is available at
+    synonyms for German. The public API endpoint is available at
     https://www.openthesaurus.de/, so this client can be used out of a box
     as with `OpenThesaurusClient('https://www.openthesaurus.de/')`. However,
     the public API currently has a limit of 60 terms per minute, so for
@@ -29,7 +29,7 @@ class OpenThesaurusClient(MultiRESTClient):
     """
     VERSION: float = 1.0
     URL_PATH = '/synonyme'
-    NORMALIZE_FUNCTION = lambda x, y: y.lower()
+    NORMALIZE_FUNCTION = lambda x: x.lower()
     BLOCKED_LEVELS = []
     INPUT_MATCH_DEFAULT = True  # require exact match to input
     # (modulo normalization) as member of synset
