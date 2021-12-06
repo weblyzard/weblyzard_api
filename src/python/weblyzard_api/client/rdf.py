@@ -19,6 +19,9 @@ class Namespace(Enum):
     DCT = 'http://purl.org/dc/terms/'
     SCHEMA = 'http://schema.org/'
 
+    # IPTC newscodes / media topics
+    MEDTOP = 'http://cv.iptc.org/newscodes/mediatopic/'
+
     # special interest namespaces
     SKOS = 'http://www.w3.org/2004/02/skos/core#'
     FOAF = 'http://xmlns.com/foaf/0.1/'
