@@ -56,7 +56,7 @@ class OpinionClient(MultiRESTClient):
                                 'allow_unsupported': allow_unsupported,
                                 'ignored_entity_regexp': ignored_entity_regexp,
                                 'extra_categories': extra_categories,
-                                'textblob_method': textblob_method,
+                                'use_textblob': textblob_method,
                                 'textblob_threshold': textblob_threshold},
                     return_plain=False
                 )
