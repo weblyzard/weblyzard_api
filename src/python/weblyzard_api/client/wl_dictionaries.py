@@ -87,6 +87,8 @@ class WeblyzardDictionaries(object):
 
                 if last_mod_server < last_mod:
                     fetch_file = False
+                    timestamp = datetime.now().timestamp()
+                    os.utime(full_path, (timestamp, timestamp))
             else:
                 fetch_file = False
 

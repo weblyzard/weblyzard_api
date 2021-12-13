@@ -28,7 +28,8 @@ class OpinionClient(MultiRESTClient):
 
     def get_polarity(self, content, content_format, annotations=None,
                      allow_unsupported=False, ignored_entity_regexp=None,
-                     extra_categories=None):
+                     extra_categories=None, textblob_method=0,
+                     textblob_threshold=None):
         '''
         Sends the content in the content_format to the opinion mining server
         to calculate the polarity/sentiment of the content.
@@ -47,14 +48,18 @@ class OpinionClient(MultiRESTClient):
         while retries <= retrycount:
             retries += 1
             try:
-                result = self.request('document',
-                                      parameters={'format': content_format,
-                                                  'content': content,
-                                                  'annotations': annotations,
-                                                  'allow_unsupported': allow_unsupported,
-                                                  'ignored_entity_regexp': ignored_entity_regexp,
-                                                  'extra_categories': extra_categories},
-                                      return_plain=False)
+                result = self.request(
+                    'document',
+                    parameters={'format': content_format,
+                                'content': content,
+                                'annotations': annotations,
+                                'allow_unsupported': allow_unsupported,
+                                'ignored_entity_regexp': ignored_entity_regexp,
+                                'extra_categories': extra_categories,
+                                'use_textblob': textblob_method,
+                                'textblob_threshold': textblob_threshold},
+                    return_plain=False
+                )
                 break
             except Exception as e:
                 if retries <= retrycount:
