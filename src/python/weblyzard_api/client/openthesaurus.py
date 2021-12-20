@@ -29,7 +29,6 @@ class OpenThesaurusClient(MultiRESTClient):
     """
     VERSION: float = 1.0
     URL_PATH = '/synonyme'
-    NORMALIZE_FUNCTION = lambda x: x.lower()
     BLOCKED_LEVELS = []
     INPUT_MATCH_DEFAULT = True  # require exact match to input
     # (modulo normalization) as member of synset
@@ -38,7 +37,7 @@ class OpenThesaurusClient(MultiRESTClient):
     def __init__(self, *args, **kwargs):
 
         self.blocked_levels = kwargs.get('blocked_levels', self.BLOCKED_LEVELS)
-        self.normalize = kwargs.get('normalize', self.NORMALIZE_FUNCTION)
+        self.normalize = kwargs.get('normalize', default_normalize)
         self.input_match_only = kwargs.get(
             'input_match_only', self.INPUT_MATCH_DEFAULT
         )
@@ -47,7 +46,7 @@ class OpenThesaurusClient(MultiRESTClient):
 
     def get_synsets(self, term: str):
         """Get a dict with synonyms sorted by synset id"""
-        term = self.NORMALIZE_FUNCTION(term)
+        term = self.normalize(term)
         result = self.request(path='search',
                               query_parameters={
                                   'format': 'application/json',
@@ -72,3 +71,7 @@ class OpenThesaurusClient(MultiRESTClient):
     def get_plain_synonyms(self, term):
         """get an unordered set of all potential synonyms"""
         return set(chain(*self.get_synsets(term).values()))
+
+
+def default_normalize(term, *args, **kwargs):
+    return term.lower()
