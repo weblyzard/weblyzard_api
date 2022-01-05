@@ -7,13 +7,13 @@ Created on Oct 24, 2016
 '''
 
 from builtins import object
-from typing import List
-
 import json
-import requests
 import logging
+from typing import List, Optional
+from urllib.parse import urlencode
 
-from ast import literal_eval
+import requests
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +25,8 @@ class SKBRESTClient(object):
     ENTITY_PATH = '{}/skb/entity'.format(VERSION)
     ENTITY_BATCH_PATH = '{}/skb/entity_batch'.format(VERSION)
     ENTITY_URI_BATCH_PATH = '{}/skb/entity_uri_batch'.format(VERSION)
-    ENTITY_BY_PROPERTY_PATH = '{}/skb/entity_by_property'.format(VERSION)
+    # ENTITY_BY_PROPERTY_PATH = '{}/skb/entity_by_property'.format(VERSION)
+    ENTITY_SEARCH_PATH = '{}/skb/entity/search'.format(VERSION)
 
     def __init__(self, url):
         '''
@@ -114,15 +115,15 @@ class SKBRESTClient(object):
         skb_relevant_data = self.clean_keyword_data(kwargs)
         return self.save_entity(entity_dict=skb_relevant_data)
 
-    def save_entity(self, entity_dict, force_update=False, ignore_cache=False):
+    def save_entity(self, entity_dict:dict, force_update:bool=False, ignore_cache:bool=False):
         '''
         Save an entity to the SKB, the Entity encoded as `dict`.
         The `entity_dict` must contain a 'uri' and an 'entityType' entry
         and the 'provenance', i.e.an identifier how the entity's information 
         got obtained (e.g. profiles, query/script etc. used).
 
-        Only exception (at the moment) is AgentEntity, where the SKB compiles
-        the URI.
+        If no URI is sent the SKB attempts to compile a weblyzard-namespaced custom
+        entity URI from the preferredName (this needs to exist in that case).
 
         :param entity_dict: The entity as dict
         :type entity_dict: `dict`
@@ -183,8 +184,25 @@ class SKBRESTClient(object):
         else:
             return None
 
+    def post_request(self, urlpath, payload, *args, **kwargs):
+        params = []
+        for arg in args:
+            params.append(arg)
+        qs_params = "&".join(params)
+        qs = urlencode(kwargs, doseq=True)
+
+        urlpath = f'{urlpath}?{qs}&{qs_params}'
+        response = requests.post('{}/{}'.format(self.url,
+                                                urlpath),
+                                 data=json.dumps(payload),
+                                 headers={'Content-Type': 'application/json'})
+        if response.status_code < 400:
+            return json.loads(response.text)
+        else:
+            return None
+
     def save_entity_uri_batch(self, uri_list:List, language:str,
-                              force_update:bool=False, ignore_cache:bool=False) -> dict:
+                              force_update:bool=False, ignore_cache:bool=False) -> Optional[dict]:
         """ Send a batch of entity URIs to the SKB for storage.
         :param uri_list: the URIs to store.
         :param language: language filter for preferredName result.
