@@ -121,15 +121,15 @@ class SKBRESTClient(object):
         Save an entity to the SKB, the Entity encoded as `dict`.
         The `entity_dict` must contain a 'uri' and an 'entityType' entry
         and the 'provenance', i.e. an identifier how the entity's information 
-        got obtained (e.g. profiles, query/script etc. used).
+        got obtained (e.g. repository, profiles, query/script etc. used).
 
         If no URI is sent the SKB attempts to compile a weblyzard-namespaced custom
         entity URI from the preferredName or a name rdf predicate (this needs to exist).
 
-        :param entity_dict: The entity as dict
-        :param force_update: update existing SKB values via Jairo.
-        :param ignore_cache: do not rely on cached results.
-        :returns: json response as dict or None, if an error occurred.
+        :param entity_dict: the entity as dict
+        :param force_update: force a comparison and update on any existing SKB values
+        :param ignore_cache: bypass recently requested URI cache
+        :returns: json response as dict or None, if an error occurred
 
         >>> response = skb_client.save_entity({
             "entityType": "OrganizationEntity",
@@ -153,8 +153,7 @@ class SKBRESTClient(object):
             "info": "added entity",
             "reason": null,
             "status": 200
-            }
-
+        }
         '''
         assert 'entityType' in entity_dict
         assert 'provenance' in entity_dict
@@ -174,16 +173,19 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def save_entity_uri_batch(self, uri_list:List, language:str, force_update:bool=False,
+    def save_entity_uri_batch(self, uri_list:List[str], language:str, force_update:bool=False,
                               ignore_cache:bool=False) -> Optional[dict]:
         '''
         Send a batch of shortened entity URIs to the SKB for storage.
-        :param uri_list: list of shorted URIs of the form 
-                '{entity_type abbr}:{short repository}:{id}'
+        :param uri_list: list of shorted URIs of one of those forms
+                1.'{entity_type abbr}:{repository abbr}:{id}'
+                with entity_type abbr: P, G, O, E and short repository: wd, osm, gn
+                2. '{entity_type}:{entity uri}
+                e.g. 'RocheEntity:http://ontology.roche.com/ROX1305279964642'
         :param language: language filter for preferredName result
-        :param force_update: update existing SKB values via Jairo.
-        :param ignore_cache: do not rely on cached results.
-        :returns: json response as dict or None, if an error occurred.
+        :param force_update: update existing SKB values via Jairo
+        :param ignore_cache: bypass recently requested URI cache
+        :returns: json response as dict or None, if an error occurred
         '''
 
         if len(uri_list) < 1:
@@ -200,52 +202,60 @@ class SKBRESTClient(object):
         return self.drop_error_responses(response)
 
     def save_entity_batch(self, entity_list:List[dict], force_update:bool=False,
-                          ignore_cache:bool=False):
+                          ignore_cache:bool=False) -> Optional[dict]:
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
-        `dict`.
-        Each `entity_dict` must contain an 'entityType' and a 
-        'provenance' entry, this should contain an
-        identifier how the entity's information got obtained (e.g. profiles,
-        query/script etc. used).
+        `dict`. Each `entity_dict` must contain an 'entityType' and a 
+        'provenance' entry, which is an identifier how the entity's information 
+        got obtained (e.g. repository, profiles, query/script etc. used).
 
         If no URI is sent the SKB attempts to compile a weblyzard-namespaced custom
-        entity URI from the preferredName (this needs to exist in that case).
-
-        :param entity_list: The entities as list of dicts
-        :type entity_dict: `list`
-        :returns: A status json response that contains status information
-            on each entity as well as a total `summary`, as dict or None, 
-            if an error occurred.
-        :rtype: dict or None
-
+        entity URI from the preferredName or a name rdf predicate (this needs to exist).
+        
+        :param entity_list: entities as list of dicts
+        :param force_update: force a comparison and update on any existing SKB values
+        :param ignore_cache: bypass recently requested URI cache
+        :returns: json response as dict or None, if an error occurred
+        
+        
+        >>> skb_client.save_entity_batch(entity_list=[
+            {'entityType': 'PersonEntity', 'provenance': 'unittest', 
+            'rdfs:label': 'PersonTest', 'occupation':'wd:Q82955'},
+            {'entityType': 'GeoEntity', 'provenance': 'unittest', 
+            'gn:name': 'GeoTest', 'gn:alternateName': 'GeographyEntity', 'gn:countryCode':'AT'},
+            {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 
+            'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
+        ])
         >>> print(response) = {
-            "data": { list of individual entity response dicts },
-            "message": "success/success - skipped entities/error",
-            "summary": {
-                "skipped": 1,
-                "success": 0,
-                "error": 0
-                "total": 1
-                }
+            'success': {'http://weblyzard.com/skb/entity/person/persontest': 'PersonTest', 
+                        'http://weblyzard.com/skb/entity/geo/geotest': 'GeoTest', 
+                        'http://weblyzard.com/skb/entity/organization/orgtest': 'OrgTest'}, 
+            'error': {}, 
+            'summary': {'success': 3, 
+                        'loaded': 0, 
+                        'added': 3, 
+                        'updated': 0, 
+                        'error': 0, 
+                        'total': 3
+                        }
         }
         '''
-        for entity in entity_list:
-            assert 'entityType' in entity
+
         if len(entity_list) < 1:
             return None
 
-        params = []
-        if force_update:
-            params.append('force_update')
-        if ignore_cache:
-            params.append('ignore_cache')
+        for entity_dict in entity_list:
+            assert 'entityType' in entity_dict
+            assert 'provenance' in entity_dict
 
-        response = self.post_request(urlpath=self.ENTITY_BATCH_PATH,
-                                     payload=entity_list,
-                                     *params)
+        params = {'force_update': force_update,
+                  'ignore_cache': ignore_cache}
 
-        return response
+        response = requests.post(url=f'{self.url}/{self.ENTITY_BATCH_PATH}',
+                                 params=params,
+                                 json=entity_list,
+                                 )
+        return self.drop_error_responses(response)
 
     def get_entity_by_property(self, property_value, property_name=None,
                                entity_type=None):
@@ -412,5 +422,24 @@ if __name__ == '__main__':
     # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True, ignore_cache=True)
     # print(response)
 
-    response = client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=False, ignore_cache=False)
+    # response = client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=False, ignore_cache=False)
+    # print(response)
+    # response = client.save_entity_uri_batch(uri_list=['PersonEntity:http://www.wikidata.org/entity/Q23'], language='en', force_update=False, ignore_cache=False)
+    # print(response)
+
+    response = client.save_entity_batch(entity_list=[{'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'PersonTest', 'occupation':'wd:Q82955'},
+                                                     {'entityType': 'GeoEntity', 'provenance': 'unittest', 'gn:name': 'GeoTest', 'gn:alternateName': 'GeographyEntity', 'gn:countryCode':'AT'},
+                                                     {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
+                                                     ])
     print(response)
+    {'success': {'http://weblyzard.com/skb/entity/person/persontest': 'PersonTest',
+                 'http://weblyzard.com/skb/entity/geo/geotest': 'GeoTest',
+                 'http://weblyzard.com/skb/entity/organization/orgtest': 'OrgTest'},
+     'error': {},
+     'summary': {'success': 3,
+                 'loaded': 0,
+                 'added': 3,
+                 'updated': 0,
+                 'error': 0,
+                 'total': 3}}
+
