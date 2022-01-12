@@ -84,8 +84,8 @@ class SKBRESTClient(object):
 
     def clean_recognize_data(self, kwargs):
         '''
-        Helper class that takes the data generated from recognyze and keeps
-        only the properties, preferred Name,  entityType, uri and profileName
+        Helper fn that takes the data generated from recognyze and keeps
+        only the properties, preferred Name, entityType, uri and profileName
         as provenance, if set.
 
         :param kwargs: The keyword data.
@@ -119,7 +119,7 @@ class SKBRESTClient(object):
         '''
         Save an entity to the SKB, the Entity encoded as `dict`.
         The `entity_dict` must contain a 'uri' and an 'entityType' entry
-        and the 'provenance', i.e.an identifier how the entity's information 
+        and the 'provenance', i.e. an identifier how the entity's information 
         got obtained (e.g. profiles, query/script etc. used).
 
         If no URI is sent the SKB attempts to compile a weblyzard-namespaced custom
@@ -168,30 +168,25 @@ class SKBRESTClient(object):
 
         '''
         assert 'entityType' in entity_dict
-        urlpath = self.ENTITY_PATH
-        params = []
-        if force_update:
-            params.append('force_update')
-        if ignore_cache:
-            params.append('ignore_cache')
-        urlpath = u'{}?{}'.format(urlpath, '&'.join(params))
-        response = requests.post('{}/{}'.format(self.url,
-                                                urlpath),
-                                 data=json.dumps(entity_dict),
-                                 headers={'Content-Type': 'application/json'})
-        if response.status_code < 400:
-            return json.loads(response.text)
-        else:
-            return None
+        assert 'provenance' in entity_dict
 
-    def post_request(self, urlpath, payload, *args, **kwargs):
-        params = []
-        for arg in args:
-            params.append(arg)
-        qs_params = "&".join(params)
-        qs = urlencode(kwargs, doseq=True)
+        params = {'force_update': force_update,
+                  'ignore_cache': ignore_cache}
 
-        urlpath = f'{urlpath}?{qs}&{qs_params}'
+        response = requests.post(url=f'{self.url}/{self.ENTITY_PATH}',
+                                 params=params,
+                                 json=entity_dict)
+
+        return response
+
+    def post_request(self, *args, urlpath, payload, **kwargs):
+        qs_args = "&".join(args)
+        qs_kwargs = urlencode(kwargs, doseq=True)
+        qs = "&".join(filter(None, (qs_args, qs_kwargs)))
+
+        urlpath = f'{urlpath}?{qs}'
+        print(urlpath)
+        return
         response = requests.post('{}/{}'.format(self.url,
                                                 urlpath),
                                  data=json.dumps(payload),
@@ -211,31 +206,32 @@ class SKBRESTClient(object):
         """
         if len(uri_list) < 1:
             return None
-        urlpath = f'{self.ENTITY_URI_BATCH_PATH}?language={language}'
-        if force_update:
-            urlpath = f'{urlpath}&force_update'
-        if ignore_cache:
-            urlpath = f'{urlpath}&ignore_cache'
-        response = requests.post('{}/{}'.format(self.url,
-                                                urlpath),
-                                 data=json.dumps(uri_list),
-                                 headers={'Content-Type': 'application/json'})
-        if response.status_code < 400:
-            return json.loads(response.text)
-        else:
-            return None
 
-    def save_entity_batch(self, entity_list, force_update=False, ignore_cache=False):
+        params = []
+        if force_update:
+            params.append('force_update')
+        if ignore_cache:
+            params.append('ignore_cache')
+        params_dict = {'language': language}
+
+        response = self.post_request(urlpath=self.ENTITY_URI_BATCH_PATH,
+                                     payload=uri_list,
+                                     *params,
+                                     **params_dict)
+        return response
+
+    def save_entity_batch(self, entity_list:List[dict], force_update:bool=False,
+                          ignore_cache:bool=False):
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
         `dict`.
-        Each `entity_dict` must contain a 'uri', an 'entityType' and a 
+        Each `entity_dict` must contain an 'entityType' and a 
         'provenance' entry, this should contain an
         identifier how the entity's information got obtained (e.g. profiles,
         query/script etc. used).
 
-        Only exception (at the moment) is AgentEntity, where the SKB compiles
-        the URI.
+        If no URI is sent the SKB attempts to compile a weblyzard-namespaced custom
+        entity URI from the preferredName (this needs to exist in that case).
 
         :param entity_list: The entities as list of dicts
         :type entity_dict: `list`
@@ -259,21 +255,18 @@ class SKBRESTClient(object):
             assert 'entityType' in entity
         if len(entity_list) < 1:
             return None
-        urlpath = self.ENTITY_BATCH_PATH
+
         params = []
         if force_update:
             params.append('force_update')
         if ignore_cache:
             params.append('ignore_cache')
-        urlpath = u'{}?{}'.format(urlpath, '&'.join(params))
-        response = requests.post('{}/{}'.format(self.url,
-                                                urlpath),
-                                 data=json.dumps(entity_list),
-                                 headers={'Content-Type': 'application/json'})
-        if response.status_code < 400:
-            return json.loads(response.text)
-        else:
-            return None
+
+        response = self.post_request(urlpath=self.ENTITY_BATCH_PATH,
+                                     payload=entity_list,
+                                     *params)
+
+        return response
 
     def get_entity_by_property(self, property_value, property_name=None,
                                entity_type=None):
@@ -421,3 +414,23 @@ class SKBSimpleBaseFormsDictionary(dict):
         for k, v in response.items():
             return_value[k] = self.reconstruct(v) if isinstance(v, dict) else (set(v) if isinstance(v, list) else v)
         return return_value
+
+
+if __name__ == '__main__':
+    import time
+
+    client = SKBRESTClient(url='http://localhost:5000')
+    # create new entity
+    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'})
+    print(response.text)
+    # update entity
+    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'UpdatedTestPerson', 'uri':'http://my_test'}, force_update=True)
+    print(response.text)
+    time.sleep(3)  # wait to make sure cache was updated
+    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True)
+    print(response.text)
+    # explicitly ignore cache to update again
+    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True, ignore_cache=True)
+    print(response.text)
+
+    # client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=True, ignore_cache=False)
