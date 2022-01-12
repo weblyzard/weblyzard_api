@@ -123,7 +123,7 @@ class SKBRESTClient(object):
         got obtained (e.g. profiles, query/script etc. used).
 
         If no URI is sent the SKB attempts to compile a weblyzard-namespaced custom
-        entity URI from the preferredName (this needs to exist in that case).
+        entity URI from the preferredName or a name rdf predicate (this needs to exist).
 
         :param entity_dict: The entity as dict
         :type entity_dict: `dict`
@@ -131,35 +131,23 @@ class SKBRESTClient(object):
         :rtype: dict or None
 
         >>> response = skb_client.save_entity({
-            "entityType": "AgentEntity",
-            "provenance": "save_entity_20190101",
-            "publisher": "You Don't Say",
-            "title": "Hello, world!",
-            "url": "http://www.youdontsayaac.com/hello-world-2/",
-            "charset": "UTF-8",
+            "entityType": "OrganizationEntity",
+            "provenance": "custom_entity_20210101",
+            "rdfs:label": "Hello world!",
             "thumbnail": "https://s0.wp.com/i/blank.jpg",
-            "locale": "en_US",
-            "page_type": "article",
-            "published_date": "2014-07-15T18:46:42+00:00",
-            "twitter_site": "twitter@mfm_Kay",
-            "twitter_card": "summary"
+            "twitter": "@HelloWorld",
         })
         >>> print(response) = {
-            "payload": {
-                  "entityType": "AgentEntity",
-                  "provenance": "save_entity_20190101",
-                  "publisher": "You Don't Say",
-                  "title": "Hello, world!",
-                  "url": "http://www.youdontsayaac.com/hello-world-2/",
-                  "charset": "UTF-8",
-                  "thumbnail": "https://s0.wp.com/i/blank.jpg",
-                  "locale": "en_US",
-                  "page_type": "article",
-                  "published_date": "2014-07-15T18:46:42+00:00",
-                  "twitter_site": "twitter@mfm_Kay",
-                  "twitter_card": "summary"
+            "data": {
+                    "entityType": "OrganizationEntity",
+                    "uri": "http://weblyzard.com/skb/entity/organization/hello_world",
+                    "preferredName": "Hello world!"
+                    "preferredNameByLang": "Hello world!"
+                    "rdfs:label": "Hello world!",
+                    "wdt:P18": "https://s0.wp.com/i/blank.jpg",
+                    "twitter": "@HelloWorld",
             },
-            "uri": "http://weblyzard.com/skb/entity/agent/you_don_t_say",
+            "uri": "http://weblyzard.com/skb/entity/organization/hello_world",
             "message": "success",
             "info": "added entity",
             "reason": null,
@@ -177,20 +165,9 @@ class SKBRESTClient(object):
                                  params=params,
                                  json=entity_dict)
 
-        return response
+        return self.drop_error_responses(response)
 
-    def post_request(self, *args, urlpath, payload, **kwargs):
-        qs_args = "&".join(args)
-        qs_kwargs = urlencode(kwargs, doseq=True)
-        qs = "&".join(filter(None, (qs_args, qs_kwargs)))
-
-        urlpath = f'{urlpath}?{qs}'
-        print(urlpath)
-        return
-        response = requests.post('{}/{}'.format(self.url,
-                                                urlpath),
-                                 data=json.dumps(payload),
-                                 headers={'Content-Type': 'application/json'})
+    def drop_error_responses(self, response):
         if response.status_code < 400:
             return json.loads(response.text)
         else:
@@ -420,17 +397,27 @@ if __name__ == '__main__':
     import time
 
     client = SKBRESTClient(url='http://localhost:5000')
-    # create new entity
-    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'})
+    # # create new entity
+    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'})
+    # print(response.text)
+    # # update entity
+    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'UpdatedTestPerson', 'uri':'http://my_test'}, force_update=True)
+    # print(response.text)
+    # time.sleep(3)  # wait to make sure cache was updated
+    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True)
+    # print(response.text)
+    # # explicitly ignore cache to update again
+    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True, ignore_cache=True)
+    # print(response.text)
+
+    response = client.save_entity({
+            "entityType": "OrganizationEntity",
+            "provenance": "custom_entity_20210101",
+            "rdfs:label": "Hello world!",
+            "thumbnail": "https://s0.wp.com/i/blank.jpg",
+            "twitter": "@HelloWorld",
+        })
     print(response.text)
-    # update entity
-    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'UpdatedTestPerson', 'uri':'http://my_test'}, force_update=True)
-    print(response.text)
-    time.sleep(3)  # wait to make sure cache was updated
-    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True)
-    print(response.text)
-    # explicitly ignore cache to update again
-    response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True, ignore_cache=True)
-    print(response.text)
+    print(response.json())
 
     # client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=True, ignore_cache=False)
