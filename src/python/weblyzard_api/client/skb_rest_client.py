@@ -115,7 +115,8 @@ class SKBRESTClient(object):
         skb_relevant_data = self.clean_keyword_data(kwargs)
         return self.save_entity(entity_dict=skb_relevant_data)
 
-    def save_entity(self, entity_dict:dict, force_update:bool=False, ignore_cache:bool=False):
+    def save_entity(self, entity_dict:dict, force_update:bool=False,
+                    ignore_cache:bool=False) -> Optional[dict]:
         '''
         Save an entity to the SKB, the Entity encoded as `dict`.
         The `entity_dict` must contain a 'uri' and an 'entityType' entry
@@ -126,9 +127,9 @@ class SKBRESTClient(object):
         entity URI from the preferredName or a name rdf predicate (this needs to exist).
 
         :param entity_dict: The entity as dict
-        :type entity_dict: `dict`
-        :returns: A status json response as dict or None, if an error occurred.
-        :rtype: dict or None
+        :param force_update: update existing SKB values via Jairo.
+        :param ignore_cache: do not rely on cached results.
+        :returns: json response as dict or None, if an error occurred.
 
         >>> response = skb_client.save_entity({
             "entityType": "OrganizationEntity",
@@ -145,7 +146,7 @@ class SKBRESTClient(object):
                     "preferredNameByLang": "Hello world!"
                     "rdfs:label": "Hello world!",
                     "wdt:P18": "https://s0.wp.com/i/blank.jpg",
-                    "twitter": "@HelloWorld",
+                    "twitter username": "@HelloWorld",
             },
             "uri": "http://weblyzard.com/skb/entity/organization/hello_world",
             "message": "success",
@@ -163,8 +164,8 @@ class SKBRESTClient(object):
 
         response = requests.post(url=f'{self.url}/{self.ENTITY_PATH}',
                                  params=params,
-                                 json=entity_dict)
-
+                                 json=entity_dict,
+                                 )
         return self.drop_error_responses(response)
 
     def drop_error_responses(self, response):
@@ -173,29 +174,30 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def save_entity_uri_batch(self, uri_list:List, language:str,
-                              force_update:bool=False, ignore_cache:bool=False) -> Optional[dict]:
-        """ Send a batch of entity URIs to the SKB for storage.
-        :param uri_list: the URIs to store.
-        :param language: language filter for preferredName result.
+    def save_entity_uri_batch(self, uri_list:List, language:str, force_update:bool=False,
+                              ignore_cache:bool=False) -> Optional[dict]:
+        '''
+        Send a batch of shortened entity URIs to the SKB for storage.
+        :param uri_list: list of shorted URIs of the form 
+                '{entity_type abbr}:{short repository}:{id}'
+        :param language: language filter for preferredName result
         :param force_update: update existing SKB values via Jairo.
         :param ignore_cache: do not rely on cached results.
-        """
+        :returns: json response as dict or None, if an error occurred.
+        '''
+
         if len(uri_list) < 1:
             return None
 
-        params = []
-        if force_update:
-            params.append('force_update')
-        if ignore_cache:
-            params.append('ignore_cache')
-        params_dict = {'language': language}
+        params = {'force_update': force_update,
+                  'ignore_cache': ignore_cache,
+                  'language': language}
 
-        response = self.post_request(urlpath=self.ENTITY_URI_BATCH_PATH,
-                                     payload=uri_list,
-                                     *params,
-                                     **params_dict)
-        return response
+        response = requests.post(url=f'{self.url}/{self.ENTITY_URI_BATCH_PATH}',
+                                 params=params,
+                                 json=uri_list,
+                                 )
+        return self.drop_error_responses(response)
 
     def save_entity_batch(self, entity_list:List[dict], force_update:bool=False,
                           ignore_cache:bool=False):
@@ -399,25 +401,16 @@ if __name__ == '__main__':
     client = SKBRESTClient(url='http://localhost:5000')
     # # create new entity
     # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'})
-    # print(response.text)
+    # print(response)
     # # update entity
     # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'UpdatedTestPerson', 'uri':'http://my_test'}, force_update=True)
-    # print(response.text)
+    # print(response)
     # time.sleep(3)  # wait to make sure cache was updated
     # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True)
-    # print(response.text)
+    # print(response)
     # # explicitly ignore cache to update again
     # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True, ignore_cache=True)
-    # print(response.text)
+    # print(response)
 
-    response = client.save_entity({
-            "entityType": "OrganizationEntity",
-            "provenance": "custom_entity_20210101",
-            "rdfs:label": "Hello world!",
-            "thumbnail": "https://s0.wp.com/i/blank.jpg",
-            "twitter": "@HelloWorld",
-        })
-    print(response.text)
-    print(response.json())
-
-    # client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=True, ignore_cache=False)
+    response = client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=False, ignore_cache=False)
+    print(response)
