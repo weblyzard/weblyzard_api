@@ -270,10 +270,8 @@ class SKBRESTClient(object):
             human-readable form (optional)
         :param entity_type: type of the entity (optional)
         :param exact_match: if True only exact matches for the property value are returned
-
-        >>> skb_client.get_entity_by_property(property_value="You Don't Say")
-        [{u'entityType': u'AgentEntity', u'uri': u'http://weblyzard.com/skb/entity/agent/you_don_t_say', u'last_modified': u'2018-05-17T13:16:24.779019', u'_id': u'agent:you_don_t_say', u'properties': {u'url': u'youdontsayaac.com', u'publisher': u"You Don't Say", u'locale': u'en_US', u'twitter_site': u'@mfm_Kay', u'thumbnail': u'https://s0.wp.com/i/blank.jpg'}, u'preferredName': u"You Don't Say"}]
         '''
+
         if property_name:
             if exact_match:
                 filters = [{'filter_type': 'property',
