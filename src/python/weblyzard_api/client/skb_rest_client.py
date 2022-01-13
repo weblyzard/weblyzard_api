@@ -171,6 +171,7 @@ class SKBRESTClient(object):
         if response.status_code < 400:
             return json.loads(response.text)
         else:
+            logger.error(f'request failed {json.loads(response.text)}')
             return None
 
     def save_entity_uri_batch(self, uri_list:List[str], language:str, force_update:bool=False,
@@ -257,41 +258,88 @@ class SKBRESTClient(object):
                                  )
         return self.drop_error_responses(response)
 
-    def get_entity_by_property(self, property_value, property_name=None,
-                               entity_type=None):
+    def get_entity_by_property(self, property_value:str, property_name:str=None,
+                               entity_type:str=None, exact_match:bool=False) -> Optional[List[dict]]:
         '''
-        Get an entity by a property's value. I.e. one can search for a twitter username
-        and get a list of entities and their properties as result. Optionally, one can filter
-        by entity_type and property_name (which then has to have `value`).
-
-        It returns a list of dicts containing the properties of the matching entities or None
+        Get an entity by a property's value.
+        Returns a list of dicts containing the properties of the matching entities or None
         if no entities matched.
-
-        :param property_value: The property's value
-        :type property_value: str or unicode
-        :param property_name: The property's name. Optional.
-        :type property_name: str or unicode
-        :param entity_type: The type of entity to accept. Optional.
-        :type entity_type: str or unicode
-        :returns: The data of the entities matching the filter criteria.
-        :rtype: list
+        
+        :param property_value: the property's value
+        :param property_name: the property's name, either LOD predicate or 
+            human-readable form (optional)
+        :param entity_type: type of the entity (optional)
+        :param exact_match: if True only exact matches for the property value are returned
 
         >>> skb_client.get_entity_by_property(property_value="You Don't Say")
         [{u'entityType': u'AgentEntity', u'uri': u'http://weblyzard.com/skb/entity/agent/you_don_t_say', u'last_modified': u'2018-05-17T13:16:24.779019', u'_id': u'agent:you_don_t_say', u'properties': {u'url': u'youdontsayaac.com', u'publisher': u"You Don't Say", u'locale': u'en_US', u'twitter_site': u'@mfm_Kay', u'thumbnail': u'https://s0.wp.com/i/blank.jpg'}, u'preferredName': u"You Don't Say"}]
         '''
-        params = {'value': property_value}
         if property_name:
-            params['property_name'] = property_name
+            if exact_match:
+                filters = [{'filter_type': 'property',
+                            'filter_values': {'name': property_name,
+                                              'value': property_value,
+                                              'operator':'term'}}]
+            else:
+                filters = [{'filter_type': 'property',
+                            'filter_values': {'name': property_name,
+                                              'value': property_value}}]
+            return self.entity_search(entity_type=entity_type,
+                                      filters=filters)
+        else:
+            return self.entity_search(search_phrase=property_value,
+                                      entity_type=entity_type)
+
+    def entity_search(self, search_phrase:str=None, search_field:str=None, entity_type=None,
+                      fuzzy=False, search_languages:List[str]=None, response_language:str=None,
+                      filters:List[dict]=None) -> Optional[List[dict]]:
+        '''
+        Search for entities with a search phrase that is matched on property values
+        with additional search filters. Search type is text `match` (analyzed, full-text).
+        :param search_phrase: (optional) string to search for
+        :param search_field: `all` - all properties (default), 
+                             `uri` - entity uri, 
+                             `title` - preferredName and name fields, 
+                             `description` - description and abstracts, 
+                             `title/description` - title and description properties
+        :param entity_type: (optional) the type of entity
+        :param fuzzy: enable fuzzy search
+        :param search_languages: (optional) only search in properties that match the given
+            list of languages, `None` is a valid value for properties with no specified language  
+        :param response_language: (optional) names and descriptions are returned only in that language
+        :param filters: additional entity filters specified by `filter_type` and `filter_values`, 
+                valid filters are:
+                `PropertyFilter` -`filter_type`: `property`
+                    `filter_values`: `name`, `value`, `operator` (optional), `negate` (optional)
+                `DateFilter` - `filter_type`: `anniversary`
+                    `filter_values`: `start_date` (optional), `end_date` (optional)
+                `AnniversaryFilter` - `filter_type`: `date`
+                    `filter_values`: either `day` (mm-dd)  or `from_date`, `end_date`, 
+                                    `anniv_num` (optional)       
+        '''
+        params = {'response_format': 'simple', 'human_readable':False}
+        if search_phrase:
+            params['search_phrase'] = search_phrase
+        if search_field:
+            params['search_field'] = search_field
         if entity_type:
             params['entity_type'] = entity_type
-        response = requests.get('{}/{}'.format(self.url,
-                                               self.ENTITY_BY_PROPERTY_PATH),
-                                params=params,
-                                headers={'Content-Type': 'application/json'})
-        if response.status_code < 400:
-            return json.loads(response.text)
+        if fuzzy:
+            params['fuzzy_search'] = fuzzy
+        if search_languages:
+            params['search_languages'] = search_languages
+        if response_language:
+            params['response_language'] = response_language
+
+        if filters:
+            payload = {'filters': filters}
         else:
-            return None
+            payload = {}
+
+        response = requests.post(f'{self.url}/{self.ENTITY_SEARCH_PATH}',
+                                params=params,
+                                json=payload)
+        return self.drop_error_responses(response)
 
     def get_entity(self, uri):
         '''
@@ -367,6 +415,8 @@ class SKBRESTClient(object):
                              e)
         return None
 
+# TODO: remember access_restriction field!
+
 
 class SKBSentimentDictionary(dict):
     SENTIMENT_PATH = '{}/skb/sentiment_dict'.format(SKBRESTClient.VERSION)
@@ -427,19 +477,17 @@ if __name__ == '__main__':
     # response = client.save_entity_uri_batch(uri_list=['PersonEntity:http://www.wikidata.org/entity/Q23'], language='en', force_update=False, ignore_cache=False)
     # print(response)
 
-    response = client.save_entity_batch(entity_list=[{'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'PersonTest', 'occupation':'wd:Q82955'},
-                                                     {'entityType': 'GeoEntity', 'provenance': 'unittest', 'gn:name': 'GeoTest', 'gn:alternateName': 'GeographyEntity', 'gn:countryCode':'AT'},
-                                                     {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
-                                                     ])
-    print(response)
-    {'success': {'http://weblyzard.com/skb/entity/person/persontest': 'PersonTest',
-                 'http://weblyzard.com/skb/entity/geo/geotest': 'GeoTest',
-                 'http://weblyzard.com/skb/entity/organization/orgtest': 'OrgTest'},
-     'error': {},
-     'summary': {'success': 3,
-                 'loaded': 0,
-                 'added': 3,
-                 'updated': 0,
-                 'error': 0,
-                 'total': 3}}
+    # response = client.save_entity_batch(entity_list=[{'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'PersonTest', 'occupation':'wd:Q82955'},
+    #                                                  {'entityType': 'GeoEntity', 'provenance': 'unittest', 'gn:name': 'GeoTest', 'gn:alternateName': 'GeographyEntity', 'gn:countryCode':'AT'},
+    #                                                  {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
+    #                                                  ])
+
+    response = client.get_entity_by_property(property_value='BarackObama', property_name='twitter username', exact_match=True)
+    print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
+
+    response = client.get_entity_by_property(property_value='Barack Obama', property_name='abstract', entity_type='PersonEntity')
+    print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
+
+    # response = client.get_entity_by_property(property_value='Siemens', entity_type='OrganizationEntity')
+    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
 
