@@ -354,50 +354,69 @@ class SKBRESTClient(object):
                                 headers={'Content-Type': 'application/json'})
         return self.drop_error_responses(response)
 
-    def check_entity_exists_in_skb(self, entity, entity_type):
+    def check_entity_exists_in_skb(self, entity:dict, entity_type:str) -> bool:
         '''
         Check if a given entity already exists in the SKB. Supports both
         direct (i.e. URI as key) and `owl:sameAs` lookups.
-        :param entity
-        :param entity_type
-        :returns: bool
+        :param entity: entity dict containing `uri` or `owl:sameAs`
+        :param entity_type: the entity type
         '''
         return self.check_existing_entity_key(entity, entity_type) is not None
 
-    def check_existing_entity_key(self, entity, entity_type):
+    def check_existing_entity_key(self, entity:dict, entity_type:str) -> Optional[str]:
         '''
         If a given entity already exists in the SKB, as identified directly
         (i. e. by URI) or by `owl:sameAs` lookups, return the identifier of
-        the existing equivalent entity
-        :param entity
-        :param entity_type
-        :returns: uri of exisiting equivalent entity or None
+        the existing equivalent entity. 
+        Only returns the first entry if multiple are found!
+        :param entity: entity dict containing `uri`/`key` or `owl:sameAs`
+        :param entity_type: the entity type
         '''
-        uri = entity.get('uri', entity.get('key', None))
-
+        uri = entity.get('uri', entity.get('key'))
         same_as = entity.get('owl:sameAs', [])
+
         if isinstance(same_as, str):
             same_as = [same_as]
-        for uri in [uri] + same_as:
-            try:
-                if uri:
-                    exact_match = self.get_entity(uri=uri)
-                    if exact_match is not None:
-                        return exact_match['uri']
-                sameas_match = self.get_entity_by_property(
-                    property_value=uri,
-                    property_name='owl:sameAs',
-                    entity_type=entity_type
-                )
-                if sameas_match is not None and len(sameas_match):
-                    logger.info(
-                        u'Identified entity {} through sameAs match.'.format(uri))
-                    return sameas_match[0]['uri']
-            except Exception as e:
-                logger.error('Check if entity exists in SKB failed for %s: %s',
-                             uri,
-                             e)
+
+        if uri:
+            exact_match = self.get_entity(uri=uri)
+            if exact_match is not None:
+                return exact_match['uri']
+
+        for uri in same_as:
+            sameas_matches = self.get_entity_by_property(property_value=uri,
+                                                         property_name='owl:sameAs',
+                                                         entity_type=entity_type,
+                                                         exact_match=True)
+            if sameas_matches:
+                logger.info(f'Identified entity {uri} through sameAs match.')
+                if len(sameas_matches) > 1:
+                    logger.info(f'More than one matching entity ({len(sameas_matches)}) for {uri} found.')
+                return sameas_matches[0]['uri']
+
         return None
+
+        # for uri in [uri] + same_as:
+        #     try:
+        #         if uri:
+        #             exact_match = self.get_entity(uri=uri)
+        #             if exact_match is not None:
+        #                 return exact_match['uri']
+        #         sameas_match = self.get_entity_by_property(
+        #             property_value=uri,
+        #             property_name='owl:sameAs',
+        #             entity_type=entity_type,
+        #             exact_match=True
+        #         )
+        #         if sameas_match is not None and len(sameas_match):
+        #             logger.info(
+        #                 u'Identified entity {} through sameAs match.'.format(uri))
+        #             return sameas_match[0]['uri']
+        #     except Exception as e:
+        #         logger.error('Check if entity exists in SKB failed for %s: %s',
+        #                      uri,
+        #                      e)
+        # return None
 
 # TODO: remember access_restriction field!
 
@@ -478,8 +497,13 @@ if __name__ == '__main__':
     # response = client.get_entity_by_property(property_value='Siemens', entity_type='OrganizationEntity')
     # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
 
-    uris = ['http://www.wikidata.org/entity/Q76', 'wd:Q76', 'http://weblyzard.com/skb/entity/organization/hello_world', 'skborg:hello_world']
-    for uri in uris:
-        response = client.get_entity(uri)
-        print(response)
+    # uris = ['http://www.wikidata.org/entity/Q76', 'wd:Q76', 'http://weblyzard.com/skb/entity/organization/hello_world', 'skborg:hello_world']
+    # for uri in uris:
+    #     response = client.get_entity(uri)
+    #     print(response)
+
+    result = client.check_existing_entity_key(entity={'uri': 'http://sws.geonames.org/2761367/'}, entity_type='GeoEntity')
+    assert(result == 'http://sws.geonames.org/2761367/')
+    result = client.check_entity_exists_in_skb(entity={'owl:sameAs': 'wd:Q1741'}, entity_type='GeoEntity')
+    assert(result == True)
 
