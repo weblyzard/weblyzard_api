@@ -396,28 +396,6 @@ class SKBRESTClient(object):
 
         return None
 
-        # for uri in [uri] + same_as:
-        #     try:
-        #         if uri:
-        #             exact_match = self.get_entity(uri=uri)
-        #             if exact_match is not None:
-        #                 return exact_match['uri']
-        #         sameas_match = self.get_entity_by_property(
-        #             property_value=uri,
-        #             property_name='owl:sameAs',
-        #             entity_type=entity_type,
-        #             exact_match=True
-        #         )
-        #         if sameas_match is not None and len(sameas_match):
-        #             logger.info(
-        #                 u'Identified entity {} through sameAs match.'.format(uri))
-        #             return sameas_match[0]['uri']
-        #     except Exception as e:
-        #         logger.error('Check if entity exists in SKB failed for %s: %s',
-        #                      uri,
-        #                      e)
-        # return None
-
 # TODO: remember access_restriction field!
 
 
