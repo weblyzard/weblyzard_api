@@ -265,6 +265,8 @@ class SKBRESTClient(object):
         Returns a list of dicts containing the properties of the matching entities or None
         if no entities matched.
         
+        .. caveat: universal access rights
+        
         :param property_value: the property's value
         :param property_name: the property's name, either LOD predicate or 
             human-readable form (optional)
@@ -290,7 +292,7 @@ class SKBRESTClient(object):
 
     def entity_search(self, search_phrase:str=None, search_field:str=None, entity_type=None,
                       fuzzy=False, search_languages:List[str]=None, response_language:str=None,
-                      filters:List[dict]=None) -> Optional[List[dict]]:
+                      access_right='universal', filters:List[dict]=None) -> Optional[List[dict]]:
         '''
         Search for entities with a search phrase that is matched on property values
         with additional search filters. Search type is text `match` (analyzed, full-text).
@@ -305,6 +307,8 @@ class SKBRESTClient(object):
         :param search_languages: (optional) only search in properties that match the given
             list of languages, `None` is a valid value for properties with no specified language  
         :param response_language: (optional) names and descriptions are returned only in that language
+        :param access_right: if not set only returns openly accessibly entities
+            (default `universal` returns all entities) 
         :param filters: additional entity filters specified by `filter_type` and `filter_values`, 
                 valid filters are:
                 `PropertyFilter` -`filter_type`: `property`
@@ -328,6 +332,8 @@ class SKBRESTClient(object):
             params['search_languages'] = search_languages
         if response_language:
             params['response_language'] = response_language
+        if access_right:
+            params['access_right'] = access_right
 
         if filters:
             payload = {'filters': filters}
@@ -360,6 +366,8 @@ class SKBRESTClient(object):
         direct (i.e. URI as key) and `owl:sameAs` lookups.
         :param entity: entity dict containing `uri` or `owl:sameAs`
         :param entity_type: the entity type
+        
+        .. caveat: universal access rights
         '''
         return self.check_existing_entity_key(entity, entity_type) is not None
 
@@ -368,7 +376,10 @@ class SKBRESTClient(object):
         If a given entity already exists in the SKB, as identified directly
         (i. e. by URI) or by `owl:sameAs` lookups, return the identifier of
         the existing equivalent entity. 
-        Only returns the first entry if multiple are found!
+        
+        .. caveats: only returns the first entry if multiple are found,
+            universal access rights
+            
         :param entity: entity dict containing `uri`/`key` or `owl:sameAs`
         :param entity_type: the entity type
         '''
@@ -395,8 +406,6 @@ class SKBRESTClient(object):
                 return sameas_matches[0]['uri']
 
         return None
-
-# TODO: remember access_restriction field!
 
 
 class SKBSentimentDictionary(dict):
@@ -480,8 +489,8 @@ if __name__ == '__main__':
     #     response = client.get_entity(uri)
     #     print(response)
 
-    result = client.check_existing_entity_key(entity={'uri': 'http://sws.geonames.org/2761367/'}, entity_type='GeoEntity')
-    assert(result == 'http://sws.geonames.org/2761367/')
-    result = client.check_entity_exists_in_skb(entity={'owl:sameAs': 'wd:Q1741'}, entity_type='GeoEntity')
-    assert(result == True)
+    # result = client.check_existing_entity_key(entity={'uri': 'http://sws.geonames.org/2761367/'}, entity_type='GeoEntity')
+    # assert(result == 'http://sws.geonames.org/2761367/')
+    # result = client.check_entity_exists_in_skb(entity={'owl:sameAs': 'wd:Q1741'}, entity_type='GeoEntity')
+    # assert(result == True)
 
