@@ -339,34 +339,20 @@ class SKBRESTClient(object):
                                 json=payload)
         return self.drop_error_responses(response)
 
-    def get_entity(self, uri):
+    def get_entity(self, uri:str) -> Optional[dict]:
         '''
         Get an entity by its uri.
-
-        It returns a dict containing the properties of the entity or None
+        Returns a dict containing the properties of the entity or None
         if no entities matched.
 
-        :param uri: The uri of the Entity to get.
-        :type uri: str or unicode
-        :returns: The Entity's data.
-        :rtype: dict
-
-        >>> skb_client.get_entity(uri="http://weblyzard.com/skb/entity/agent/you_don_t_say")
-        {u'publisher': u"You Don't Say", u'locale': u'en_US', u'entityType': u'AgentEntity', u'thumbnail': u'https://s0.wp.com/i/blank.jpg', u'url': u'youdontsayaac.com', u'twitter_site': u'@mfm_Kay', u'preferredName': u"You Don't Say"}
+        :param uri: uri of the entity
         '''
-        if 'http://weblyzard.com/skb/entity/' in uri:
-            uri = uri.replace('http://weblyzard.com/skb/entity/', '')
-            prefix = uri.split('/')[0]
-            uri = '{}:{}'.format(prefix, '/'.join(uri.split('/')[1:]))
+
         params = {'uri': uri}
-        response = requests.get('{}/{}'.format(self.url,
-                                               self.ENTITY_PATH),
+        response = requests.get(f'{self.url}/{self.ENTITY_PATH}',
                                 params=params,
                                 headers={'Content-Type': 'application/json'})
-        if response.status_code < 400:
-            return json.loads(response.text)
-        else:
-            return None
+        return self.drop_error_responses(response)
 
     def check_entity_exists_in_skb(self, entity, entity_type):
         '''
@@ -480,12 +466,20 @@ if __name__ == '__main__':
     #                                                  {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
     #                                                  ])
 
-    response = client.get_entity_by_property(property_value='BarackObama', property_name='twitter username', exact_match=True)
-    print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
-
-    response = client.get_entity_by_property(property_value='Barack Obama', property_name='abstract', entity_type='PersonEntity')
-    print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
-
+    # response = client.get_entity_by_property(property_value='BarackObama', property_name='twitter username', exact_match=True)
+    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
+    #
+    # response = client.get_entity_by_property(property_value='BarackObama', property_name='wdt:P2003')  # matches on instagram user brackobama
+    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
+    #
+    # response = client.get_entity_by_property(property_value='Barack Obama', property_name='abstract', entity_type='PersonEntity')
+    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
+    #
     # response = client.get_entity_by_property(property_value='Siemens', entity_type='OrganizationEntity')
     # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
+
+    uris = ['http://www.wikidata.org/entity/Q76', 'wd:Q76', 'http://weblyzard.com/skb/entity/organization/hello_world', 'skborg:hello_world']
+    for uri in uris:
+        response = client.get_entity(uri)
+        print(response)
 
