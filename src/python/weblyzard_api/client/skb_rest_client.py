@@ -51,6 +51,7 @@ class SKBRESTClient(object):
             return None
 
     def clean_keyword_data(self, kwargs):
+        # TODO
         """
         Prepare the keyword entity for SKB submission.
         :param kwargs
@@ -83,6 +84,9 @@ class SKBRESTClient(object):
         return skb_relevant_data
 
     def clean_recognize_data(self, kwargs):
+        # TODO: Assuming this can be reduced or removed alltogether.
+        # `preferredName` has no value and `properties` and `profileName` are
+        # not part of recognize ng response anymore
         '''
         Helper fn that takes the data generated from recognyze and keeps
         only the properties, preferred Name, entityType, uri and profileName
