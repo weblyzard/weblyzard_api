@@ -1,58 +1,66 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import os
-import pytest
 import unittest
 
+import mock
+import pytest
 from weblyzard_api.client.skb_rest_client import SKBRESTClient
-#
-#
-# class TestSKBRESTClient(unittest.TestCase):
-#
-#     def test_translations_request(self):
-#         batch = MatviewDocumentsBatch(matview_name='weblyzard_test',
-#                                       limit=10,
-#                                       with_keywords=False)
-#
-#         batch.prepare()
-#         config = batch.config
-#         base_url = config.get('service_url', 'translate_title')
-#         client = SKBRESTClient(base_url)
-#         expected_translations = {'knall': 'pop', 'falle': 'trap', 'fall': 'case'}
-#         for source in expected_translations:
-#             result = client.translate(client='google',
-#                                       term=source,
-#                                       source='de',
-#                                       target='en')
-#             assert(result[0] == expected_translations[source])
-#             assert(result[1] == 'en')
-#
-#     def test_title_translations_request(self):
-#         batch = MatviewDocumentsBatch(matview_name='weblyzard_test',
-#                                       limit=10,
-#                                       with_keywords=False)
-#
-#         batch.prepare()
-#         config = batch.config
-#         base_url = config.get('service_url', 'translate_title')
-#         client = SKBRESTClient(base_url)
-#         expected_translations = {'knall': 'pop', 'falle': 'trap', 'fall': 'case'}
-#         for source in expected_translations:
-#             result = client.title_translate(client='google',
-#                                       term=source,
-#                                       source='de',
-#                                       target='en')
-#             assert(result[0] == expected_translations[source])
-#             assert(result[1] == 'en')
-#
 
 
-class TestSKBEntities(unittest.TestCase):
+class MockResponse:
+
+    def __init__(self, json_data, text, status_code):
+        self.json_data = json_data
+        self.text = text
+        self.status_code = status_code
+
+    def json(self):
+        return self.json_data
+
+
+class TestSKBRESTClientTranslations(unittest.TestCase):
+
+    def setUp(self):
+        url = 'http://skb-rest-translation.prod.i.weblyzard.net:8443'  # prod
+        # url = 'http://localhost:5000'
+        self.skb_client = SKBRESTClient(url)
+
+    def test_translations_request(self):
+        expected_translations = {'knall': 'bang', 'falle': 'trap', 'fall': 'case'}
+        for source in expected_translations:
+            result = self.skb_client.translate(term=source,
+                                               source='de',
+                                               target='en')
+            assert(result[0] == expected_translations[source])
+            assert(result[1] == 'en')
+
+    @mock.patch('weblyzard_api.client.skb_rest_client.requests.get')
+    def test_title_translations_request(self, mock_get):
+        source = "Die schmerzhaften, aber sehr selten tödlichen Folgen eines" \
+        "Witwenbisses gehen auf die besondere Struktur der Latrotoxine zurück"
+        expected_translation = "The painful but very rarely fatal consequences" \
+        "of a widow's bite are due to the special structure of the latrotoxins"
+
+        mock_get.return_value = MockResponse(text=expected_translation,
+                                             json_data=None,
+                                             status_code=200)
+
+        result = self.skb_client.title_translate(client='google',
+                                                 text=source,
+                                                 source='de',
+                                                 target='en')
+        assert(result[0] == expected_translation)
+        assert(result[1] == 'en')
+
+
+class TestSKBRESTClientEntities(unittest.TestCase):
 
     def setUp(self):
         self.skb_client = SKBRESTClient(url=os.getenv(
-            'WL_SKB_UNITTEST_URL', 'http://localhost:5555'))
+            'WL_SKB_UNITTEST_URL', 'http://localhost:5000'))
 
     def test_clean_keyword_data(self):
         kw_annotation = {
