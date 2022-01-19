@@ -59,8 +59,9 @@ class TestSKBRESTClientTranslations(unittest.TestCase):
 class TestSKBRESTClientEntities(unittest.TestCase):
 
     def setUp(self):
-        self.skb_client = SKBRESTClient(url=os.getenv(
-            'WL_SKB_UNITTEST_URL', 'http://localhost:5000'))
+        url = 'http://skb-rest-translation.prod.i.weblyzard.net:8443'  # prod
+        url = 'http://localhost:5000'
+        self.skb_client = SKBRESTClient(url)
 
     def test_clean_keyword_data(self):
         kw_annotation = {

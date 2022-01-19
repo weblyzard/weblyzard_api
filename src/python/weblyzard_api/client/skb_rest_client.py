@@ -50,37 +50,40 @@ class SKBRESTClient(object):
         else:
             return None
 
-    def clean_keyword_data(self, kwargs):
-        # TODO
+    def clean_keyword_data(self, kwargs) -> Optional[dict]:
         """
         Prepare the keyword entity for SKB submission.
         :param kwargs
         """
-        uri = kwargs['key']
+        uri = kwargs.get('key')
+        if not uri:
+            return None
 
-        lang = None
-        general_pos = None
+        lang, gen_pos = None, None
 
-        if uri.startswith('wl:'):
-            lang, kw = uri.split(':')[1].split('/')
-            uri = 'skbkw{}:{}'.format(lang, kw.replace(' ', '_'))
-        elif uri.startswith('http://weblyzard.com/skb/keyword/'):
-            stripped_uri = uri[len('http://weblyzard.com/skb/keyword/'):]
-            uri_elements = stripped_uri.split('/')
-            if len(uri_elements) == 3:  # lang, pos, kw
-                lang = uri_elements[0]
-                general_pos = uri_elements[1]
-            elif len(uri_elements) == 2 and len(uri_elements[0]) == 2:  # lang, kw
-                lang = uri_elements[0]
+        if uri.startswith('http://weblyzard.com/skb/keyword/'):
+            prefix = 'http://weblyzard.com/skb/keyword/'
 
-        preferredName = kwargs.get(
-            'preferred_name', kwargs.get('preferredName', None))
+            prefix_stripped_uri = uri[len(prefix):]
+            uri_elements = prefix_stripped_uri.split('/')
+
+            # extract lang and general POS if possible
+            if len(uri_elements) == 2:
+                lang, _ = uri_elements
+                if len(lang) != 2:  # likely not a lang
+                    lang = None
+            elif len(uri_elements) == 3:
+                lang, gen_pos, _ = uri_elements
+
+        preferred_name = kwargs.get('preferred_name', kwargs.get('preferredName'))
+        entity_type = kwargs.get('entity_type', kwargs.get('entityType'))
+
         skb_relevant_data = {'uri': uri,
-                             'preferredName': '{}@{}'.format(preferredName, lang) if lang else preferredName,
-                             'entityType': kwargs.get('entity_type', kwargs.get('entityType', None)),
+                             'preferredName': f'{preferred_name}@{lang}'if lang else preferred_name,
+                             'entityType': entity_type,
                              'provenance': kwargs['provenance']}
-        if general_pos:
-            skb_relevant_data['lexinfo:partOfSpeech'] = general_pos
+        if gen_pos:
+            skb_relevant_data['lexinfo:partOfSpeech'] = gen_pos
         return skb_relevant_data
 
     def clean_recognize_data(self, kwargs):
@@ -106,15 +109,10 @@ class SKBRESTClient(object):
             skb_relevant_data['provenance'] = kwargs['profileName']
         return skb_relevant_data
 
-    def save_doc_kw_skb(self, kwargs):
+    def save_doc_kw_skb(self, kwargs) -> dict:
         '''
         Saves the data for a keyword to the SKB, cleaning it first
         from document-specific information.
-
-        :param kwargs: The entity data
-        :type kwargs: dict
-        :returns: The entity's uri.
-        :rtype: str or unicode
         '''
         skb_relevant_data = self.clean_keyword_data(kwargs)
         return self.save_entity(entity_dict=skb_relevant_data)
@@ -542,9 +540,9 @@ if __name__ == '__main__':
     # result = client.check_entity_exists_in_skb(entity={'owl:sameAs': 'wd:Q1741'}, entity_type='GeoEntity')
     # assert(result == True)
 
-    response = client.get_entity_by_tag(tag_value='journalist', tag_prefix='occupation', entity_name='Armin Wolf', entity_type='PersonEntity')
-    print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
-
-    response = client.get_entity_by_tag(tag_value='city', tag_prefix='geo', entity_name='York', entity_type='GeoEntity')
-    print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
+    # response = client.get_entity_by_tag(tag_value='journalist', tag_prefix='occupation', entity_name='Armin Wolf', entity_type='PersonEntity')
+    # print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
+    #
+    # response = client.get_entity_by_tag(tag_value='city', tag_prefix='geo', entity_name='York', entity_type='GeoEntity')
+    # print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
 
