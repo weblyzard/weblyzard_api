@@ -25,7 +25,6 @@ class SKBRESTClient(object):
     ENTITY_PATH = '{}/skb/entity'.format(VERSION)
     ENTITY_BATCH_PATH = '{}/skb/entity_batch'.format(VERSION)
     ENTITY_URI_BATCH_PATH = '{}/skb/entity_uri_batch'.format(VERSION)
-    # ENTITY_BY_PROPERTY_PATH = '{}/skb/entity_by_property'.format(VERSION)
     ENTITY_SEARCH_PATH = '{}/skb/entity/search'.format(VERSION)
 
     def __init__(self, url):
