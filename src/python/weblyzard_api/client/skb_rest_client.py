@@ -173,7 +173,7 @@ class SKBRESTClient(object):
         if response.status_code < 400:
             return json.loads(response.text)
         else:
-            logger.error(f'request failed {json.loads(response.text)}')
+            logger.error(f'request failed {response.text}')
             return None
 
     def save_entity_uri_batch(self, uri_list:List[str], language:str, force_update:bool=False,
@@ -489,60 +489,3 @@ class SKBSimpleBaseFormsDictionary(dict):
         for k, v in response.items():
             return_value[k] = self.reconstruct(v) if isinstance(v, dict) else (set(v) if isinstance(v, list) else v)
         return return_value
-
-
-if __name__ == '__main__':
-    import time
-
-    client = SKBRESTClient(url='http://localhost:5000')
-    # # create new entity
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'})
-    # print(response)
-    # # update entity
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'UpdatedTestPerson', 'uri':'http://my_test'}, force_update=True)
-    # print(response)
-    # time.sleep(3)  # wait to make sure cache was updated
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True)
-    # print(response)
-    # # explicitly ignore cache to update again
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True, ignore_cache=True)
-    # print(response)
-
-    # response = client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=False, ignore_cache=False)
-    # print(response)
-    # response = client.save_entity_uri_batch(uri_list=['PersonEntity:http://www.wikidata.org/entity/Q23'], language='en', force_update=False, ignore_cache=False)
-    # print(response)
-
-    # response = client.save_entity_batch(entity_list=[{'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'PersonTest', 'occupation':'wd:Q82955'},
-    #                                                  {'entityType': 'GeoEntity', 'provenance': 'unittest', 'gn:name': 'GeoTest', 'gn:alternateName': 'GeographyEntity', 'gn:countryCode':'AT'},
-    #                                                  {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
-    #                                                  ])
-
-    # response = client.get_entity_by_property(property_value='BarackObama', property_name='twitter username', exact_match=True)
-    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
-    #
-    # response = client.get_entity_by_property(property_value='BarackObama', property_name='wdt:P2003')  # matches on instagram user brackobama
-    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
-    #
-    # response = client.get_entity_by_property(property_value='Barack Obama', property_name='abstract', entity_type='PersonEntity')
-    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
-    #
-    # response = client.get_entity_by_property(property_value='Siemens', entity_type='OrganizationEntity')
-    # print([f"{entity['uri']}, {entity['preferredName']}" for entity in response])
-
-    # uris = ['http://www.wikidata.org/entity/Q76', 'wd:Q76', 'http://weblyzard.com/skb/entity/organization/hello_world', 'skborg:hello_world']
-    # for uri in uris:
-    #     response = client.get_entity(uri)
-    #     print(response)
-
-    # result = client.check_existing_entity_key(entity={'uri': 'http://sws.geonames.org/2761367/'}, entity_type='GeoEntity')
-    # assert(result == 'http://sws.geonames.org/2761367/')
-    # result = client.check_entity_exists_in_skb(entity={'owl:sameAs': 'wd:Q1741'}, entity_type='GeoEntity')
-    # assert(result == True)
-
-    # response = client.get_entity_by_tag(tag_value='journalist', tag_prefix='occupation', entity_name='Armin Wolf', entity_type='PersonEntity')
-    # print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
-    #
-    # response = client.get_entity_by_tag(tag_value='city', tag_prefix='geo', entity_name='York', entity_type='GeoEntity')
-    # print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
-
