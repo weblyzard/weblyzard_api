@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
 import os
 import unittest
 
@@ -140,30 +141,41 @@ class TestSKBRESTClientEntities(unittest.TestCase):
             "preferredName": "solo",
         }
 
-    def test_save_keyword(self):
-        kw_annotation = {
-            "topEntityId": "energy",
-            "confidence": 786.2216230656553,
-            "entities": [{
-                "surfaceForm": "energy",
-                "start": 112,
-                "end": 118,
-                "sentence": 0
-            }],
-            "grounded": True,
-            "scoreName": "CONFIDENCE x OCCURENCE",
-            "entityType": "GemetEntity",
-            "score": 786.22,
-            "key": "http://www.eionet.europa.eu/gemet/concept/2712",
-            "profileName": "en.gemet",
-            "properties": {
-                "definition": "The capacity to do work; involving thermal energy (heat), radiant energy (light), kinetic energy (motion) or chemical energy; measured in joules."
-            },
-            "preferredName": "energy"
-        }
-        kw_annotation['provenance'] = 'kw_test_workflow_20191022'
-        assert(self.skb_client.save_doc_kw_skb(kw_annotation) ==
-               'http://www.eionet.europa.eu/gemet/concept/2712')
+    @mock.patch('weblyzard_api.client.skb_rest_client.requests.post')
+    def test_save_keyword(self, mock_post):
+        kw_annotation = {"entities": [
+                            {
+                              "confidence": 2955.790126821422,
+                              "end": 137,
+                              "sem_orient": 0.0,
+                              "start": 129,
+                              "surfaceForm": "raincoat"
+                            }
+                          ],
+                          "entityType": "NonEntityKeyword",
+                          "entity_metadata": {},
+                          "key": "http://weblyzard.com/skb/keyword/en/noun/raincoat",
+                          "preferredName": "raincoat",
+                          "significance": 2955.790126821422
+                        }
+        kw_annotation['provenance'] = 'unittest'
+
+        response = {"message": "success",
+                    "info": "added entity",
+                    "uri": "http://weblyzard.com/skb/keyword/en/noun/raincoat",
+                    "data": {"lexinfo:partOfSpeech": "noun",
+                             "preferredNameByLang": "raincoat@en",
+                             "uri": "http://weblyzard.com/skb/keyword/en/noun/raincoat",
+                             "entityType": "NonEntityKeyword",
+                             "preferredName": "raincoat",
+                             "tags": []
+                            }
+                    }
+        mock_post.return_value = MockResponse(text=json.dumps(response),
+                                              json_data={},
+                                              status_code=201)
+        assert(self.skb_client.save_doc_kw_skb(kw_annotation)['uri'] ==
+               "http://weblyzard.com/skb/keyword/en/noun/raincoat")
 
     def test_save_entity(self):
         entity_data = {
@@ -177,7 +189,7 @@ class TestSKBRESTClientEntities(unittest.TestCase):
             u"page_type": u"article",
             u"published_date": u"2014-07-15T18:46:42+00:00",
             # @ at the beginning of values not allowed as it is reserved for language tags
-            # u"twitter_site": u"@mfm_Kay",
+            # u"twitter_site": u"mfm_Kay",
             u"twitter_card": u"summary"
         }
         try:
