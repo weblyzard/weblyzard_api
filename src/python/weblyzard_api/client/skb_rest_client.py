@@ -9,6 +9,7 @@ Created on Oct 24, 2016
 from builtins import object
 import json
 import logging
+from pprint import pprint
 from typing import List, Optional
 from urllib.parse import urlencode
 
@@ -293,6 +294,50 @@ class SKBRESTClient(object):
             return self.entity_search(search_phrase=property_value,
                                       entity_type=entity_type)
 
+    def get_entity_by_tag(self, tag_value:str, tag_prefix:str=None,
+                          entity_name:str=None, entity_type:str=None,
+                          should_fallback:bool=True) -> Optional[dict]:
+        '''
+        Get an entity by a `tag`.
+        :param tag_value: the value of the tag
+        :param tag_prefix: the tag prefix indicating what the value represents
+        :param entity_name: (optional) entity preferredName or other name
+        :param entity_type: (optional) entity type
+        :param should_fallback: if False only return exact `entity_name` matches,
+            else return the best matching results
+            
+        .. note: tags that include a `tag_prefix` are NOT found if only the
+                `tag_value` is provided
+        '''
+
+        if tag_prefix:
+            tag = f'{tag_prefix}:{tag_value}'
+        else:
+            tag = tag_value
+
+        filters = [{'filter_type': 'keywordfield',
+                    'filter_values': {'field': 'tags',
+                                      'filter_conditions': {'must': tag}}}]
+
+        if entity_name:
+            # exact name search
+            result = self.entity_search(search_phrase=f'"{entity_name}"',
+                                        search_field='title',
+                                        entity_type=entity_type,
+                                        filters=filters)
+            if not result and should_fallback:
+                logger.info(f"returning best matching results for" +
+                            f"entity {entity_name} with tag {tag}")
+                result = self.entity_search(search_phrase=f'{entity_name}',
+                                            search_field='title',
+                                            entity_type=entity_type,
+                                            filters=filters)
+        else:
+            result = self.entity_search(entity_type=entity_type,
+                                        filters=filters)
+
+        return result
+
     def entity_search(self, search_phrase:str=None, search_field:str=None, entity_type=None,
                       fuzzy=False, search_languages:List[str]=None, response_language:str=None,
                       access_right='universal', filters:List[dict]=None) -> Optional[List[dict]]:
@@ -496,4 +541,10 @@ if __name__ == '__main__':
     # assert(result == 'http://sws.geonames.org/2761367/')
     # result = client.check_entity_exists_in_skb(entity={'owl:sameAs': 'wd:Q1741'}, entity_type='GeoEntity')
     # assert(result == True)
+
+    response = client.get_entity_by_tag(tag_value='journalist', tag_prefix='occupation', entity_name='Armin Wolf', entity_type='PersonEntity')
+    print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
+
+    response = client.get_entity_by_tag(tag_value='city', tag_prefix='geo', entity_name='York', entity_type='GeoEntity')
+    print('\n'.join([f"{entity['uri']} : {entity['preferredName']}" for entity in response]))
 
