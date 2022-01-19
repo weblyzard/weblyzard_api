@@ -25,9 +25,9 @@ class MockResponse:
 class TestSKBRESTClientTranslations(unittest.TestCase):
 
     def setUp(self):
-        url = 'http://skb-rest-translation.prod.i.weblyzard.net:8443'  # prod
-        # url = 'http://localhost:5000'
-        self.skb_client = SKBRESTClient(url)
+        self.url = 'http://skb-rest-translation.prod.i.weblyzard.net:8443'  # prod
+        # self.url = 'http://localhost:5000'
+        self.skb_client = SKBRESTClient(self.url)
 
     def test_translations_request(self):
         expected_translations = {'knall': 'bang', 'falle': 'trap', 'fall': 'case'}
@@ -60,9 +60,9 @@ class TestSKBRESTClientTranslations(unittest.TestCase):
 class TestSKBRESTClientEntities(unittest.TestCase):
 
     def setUp(self):
-        url = 'http://skb-rest-entities.prod.i.weblyzard.net:8443'  # prod
-        url = 'http://localhost:5000'
-        self.skb_client = SKBRESTClient(url)
+        self.url = 'http://skb-rest-entities.prod.i.weblyzard.net:8443'  # prod
+        # self.url = 'http://localhost:5000'
+        self.skb_client = SKBRESTClient(self.url)
 
     def test_clean_keyword_data(self):
         kw_annotation = {
@@ -177,28 +177,124 @@ class TestSKBRESTClientEntities(unittest.TestCase):
         assert(self.skb_client.save_doc_kw_skb(kw_annotation)['uri'] ==
                "http://weblyzard.com/skb/keyword/en/noun/raincoat")
 
-    # # create new entity
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'})
-    # print(response)
-    # # update entity
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'UpdatedTestPerson', 'uri':'http://my_test'}, force_update=True)
-    # print(response)
-    # time.sleep(3)  # wait to make sure cache was updated
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True)
-    # print(response)
-    # # explicitly ignore cache to update again
-    # response = client.save_entity(entity_dict={'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'TestPerson', 'uri':'http://my_test'}, force_update=True, ignore_cache=True)
-    # print(response)
+    @mock.patch('weblyzard_api.client.skb_rest_client.requests.post')
+    def test_save_entity(self, mock_post):
+        expected = {'message': 'success',
+                    'info': 'added entity',
+                    'uri': 'http://my_test',
+                    'data': {'rdfs:label': 'TestPerson',
+                             'preferredNameByLang': 'TestPerson',
+                             'uri': 'http://my_test',
+                             'entityType': 'PersonEntity',
+                             'preferredName': 'TestPerson',
+                             'tags': []
+                            }
+                    }
 
-    # response = client.save_entity_uri_batch(uri_list=['P:wd:Q76'], language='en', force_update=False, ignore_cache=False)
-    # print(response)
-    # response = client.save_entity_uri_batch(uri_list=['PersonEntity:http://www.wikidata.org/entity/Q23'], language='en', force_update=False, ignore_cache=False)
-    # print(response)
+        mock_post.return_value = MockResponse(text=json.dumps(expected),
+                                              json_data={},
+                                              status_code=201)
 
-    # response = client.save_entity_batch(entity_list=[{'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'PersonTest', 'occupation':'wd:Q82955'},
-    #                                                  {'entityType': 'GeoEntity', 'provenance': 'unittest', 'gn:name': 'GeoTest', 'gn:alternateName': 'GeographyEntity', 'gn:countryCode':'AT'},
-    #                                                  {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
-    #                                                  ])
+        # create new entity
+        entity = {'entityType': 'PersonEntity',
+                  'provenance': 'unittest',
+                  'rdfs:label': 'TestPerson',
+                  'uri':'http://my_test'}
+        response = self.skb_client.save_entity(entity_dict=entity)
+        mock_post.assert_called_once_with(json=entity,
+                                          params={'force_update':False,
+                                                  'ignore_cache':False},
+                                          url=f'{self.skb_client.url}/1.0/skb/entity')
+        assert(response == expected)
+
+    @mock.patch('weblyzard_api.client.skb_rest_client.requests.post')
+    def test_update_entity(self, mock_post):
+        expected = {'message': 'success',
+                    'info': 'updated entity',
+                    'uri': 'http://my_test',
+                    'data': {'rdfs:label': 'TestPerson@en',
+                             'preferredNameByLang': ['TestPerson@en', 'TestPerson@de'],
+                             'uri': 'http://my_test',
+                             'entityType': 'PersonEntity',
+                             'preferredName': 'TestPerson',
+                             'tags': []
+                            }
+                    }
+
+        mock_post.return_value = MockResponse(text=json.dumps(expected),
+                                              json_data={},
+                                              status_code=200)
+
+        # update existing entity
+        entity = {'entityType': 'PersonEntity',
+                  'provenance': 'unittest',
+                  'rdfs:label': ['TestPerson@en', 'TestPerson@de'],
+                  'uri':'http://my_test'}
+        response = self.skb_client.save_entity(entity_dict=entity,
+                                               force_update=True)
+        mock_post.assert_called_once_with(json=entity,
+                                          params={'force_update':True,
+                                                  'ignore_cache':False},
+                                          url=f'{self.skb_client.url}/1.0/skb/entity')
+        assert(response == expected)
+
+    def test_save_entity_uri_batch(self):
+        uri_list = ["P:wd:Q76", "P:wd:Q13133", "G:gn:6252001"]
+
+        expected = {"http://www.wikidata.org/entity/Q76": "Barack Obama",
+                    "http://www.wikidata.org/entity/Q13133": "Michelle Obama",
+                    "http://sws.geonames.org/6252001/": ["USA", 39.76, -98.5, "A"]
+                    }
+
+        response = self.skb_client.save_entity_uri_batch(uri_list=uri_list,
+                                                         language='de',
+                                                         force_update=False,
+                                                         ignore_cache=False)
+        assert(response == expected)
+
+        uri_list = ["PersonEntity:http://www.wikidata.org/entity/Q23"]
+
+        expected = {"http://www.wikidata.org/entity/Q23": "George Washington"}
+
+        response = self.skb_client.save_entity_uri_batch(uri_list=uri_list,
+                                                         language='en',
+                                                         force_update=False,
+                                                         ignore_cache=False)
+        assert(response == expected)
+
+    @mock.patch('weblyzard_api.client.skb_rest_client.requests.post')
+    def test_save_entity_batch(self, mock_post):
+        expected = {
+                    "success": {
+                        "http://weblyzard.com/skb/entity/person/persontest": "PersonTest",
+                        "http://weblyzard.com/skb/entity/geo/geotest": "GeoTest",
+                        "http://weblyzard.com/skb/entity/organization/orgtest": "OrgTest"
+                    },
+                    "error": {},
+                    "summary": {
+                        "success": 3,
+                        "loaded": 3,
+                        "added": 0,
+                        "updated": 0,
+                        "error": 0,
+                        "total": 3
+                    }
+                }
+
+        mock_post.return_value = MockResponse(text=json.dumps(expected),
+                                              json_data={},
+                                              status_code=200)
+
+        entity_batch = [{'entityType': 'PersonEntity', 'provenance': 'unittest', 'rdfs:label': 'PersonTest', 'occupation':'wd:Q82955'},
+                        {'entityType': 'GeoEntity', 'provenance': 'unittest', 'gn:name': 'GeoTest', 'gn:alternateName': 'GeographyEntity', 'gn:countryCode':'AT'},
+                        {'entityType': 'OrganizationEntity', 'provenance': 'unittest', 'gn:name': 'OrgTest', 'rdfs:label': ['OrgTest@en', 'OT@de'], 'wdt:P17':'wd:Q40'},
+                        ]
+        response = self.skb_client.save_entity_batch(entity_list=entity_batch)
+        mock_post.assert_called_once_with(json=entity_batch,
+                                          params={'force_update':False,
+                                                  'ignore_cache':False},
+                                          url=f'{self.skb_client.url}/1.0/skb/entity_batch')
+        assert(response == expected)
 
     def test_get_entity_by_property(self):
         '''
