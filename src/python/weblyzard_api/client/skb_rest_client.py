@@ -9,9 +9,7 @@ Created on Oct 24, 2016
 from builtins import object
 import json
 import logging
-from pprint import pprint
 from typing import List, Optional
-from urllib.parse import urlencode
 
 import requests
 
