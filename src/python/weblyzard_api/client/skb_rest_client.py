@@ -476,7 +476,7 @@ class SKBSimpleBaseFormsDictionary(dict):
 
     def __init__(self, url):
         self.url = '{}/{}'.format(url, self.BASE_FORMS_PATH)
-        res = res = requests.get(self.url)
+        res = requests.get(self.url)
         if res.status_code < 400:
             response = json.loads(res.text)
             data = self.reconstruct(response)
