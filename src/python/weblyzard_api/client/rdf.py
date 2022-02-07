@@ -200,6 +200,9 @@ def parse_language_tagged_string(value: str) -> tuple:
     if len(value) > 6 and value[-6] == '@':
         lang = value[-5:]
         value = value[:-6]
+    elif len(value) > 8 and value[-8] == '@':
+        lang = value[-7:]
+        value = value[:-7]
     elif len(value) > 3 and value[-3] == '@':
         lang = value[-2:]
         value = value[:-3]
@@ -207,3 +210,4 @@ def parse_language_tagged_string(value: str) -> tuple:
         lang = value[-3:]
         value = value[:-4]
     return value, lang
+
