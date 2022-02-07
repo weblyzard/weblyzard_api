@@ -12,6 +12,7 @@ import logging
 from typing import List, Optional
 
 import requests
+from weblyzard_api.client.rdf import prefix_uri
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ class SKBRESTClient(object):
     ENTITY_BATCH_PATH = '{}/skb/entity_batch'.format(VERSION)
     ENTITY_URI_BATCH_PATH = '{}/skb/entity_uri_batch'.format(VERSION)
     ENTITY_SEARCH_PATH = '{}/skb/entity/search'.format(VERSION)
+    ENTITY_LOOKUP_PATH = '{}/skb/entity/lookup'.format(VERSION)
 
     def __init__(self, url):
         '''
@@ -402,6 +404,16 @@ class SKBRESTClient(object):
                                 headers={'Content-Type': 'application/json'})
         return self.drop_error_responses(response)
 
+    def entity_uri_lookup(self, entity_uris:List[str]) -> dict:
+        '''
+        Very fast lookup of entity uris, only checks the _id field.
+        :param entity_uris: list of uris
+        '''
+        response = requests.post(f'{self.url}/{self.ENTITY_LOOKUP_PATH}',
+                                 json=entity_uris,
+                                 headers={'Content-Type': 'application/json'})
+        return self.drop_error_responses(response)
+
     def check_entity_exists_in_skb(self, entity:dict, entity_type:str) -> bool:
         '''
         Check if a given entity already exists in the SKB. Supports both
@@ -437,7 +449,13 @@ class SKBRESTClient(object):
                 return exact_match['uri']
 
         for uri in same_as:
-            sameas_matches = self.get_entity_by_property(property_value=uri,
+            sameas_matches = None
+            sameas_matches = self.get_entity_by_property(property_value=prefix_uri(uri),
+                                                         property_name='owl:sameAs',
+                                                         entity_type=entity_type,
+                                                         exact_match=True)
+            if not sameas_matches:
+                sameas_matches = self.get_entity_by_property(property_value=uri,
                                                          property_name='owl:sameAs',
                                                          entity_type=entity_type,
                                                          exact_match=True)
