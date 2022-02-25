@@ -9,7 +9,6 @@ clone of eWRT.util.cache, licensed under GPL, original author
 Albert Weichselbraun
 '''
 
-
 from future import standard_library
 
 standard_library.install_aliases()
@@ -18,7 +17,6 @@ from builtins import object
 import redis
 import pickle
 
-from datetime import timedelta
 from gzip import GzipFile
 from hashlib import sha1
 from operator import itemgetter
@@ -353,7 +351,6 @@ class TTLMemoryCached(MemoryCached):
     """Decorator based on Memory cache for caching function calls with
     a specified time to live, results older than which will be ignored
     """
-
 
     def __init__(self, ttl, max_cache_size=0):
         MemoryCache.__init__(self, max_cache_size=max_cache_size)
