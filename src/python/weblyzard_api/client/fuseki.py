@@ -24,6 +24,10 @@ from weblyzard_api.client.rdf import PREFIXES, NAMESPACES
 
 logger = logging.getLogger(__name__)
 
+USER_AGENT = "Mozilla/5.0 (compatible; ecoresearchSparlClient/0.9; +http://www.ecoresearch.net)"
+
+TIMEOUT = 600000000
+
 
 class FusekiWrapper(object):
     '''
@@ -48,13 +52,14 @@ class FusekiWrapper(object):
         self.update_wrapper = SPARQLWrapper(self.update_endpoint)
         self.update_wrapper.method = 'POST'
         self.update_wrapper.setReturnFormat(JSON)
-        self.update_wrapper.setTimeout(600000000)
+        self.update_wrapper.setTimeout(TIMEOUT)
 
         self.query_wrapper = SPARQLWrapper(
-            self.query_endpoint, agent="Mozilla/5.0 (compatible; ecoresearchSparlClient/0.9; +http://www.ecoresearch.net)")
+            self.query_endpoint,
+            agent=USER_AGENT)
         self.query_wrapper.method = 'GET'
         self.query_wrapper.setReturnFormat(JSON)
-        self.query_wrapper.setTimeout(600000000)
+        self.query_wrapper.setTimeout(TIMEOUT)
 
         self.uri_cache = set()
 
