@@ -5,6 +5,7 @@
 
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
+migrated from `eWRT` 2021
 '''
 from __future__ import unicode_literals, print_function
 
@@ -36,17 +37,7 @@ WEBLYZARD_API_PASS = getenv("WEBLYZARD_API_PASS")
 
 OGER_API_URL = getenv("OGER_API_URL")
 
-# -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-
-''' .. module:: eWRT.ws.rest
-    .. moduleauthor:: Albert Weichselbraun <weichselbraun@weblyzard.com>
-    .. moduleauthor:: Heinz-Peter Lang <lang@weblyzard.com>
-
-    eWRT REST Client barebone with support for authentificated https requests
-'''
-
-logger = logging.getLogger('eWRT.ws.rest')
+logger = logging.getLogger(__name__)
 
 
 class RESTClient(object):
