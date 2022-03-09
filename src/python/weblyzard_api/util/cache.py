@@ -9,7 +9,6 @@ clone of eWRT.util.cache, licensed under GPL, original author
 Albert Weichselbraun
 '''
 
-
 from future import standard_library
 
 standard_library.install_aliases()
@@ -18,7 +17,6 @@ from builtins import object
 import redis
 import pickle
 
-from datetime import timedelta
 from gzip import GzipFile
 from hashlib import sha1
 from operator import itemgetter
@@ -61,8 +59,7 @@ def get_unique_temp_file(fname): return join(dirname(fname),
 class Cache(object):
     ''' An abstract class for caching functions '''
 
-    def __init__(self, fn=None, cached_only=False):
-        self.cached_only = cached_only
+    def __init__(self, fn=None):
         self.fn = fn
 
     def __call__(self, *args, **kargs):
@@ -116,7 +113,7 @@ class DiskCache(Cache):
     '''
 
     def __init__(self, cache_dir, cache_nesting_level=0, cache_file_suffix="",
-                 fn=None, cached_only=False):
+                 fn=None):
         ''' initializes the Cache object
             ::param cache_dir: the cache base directory
             ::param cache_nesting_level: optional number of nesting level (0)
@@ -124,7 +121,7 @@ class DiskCache(Cache):
             ::param fn: function to cache (optional; required for directly calling the class
                           using __call__
         '''
-        Cache.__init__(self, fn, cached_only=cached_only)
+        Cache.__init__(self, fn)
         self.cache_dir = cache_dir
         self.cache_file_suffix = cache_file_suffix
         self.cache_nesting_level = cache_nesting_level
@@ -187,8 +184,6 @@ class DiskCache(Cache):
         # case 2: cache miss
         # - compute and cache the result
         #
-        elif self.cached_only:
-            return None
         temp_file = get_unique_temp_file(cache_file)
 
         self._cache_miss += 1
@@ -277,9 +272,9 @@ class MemoryCache(Cache):
     '''
     __slots__ = ('max_cache_size', '_cacheData', '_usage')
 
-    def __init__(self, max_cache_size=0, fn=None, cached_only=False):
+    def __init__(self, max_cache_size=0, fn=None):
         ''' initializes the Cache object '''
-        Cache.__init__(self, fn, cached_only)
+        Cache.__init__(self, fn)
         self._cacheData = {}
         self._usage = {}
         self.max_cache_size = max_cache_size
@@ -295,8 +290,6 @@ class MemoryCache(Cache):
         try:
             return self._cacheData[key]
         except KeyError:
-            if self.cached_only:
-                return None
             obj = fetch_function(*args, **kargs)
             if obj != None:
                 self.garbage_collect_cache()
@@ -358,7 +351,6 @@ class TTLMemoryCached(MemoryCached):
     """Decorator based on Memory cache for caching function calls with
     a specified time to live, results older than which will be ignored
     """
-
 
     def __init__(self, ttl, max_cache_size=0):
         MemoryCache.__init__(self, max_cache_size=max_cache_size)
@@ -450,7 +442,7 @@ class IterableCache(DiskCache):
 
 class RedisCache(Cache):
 
-    def __init__(self, fn=None, max_cache_size=0, host='localhost', port=6379,
+    def __init__(self, max_cache_size=0, fn=None, host='localhost', port=6379,
                  db=0):
         ''' initializes the Cache object '''
         Cache.__init__(self, fn)
@@ -522,10 +514,3 @@ class RedisCached(RedisCache):
             return wrapped_fn
         else:
             return self.fetch(self._fn, *args, **kargs)
-
-
-class HybridRedisCache(Cache):
-    """"""
-    def fetch(self, fetch_function, *args, **kargs):
-        key = self.getKey(*args, **kargs)
-        return self.fetchObjectId(key, fetch_function, *args, **kargs)
