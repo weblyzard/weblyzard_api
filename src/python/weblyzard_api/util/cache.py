@@ -8,6 +8,7 @@ Created on November 17, 2021
 clone of eWRT.util.cache, licensed under GPL, original author
 Albert Weichselbraun
 '''
+import logging
 
 from future import standard_library
 
@@ -16,11 +17,13 @@ from builtins import next
 from builtins import object
 import redis
 import pickle
+from pickle import dump, load
+from typing import Optional, List
 
 from gzip import GzipFile
 from hashlib import sha1
 from operator import itemgetter
-from os import makedirs, remove, getpid, link
+from os import makedirs, remove, getpid, link, getenv
 from os.path import exists, dirname, basename, join
 from socket import gethostname
 from time import time
@@ -44,10 +47,11 @@ from weblyzard_api.util.pickleIterator import WritePickleIterator, ReadPickleIte
 __author__ = "Albert Weichselbraun"
 __copyright__ = "GPL"
 
-try:
-    from pickle import dump, load
-except ImportError:
-    from pickle import dump, load
+
+logger = logging.getLogger(__name__)
+
+DEFAULT_REDIS_HOST = getenv('REDIS_HOST_WL_CACHING', 'localhost')
+DEFAULT_REDIS_PORT = getenv('REDIS_PORT_WL_CACHING', 6379)
 
 
 def get_unique_temp_file(fname): return join(dirname(fname),
@@ -442,7 +446,8 @@ class IterableCache(DiskCache):
 
 class RedisCache(Cache):
 
-    def __init__(self, max_cache_size=0, fn=None, host='localhost', port=6379,
+    def __init__(self, max_cache_size=0, fn=None, host=DEFAULT_REDIS_HOST,
+                 port=DEFAULT_REDIS_PORT,
                  db=0):
         ''' initializes the Cache object '''
         Cache.__init__(self, fn)
@@ -514,3 +519,127 @@ class RedisCached(RedisCache):
             return wrapped_fn
         else:
             return self.fetch(self._fn, *args, **kargs)
+        
+        
+class HybridMemoryCached(MemoryCached):
+    def __init__(self, key: str, max_cache_size: int = 0,
+                 cache_group: Optional[List] = None):
+        MemoryCache.__init__(self, max_cache_size=max_cache_size)
+        self.key = key
+        self._fn = None
+        self.cache_group: List[HybridMemoryCached] = cache_group
+        self.register()
+
+    def register(self):
+            """register """
+            self.cache_group.append(self)
+    
+    def sync_upstream(self):
+        raise NotImplemented
+
+
+# default group for hybrid caches - allows simultaneous updates with
+# `update_hybrid_cache_group` below
+REDIS_CACHE_BATCH = []
+
+
+class HybridMemRedisCached(HybridMemoryCached):
+    """
+    A MemoryCached object that, instead of starting out with an empty slate,
+    pulls its initial state from Redis, and comes with a method to
+    synchronize memory content and remote data
+    """
+    
+    def __init__(self, key: str, host: str = DEFAULT_REDIS_HOST,
+                 port: int = DEFAULT_REDIS_PORT, max_cache_size: int = 0,
+                 cache_group: Optional[List] = None):
+        cache_group = cache_group or REDIS_CACHE_BATCH
+        HybridMemoryCached.__init__(self, max_cache_size=max_cache_size, 
+                                    key=key, cache_group=cache_group)
+        self.redis = redis.StrictRedis(host=host, port=port)
+        try:
+            self._cacheData = pickle.loads(self.redis.get(self.key))
+        except Exception as e:
+            logger.warning('Unable to load data from Redis. This *may* be '
+                        'expected on first instantiation, or it could be '
+                        'a configurtion issue', exc_info=True)
+
+    def sync_upstream(self, priority: str = 'local') -> None:
+        """
+        synchronize current memory content with server-side data, should
+        ideally be implemented as a scheduled task, or a task performed after
+        certain trigger events
+        :param priority: 'local' or 'server': 'local means that new data
+            on the server since initialization are overwritten by what
+            we have locally in case of conflicts
+        :return:
+        """
+        try:
+            upstream_data = pickle.loads(self.redis.get(self.key))
+        except Exception as e:
+            logger.info(e, exc_info=True)
+            upstream_data = {}
+        if priority == 'local':
+            upstream_data.update(self._cacheData)
+        self._cacheData.update(upstream_data)
+        upstream_data.update(self._cacheData)
+        self.redis[self.key] = pickle.dumps(upstream_data)
+        
+
+DISK_CACHE_BATCH = []
+
+
+class HybridMemDiskCached(HybridMemoryCached):
+    """Hybrid Cache with memory caching for fast access and disk caching
+    of the entire `_cacheData` as a backup for sharing between processes"""
+    def __init__(self, key: str, max_cache_size: int = 0,
+                 cache_group: Optional[List] = None, 
+                 cache_dir_path: str = '/opt/weblyzard/cache'):
+        cache_group = cache_group or DISK_CACHE_BATCH
+        HybridMemoryCached.__init__(self, max_cache_size=max_cache_size, 
+                                    key=key, cache_group=cache_group)
+        self.cache_dir_path = cache_dir_path
+        self.cache_file_name = f'{self.cache_dir_path}/{self.key}.pkl'
+        try:
+            with GzipFile(f'{self.cache_file_name}') as f:
+            # return load(f)
+                self._cacheData = load(f)
+        except Exception as e:
+            logger.warn('No disk cached data found during initialization,'
+                        'this is expected at first instantiation', 
+                        exc_info=True)
+            self._cacheData = {}
+
+    def sync_upstream(self, priority: str = 'local') -> None:
+        """
+        synchronize current memory content with disk-cached data, should
+        ideally be implemented as a scheduled task, or a task performed after
+        certain trigger events
+        :param priority: 'local' or 'server': 'local means that new data
+            on the server since initialization are overwritten by what
+            we have locally in case of conflicts
+        :return:
+        """
+        try:
+            with GzipFile(self.cache_file_name) as f:
+                upstream_data = pickle.load(f)
+        except Exception as e:
+            logger.info(e, exc_info=True)
+            upstream_data = {}
+        if priority == 'local':
+            upstream_data.update(self._cacheData)
+        self._cacheData.update(upstream_data)
+        upstream_data.update(self._cacheData)
+        with GzipFile(self.cache_file_name) as f:
+            pickle.dump(self._cacheData, f)
+    
+
+def update_hybrid_cache_group(
+        cache_group: Optional[List[HybridMemoryCached]] = None) -> None:
+    """synchronize all hybrid caches registered as part of a group of caches.
+    Defaults to synchronizing all HybridCaches (Disk and Redis backed up)
+    in their respective default groups"""
+    if not cache_group:
+        cache_group = REDIS_CACHE_BATCH + DISK_CACHE_BATCH
+    for cache in cache_group:
+        cache.sync_upstream()
