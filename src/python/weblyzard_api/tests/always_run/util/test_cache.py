@@ -280,8 +280,9 @@ class TestHybridMemDiskCached():
             os.remove('/tmp/test_disk_cache_function.pkl')
         except:
             pass
-
-        @HybridMemDiskCached('test_disk_cache_function', cache_dir_path='/tmp')
+        test_caches = []
+        @HybridMemDiskCached('test_disk_cache_function', cache_dir_path='/tmp',
+                             group=test_caches)
         def test_function(param):
             g_ = mocked_g
             return g_(1)
@@ -299,7 +300,12 @@ class TestHybridMemDiskCached():
         mocked_g.assert_called_once()
         test_function(2)
         assert mocked_g.call_count == 2
+        # demonstrate that updating default cache group has no effect when
+        # specific cache group has been assigned
         update_hybrid_cache_group(DISK_CACHE_BATCH)
+        assert not os.path.exists('/tmp/test_disk_cache_function.pkl')
+        # demonstrate synchronization
+        update_hybrid_cache_group(test_caches)
         assert os.path.exists('/tmp/test_disk_cache_function.pkl')
         with GzipFile('/tmp/test_disk_cache_function.pkl') as f:
             assert len(pickle.load(f)) == 2

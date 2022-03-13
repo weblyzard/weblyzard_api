@@ -523,16 +523,16 @@ class RedisCached(RedisCache):
         
 class HybridMemoryCached(MemoryCached):
     def __init__(self, key: str, max_cache_size: int = 0,
-                 cache_group: Optional[List] = None):
+                 group: Optional[List] = None):
         MemoryCache.__init__(self, max_cache_size=max_cache_size)
         self.key = key
         self._fn = None
-        self.cache_group: List[HybridMemoryCached] = cache_group
+        self.group: List[HybridMemoryCached] = group
         self.register()
 
     def register(self):
             """register """
-            self.cache_group.append(self)
+            self.group.append(self)
     
     def sync_upstream(self):
         raise NotImplemented
@@ -552,10 +552,10 @@ class HybridMemRedisCached(HybridMemoryCached):
     
     def __init__(self, key: str, host: str = DEFAULT_REDIS_HOST,
                  port: int = DEFAULT_REDIS_PORT, max_cache_size: int = 0,
-                 cache_group: Optional[List] = None):
-        cache_group = cache_group or REDIS_CACHE_BATCH
+                 group: Optional[List] = None):
+        group = group if group is not None else REDIS_CACHE_BATCH
         HybridMemoryCached.__init__(self, max_cache_size=max_cache_size, 
-                                    key=key, cache_group=cache_group)
+                                    key=key, group=group)
         self.redis = redis.StrictRedis(host=host, port=port)
         try:
             self._cacheData = pickle.loads(self.redis.get(self.key))
@@ -594,11 +594,11 @@ class HybridMemDiskCached(HybridMemoryCached):
     """Hybrid Cache with memory caching for fast access and disk caching
     of the entire `_cacheData` as a backup for sharing between processes"""
     def __init__(self, key: str, max_cache_size: int = 0,
-                 cache_group: Optional[List] = None, 
+                 group: Optional[List] = None,
                  cache_dir_path: str = '/opt/weblyzard/cache'):
-        cache_group = cache_group or DISK_CACHE_BATCH
+        group = group if group is not None else DISK_CACHE_BATCH
         HybridMemoryCached.__init__(self, max_cache_size=max_cache_size, 
-                                    key=key, cache_group=cache_group)
+                                    key=key, group=group)
         self.cache_dir_path = cache_dir_path
         self.cache_file_name = f'{self.cache_dir_path}/{self.key}.pkl'
         try:
@@ -643,4 +643,7 @@ def update_hybrid_cache_group(
     if not cache_group:
         cache_group = REDIS_CACHE_BATCH + DISK_CACHE_BATCH
     for cache in cache_group:
-        cache.sync_upstream()
+        try:
+            cache.sync_upstream()
+        except Exception:
+            logger.info(e, exc_info=True)
