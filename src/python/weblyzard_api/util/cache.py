@@ -563,6 +563,7 @@ class HybridMemRedisCached(HybridMemoryCached):
             logger.warning('Unable to load data from Redis. This *may* be '
                         'expected on first instantiation, or it could be '
                         'a configurtion issue', exc_info=True)
+            self._cacheData = {}
 
     def sync_upstream(self, priority: str = 'local') -> None:
         """
@@ -630,7 +631,7 @@ class HybridMemDiskCached(HybridMemoryCached):
             upstream_data.update(self._cacheData)
         self._cacheData.update(upstream_data)
         upstream_data.update(self._cacheData)
-        with GzipFile(self.cache_file_name) as f:
+        with GzipFile(self.cache_file_name, 'w') as f:
             pickle.dump(self._cacheData, f)
     
 
