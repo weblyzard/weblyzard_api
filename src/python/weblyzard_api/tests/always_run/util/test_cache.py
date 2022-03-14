@@ -11,15 +11,21 @@ import datetime
 import mock
 import pytest
 import unittest
+import os
+import pickle
 
+from gzip import GzipFile
 from multiprocessing import Pool
 from shutil import rmtree
 from os.path import exists, join
 
+
 from weblyzard_api.util.module_path import get_resource
 from weblyzard_api.util.cache import (MemoryCache, MemoryCached, DiskCached,
                                       DiskCache, Cache, IterableCache,
-                                      RedisCached, TTLMemoryCached)
+                                      RedisCached, TTLMemoryCached,
+                                      HybridMemDiskCached, DISK_CACHE_BATCH,
+                                      update_hybrid_cache_group)
 
 get_cache_dir = lambda no: get_resource(__file__, ('.unittest-temp%d' % (no),))
 
@@ -260,3 +266,46 @@ class TestTTLMemoryCached(unittest.TestCase):
         time.sleep(0.1)
         dummy_slow_expiry()
         assert fn.call_count == 1
+
+
+class TestHybridMemDiskCached():
+
+    def test_hybrid_disk_cache(self):
+        def g_(param):
+            return param
+
+        mocked_g = mock.MagicMock()
+        mocked_g.return_value = 1
+        try:
+            os.remove('/tmp/test_disk_cache_function.pkl')
+        except:
+            pass
+        test_caches = []
+        @HybridMemDiskCached('test_disk_cache_function', cache_dir_path='/tmp',
+                             group=test_caches)
+        def test_function(param):
+            g_ = mocked_g
+            return g_(1)
+
+        assert not os.path.exists('/tmp/test_disk_cache_function.pkl')
+        # run once, don't synchronize: expected result: 1 call to mock,
+        # no cache file
+        test_function(1)
+        assert not os.path.exists('/tmp/test_disk_cache_function.pkl')
+        mocked_g.assert_called_with(1)
+        mocked_g.assert_called_once()
+        # call again with the same params: expected result: still only one call
+        # to nested function
+        test_function(1)
+        mocked_g.assert_called_once()
+        test_function(2)
+        assert mocked_g.call_count == 2
+        # demonstrate that updating default cache group has no effect when
+        # specific cache group has been assigned
+        update_hybrid_cache_group(DISK_CACHE_BATCH)
+        assert not os.path.exists('/tmp/test_disk_cache_function.pkl')
+        # demonstrate synchronization
+        update_hybrid_cache_group(test_caches)
+        assert os.path.exists('/tmp/test_disk_cache_function.pkl')
+        with GzipFile('/tmp/test_disk_cache_function.pkl') as f:
+            assert len(pickle.load(f)) == 2
