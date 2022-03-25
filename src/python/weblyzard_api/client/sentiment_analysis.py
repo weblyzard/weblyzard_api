@@ -6,8 +6,11 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from weblyzard_api.client import RESTClient
 from unittest import main, TestCase
+
+from weblyzard_api.client import RESTClient
+from weblyzard_api.client import (
+    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 
 class SentimentAnalysis(RESTClient):
@@ -15,7 +18,8 @@ class SentimentAnalysis(RESTClient):
     Sentiment Analysis Web Service
     '''
 
-    def __init__(self, url, usr=None, pwd=None):
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
+                 pwd=WEBLYZARD_API_PASS):
         '''
         :param url: URL of the jeremia web service
         :param usr: optional user name

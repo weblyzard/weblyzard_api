@@ -174,32 +174,3 @@ class WltSearchRestApiClient(WltApiClient):
             return r
         return r
 
-
-class WltDocumentRestApiClient(WltApiClient):
-
-    def create_documents(self, documents) -> bool:
-        pass
-
-    def update_document(self, content_id:int, update:dict) -> bool:
-        pass
-
-    def delete_document(self, content_id:int) -> bool:
-        pass
-
-    def retrieve_document(self, content_id:int) -> dict:
-        pass
-
-
-class WltStatisticsRestApiClient(WltApiClient):
-
-    def create_observations(self, observations) -> bool:
-        pass
-
-    def update_observation(self, observation_id:int, update:dict) -> bool:
-        pass
-
-    def delete_observation(self, observation_id:int) -> bool:
-        pass
-
-    def retrieve_observation(self, observation_id:int) -> dict:
-        pass
