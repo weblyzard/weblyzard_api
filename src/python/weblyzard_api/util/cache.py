@@ -47,7 +47,6 @@ from weblyzard_api.util.pickleIterator import WritePickleIterator, ReadPickleIte
 __author__ = "Albert Weichselbraun"
 __copyright__ = "GPL"
 
-
 logger = logging.getLogger(__name__)
 
 DEFAULT_REDIS_HOST = getenv('REDIS_HOST_WL_CACHING', 'localhost')
@@ -522,11 +521,12 @@ class RedisCached(RedisCache):
             return wrapped_fn
         else:
             return self.fetch(self._fn, *args, **kargs)
-        
-        
+
+
 class HybridMemoryCached(MemoryCached):
-    def __init__(self, key: str, max_cache_size: int = 0,
-                 group: Optional[List] = None):
+
+    def __init__(self, key: str, max_cache_size: int=0,
+                 group: Optional[List]=None):
         MemoryCache.__init__(self, max_cache_size=max_cache_size)
         self.key = key
         self._fn = None
@@ -545,7 +545,7 @@ class HybridMemoryCached(MemoryCached):
         )
 
     def sync_upstream(self, priority='local', bulk_write=False):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 # default group for hybrid caches - allows simultaneous updates with
@@ -559,12 +559,12 @@ class HybridMemRedisCached(HybridMemoryCached):
     pulls its initial state from Redis, and comes with a method to
     synchronize memory content and remote data
     """
-    
-    def __init__(self, key: str, host: str = DEFAULT_REDIS_HOST,
-                 port: int = DEFAULT_REDIS_PORT, max_cache_size: int = 0,
-                 group: Optional[List] = None):
+
+    def __init__(self, key: str, host: str=DEFAULT_REDIS_HOST,
+                 port: int=DEFAULT_REDIS_PORT, max_cache_size: int=0,
+                 group: Optional[List]=None):
         group = group if group is not None else REDIS_CACHE_BATCH
-        HybridMemoryCached.__init__(self, max_cache_size=max_cache_size, 
+        HybridMemoryCached.__init__(self, max_cache_size=max_cache_size,
                                     key=key, group=group)
         self.redis = redis.StrictRedis(host=host, port=port)
         self._cacheData = self.decode_cache_data()
@@ -586,8 +586,8 @@ class HybridMemRedisCached(HybridMemoryCached):
         """write an individual key-value pair to our mapping"""
         self.redis.hset(self.key, key, pickle.dumps(value))
 
-    def sync_upstream(self, priority: str = 'local',
-                      bulk_write: bool = False) -> None:
+    def sync_upstream(self, priority: str='local',
+                      bulk_write: bool=False) -> None:
         """
         synchronize current memory content with server-side data, should
         ideally be implemented as a scheduled task, or a task performed after
@@ -621,7 +621,6 @@ class HybridMemRedisCached(HybridMemoryCached):
 
 class RealtimeRedisMemCached(HybridMemRedisCached):
 
-
     def fetch_with_fetch_function(self, key, fetch_function, *args, **kargs):
         obj = fetch_function(*args, **kargs)
         if obj != None:
@@ -630,17 +629,19 @@ class RealtimeRedisMemCached(HybridMemRedisCached):
             self.redis_set_value(key, obj)
         return obj
 
+
 DISK_CACHE_BATCH = []
 
 
 class HybridMemDiskCached(HybridMemoryCached):
     """Hybrid Cache with memory caching for fast access and disk caching
     of the entire `_cacheData` as a backup for sharing between processes"""
-    def __init__(self, key: str, max_cache_size: int = 0,
-                 group: Optional[List] = None,
-                 cache_dir_path: str = '/opt/weblyzard/cache'):
+
+    def __init__(self, key: str, max_cache_size: int=0,
+                 group: Optional[List]=None,
+                 cache_dir_path: str='/opt/weblyzard/cache'):
         group = group if group is not None else DISK_CACHE_BATCH
-        HybridMemoryCached.__init__(self, max_cache_size=max_cache_size, 
+        HybridMemoryCached.__init__(self, max_cache_size=max_cache_size,
                                     key=key, group=group)
         self.cache_dir_path = cache_dir_path
         self.cache_file_name = f'{self.cache_dir_path}/{self.key}.pkl'
@@ -649,12 +650,12 @@ class HybridMemDiskCached(HybridMemoryCached):
                 self._cacheData = load(f)
         except Exception as e:
             logger.warn('No disk cached data found during initialization,'
-                        'this is expected at first instantiation', 
+                        'this is expected at first instantiation',
                         exc_info=True)
             self._cacheData = {}
 
-    def sync_upstream(self, priority: str = 'local',
-                      bulk_write: bool = True) -> None:
+    def sync_upstream(self, priority: str='local',
+                      bulk_write: bool=True) -> None:
         """
         synchronize current memory content with disk-cached data, should
         ideally be implemented as a scheduled task, or a task performed after
@@ -681,8 +682,8 @@ class HybridMemDiskCached(HybridMemoryCached):
 
 
 def update_hybrid_cache_group(
-        cache_group: Optional[List[HybridMemoryCached]] = None,
-        priority: str = 'local', bulk_write: bool = False) -> None:
+        cache_group: Optional[List[HybridMemoryCached]]=None,
+        priority: str='local', bulk_write: bool=False) -> None:
     """synchronize all hybrid caches registered as part of a group of caches.
     Defaults to synchronizing all HybridCaches (Disk and Redis backed up)
     in their respective default groups"""
