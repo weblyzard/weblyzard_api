@@ -29,9 +29,7 @@ def get_files(src_directory, file_ext=None):
     file_list = []
     for _, _, files in os.walk(src_directory):
         for fn in files:
-            if file_ext and fn.endswith(file_ext):
-                file_list.append(os.path.join(src_directory, fn))
-            else:
+            if file_ext is None or (file_ext and fn.endswith(file_ext)):
                 file_list.append(os.path.join(src_directory, fn))
 
     file_list.sort(key=lambda f: os.path.splitext(f))

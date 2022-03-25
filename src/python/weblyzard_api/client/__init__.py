@@ -5,6 +5,7 @@
 
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
+migrated from `eWRT` 2021
 '''
 from __future__ import unicode_literals, print_function
 
@@ -36,17 +37,7 @@ WEBLYZARD_API_PASS = getenv("WEBLYZARD_API_PASS")
 
 OGER_API_URL = getenv("OGER_API_URL")
 
-# -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-
-''' .. module:: eWRT.ws.rest
-    .. moduleauthor:: Albert Weichselbraun <weichselbraun@weblyzard.com>
-    .. moduleauthor:: Heinz-Peter Lang <lang@weblyzard.com>
-
-    eWRT REST Client barebone with support for authentificated https requests
-'''
-
-logger = logging.getLogger('eWRT.ws.rest')
+logger = logging.getLogger(__name__)
 
 
 class RESTClient(object):
@@ -222,7 +213,8 @@ class MultiRESTClient(object):
             service_urls = [service_urls]
 
         for url in service_urls:
-            service_url, user, password = Retrieve.get_user_password(url)
+            if user is None and password is None:
+                service_url, user, password = Retrieve.get_user_password(url)
 
             clients.append(RESTClient(service_url=service_url,
                                       user=user,
@@ -284,9 +276,4 @@ class MultiRESTClient(object):
         batch_size = batch_size if batch_size else cls.MAX_BATCH_SIZE
         for i in range(0, len(documents), batch_size):
             yield documents[i:i + batch_size]
-
-
-
-
-
 

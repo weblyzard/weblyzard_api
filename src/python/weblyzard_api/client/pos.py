@@ -10,13 +10,14 @@ from __future__ import unicode_literals
 import unittest
 
 from weblyzard_api.client import RESTClient
-
-POS_URL = "http://voyager.srv.weblyzard.net/ws"
+from weblyzard_api.client import (
+    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 
 class POS(RESTClient):
 
-    def __init__(self, url=POS_URL, usr=None, pwd=None):
+    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
+                 pwd=WEBLYZARD_API_PASS):
         '''
         :param url: URL of the jeremia web service
         :param usr: optional user name

@@ -11,13 +11,13 @@ import unittest
 import pytest
 
 from weblyzard_api.model import Sentence
-from weblyzard_api.client.lemmatizer import LemmatizerClient
+from weblyzard_toolkit.apis.term_sense_client import TermSenseClient as LemmatizerClient
 
 LEMMATIZER_SERVICE_URL = os.getenv('LEMMATIZER_SERVICE_URL',
-                                   'http://localhost:5555')
+                                   'http://localhost:5002')
 
 class TestLemmatizerClient(unittest.TestCase):
-    lemmatizer = LemmatizerClient(url='http://localhost:5555')
+    lemmatizer = LemmatizerClient(service_url=LEMMATIZER_SERVICE_URL)
     test_text = 'Nur zu, lache soviel du willst: Zugegeben, unsere Angebote sind einfach unschlagbar: Von ' \
                 'Laken bis Lacken haben wir alles, wonach Sie bei den ' \
                 'Angeboten der Konkurrenz lange suchen.'

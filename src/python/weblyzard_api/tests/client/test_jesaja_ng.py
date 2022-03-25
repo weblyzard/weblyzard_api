@@ -70,14 +70,14 @@ class JesajaNgTest(unittest.TestCase):
                 self.MATVIEW_NAME, self.PROFILE_NAME)
 
             # create the reference corpus
-            if not self.jesaja.has_corpus(matview_id=self.MATVIEW_NAME):
-                while self.jesaja.rotate_shard(matview_id=self.MATVIEW_NAME) == 0:
+            if not self.jesaja.has_corpus(profile_name=self.MATVIEW_NAME):
+                while self.jesaja.rotate_shard(profile_name=self.MATVIEW_NAME) == 0:
                     csv_corpus = {'keystone': 25, 'energy': 123, 'ana': 12,
                                   'tom': 22, 'petra': 3, 'clima': 5, 'Shihab': 12, 'Kirche': 10}
                     self.jesaja.add_csv(
-                        matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus)
+                        profile_name=self.MATVIEW_NAME, keyword_count_map=csv_corpus)
                     self.jesaja.add_documents(
-                        matview_id=self.MATVIEW_NAME, documents=sample_corpus)
+                        profile_name=self.MATVIEW_NAME, documents=sample_corpus)
         else:
             print('WARNING: Webservice is offline --> not executing all tests!!')
 

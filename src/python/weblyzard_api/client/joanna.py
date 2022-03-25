@@ -137,7 +137,7 @@ class Joanna(object):
 
     def similar_documents(self, sourceId, portalName, contentIds_nilsimsa_dict,
                           daysBack=20, nilsimsa_threshold=5):
-        """ Uses PostRequest instead of the eWRT MultiRESTClient
+        """ Uses PostRequest instead of MultiRESTClient
          for finer control of the connection codes for retries
              result: {hash:boolean, ..}
         """

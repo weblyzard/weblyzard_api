@@ -54,10 +54,6 @@ class AbstractIterator(object):
     def __next__(self):
         raise NotImplementedError
 
-    def __next__(self):
-        ''' Python 2 compatibility '''
-        return self.__next__()
-
     def close(self):
         self.f.close()
 
