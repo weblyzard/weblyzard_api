@@ -1,17 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import urllib.error
+import logging
+
 from future import standard_library
+from time import sleep, time
+from random import random
+
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
-from time import sleep, time
-from random import random
-import urllib.request
-import urllib.error
-import urllib.parse
-import logging
+
 '''
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>

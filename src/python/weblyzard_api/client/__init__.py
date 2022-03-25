@@ -222,7 +222,8 @@ class MultiRESTClient(object):
             service_urls = [service_urls]
 
         for url in service_urls:
-            service_url, user, password = Retrieve.get_user_password(url)
+            if user is None and password is None:
+                service_url, user, password = Retrieve.get_user_password(url)
 
             clients.append(RESTClient(service_url=service_url,
                                       user=user,
@@ -284,9 +285,4 @@ class MultiRESTClient(object):
         batch_size = batch_size if batch_size else cls.MAX_BATCH_SIZE
         for i in range(0, len(documents), batch_size):
             yield documents[i:i + batch_size]
-
-
-
-
-
 

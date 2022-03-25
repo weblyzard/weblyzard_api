@@ -8,8 +8,8 @@ Created on November 14, 2019
 from itertools import chain
 
 from typing import Tuple, List, Optional
-from weblyzard_api.client import MultiRESTClient
 
+from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.model import Sentence
 
 
@@ -25,7 +25,7 @@ class LemmatizerClient(MultiRESTClient):
         self.url = url
         MultiRESTClient.__init__(self, service_urls=url)
 
-    def get_unique_lemmas_string(self, language: str, plain_text: str= '',
+    def get_unique_lemmas_string(self, language: str, plain_text: str='',
                                  forms:Optional[list]=None,
                                  **kwargs):
         """
@@ -41,7 +41,6 @@ class LemmatizerClient(MultiRESTClient):
                                          forms=forms, **kwargs)
         return {k: v['lemma'] for k, v in res.get('result', {}).items() if
                 'lemma' in v}
-        pass
 
     def _get_lemmas_plaintext(self, language: str, plain_text: str,
                               forms: Optional[list]=None, **kwargs):
@@ -108,7 +107,7 @@ class LemmatizerClient(MultiRESTClient):
 
     def get_lemmas_annotated_sentence(self, language: str,
                                       sentence: Sentence,
-                                      check_unique: bool = False,
+                                      check_unique: bool=False,
                                       **kwargs):
         """
         Function allowing weblyzard_api.model.Sentence to be directly input,
@@ -130,7 +129,7 @@ class LemmatizerClient(MultiRESTClient):
 
         token_pairs = list(zip(sentence.tokens, sentence.pos_tags))
         raw = self._get_lemmas_tuples(language=language,
-                                      form_pos_pairs=token_pairs, )
+                                      form_pos_pairs=token_pairs,)
 
         result = {}
         for k, v in raw.get('result', {}).items():

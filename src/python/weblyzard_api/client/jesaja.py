@@ -7,7 +7,6 @@
 from __future__ import unicode_literals
 
 from weblyzard_api.client import MultiRESTClient
-
 from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)

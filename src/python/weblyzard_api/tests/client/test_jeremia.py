@@ -111,6 +111,7 @@ class JeremiaTest(unittest.TestCase):
             j.submit_documents(documents=[], wait_time=30)
 
     def test_missing_space_tokenattribute(self):
+
         def text_as_doc(text):
             docs = [{'id': 'alpha',
                      'body': text,
@@ -158,7 +159,7 @@ class JeremiaTest(unittest.TestCase):
         j = Jeremia()
         j.update_blacklist(source_id=source_id, blacklist=blacklist)
         sentences = self._get_sentences(
-            j.submit_documents(documents=docs, source_id=source_id), wait_time=30).pop()
+            j.submit_documents(documents=docs, source_id=source_id, wait_time=30)).pop()
         assert 'Hier wird die Zensur zuschlagen.' not in sentences
         assert 'Der zweite Satz ist aber okay.' in sentences
 
@@ -166,7 +167,7 @@ class JeremiaTest(unittest.TestCase):
         assert blacklist == j.get_blacklist(source_id)
 
         # no blacklist
-        sentences = self._get_sentences(j.submit_documents(documents=docs,wait_time=30)).pop()
+        sentences = self._get_sentences(j.submit_documents(documents=docs, wait_time=30)).pop()
         assert 'Hier wird die Zensur zuschlagen.' in sentences
         assert 'Der zweite Satz ist aber okay.' in sentences
 
