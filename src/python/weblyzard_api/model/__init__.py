@@ -354,7 +354,7 @@ class Sentence(object):
         :returns: an iterator providing the sentence's tokens 
         '''
         if not self.token:
-            raise StopIteration
+            return
         correction_offset = int(self.token.split(',')[0] or 0)
         for token_pos in self.token.split(self.ITEM_DELIMITER):
             token_indices = token_pos.split(self.TOKEN_DELIMITER)
