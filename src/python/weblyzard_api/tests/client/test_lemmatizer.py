@@ -14,7 +14,7 @@ from weblyzard_api.model import Sentence
 from weblyzard_toolkit.apis.term_sense_client import TermSenseClient as LemmatizerClient
 
 LEMMATIZER_SERVICE_URL = os.getenv('LEMMATIZER_SERVICE_URL',
-                                   'http://localhost:5002')
+                                   'http://localhost:5001')
 
 class TestLemmatizerClient(unittest.TestCase):
     lemmatizer = LemmatizerClient(service_url=LEMMATIZER_SERVICE_URL)
