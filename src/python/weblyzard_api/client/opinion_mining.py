@@ -4,13 +4,16 @@
 Created on 15.12.2014
 
 '''
-from __future__ import unicode_literals
+import logging
 
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 SERVER_URL_PATH = '/rest/polarity/document'
+
+
+logger = logging.getLogger(__name__)
 
 
 class OpinionClient(MultiRESTClient):
@@ -65,8 +68,11 @@ class OpinionClient(MultiRESTClient):
                 if retries <= retrycount:
                     pass  # silently retry
                 else:
+                    msg = f'Request to sentiment webservice ' \
+                          f'failed {retries} times, latest error was {e}'
+                    logger.warning(msg, exc_info=True)
                     result = {
-                        'error': 'Request to sentiment webservice timed out %d times' % retries}
+                        'error': msg}
         return result
 
     def status(self):
