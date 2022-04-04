@@ -5,7 +5,7 @@ Created on April 15, 2021
 
 @author: jakob <jakob.steixner@modul.ac.at>
 '''
-
+import logging
 
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (
@@ -13,6 +13,8 @@ from weblyzard_api.client import (
 
 SERVER_URL_PATH = '/rest/emotions/document'
 
+
+logger = logging.getLogger(__name__)
 
 
 class EmotionClassifierClient(MultiRESTClient):
@@ -59,8 +61,11 @@ class EmotionClassifierClient(MultiRESTClient):
                 if retries <= retrycount:
                     pass  # silently retry
                 else:
+                    msg = f'Request to emotions webservice ' \
+                          f'failed {retries} times, latest error was {e}'
+                    logger.warning(msg, exc_info=True)
                     result = {
-                        'error': 'Request to emotions webservice timed out %d times' % retries}
+                        'error': msg}
         return result
 
     def status(self):

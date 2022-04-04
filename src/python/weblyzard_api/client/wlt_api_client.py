@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 import json
 import requests
 import logging
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -19,19 +20,19 @@ class WltApiClient(object):
 
     TOKEN_ENDPOINT = 'token'
 
-    BASE_URL = 'http://api.weblyzard.com'
+    BASE_URL = 'https://api.weblyzard.com'
     API_VERSION = 1.0
 
-    def __init__(self, base_url:str=BASE_URL,
-                 version:float=API_VERSION,
-                 username:str=None, password:str=None):
-        self.base_url = base_url
+    def __init__(self, base_url: str=BASE_URL,
+                 version: float=API_VERSION,
+                 username: str=None, password: str=None):
+        self.base_url = f'{base_url}/{self.API_VERSION}'
         self.version = version
         self.username = username
         self.password = password
         self.auth_token = self.get_auth_token(self.username, self.password)
 
-    def get_auth_token(self, username, password):
+    def get_auth_token(self, username: str, password: str):
         """ 
         GET a valid authentication token from the server. 
         :param username, as provided by webLyzard
@@ -52,13 +53,16 @@ class WltSearchRestApiClient(WltApiClient):
     DOCUMENT_ENDPOINT = 'search/'
     KEYWORD_ENDPOINT = 'rest/com.weblyzard.api.search/keywords'
 
-    def search_documents(self, sources, term_query, auth_token=None,
-                         start_date=None, end_date=None, count=10, offset=0,
-                         max_docs=-1, fields=['document.contentid']):
+    def search_documents(self, sources: List[str], terms: List[str]=None,
+                         auth_token: str=None,
+                         start_date: str=None, end_date: str=None,
+                         count: int=10, offset: int=0,
+                         max_docs: int=-1,
+                         fields: List[str]=['document.contentid']):
         """ 
         Search an index for documents matching the search parameters.
         :param sources
-        :param term_query, the query string
+        :param terms, optional list of terms to filter for.
         :param auth_token, the webLyzard authentication token, if any
         :param start_date, result documents must be younger than this, if given (e.g. \"2018-08-01\")
         :param end_date, result documents must be older than this, if given
@@ -68,8 +72,6 @@ class WltSearchRestApiClient(WltApiClient):
         :returns: The result documents as serialized JSON
         :rtype: str
         """
-        assert len(term_query)
-
         if not auth_token:
             auth_token = self.auth_token
         if isinstance(auth_token, bytes):
@@ -93,7 +95,17 @@ class WltSearchRestApiClient(WltApiClient):
         if end_date:
             query["endDate"] = str(end_date)
 
-        query["query"] = term_query
+        # construct a term query
+        if terms is not None:
+            term_query = {
+                "bool": {
+                    "filter": []
+            }}
+            for term in terms:
+                term_query["bool"]["filter"].append(term)
+
+            query["query"] = term_query
+
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
         url = '/'.join([self.base_url, self.DOCUMENT_ENDPOINT])
