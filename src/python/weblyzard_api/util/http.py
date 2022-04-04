@@ -152,7 +152,9 @@ class Retrieve(object):
                 urlObj = urllib.request.urlopen(request)
             except urllib.error.HTTPError as e:
                 if e.code in HTTP_TEMPORARY_ERROR_CODES and tries < retry:
-                    time.sleep(randint(*RETRY_WAIT_TIME_RANGE))
+                    sleep_time = randint(*RETRY_WAIT_TIME_RANGE)
+                    log.info(f'retrying in {sleep_time}; received {e.code}')
+                    time.sleep(sleep_time)
                     tries += 1
                     continue
                 else:

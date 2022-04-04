@@ -51,7 +51,7 @@ class WltSearchRestApiClient(WltApiClient):
     `Documentation <https://api.weblyzard.com/doc/ui/#!/Search_API>`_
     """
     DOCUMENT_ENDPOINT = 'search/'
-    KEYWORD_ENDPOINT = 'rest/com.weblyzard.api.search/keywords'
+    KEYWORD_ENDPOINT = 'keyentities/'
 
     def search_documents(self, sources: List[str], terms: List[str]=None,
                          auth_token: str=None,
@@ -135,8 +135,9 @@ class WltSearchRestApiClient(WltApiClient):
 
         return r
 
-    def search_keywords(self, sources, start_date, end_date, num_keywords=5,
-                        num_associations=5, auth_token=None, term_query=""):
+    def search_keywords(self, sources: List[str], start_date: str, end_date: str,
+                        num_keywords: int=5, num_associations: int=5,
+                        auth_token: str=None, terms: List[str]=None):
         """ 
         Search an index for top keyword associations matching the search parameters.
         :param sources
@@ -164,16 +165,26 @@ class WltSearchRestApiClient(WltApiClient):
                           ]
                         }}
         """ % (start_date, end_date)
-        if len(term_query) > 0:
-            term_query = ',%s' % term_query
-        query = query.replace(',<<term_query>>', term_query)
+        # construct a term query
+        if terms is not None:
+            term_query = {
+                "filter": []
+            }
+            for term in terms:
+                term_query["filter"].append(term)
+
+            query["query"] = term_query
+
+            query = query.replace(',<<term_query>>', term_query)
+        else:
+            query = query.replace(',<<term_query>>', '')
         query = json.loads(query)
         data = dict(sources=sources, query=query, count=num_keywords,
                     associations=num_associations)
         data = json.dumps(data)
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.version, self.KEYWORD_ENDPOINT])
+        url = '/'.join([self.base_url, self.KEYWORD_ENDPOINT])
         try:
             r = requests.post(url,
                               data=data,
@@ -186,3 +197,15 @@ class WltSearchRestApiClient(WltApiClient):
             return r
         return r
 
+
+client = WltSearchRestApiClient()
+auth_token = client.get_auth_token(username='api@criteria.weblyzard.com',
+                                               password='yA6mhDbCDhqPeXJDvyCeP84spXLRjry9')
+sources = ['api.weblyzard.com/news_en']
+terms = ['Ukraine']
+start_date = '2022-04-02'
+end_date = '2022-04-04'
+count = 10
+result = client.search_keywords(sources, terms, auth_token, start_date, end_date, count)
+for item in result:
+    print(item)
