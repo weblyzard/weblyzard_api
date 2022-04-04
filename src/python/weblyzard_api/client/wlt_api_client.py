@@ -51,7 +51,6 @@ class WltSearchRestApiClient(WltApiClient):
     `Documentation <https://api.weblyzard.com/doc/ui/#!/Search_API>`_
     """
     DOCUMENT_ENDPOINT = 'search/'
-    KEYWORD_ENDPOINT = 'rest/com.weblyzard.api.search/keywords'
 
     def search_documents(self, sources: List[str], terms: List[str]=None,
                          auth_token: str=None,
@@ -133,56 +132,5 @@ class WltSearchRestApiClient(WltApiClient):
                              exc_info=True)
                 return r
 
-        return r
-
-    def search_keywords(self, sources, start_date, end_date, num_keywords=5,
-                        num_associations=5, auth_token=None, term_query=""):
-        """ 
-        Search an index for top keyword associations matching the search parameters.
-        :param sources
-        :param term_query, the query string
-        :param start_date, result documents must be younger than this (e.g. \"2018-08-01\")
-        :param end_date, result documents must be older than this
-        :param num_keywords, how many keywords to return
-        :param num_associations, how many keyword associations to return
-        :param auth_token, the webLyzard authentication token, if any
-        :returns: The result documents as serialized JSON
-        :rtype: str
-        """
-        if not auth_token:
-            auth_token = self.auth_token
-        if not isinstance(sources, list):
-            sources = [sources]
-        query = """{"bool" : {
-                          "must" : [
-                            {
-                              "date" : {
-                                "gte":"%s",
-                                "lte":"%s"
-                              }
-                            },<<term_query>>
-                          ]
-                        }}
-        """ % (start_date, end_date)
-        if len(term_query) > 0:
-            term_query = ',%s' % term_query
-        query = query.replace(',<<term_query>>', term_query)
-        query = json.loads(query)
-        data = dict(sources=sources, query=query, count=num_keywords,
-                    associations=num_associations)
-        data = json.dumps(data)
-        headers = {'Authorization': 'Bearer %s' % auth_token,
-                   'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.version, self.KEYWORD_ENDPOINT])
-        try:
-            r = requests.post(url,
-                              data=data,
-                              headers=headers)
-            if r.status_code == 200:
-                return json.loads(r.content)['result']
-        except Exception as e:
-            logger.error(
-                "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
-            return r
         return r
 
