@@ -16,7 +16,7 @@ from collections import OrderedDict
 
 from weblyzard_api.client.recognize.ng import Recognize
 
-RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', 'http://gecko9.wu.ac.at:8089/rest')
+RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
 
 
 class TestRecognizeNg(unittest.TestCase):
@@ -321,7 +321,7 @@ class TestRecognizeNg(unittest.TestCase):
             for url, profile in urls_profiles_mapping:
                 client = Recognize(url)
                 result = client.search_document(profile_name=profile,
-                                                     document=document, limit=0)
+                                                document=document, limit=0)
                 annotations = result['annotations']
                 from pprint import pprint
                 import json
@@ -330,265 +330,304 @@ class TestRecognizeNg(unittest.TestCase):
                 assert len(annotations) > 0
                 document = result
             if self.REQUIRED_REGEXPS:
-                    for regexp in self.REQUIRED_REGEXPS:
-                        assert any([re.match(regexp, entity['key']) for entity in annotations])
+                for regexp in self.REQUIRED_REGEXPS:
+                    assert any([re.match(regexp, entity['key']) for entity in annotations])
+
+# class TestRecognizeWien(TestRecognizeNg):
+#
+#     PROFILE_NAME = 'de_full_all'
+#     DOCUMENTS = [{u'annotations': [],
+#                    u'content': u'Die Hufgasse in Wien ist alles mögliche, aber weder eine wichtige Einkaufsstraße noch eine Sackgasse, und noch nicht mal eine Hauptstraße oder eine Landstraße.',
+#                    u'format': u'text/html',
+#                    u'header': {},
+#                    u'id': u'1000',
+#                    u'lang': u'DE',
+#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestRecognizeJobCockpit(TestRecognizeNg):
+#     PROFILE_NAME = "JOBCOCKPIT_DE_STANF"
+#     # SERVICE_URL = 'http://localhost:63007/rest'
+#
+#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
+#     DOCUMENTS = [{u'annotations': [],
+#                   u'content': u'Akademiker mit mehrjähriger Berufserfahrung in der Datenaufbereitung, zuletzt in leitender Position, sucht neue Herausforderungen.',
+#                   u'format': u'text/html',
+#                   u'header': {},
+#                   u'id': u'1000',
+#                   u'lang': u'DE',
+#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestRecognizeDisambiguation(TestRecognizeNg):
+#     """Test contextual disambiguation of string-identical streets
+#     based on their parent attributes (cities) when occurring in the same text.
+#     Wels
+#     """
+#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
+#
+#     PROFILE_NAME = 'de_full_all'
+#
+#     DOCUMENTS = [{u'annotations': [],
+#                    u'content': 'In der Waidhausenstraße in Wien ist ab dem 25. Januar 2021 eine Baustelle.',
+#                    u'format': u'text/html',
+#                    u'header': {},  #
+#                    u'id': u'1000',
+#                    u'lang': u'DE',
+#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                    u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestDisambiguationOsmEn(TestRecognizeNg):
+#     """Test contextual disambiguation of string-identical streets
+#     based on their parent attributes (cities) when occurring in the same text.).
+#     We expect Downing Street, London
+#     """
+#
+#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*4244999')]
+#
+#     PROFILE_NAME = 'en_full_all_new'
+#
+#     DOCUMENTS = [{u'annotations': [],
+#                    u'content': 'In the United Kingdom, Downing Street is more than just a street name.',
+#                    u'format': u'text/html',
+#                    u'header': {},  #
+#                    u'id': u'1000',
+#                    u'lang': u'EN',
+#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestDisambiguationOsmEnAlternate(TestRecognizeNg):
+#     """Test contextual disambiguation of string-identical streets
+#     based on their parent attributes (cities, countries) when occurring in
+#     the same text.).
+#     There is a Downing street in Christchurch
+#     """
+#
+#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*22988383')]
+#     PROFILE_NAME = 'en_full_all'
+#
+#     DOCUMENTS = [{u'annotations': [],
+#                    u'content': 'There is another Downing Street in New Zealand.',
+#                    u'format': u'text/html',
+#                    u'header': {},  #
+#                    u'id': u'1000',
+#                    u'lang': u'EN',
+#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestDisambiguationOsmEs(TestRecognizeNg):
+#     """Test contextual disambiguation of string-identical streets
+#     based on their parent attributes (cities) when occurring in the same text.
+#     (WIP as of 2020-10-10)."""
+#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
+#
+#     PROFILE_NAME = 'es_full_all'
+#
+#     DOCUMENTS = [{u'annotations': [],
+#                    u'content': 'Paseo de las Acacias en Murcia es una atracción principal.',
+#                    u'format': u'text/html',
+#                    u'header': {},
+#                    u'id': u'1000',
+#                    u'lang': u'ES',
+#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestDisambiguationOsmFr(TestRecognizeNg):
+#     """Test contextual disambiguation of string-identical streets
+#     based on their parent attributes (cities) when occurring in the same text.
+#     (WIP as of 2020-10-10)."""
+#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
+#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089'
+#
+#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+#     #
+#     PROFILE_NAME = 'fr_full_all' \
+#
+#
+#     # wien gn id: http://sws.geonames.org/2761333
+#     # wels gn id http://sws.geonames.org/2761524
+#     DOCUMENTS = [{u'annotations': [],
+#                    u'content': 'Rue Alphonse Daudet en Marseille c\'é un attraction principale.',
+#                    u'format': u'text/html',
+#                    u'header': {},  #
+#                    u'id': u'1000',
+#                    u'lang': u'FR',
+#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestRecognizeOsmNl(TestRecognizeNg):
+#     REQUIRED_REGEXPS = [re.compile(r'.*openstreetmap.*')]
+#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
+#     PROFILE_NAME = 'nl_full_all'
+#     DOCUMENTS = [{u'annotations': [],
+#                    u'content': u'Dat was in het pand aan Overdiepse-Polderweg waar nu La Cuisine is gevestigd.',
+#                    u'format': u'text/html',
+#                    u'header': {},
+#                    u'id': u'1000',
+#                    u'lang': u'NL',
+#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C16650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestRecognizeEvents(TestRecognizeNg):
+#     REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
+#     # SERVICE_URL = 'http://localhost:63007/rest'
+#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
+#
+#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+#     # PROFILE_NAME = 'sandbox_events'
+#     PROFILE_NAME = 'de_full_all'
+#     DOCUMENTS = [{u'annotations': [],
+#                   'content': 'Am Ostermontag gibt es es viel zu feiern.',
+#                   u'format': u'text/html',
+#                   u'header': {},
+#                   u'id': u'1000',
+#                   u'lang': u'DE',
+#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#     def test_annotate_document(self):
+#         for year in range(2017, 2023):
+#             for countryname, country in {
+#                 'austria': 'http://sws.geonames.org/2782113/',
+#                 'greece': 'http://sws.geonames.org/390903/'
+#             }.items():
+#                 print(countryname, year)
+#                 self.DOCUMENTS[0]['header'] = {'{http://www.weblyzard.com/wl/2013#}entity': 'http://example.com/example_document',
+#                               '{http://weblyzard.com/skb/property/}yearUri': 'http://purl.org/dc/terms/date#{year}'.format(year=year),
+#                               '{http://weblyzard.com/skb/property/}location': country
+#                               }
+#                 self.REQUIRED_REGEXPS = [re.compile(r'.*Easter.*#{year}.*'.format(year=year))]
+#                 TestRecognizeNg.test_annotate_document(self)
+#
+#
+# class TestRecognizePersonEn(TestRecognizeNg):
+#     REQUIRED_REGEXPS = [re.compile('http://www.wikidata.org/entity/.*')]
+#
+#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+#     PROFILE_NAME = 'en_full_all'
+#     DOCUMENTS = [{u'annotations': [],
+#                   # 'content': 'Boris Becker is a famous tennis player.',
+#                   'content': 'Tony Blair is a former politician.',
+#                   u'format': u'text/html',
+#                   u'header': {},
+#                   u'id': u'1000',
+#                   u'lang': u'DE',
+#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestRecognizeEventsEn(TestRecognizeNg):
+#     REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
+#     # SERVICE_URL = 'http://localhost:63007/rest'
+#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
+#
+#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+#     # PROFILE_NAME = 'sandbox_events'
+#     PROFILE_NAME = 'en_full_all'
+#     DOCUMENTS = [{u'annotations': [],
+#                   'content': 'There\'s a lot to celebrate on Easter Monday.',
+#                   u'format': u'text/html',
+#                   u'header': {},
+#                   u'id': u'1000',
+#                   u'lang': u'DE',
+#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#     def test_annotate_document(self):
+#         for year in range(2017, 2023):
+#             for countryname, country in {
+#                 'austria': 'http://sws.geonames.org/2782113/',
+#                 'greece': 'http://sws.geonames.org/390903/'}.items():
+#                 print(countryname, year)
+#                 self.DOCUMENTS[0]['header'] = {'{http://www.weblyzard.com/wl/2013#}entity': 'http://example.com/example_document',
+#                               '{http://weblyzard.com/skb/property/}yearUri': 'http://purl.org/dc/terms/date#{year}'.format(year=year),
+#                               '{http://weblyzard.com/skb/property/}location': country
+#                               }
+#                 self.REQUIRED_REGEXPS = [re.compile(r'.*Easter.*#{year}.*'.format(year=year))]
+#                 TestRecognizeNg.test_annotate_document(self)
+#
+#
+# class TestRecognizeCustomDe(TestRecognizeNg):
+#     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
+#                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
+#
+#     SERVICE_URL = 'http://localhost:63007/rest'
+#     PROFILE_NAME = 'journalists_test'
+#     DOCUMENTS = [{u'annotations': [],
+#                   # 'content': 'Boris Becker is a famous tennis player.',
+#                   'content': 'Armin Wolf ist ein österreichischer Journalist, der für den ORF arbeitet. Immer wieder berichtet er auch über den Klimawandel.',
+#                   u'format': u'text/html',
+#                   u'header': {},
+#                   u'id': u'1000',
+#                   u'lang': u'DE',
+#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+#
+#
+# class TestRecognizeJournalistsDe(TestRecognizeNg):
+#     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
+#                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
+#
+#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+#     PROFILE_NAME = 'de_full_all'
+#
+#     DOCUMENTS = [{u'annotations': [],
+#                 'content': 'Armin Wolf, Florian Klenk, Isabell Widek, Su Sametinger, Ingrid Thurnher und Karim El-Gawhary sind alle österreichische Journalisten.' +
+#                             'Bernd Affenzeller auch. Vielleicht ist auch Karim El Gawhary ein Journalist?',
+#                   u'format': u'text/html',
+#                   u'header': {},
+#                   u'id': u'1000',
+#                   u'lang': u'DE',
+#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+# class TestRecognizeBlazegraphDe(TestRecognizeNg):
+#     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
+#                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
+#
+#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+#     SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
+#     PROFILE_NAME = 'de_full_all_bg'
+#     DOCUMENTS = [{u'annotations': [],
+#                   # 'content': 'Boris Becker is a famous tennis player.',
+#                   'content': 'Jenson Button,  , NOAA, Max Verstappen, alles da? Nasa calling',
+#                   u'format': u'text/html',
+#                   u'header': {},
+#                   u'id': u'1000',
+#                   u'lang': u'DE',
+#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+#                   u'partitions': {u'BODY': [{u'@type': u'CharSpan',
+#                                             u'end': 184,
+#                                             u'start': 20}]}}]
 
 
-class TestRecognizeWien(TestRecognizeNg):
-
-    PROFILE_NAME = 'de_full_all'
-    DOCUMENTS = [{u'annotations': [],
-                   u'content': u'Die Hufgasse in Wien ist alles mögliche, aber weder eine wichtige Einkaufsstraße noch eine Sackgasse, und noch nicht mal eine Hauptstraße oder eine Landstraße.',
-                   u'format': u'text/html',
-                   u'header': {},
-                   u'id': u'1000',
-                   u'lang': u'DE',
-                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestRecognizeJobCockpit(TestRecognizeNg):
-    PROFILE_NAME = "JOBCOCKPIT_DE_STANF"
-    # SERVICE_URL = 'http://localhost:63007/rest'
-
-    # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
-    DOCUMENTS = [{u'annotations': [],
-                  u'content': u'Akademiker mit mehrjähriger Berufserfahrung in der Datenaufbereitung, zuletzt in leitender Position, sucht neue Herausforderungen.',
-                  u'format': u'text/html',
-                  u'header': {},
-                  u'id': u'1000',
-                  u'lang': u'DE',
-                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestRecognizeDisambiguation(TestRecognizeNg):
-    """Test contextual disambiguation of string-identical streets
-    based on their parent attributes (cities) when occurring in the same text.
-    Wels
-    """
-    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
-
-    PROFILE_NAME = 'de_full_all'
-
-    DOCUMENTS = [{u'annotations': [],
-                   u'content': 'In der Waidhausenstraße in Wien ist ab dem 25. Januar 2021 eine Baustelle.',
-                   u'format': u'text/html',
-                   u'header': {},  #
-                   u'id': u'1000',
-                   u'lang': u'DE',
-                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestDisambiguationOsmEn(TestRecognizeNg):
-    """Test contextual disambiguation of string-identical streets
-    based on their parent attributes (cities) when occurring in the same text.).
-    We expect Downing Street, London
-    """
-
-    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*4244999')]
-
-    PROFILE_NAME = 'en_full_all_new'
-
-    DOCUMENTS = [{u'annotations': [],
-                   u'content': 'In the United Kingdom, Downing Street is more than just a street name.',
-                   u'format': u'text/html',
-                   u'header': {},  #
-                   u'id': u'1000',
-                   u'lang': u'EN',
-                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestDisambiguationOsmEnAlternate(TestRecognizeNg):
-    """Test contextual disambiguation of string-identical streets
-    based on their parent attributes (cities, countries) when occurring in
-    the same text.).
-    There is a Downing street in Christchurch
-    """
-
-    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*22988383')]
-    PROFILE_NAME = 'en_full_all'
-
-    DOCUMENTS = [{u'annotations': [],
-                   u'content': 'There is another Downing Street in New Zealand.',
-                   u'format': u'text/html',
-                   u'header': {},  #
-                   u'id': u'1000',
-                   u'lang': u'EN',
-                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestDisambiguationOsmEs(TestRecognizeNg):
-    """Test contextual disambiguation of string-identical streets
-    based on their parent attributes (cities) when occurring in the same text.
-    (WIP as of 2020-10-10)."""
-    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
-
-    PROFILE_NAME = 'es_full_all'
-
-    DOCUMENTS = [{u'annotations': [],
-                   u'content': 'Paseo de las Acacias en Murcia es una atracción principal.',
-                   u'format': u'text/html',
-                   u'header': {},
-                   u'id': u'1000',
-                   u'lang': u'ES',
-                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestDisambiguationOsmFr(TestRecognizeNg):
-    """Test contextual disambiguation of string-identical streets
-    based on their parent attributes (cities) when occurring in the same text.
-    (WIP as of 2020-10-10)."""
-    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
-    # SERVICE_URL = 'http://gecko9.wu.ac.at:8089'
-
+class TestRecognizeRoche(TestRecognizeNg):
+    # REQUIRED_REGEXPS = [][re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
+    #                     re.compile(r'http://www.wikidata.org/entity/Q688378')]
+    REQUIRED_REGEXPS = [re.compile(r'http://ontology.roche.com/ROX1301557461838')]
     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-    #
-    PROFILE_NAME = 'fr_full_all' \
-
-
-    # wien gn id: http://sws.geonames.org/2761333
-    # wels gn id http://sws.geonames.org/2761524
-    DOCUMENTS = [{u'annotations': [],
-                   u'content': 'Rue Alphonse Daudet en Marseille c\'é un attraction principale.',
-                   u'format': u'text/html',
-                   u'header': {},  #
-                   u'id': u'1000',
-                   u'lang': u'FR',
-                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestRecognizeOsmNl(TestRecognizeNg):
-    REQUIRED_REGEXPS = [re.compile(r'.*openstreetmap.*')]
     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
-    PROFILE_NAME = 'nl_full_all'
-    DOCUMENTS = [{u'annotations': [],
-                   u'content': u'Dat was in het pand aan Overdiepse-Polderweg waar nu La Cuisine is gevestigd.',
-                   u'format': u'text/html',
-                   u'header': {},
-                   u'id': u'1000',
-                   u'lang': u'NL',
-                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C16650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestRecognizeEvents(TestRecognizeNg):
-    REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
-    # SERVICE_URL = 'http://localhost:63007/rest'
-    # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
-
-    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-    # PROFILE_NAME = 'sandbox_events'
-    PROFILE_NAME = 'de_full_all'
-    DOCUMENTS = [{u'annotations': [],
-                  'content': 'Am Ostermontag gibt es es viel zu feiern.',
-                  u'format': u'text/html',
-                  u'header': {},
-                  u'id': u'1000',
-                  u'lang': u'DE',
-                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-    def test_annotate_document(self):
-        for year in range(2017, 2023):
-            for countryname, country in {
-                'austria': 'http://sws.geonames.org/2782113/',
-                'greece': 'http://sws.geonames.org/390903/'
-            }.items():
-                print(countryname, year)
-                self.DOCUMENTS[0]['header'] = {'{http://www.weblyzard.com/wl/2013#}entity': 'http://example.com/example_document',
-                              '{http://weblyzard.com/skb/property/}yearUri': 'http://purl.org/dc/terms/date#{year}'.format(year=year),
-                              '{http://weblyzard.com/skb/property/}location': country
-                              }
-                self.REQUIRED_REGEXPS = [re.compile(r'.*Easter.*#{year}.*'.format(year=year))]
-                TestRecognizeNg.test_annotate_document(self)
-
-
-class TestRecognizePersonEn(TestRecognizeNg):
-    REQUIRED_REGEXPS = [re.compile('http://www.wikidata.org/entity/.*')]
-
-    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-    PROFILE_NAME = 'en_full_all'
+    # SERVICE_URL = 'localhost:63007/rest'
+    PROFILE_NAME = 'roche_rts_20220204'
     DOCUMENTS = [{u'annotations': [],
                   # 'content': 'Boris Becker is a famous tennis player.',
-                  'content': 'Tony Blair is a former politician.',
+                  'content': 'What is Personalized Type 2 Diabetes Management? Currently, the management of type 2 diabetes (T2D) is driven by established international guidelines, and until recent years these did not take account of individual characteristics and the presence of co-morbidities for individual patients. Much of the treatment options recommended by guidelines are based on evidence accumulated from Phase 3 clinical trials and real-world evidence based on population-based studies. These recommendations have clearly made a difference to overall diabetes care. 1 , 2 These guidelines do not examine the concept of individualized or personalized management. Individuals differ in their presentation of T2D, some have a short duration, others a long duration and other complications at the time of presentation. Therefore, with respect to treatment, "one size does not fit all". More recently, the American Diabetes Association (ADA) and European Association for the Study of Diabetes (EASD) (along with other guidelines) have recommended tailoring therapy to be more stringent and less stringent based on patients attitudes, hypoglycemia risk, disease duration, life expectancy, comorbidities and resources. Personalized diabetes management is based on developing a clinical plan that is tailored to the individual. This may take into account many complex factors. These included patient factors, social, medical (including complications) as well as phenotypic, biochemical and genetic factors (see Figure 1 ). Therefore, the concept of personalized management is complex and broad. The therapeutic options for managing T2D have increased considerably in the past 10 years, so perhaps the time has come to focus and tailor therapy to the phenotype and personal characteristics of the patient. Personalized care may provide the opportunity to address two potential reasons for the continued morbidity and mortality associated with T2D. These include firstly, the suboptimal application of evidence-based therapies (eg, due to lack of medication intensification or insufficient lifestyle changes or medication adherence by patients) and secondly inadequate efficacies of current therapies when optimally applied. Figure 1 Personalized diabetes care. This figure summarizes the key considerations that are needed when contemplating the choice of diabetes pharmacotherapy for a patient with T2D.',
                   u'format': u'text/html',
                   u'header': {},
                   u'id': u'1000',
                   u'lang': u'DE',
                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestRecognizeEventsEn(TestRecognizeNg):
-    REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
-    # SERVICE_URL = 'http://localhost:63007/rest'
-    # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
-
-    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-    # PROFILE_NAME = 'sandbox_events'
-    PROFILE_NAME = 'en_full_all'
-    DOCUMENTS = [{u'annotations': [],
-                  'content': 'There\'s a lot to celebrate on Easter Monday.',
-                  u'format': u'text/html',
-                  u'header': {},
-                  u'id': u'1000',
-                  u'lang': u'DE',
-                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-    def test_annotate_document(self):
-        for year in range(2017, 2023):
-            for countryname, country in {
-                'austria': 'http://sws.geonames.org/2782113/',
-                'greece': 'http://sws.geonames.org/390903/'}.items():
-                print(countryname, year)
-                self.DOCUMENTS[0]['header'] = {'{http://www.weblyzard.com/wl/2013#}entity': 'http://example.com/example_document',
-                              '{http://weblyzard.com/skb/property/}yearUri': 'http://purl.org/dc/terms/date#{year}'.format(year=year),
-                              '{http://weblyzard.com/skb/property/}location': country
-                              }
-                self.REQUIRED_REGEXPS = [re.compile(r'.*Easter.*#{year}.*'.format(year=year))]
-                TestRecognizeNg.test_annotate_document(self)
-
-
-class TestRecognizeCustomDe(TestRecognizeNg):
-    REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
-                        re.compile(r'http://www.wikidata.org/entity/Q688378')]
-
-    SERVICE_URL = 'http://localhost:63007/rest'
-    PROFILE_NAME = 'journalists_test'
-    DOCUMENTS = [{u'annotations': [],
-                  # 'content': 'Boris Becker is a famous tennis player.',
-                  'content': 'Armin Wolf ist ein österreichischer Journalist, der für den ORF arbeitet. Immer wieder berichtet er auch über den Klimawandel.',
-                  u'format': u'text/html',
-                  u'header': {},
-                  u'id': u'1000',
-                  u'lang': u'DE',
-                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-
-
-class TestRecognizeJournalistsDe(TestRecognizeNg):
-    REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
-                        re.compile(r'http://www.wikidata.org/entity/Q688378')]
-
-    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-    PROFILE_NAME = 'de_full_all'
-
-    DOCUMENTS = [{u'annotations': [],
-                'content': 'Armin Wolf, Florian Klenk, Isabell Widek, Su Sametinger, Ingrid Thurnher und Karim El-Gawhary sind alle österreichische Journalisten.' +
-                            'Bernd Affenzeller auch. Vielleicht ist auch Karim El Gawhary ein Journalist?',
-                  u'format': u'text/html',
-                  u'header': {},
-                  u'id': u'1000',
-                  u'lang': u'DE',
-                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+                  u'partitions': {u'BODY': [{u'@type': u'CharSpan',
+                                            u'end': 184,
+                                            u'start': 20}]}}]
 
 
 if __name__ == '__main__':

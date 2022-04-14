@@ -1,0 +1,446 @@
+[{
+	"annotations": [],
+	"content": "Hello world more \nDonald Trump and Barack Obama are presidents in the United States. Vienna is the capital of Austria, Berlin is the capital of Germany. Linz also is in Austria",
+	"format": "text/html",
+	"header": {},
+	"id": "1000",
+	"lang": "EN",
+	"nilsimsa": "00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED",
+	"partitions": {
+		"BODY": [{
+			"@type": "CharSpan",
+			"end": 184,
+			"start": 20
+		}],
+		"LINE": [{
+				"@type": "CharSpan",
+				"end": 19,
+				"start": 0
+			},
+			{
+				"@type": "CharSpan",
+				"end": 184,
+				"start": 20
+			}
+		],
+		"SENTENCE": [{
+				"@type": "SentenceCharSpan",
+				"end": 18,
+				"id": "26d2d0113429b0dc98352c2b5fd842a1",
+				"semOrient": 0.0,
+				"significance": 0.0,
+				"start": 0
+			},
+			{
+				"@type": "SentenceCharSpan",
+				"end": 86,
+				"id": "ddbe82fc058d01f347dda640aa123e76",
+				"semOrient": 0.0,
+				"significance": 0.0,
+				"start": 20
+			},
+			{
+				"@type": "SentenceCharSpan",
+				"end": 154,
+				"id": "aef32ea74929a8ff3828e6285da0f915",
+				"semOrient": 0.0,
+				"significance": 0.0,
+				"start": 87
+			},
+			{
+				"@type": "SentenceCharSpan",
+				"end": 184,
+				"id": "94ae0254cdd4396fb2adbfea90676563",
+				"semOrient": 0.0,
+				"significance": 0.0,
+				"start": 155
+			}
+		],
+		"TITLE": [{
+			"@type": "CharSpan",
+			"end": 19,
+			"start": 0
+		}],
+		"TOKEN": [{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "null",
+					"parent": -1
+				},
+				"end": 5,
+				"pos": "UH",
+				"start": 0
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NMOD",
+					"parent": 3
+				},
+				"end": 7,
+				"pos": "",
+				"start": 6
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "SUFFIX",
+					"parent": 1
+				},
+				"end": 12,
+				"pos": "NN",
+				"start": 7
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "ROOT",
+					"parent": 0
+				},
+				"end": 13,
+				"pos": "",
+				"start": 12
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "SUFFIX",
+					"parent": 3
+				},
+				"end": 18,
+				"pos": "RBR",
+				"start": 14
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "null",
+					"parent": -1
+				},
+				"end": 26,
+				"pos": "NNP",
+				"start": 20
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NAME",
+					"parent": 2
+				},
+				"end": 32,
+				"pos": "NNP",
+				"start": 27
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "SBJ",
+					"parent": 6
+				},
+				"end": 36,
+				"pos": "CC",
+				"start": 33
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "COORD",
+					"parent": 2
+				},
+				"end": 43,
+				"pos": "NNP",
+				"start": 37
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NAME",
+					"parent": 5
+				},
+				"end": 49,
+				"pos": "NNP",
+				"start": 44
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "CONJ",
+					"parent": 3
+				},
+				"end": 53,
+				"pos": "VBP",
+				"start": 50
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "ROOT",
+					"parent": 0
+				},
+				"end": 64,
+				"pos": "NNS",
+				"start": 54
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "PRD",
+					"parent": 6
+				},
+				"end": 67,
+				"pos": "IN",
+				"start": 65
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "LOC",
+					"parent": 7
+				},
+				"end": 71,
+				"pos": "DT",
+				"start": 68
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NMOD",
+					"parent": 11
+				},
+				"end": 78,
+				"pos": "NNP",
+				"start": 72
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NMOD",
+					"parent": 11
+				},
+				"end": 85,
+				"pos": "NNPS",
+				"start": 79
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "PMOD",
+					"parent": 8
+				},
+				"end": 86,
+				"pos": ".",
+				"start": 85
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "null",
+					"parent": -1
+				},
+				"end": 93,
+				"pos": "NNP",
+				"start": 87
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "SBJ",
+					"parent": 2
+				},
+				"end": 96,
+				"pos": "VBZ",
+				"start": 94
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "ROOT",
+					"parent": 0
+				},
+				"end": 100,
+				"pos": "DT",
+				"start": 97
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NMOD",
+					"parent": 4
+				},
+				"end": 108,
+				"pos": "NN",
+				"start": 101
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "PRD",
+					"parent": 2
+				},
+				"end": 111,
+				"pos": "IN",
+				"start": 109
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NMOD",
+					"parent": 4
+				},
+				"end": 119,
+				"pos": "NNP",
+				"start": 112
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "PMOD",
+					"parent": 5
+				},
+				"end": 120,
+				"pos": ",",
+				"start": 119
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "P",
+					"parent": 9
+				},
+				"end": 127,
+				"pos": "NNP",
+				"start": 121
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "SBJ",
+					"parent": 9
+				},
+				"end": 130,
+				"pos": "VBZ",
+				"start": 128
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "DEP",
+					"parent": 14
+				},
+				"end": 134,
+				"pos": "DT",
+				"start": 131
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NMOD",
+					"parent": 11
+				},
+				"end": 142,
+				"pos": "NN",
+				"start": 135
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "PRD",
+					"parent": 9
+				},
+				"end": 145,
+				"pos": "IN",
+				"start": 143
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "NMOD",
+					"parent": 11
+				},
+				"end": 153,
+				"pos": "NNP",
+				"start": 146
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "PMOD",
+					"parent": 12
+				},
+				"end": 154,
+				"pos": ".",
+				"start": 153
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "null",
+					"parent": -1
+				},
+				"end": 159,
+				"pos": "NNP",
+				"start": 155
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "SBJ",
+					"parent": 3
+				},
+				"end": 164,
+				"pos": "RB",
+				"start": 160
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "ADV",
+					"parent": 3
+				},
+				"end": 167,
+				"pos": "VBZ",
+				"start": 165
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "ROOT",
+					"parent": 0
+				},
+				"end": 170,
+				"pos": "IN",
+				"start": 168
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "LOC-PRD",
+					"parent": 3
+				},
+				"end": 178,
+				"pos": "NNP",
+				"start": 171
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "HMOD",
+					"parent": 7
+				},
+				"end": 179,
+				"pos": "",
+				"start": 178
+			},
+			{
+				"@type": "TokenCharSpan",
+				"dependency": {
+					"label": "SUFFIX",
+					"parent": 5
+				},
+				"end": 184,
+				"pos": "CD",
+				"start": 180
+			}
+		]
+	}
+}]
