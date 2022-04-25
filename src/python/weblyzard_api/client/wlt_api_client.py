@@ -197,15 +197,3 @@ class WltSearchRestApiClient(WltApiClient):
             return r
         return r
 
-
-client = WltSearchRestApiClient()
-auth_token = client.get_auth_token(username='api@criteria.weblyzard.com',
-                                               password='yA6mhDbCDhqPeXJDvyCeP84spXLRjry9')
-sources = ['api.weblyzard.com/news_en']
-terms = ['Ukraine']
-start_date = '2022-04-02'
-end_date = '2022-04-04'
-count = 10
-result = client.search_keywords(sources, terms, auth_token, start_date, end_date, count)
-for item in result:
-    print(item)
