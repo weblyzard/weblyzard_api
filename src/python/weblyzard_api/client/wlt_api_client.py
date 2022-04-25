@@ -26,7 +26,9 @@ class WltApiClient(object):
     def __init__(self, base_url: str=BASE_URL,
                  version: float=API_VERSION,
                  username: str=None, password: str=None):
-        self.base_url = f'{base_url}/{self.API_VERSION}'
+        self.base_url = base_url
+        if not base_url.endswith(str(version)):
+            self.base_url = f'{base_url}/{self.API_VERSION}'
         self.version = version
         self.username = username
         self.password = password
@@ -197,15 +199,3 @@ class WltSearchRestApiClient(WltApiClient):
             return r
         return r
 
-
-client = WltSearchRestApiClient()
-auth_token = client.get_auth_token(username='api@criteria.weblyzard.com',
-                                               password='yA6mhDbCDhqPeXJDvyCeP84spXLRjry9')
-sources = ['api.weblyzard.com/news_en']
-terms = ['Ukraine']
-start_date = '2022-04-02'
-end_date = '2022-04-04'
-count = 10
-result = client.search_keywords(sources, terms, auth_token, start_date, end_date, count)
-for item in result:
-    print(item)
