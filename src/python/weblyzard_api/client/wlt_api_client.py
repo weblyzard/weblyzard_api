@@ -85,7 +85,7 @@ class WltSearchRestApiClient(WltApiClient):
             "sources": sources,
             "fields": fields,
             # could change this later, not necessary for compute task
-            "query": "<<query>>",
+            # "query": "<<query>>",
             "count": count,
             "offset": offset
         }
@@ -99,10 +99,13 @@ class WltSearchRestApiClient(WltApiClient):
         if terms is not None:
             term_query = {
                 "bool": {
-                    "filter": []
+                    "should": []
             }}
             for term in terms:
-                term_query["bool"]["filter"].append(term)
+                term_query["bool"]["should"].append(
+                    {"text": {
+                        "phrase": term
+                    }})
 
             query["query"] = term_query
 
@@ -118,6 +121,7 @@ class WltSearchRestApiClient(WltApiClient):
             squery = json.dumps(query)
             r = requests.post(url, data=squery, headers=headers)
             try:
+
                 if r.status_code == 200:
                     response = json.loads(r.content)['result']
                     total = response['total']
@@ -197,15 +201,3 @@ class WltSearchRestApiClient(WltApiClient):
             return r
         return r
 
-
-client = WltSearchRestApiClient()
-auth_token = client.get_auth_token(username='api@criteria.weblyzard.com',
-                                               password='yA6mhDbCDhqPeXJDvyCeP84spXLRjry9')
-sources = ['api.weblyzard.com/news_en']
-terms = ['Ukraine']
-start_date = '2022-04-02'
-end_date = '2022-04-04'
-count = 10
-result = client.search_keywords(sources, terms, auth_token, start_date, end_date, count)
-for item in result:
-    print(item)
