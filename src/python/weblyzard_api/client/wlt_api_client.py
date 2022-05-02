@@ -29,6 +29,7 @@ class WltApiClient(object):
         self.base_url = base_url
         if not base_url.endswith(str(version)):
             self.base_url = f'{base_url}/{self.API_VERSION}'
+
         self.version = version
         self.username = username
         self.password = password
@@ -87,7 +88,7 @@ class WltSearchRestApiClient(WltApiClient):
             "sources": sources,
             "fields": fields,
             # could change this later, not necessary for compute task
-            "query": "<<query>>",
+            # "query": "<<query>>",
             "count": count,
             "offset": offset
         }
@@ -101,10 +102,13 @@ class WltSearchRestApiClient(WltApiClient):
         if terms is not None:
             term_query = {
                 "bool": {
-                    "filter": []
+                    "should": []
             }}
             for term in terms:
-                term_query["bool"]["filter"].append(term)
+                term_query["bool"]["should"].append(
+                    {"text": {
+                        "phrase": term
+                    }})
 
             query["query"] = term_query
 
@@ -120,6 +124,7 @@ class WltSearchRestApiClient(WltApiClient):
             squery = json.dumps(query)
             r = requests.post(url, data=squery, headers=headers)
             try:
+
                 if r.status_code == 200:
                     response = json.loads(r.content)['result']
                     total = response['total']
@@ -198,4 +203,3 @@ class WltSearchRestApiClient(WltApiClient):
                 "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
             return r
         return r
-
