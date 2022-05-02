@@ -26,9 +26,7 @@ class WltApiClient(object):
     def __init__(self, base_url: str=BASE_URL,
                  version: float=API_VERSION,
                  username: str=None, password: str=None):
-        self.base_url = base_url
-        if not base_url.endswith(str(version)):
-            self.base_url = f'{base_url}/{self.API_VERSION}'
+        self.base_url = f'{base_url}/{self.API_VERSION}'
         self.version = version
         self.username = username
         self.password = password
@@ -202,4 +200,3 @@ class WltSearchRestApiClient(WltApiClient):
                 "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
             return r
         return r
-
