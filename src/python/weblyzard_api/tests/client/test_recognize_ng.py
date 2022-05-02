@@ -3,7 +3,7 @@
 '''
 Created on Aug 30, 2016
 
-.. codeauthor: max goebel <mcgoebel@gmail.com>
+.. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -348,9 +348,7 @@ class TestRecognizeNg(unittest.TestCase):
 #
 # class TestRecognizeJobCockpit(TestRecognizeNg):
 #     PROFILE_NAME = "JOBCOCKPIT_DE_STANF"
-#     # SERVICE_URL = 'http://localhost:63007/rest'
-#
-#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
+
 #     DOCUMENTS = [{u'annotations': [],
 #                   u'content': u'Akademiker mit mehrjähriger Berufserfahrung in der Datenaufbereitung, zuletzt in leitender Position, sucht neue Herausforderungen.',
 #                   u'format': u'text/html',
@@ -443,11 +441,8 @@ class TestRecognizeNg(unittest.TestCase):
 #     based on their parent attributes (cities) when occurring in the same text.
 #     (WIP as of 2020-10-10)."""
 #     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
-#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089'
-#
-#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-#     #
-#     PROFILE_NAME = 'fr_full_all' \
+
+#     PROFILE_NAME = 'fr_full_all'
 #
 #
 #     # wien gn id: http://sws.geonames.org/2761333
@@ -464,7 +459,6 @@ class TestRecognizeNg(unittest.TestCase):
 #
 # class TestRecognizeOsmNl(TestRecognizeNg):
 #     REQUIRED_REGEXPS = [re.compile(r'.*openstreetmap.*')]
-#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
 #     PROFILE_NAME = 'nl_full_all'
 #     DOCUMENTS = [{u'annotations': [],
 #                    u'content': u'Dat was in het pand aan Overdiepse-Polderweg waar nu La Cuisine is gevestigd.',
@@ -478,10 +472,7 @@ class TestRecognizeNg(unittest.TestCase):
 #
 # class TestRecognizeEvents(TestRecognizeNg):
 #     REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
-#     # SERVICE_URL = 'http://localhost:63007/rest'
-#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
-#
-#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+
 #     # PROFILE_NAME = 'sandbox_events'
 #     PROFILE_NAME = 'de_full_all'
 #     DOCUMENTS = [{u'annotations': [],
@@ -511,7 +502,7 @@ class TestRecognizeNg(unittest.TestCase):
 # class TestRecognizePersonEn(TestRecognizeNg):
 #     REQUIRED_REGEXPS = [re.compile('http://www.wikidata.org/entity/.*')]
 #
-#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+
 #     PROFILE_NAME = 'en_full_all'
 #     DOCUMENTS = [{u'annotations': [],
 #                   # 'content': 'Boris Becker is a famous tennis player.',
@@ -526,10 +517,7 @@ class TestRecognizeNg(unittest.TestCase):
 #
 # class TestRecognizeEventsEn(TestRecognizeNg):
 #     REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
-#     # SERVICE_URL = 'http://localhost:63007/rest'
-#     # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
 #
-#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
 #     # PROFILE_NAME = 'sandbox_events'
 #     PROFILE_NAME = 'en_full_all'
 #     DOCUMENTS = [{u'annotations': [],
@@ -559,7 +547,6 @@ class TestRecognizeNg(unittest.TestCase):
 #     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
 #                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
 #
-#     SERVICE_URL = 'http://localhost:63007/rest'
 #     PROFILE_NAME = 'journalists_test'
 #     DOCUMENTS = [{u'annotations': [],
 #                   # 'content': 'Boris Becker is a famous tennis player.',
@@ -576,7 +563,6 @@ class TestRecognizeNg(unittest.TestCase):
 #     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
 #                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
 #
-#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
 #     PROFILE_NAME = 'de_full_all'
 #
 #     DOCUMENTS = [{u'annotations': [],
@@ -593,8 +579,6 @@ class TestRecognizeNg(unittest.TestCase):
 #     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
 #                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
 #
-#     SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-#     SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
 #     PROFILE_NAME = 'de_full_all_bg'
 #     DOCUMENTS = [{u'annotations': [],
 #                   # 'content': 'Boris Becker is a famous tennis player.',
@@ -613,9 +597,7 @@ class TestRecognizeRoche(TestRecognizeNg):
     # REQUIRED_REGEXPS = [][re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
     #                     re.compile(r'http://www.wikidata.org/entity/Q688378')]
     REQUIRED_REGEXPS = [re.compile(r'http://ontology.roche.com/ROX1301557461838')]
-    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-    # SERVICE_URL = 'http://gecko9.wu.ac.at:8089/rest'
-    # SERVICE_URL = 'localhost:63007/rest'
+
     PROFILE_NAME = 'roche_rts_20220204'
     DOCUMENTS = [{u'annotations': [],
                   # 'content': 'Boris Becker is a famous tennis player.',
