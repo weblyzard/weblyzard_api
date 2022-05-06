@@ -129,7 +129,8 @@ class SKBRESTClient(object):
         :param entity_dict: the entity as dict
         :param force_update: force a comparison and update on any existing SKB values
         :param ignore_cache: bypass recently requested URI cache
-        :param headers: request header
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
+        
         :returns: json response as dict or None, if an error occurred
 
         >>> response = skb_client.save_entity({
@@ -190,7 +191,8 @@ class SKBRESTClient(object):
         :param language: language filter for preferredName result
         :param force_update: update existing SKB values via Jairo
         :param ignore_cache: bypass recently requested URI cache
-        :param headers: request header
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
+        
         :returns: json response as dict or None, if an error occurred
         '''
 
@@ -222,7 +224,8 @@ class SKBRESTClient(object):
         :param entity_list: entities as list of dicts
         :param force_update: force a comparison and update on any existing SKB values
         :param ignore_cache: bypass recently requested URI cache
-        :param headers: request header
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
+        
         :returns: json response as dict or None, if an error occurred
         
         
@@ -281,7 +284,7 @@ class SKBRESTClient(object):
             human-readable form (optional)
         :param entity_type: type of the entity (optional)
         :param exact_match: if True only exact matches for the property value are returned
-        :param headers: request header
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
         '''
 
         if property_name:
@@ -313,7 +316,7 @@ class SKBRESTClient(object):
         :param entity_type: (optional) entity type
         :param should_fallback: if False only return exact `entity_name` matches,
             else return the best matching results
-        :param headers: request header
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
             
         .. note: tags that include a `tag_prefix` are NOT found if only the
                 `tag_value` is provided
@@ -376,7 +379,7 @@ class SKBRESTClient(object):
                 `AnniversaryFilter` - `filter_type`: `date`
                     `filter_values`: either `day` (mm-dd)  or `from_date`, `end_date`, 
                                     `anniv_num` (optional)
-        :param headers: request header        
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE      
         '''
         params = {'response_format': 'simple', 'human_readable':False}
         if search_phrase:
@@ -410,6 +413,7 @@ class SKBRESTClient(object):
         if no entities matched.
 
         :param uri: uri of the entity
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
         '''
 
         params = {'uri': uri}
