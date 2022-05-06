@@ -174,8 +174,10 @@ class SKBRESTClient(object):
             logger.error(f'request failed {response.text}')
             return None
 
-    def save_entity_uri_batch(self, uri_list:List[str], language:str, force_update:bool=False,
-                              ignore_cache:bool=False) -> Optional[dict]:
+    def save_entity_uri_batch(self, uri_list:List[str], language:str,
+                              force_update:bool=False,
+                              ignore_cache:bool=False,
+                              headers:dict=None) -> Optional[dict]:
         '''
         Send a batch of shortened entity URIs to the SKB for storage.
         :param uri_list: list of shorted URIs of one of those forms
@@ -183,6 +185,7 @@ class SKBRESTClient(object):
                 with entity_type abbr: P, G, O, E and short repository: wd, osm, gn
                 2. '{entity_type}:{entity uri}
                 e.g. 'RocheEntity:http://ontology.roche.com/ROX1305279964642'
+        :param header: request header
         :param language: language filter for preferredName result
         :param force_update: update existing SKB values via Jairo
         :param ignore_cache: bypass recently requested URI cache
@@ -198,12 +201,13 @@ class SKBRESTClient(object):
 
         response = requests.post(url=f'{self.url}/{self.ENTITY_URI_BATCH_PATH}',
                                  params=params,
+                                 headers=headers,
                                  json=uri_list,
                                  )
         return self.drop_error_responses(response)
 
     def save_entity_batch(self, entity_list:List[dict], force_update:bool=False,
-                          ignore_cache:bool=False) -> Optional[dict]:
+                          ignore_cache:bool=False, headers:dict=None) -> Optional[dict]:
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
         `dict`. Each `entity_dict` must contain an 'entityType' and a 
@@ -254,6 +258,7 @@ class SKBRESTClient(object):
 
         response = requests.post(url=f'{self.url}/{self.ENTITY_BATCH_PATH}',
                                  params=params,
+                                 headers=headers,
                                  json=entity_list,
                                  )
         return self.drop_error_responses(response)
@@ -265,7 +270,7 @@ class SKBRESTClient(object):
         Returns a list of dicts containing the properties of the matching entities or None
         if no entities matched.
         
-        .. caveat: universal access rights
+        .. caveat: universal access rights, i.e. ALL entities are returned
         
         :param property_value: the property's value
         :param property_name: the property's name, either LOD predicate or 
