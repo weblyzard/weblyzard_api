@@ -204,6 +204,7 @@ class TestSKBRESTClientEntities(unittest.TestCase):
         mock_post.assert_called_once_with(json=entity,
                                           params={'force_update':False,
                                                   'ignore_cache':False},
+                                          headers=None,
                                           url=f'{self.skb_client.url}/1.0/skb/entity')
         assert(response == expected)
 
@@ -235,6 +236,7 @@ class TestSKBRESTClientEntities(unittest.TestCase):
         mock_post.assert_called_once_with(json=entity,
                                           params={'force_update':True,
                                                   'ignore_cache':False},
+                                          headers=None,
                                           url=f'{self.skb_client.url}/1.0/skb/entity')
         assert(response == expected)
 
@@ -293,6 +295,7 @@ class TestSKBRESTClientEntities(unittest.TestCase):
         mock_post.assert_called_once_with(json=entity_batch,
                                           params={'force_update':False,
                                                   'ignore_cache':False},
+                                          headers=None,
                                           url=f'{self.skb_client.url}/1.0/skb/entity_batch')
         assert(response == expected)
 
