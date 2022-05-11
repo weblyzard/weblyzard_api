@@ -116,7 +116,7 @@ class SKBRESTClient(object):
         return self.save_entity(entity_dict=skb_relevant_data)
 
     def save_entity(self, entity_dict:dict, force_update:bool=False,
-                    ignore_cache:bool=False) -> Optional[dict]:
+                    ignore_cache:bool=False, headers:dict=None) -> Optional[dict]:
         '''
         Save an entity to the SKB, the Entity encoded as `dict`.
         The `entity_dict` must contain a 'uri' and an 'entityType' entry
@@ -129,6 +129,8 @@ class SKBRESTClient(object):
         :param entity_dict: the entity as dict
         :param force_update: force a comparison and update on any existing SKB values
         :param ignore_cache: bypass recently requested URI cache
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
+        
         :returns: json response as dict or None, if an error occurred
 
         >>> response = skb_client.save_entity({
@@ -164,6 +166,7 @@ class SKBRESTClient(object):
         response = requests.post(url=f'{self.url}/{self.ENTITY_PATH}',
                                  params=params,
                                  json=entity_dict,
+                                 headers=headers,
                                  )
         return self.drop_error_responses(response)
 
@@ -174,8 +177,10 @@ class SKBRESTClient(object):
             logger.error(f'request failed {response.text}')
             return None
 
-    def save_entity_uri_batch(self, uri_list:List[str], language:str, force_update:bool=False,
-                              ignore_cache:bool=False) -> Optional[dict]:
+    def save_entity_uri_batch(self, uri_list:List[str], language:str,
+                              force_update:bool=False,
+                              ignore_cache:bool=False,
+                              headers:dict=None) -> Optional[dict]:
         '''
         Send a batch of shortened entity URIs to the SKB for storage.
         :param uri_list: list of shorted URIs of one of those forms
@@ -186,6 +191,8 @@ class SKBRESTClient(object):
         :param language: language filter for preferredName result
         :param force_update: update existing SKB values via Jairo
         :param ignore_cache: bypass recently requested URI cache
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
+        
         :returns: json response as dict or None, if an error occurred
         '''
 
@@ -198,12 +205,13 @@ class SKBRESTClient(object):
 
         response = requests.post(url=f'{self.url}/{self.ENTITY_URI_BATCH_PATH}',
                                  params=params,
+                                 headers=headers,
                                  json=uri_list,
                                  )
         return self.drop_error_responses(response)
 
     def save_entity_batch(self, entity_list:List[dict], force_update:bool=False,
-                          ignore_cache:bool=False) -> Optional[dict]:
+                          ignore_cache:bool=False, headers:dict=None) -> Optional[dict]:
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
         `dict`. Each `entity_dict` must contain an 'entityType' and a 
@@ -216,6 +224,8 @@ class SKBRESTClient(object):
         :param entity_list: entities as list of dicts
         :param force_update: force a comparison and update on any existing SKB values
         :param ignore_cache: bypass recently requested URI cache
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
+        
         :returns: json response as dict or None, if an error occurred
         
         
@@ -254,24 +264,27 @@ class SKBRESTClient(object):
 
         response = requests.post(url=f'{self.url}/{self.ENTITY_BATCH_PATH}',
                                  params=params,
+                                 headers=headers,
                                  json=entity_list,
                                  )
         return self.drop_error_responses(response)
 
     def get_entity_by_property(self, property_value:str, property_name:str=None,
-                               entity_type:str=None, exact_match:bool=False) -> Optional[List[dict]]:
+                               entity_type:str=None, exact_match:bool=False,
+                               headers:dict=None) -> Optional[List[dict]]:
         '''
         Get an entity by a property's value.
         Returns a list of dicts containing the properties of the matching entities or None
         if no entities matched.
         
-        .. caveat: universal access rights
+        .. caveat: universal access rights, i.e. ALL entities are returned
         
         :param property_value: the property's value
         :param property_name: the property's name, either LOD predicate or 
             human-readable form (optional)
         :param entity_type: type of the entity (optional)
         :param exact_match: if True only exact matches for the property value are returned
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
         '''
 
         if property_name:
@@ -285,14 +298,16 @@ class SKBRESTClient(object):
                             'filter_values': {'name': property_name,
                                               'value': property_value}}]
             return self.entity_search(entity_type=entity_type,
-                                      filters=filters)
+                                      filters=filters,
+                                      headers=headers)
         else:
             return self.entity_search(search_phrase=property_value,
-                                      entity_type=entity_type)
+                                      entity_type=entity_type,
+                                      headers=headers)
 
     def get_entity_by_tag(self, tag_value:str, tag_prefix:str=None,
                           entity_name:str=None, entity_type:str=None,
-                          should_fallback:bool=True) -> Optional[dict]:
+                          should_fallback:bool=True, headers:dict=None) -> Optional[dict]:
         '''
         Get an entity by a `tag`.
         :param tag_value: the value of the tag
@@ -301,6 +316,7 @@ class SKBRESTClient(object):
         :param entity_type: (optional) entity type
         :param should_fallback: if False only return exact `entity_name` matches,
             else return the best matching results
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
             
         .. note: tags that include a `tag_prefix` are NOT found if only the
                 `tag_value` is provided
@@ -320,23 +336,26 @@ class SKBRESTClient(object):
             result = self.entity_search(search_phrase=f'"{entity_name}"',
                                         search_field='title',
                                         entity_type=entity_type,
-                                        filters=filters)
+                                        filters=filters,
+                                        headers=headers)
             if not result and should_fallback:
                 logger.info(f"returning best matching results for" +
                             f"entity {entity_name} with tag {tag}")
                 result = self.entity_search(search_phrase=f'{entity_name}',
                                             search_field='title',
                                             entity_type=entity_type,
-                                            filters=filters)
+                                            filters=filters,
+                                            headers=headers)
         else:
             result = self.entity_search(entity_type=entity_type,
-                                        filters=filters)
+                                        filters=filters,
+                                        headers=headers)
 
         return result
 
     def entity_search(self, search_phrase:str=None, search_field:str=None, entity_type=None,
                       fuzzy=False, search_languages:List[str]=None, response_language:str=None,
-                      access_right='universal', filters:List[dict]=None) -> Optional[List[dict]]:
+                      filters:List[dict]=None, headers:dict=None) -> Optional[List[dict]]:
         '''
         Search for entities with a search phrase that is matched on property values
         with additional search filters. Search type is text `match` (analyzed, full-text).
@@ -351,8 +370,6 @@ class SKBRESTClient(object):
         :param search_languages: (optional) only search in properties that match the given
             list of languages, `None` is a valid value for properties with no specified language  
         :param response_language: (optional) names and descriptions are returned only in that language
-        :param access_right: if not set only returns openly accessibly entities
-            (default `universal` returns all entities) 
         :param filters: additional entity filters specified by `filter_type` and `filter_values`, 
                 valid filters are:
                 `PropertyFilter` -`filter_type`: `property`
@@ -361,7 +378,8 @@ class SKBRESTClient(object):
                     `filter_values`: `start_date` (optional), `end_date` (optional)
                 `AnniversaryFilter` - `filter_type`: `date`
                     `filter_values`: either `day` (mm-dd)  or `from_date`, `end_date`, 
-                                    `anniv_num` (optional)       
+                                    `anniv_num` (optional)
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE      
         '''
         params = {'response_format': 'simple', 'human_readable':False}
         if search_phrase:
@@ -376,8 +394,6 @@ class SKBRESTClient(object):
             params['search_languages'] = search_languages
         if response_language:
             params['response_language'] = response_language
-        if access_right:
-            params['access_right'] = access_right
 
         if filters:
             payload = {'filters': filters}
@@ -386,28 +402,36 @@ class SKBRESTClient(object):
 
         response = requests.post(f'{self.url}/{self.ENTITY_SEARCH_PATH}',
                                 params=params,
-                                json=payload)
+                                json=payload,
+                                headers=headers)
         return self.drop_error_responses(response)
 
-    def get_entity(self, uri:str) -> Optional[dict]:
+    def get_entity(self, uri:str, headers:dict=None) -> Optional[dict]:
         '''
         Get an entity by its uri.
         Returns a dict containing the properties of the entity or None
         if no entities matched.
 
         :param uri: uri of the entity
+        :param headers: request header for e.g. X-WEBLYZARD-ROLE
         '''
 
         params = {'uri': uri}
+        if headers:
+            headers.update({'Content-Type': 'application/json'})
+        else:
+            headers = {'Content-Type': 'application/json'}
         response = requests.get(f'{self.url}/{self.ENTITY_PATH}',
                                 params=params,
-                                headers={'Content-Type': 'application/json'})
+                                headers=headers)
         return self.drop_error_responses(response)
 
     def entity_uri_lookup(self, entity_uris:List[str]) -> dict:
         '''
         Very fast lookup of entity uris, only checks the _id field.
         :param entity_uris: list of uris
+        
+        .. caveat: universal access rights (no user group as header value)
         '''
         response = requests.post(f'{self.url}/{self.ENTITY_LOOKUP_PATH}',
                                  json=entity_uris,
@@ -421,7 +445,7 @@ class SKBRESTClient(object):
         :param entity: entity dict containing `uri` or `owl:sameAs`
         :param entity_type: the entity type
         
-        .. caveat: universal access rights
+        .. caveat: universal access rights (no user group as header value)
         '''
         return self.check_existing_entity_key(entity, entity_type) is not None
 
@@ -432,7 +456,7 @@ class SKBRESTClient(object):
         the existing equivalent entity. 
         
         .. caveats: only returns the first entry if multiple are found,
-            universal access rights
+            universal access rights (no user group as header value)
             
         :param entity: entity dict containing `uri`/`key` or `owl:sameAs`
         :param entity_type: the entity type
