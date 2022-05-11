@@ -419,6 +419,8 @@ class SKBRESTClient(object):
         params = {'uri': uri}
         if headers:
             headers.update({'Content-Type': 'application/json'})
+        else:
+            headers = {'Content-Type': 'application/json'}
         response = requests.get(f'{self.url}/{self.ENTITY_PATH}',
                                 params=params,
                                 headers=headers)
