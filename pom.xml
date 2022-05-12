@@ -51,7 +51,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jersey2.version>2.28</jersey2.version>
 		<jaxb.version>2.3.0</jaxb.version>
-		<jackson.version>[2.13.2,)</jackson.version>
+        <jackson.version>[2.13.2,2.13.3)</jackson.version>
 	</properties>
 
 	<!-- profiles for the maven deployments -->
