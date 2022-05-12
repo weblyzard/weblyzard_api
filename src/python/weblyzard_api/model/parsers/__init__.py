@@ -470,11 +470,13 @@ class XMLParser(object):
         return relations
 
     @classmethod
-    def dump_xml_attributes(cls, attributes, mapping, resolve_namespaces=True):
+    def dump_xml_attributes(cls, attributes, mapping, resolve_namespaces=True,
+                            xml_encode_values=True):
         """
         :param attributes:
         :param mapping:
-        :param resovle_namespaces:
+        :param resolve_namespaces:
+        :param xml_encode_values:
         """
         new_attributes = {}
 
@@ -498,7 +500,10 @@ class XMLParser(object):
                     else:
                         key = '%s:%s' % (namespace, key)
             if value is not None and value not in ('None', 'null', '0.0'):
-                new_attributes[key] = cls.encode_value(value)
+                if xml_encode_values:
+                    new_attributes[key] = cls.encode_value(value)
+                else:
+                    new_attributes[key] = value
 
         return new_attributes
 
