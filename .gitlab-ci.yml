@@ -4,7 +4,7 @@
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
 # cp -no-clobber copies files but doesn't overwrite existing ones (e.g. sonar property settings)
 .python_defaults: &py_anchor  # using anchor magic
-    image: registry.gitlab.semanticlab.net/docker/py3full:latest
+    image: registry.gitlab.semanticlab.net/docker/py3full:3.8
     before_script:
         - git submodule sync --recursive
         - git submodule update --init --recursive --remote
