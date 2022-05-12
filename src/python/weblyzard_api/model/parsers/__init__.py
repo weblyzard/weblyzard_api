@@ -583,8 +583,7 @@ class XMLParser(object):
             attributes = cls.clean_attributes(attributes)
         except Exception as e:
             logger.warning(e)
-        tag = "{{{0}}}page".format(cls.get_default_ns())
-        root = etree.Element(_tag=tag,
+        root = etree.Element('{%s}page' % cls.get_default_ns(),
                              attrib=attributes,
                              nsmap=required_namespaces)
 
