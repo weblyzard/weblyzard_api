@@ -127,10 +127,10 @@ class WltSearchRestApiClient(WltApiClient):
 
                 if r.status_code == 200:
                     response = json.loads(r.content)['result']
-                    total = response['total']
+                    total = response.get('total', 0)
                     if max_docs > 0:
                         total = max_docs
-                    hits = response['hits']
+                    hits = response.get('hits', [])
                     result_count += len(hits)
                     yield hits
                 else:
