@@ -60,7 +60,7 @@ class WltSearchRestApiClient(WltApiClient):
                          auth_token: str=None,
                          start_date: str=None, end_date: str=None,
                          count: int=10, offset: int=0,
-                         max_docs: int=-1,
+                         max_docs: int=-1, exact_match=True, similarity=70,
                          fields: List[str]=['document.contentid']):
         """ 
         Search an index for documents matching the search parameters.
@@ -105,10 +105,19 @@ class WltSearchRestApiClient(WltApiClient):
                     "should": []
             }}
             for term in terms:
-                term_query["bool"]["should"].append(
-                    {"text": {
-                        "phrase": term
-                    }})
+                if exact_match:
+                    term_query["bool"]["should"].append(
+                        {"text": {
+                            "phrase": term
+                        }})
+                else:
+                    term_query["bool"]["should"].append(
+                        {"text": {
+                            "similarto": {"value": term,
+                                          "options": {
+                                              "minmatching": {
+                                                  "percent": similarity}}}
+                        }})
 
             query["query"] = term_query
 
