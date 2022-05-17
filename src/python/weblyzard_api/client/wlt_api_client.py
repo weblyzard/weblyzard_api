@@ -44,7 +44,7 @@ class WltApiClient(object):
         url = '/'.join([self.base_url, self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
         if r.status_code == 200:
-            return r.content
+            return r.content.decode('utf-8')
         return r
 
 
@@ -206,6 +206,50 @@ class WltSearchRestApiClient(WltApiClient):
                               data=data,
                               headers=headers)
             if r.status_code == 200:
+                return json.loads(r.content)['result']
+        except Exception as e:
+            logger.error(
+                "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
+            return r
+        return r
+
+
+class WltMesaApiClient(WltApiClient):
+    """
+    The client for the WL Mesa REST API.
+    """
+    ENDPOINT = 'mesa/entities'
+
+    def get(self, auth_token: str=None):
+        """ """
+        if not auth_token:
+            auth_token = self.auth_token
+        headers = {'Authorization': 'Bearer %s' % auth_token,
+                   'Content-Type': 'application/json'}
+        url = '/'.join([self.base_url, self.ENDPOINT])
+        try:
+            r = requests.get(url, headers=headers)
+            if r.status_code == 200:
+                return json.loads(r.content)['result']
+        except Exception as e:
+            logger.error(
+                "Accessing: {} : {}".format(url, e), exc_info=True)
+            return r
+        return r
+
+    def post(self, data, auth_token: str=None):
+        """ """
+        if auth_token is None:
+            auth_token = self.auth_token
+        data = json.dumps(data)
+        headers = {'Authorization': 'Bearer %s' % auth_token,
+                   'Content-Type': 'application/json'}
+        url = '/'.join([self.base_url, self.ENDPOINT])
+        try:
+            r = requests.post(url,
+                              data=data,
+                              headers=headers)
+            if r.status_code == 201:
                 return json.loads(r.content)['result']
         except Exception as e:
             logger.error(
