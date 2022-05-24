@@ -10,9 +10,9 @@ Albert Weichselbraun
 '''
 import logging
 
-from future import standard_library
-
-standard_library.install_aliases()
+# from future import standard_library
+#
+# standard_library.install_aliases()
 from builtins import next
 from builtins import object
 import redis
@@ -193,7 +193,7 @@ class DiskCache(Cache):
         obj = fetch_function(*args, **kargs)
 
         # Do not cache None
-        if obj == None:
+        if obj is None:
             return obj
 
         with GzipFile(temp_file, "w") as f:
@@ -342,7 +342,7 @@ class MemoryCached(MemoryCache):
             self._fn = None
 
     def __call__(self, *args, **kargs):
-        if self._fn == None:
+        if self._fn is None:
             fn = args[0]
 
             def wrapped_fn(*args, **kargs):
@@ -512,7 +512,7 @@ class RedisCached(RedisCache):
             self._fn = None
 
     def __call__(self, *args, **kargs):
-        if self._fn == None:
+        if self._fn is None:
             fn = args[0]
 
             def wrapped_fn(*args, **kargs):
