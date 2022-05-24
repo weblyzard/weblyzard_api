@@ -250,7 +250,7 @@ class WltMesaApiClient(WltApiClient):
                               data=data,
                               headers=headers)
             if r.status_code == 201:
-                return json.loads(r.content)['result']
+                return json.loads(r.content)
         except Exception as e:
             logger.error(
                 "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
