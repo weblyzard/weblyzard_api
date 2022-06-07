@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import urllib.error
-import logging
 
 from future import standard_library
 from time import sleep, time
@@ -21,7 +20,8 @@ from weblyzard_api.client import (
 
 standard_library.install_aliases()
 
-logger = logging.getLogger('weblyzard_api.client.jeremia')
+import logging
+logger = logging.getLogger(__name__)
 
 # number of seconds to wait if the web service is occupied
 # - we stop once either DEFAULT_MAX_RETRY_DELAY or DEFAULT_MAX_RETRY_ATTEMPTS is reached

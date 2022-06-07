@@ -16,24 +16,59 @@ from weblyzard_api.client.jeremia_ng import JeremiaNg
 
 class JeremiaTest(unittest.TestCase):
 
-    DOCS = [{'id': content_id,
-             'body': 'Donald Trump and Barack Obama are presidents in the United States. Vienna is the capital of Austria, Berlin is the capital of Germany. Linz also is in Austria" {}'.format(
-                 content_id),
-             'title': 'Hello "world" more ',
-             'format': 'text/html',
-             'header': {}} for content_id in range(1000, 1020)]
-    def setUp(self):
-        service_url = os.getenv('JEREMIA_NG_SERVICE_URL', 'localhost:63001')
-        self.client = JeremiaNg(url=service_url)
+    # DOCS = [{'id': content_id,
+    #          'body': 'Donald Trump and Barack Obama are presidents in the United States. Vienna is the capital of Austria, Berlin is the capital of Germany. Linz also is in Austria" {}'.format(
+    #              content_id),
+    #          'title': 'Hello "world" more ',
+    #          'format': 'text/html',
+    #          'header': {}} for content_id in range(1000, 1020)]
 
+    DOCS = [{'id': 12,
+             'body': 'Donald Trump and Barack Obama are presidents in the United States.',
+             'title': 'US news',
+             'format': 'text/plain',
+             'header': {}},
+            {'id': 12,
+             'body': 'The photo was taken in the grounds of Windsor Castle in March, according to the royal family Twitter account.',
+             'title': 'UK news',
+             'format': 'text/plain',
+             'header': {}},
+            {'id': 12,
+             'body': 'Toymaker Mattel has also announced a Barbie doll in the monarch\'s likeness to celebrate the jubilee.',
+             'title': 'UK news',
+             'format': 'text/plain',
+             'header': {}},
+            {'id': 12,
+             'body': 'Ahead of his grandmother turning 96, Harry commented that \"after a certain age you get bored of birthdays.\"',
+             'title': 'UK news',
+             'format': 'text/plain',
+             'header': {}},
+            {'id': 12,
+             'body': 'Elon Musk says he has lined up $46.5 billion in financing to buy Twitter, and he\'s trying to negotiate an agreement with the company.',
+             'title': 'Tech news',
+             'format': 'text/plain',
+             'header': {}},
+            {'id': 12,
+             'body': 'The Taiwanese government is investigating a local TV news station after it aired alarming false reports of a Chinese invasion against the self-ruled island.',
+             'title': 'Taiwan news',
+             'format': 'text/plain',
+             'header': {}},
+
+    ]
+
+    def setUp(self):
+        service_url = os.getenv('JEREMIA_NG_SERVICE_URL', 'http://jeremia.prod.i.weblyzard.net:8443')
+        self.client = JeremiaNg(url=service_url)
 
     def test_single_document_processing(self):
         """Test submitting a single document."""
         print('submitting document...')
-        result = self.client.submit_document(self.DOCS[0])
 
-        from pprint import pprint
-        pprint(result)
+        for doc in self.DOCS:
+            result = self.client.submit_document(doc)
+
+            from pprint import pprint
+            print(result)
         self.assertTrue(result != "")
 
     def test_dutch_string(self):
@@ -67,7 +102,7 @@ class JeremiaTest(unittest.TestCase):
         assert pos == ['ART', 'NN', 'VVFIN', 'ADV', 'ART', 'NN']
         # check correct indices (including title + 1 offset)
         starts = [token['start'] - len(doc['title']) - 1 for token in tokens]
-        ends = [token['end']- len(doc['title']) -1 for token in tokens]
+        ends = [token['end'] - len(doc['title']) - 1 for token in tokens]
         assert [text[slice(*char_range)] for char_range in zip(starts, ends)] == text.split()
 
         # check dependency: articles as dependents of their
@@ -75,10 +110,10 @@ class JeremiaTest(unittest.TestCase):
         # (nsubj) of verb, second noun phrase as direct object (dobj) of verb,
         # adverb as modifier of verb ('advmod')
         parents = [token['dependency']['parent'] for token in tokens]
-        assert parents ==              [1, 2, -1, 2, 5, 2]
-        #current result 19-08-14:  [-1, 2, 3,  0, 3, 6]
+        assert parents == [1, 2, -1, 2, 5, 2]
+        # current result 19-08-14:  [-1, 2, 3,  0, 3, 6]
         dependeny_labels = [token['dependency']['label'] for token in tokens]
-        assert dependeny_labels ==  ['det', 'nsubj', 'ROOT', 'advmod', 'det', 'dobj']
+        assert dependeny_labels == ['det', 'nsubj', 'ROOT', 'advmod', 'det', 'dobj']
         # current 19-08-14: ['null', 'det', 'nsubj', 'ROOT', 'advmod', 'det']
 
 

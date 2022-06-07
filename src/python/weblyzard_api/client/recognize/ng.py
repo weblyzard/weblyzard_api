@@ -4,15 +4,13 @@
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 """
 from __future__ import unicode_literals
-import logging
 
 from weblyzard_api.client import MultiRESTClient
-
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
-LOGGER = logging.getLogger('weblyzard_api.client.recognize.ng')
-SUPPORTED_LANGS = ('en', 'fr', 'de')
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Recognize(MultiRESTClient):

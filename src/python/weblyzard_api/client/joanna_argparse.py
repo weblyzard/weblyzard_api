@@ -9,15 +9,14 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import str
 from builtins import range
-import logging
 
 from time import sleep
 from random import random
 
 from weblyzard_api.client.joanna import Joanna
 
-
-logger = logging.getLogger('weblyzard_api.client.joanna_argparse')
+import logging
+logger = logging.getLogger(__name__)
 
 DAYS_BACK_DEFAULT = 20
 
