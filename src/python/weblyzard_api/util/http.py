@@ -1,14 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Created on November 17, 2021
-
-@author: jakob <jakob.steixner@modul.ac.at>
-
-Clone of eWRT.access.http
-'''
-
-#     @package eWRT.access.http
+#     @package weblyzard_api.utils.http
 #     provides access to resources using http
 
 # (C)opyrights 2008-2015 by Albert Weichselbraun <albert@weblyzard.com>
@@ -28,36 +20,24 @@ Clone of eWRT.access.http
 
 from future import standard_library
 standard_library.install_aliases()
-from builtins import object
-try:
-    # urllib2 is merged into urllib in python3 (SV)
-    # import urllib.request as urllib2  # [mig] urllib2 --> urllib in py3
-    import urllib, urllib.request  # [mig]
-except:
-    import urllib.request, urllib.error, urllib.parse  # python2
-
-
-USER_AGENT = 'eWRT Version/0.1; Module %s +http://p.semanticlab.net/eWRT'
-DEFAULT_WEB_REQUEST_SLEEP_TIME = 1
-PROXY_SERVER = ''
-
-try:
-    from urllib.parse import urlsplit, urlunsplit  # porting to python 3.4 (SV)
-except:
-    from urllib.parse import urlsplit, urlunsplit  # python2
 
 import time
 import io
+import urllib.request
 
 from gzip import GzipFile
 from random import randint
-
+from urllib.parse import urlsplit, urlunsplit
 
 # logging
 import logging
 log = logging.getLogger(__name__)
 
-RETRY_WAIT_TIME_RANGE = (2, 10)              # in seconds
+USER_AGENT = 'eWRT Version/0.1; Module %s +http://p.semanticlab.net/eWRT'
+DEFAULT_WEB_REQUEST_SLEEP_TIME = 1
+PROXY_SERVER = ''
+
+RETRY_WAIT_TIME_RANGE = (2, 10)  # in seconds
 # error codes which might trigger a retry:
 HTTP_TEMPORARY_ERROR_CODES = (500, 503, 504)
 
@@ -109,18 +89,18 @@ class Retrieve(object):
              authentification_method="basic", accept_gzip=True,
              head_only=False):
         ''' Opens an URL and returns the matching file object
-            @param[in] url
-            @param[in] data    optional data to submit
-            @param[in] headers a dictionary of optional headers
-            @param[in] user    optional user name
-            @param[in] pwd     optional password
-            @param[in] retry   number of retries in case of an temporary error
-            @param[in] authentification_method the used authentification_method
+            :param url: the URL to open
+            :param data: optional data to submit
+            :param headers: a dictionary of optional headers
+            :param user: optional user name
+            :param pwd: optional password
+            :param retry: number of retries in case of an temporary error
+            :param authentification_method: the used authentification_method
                         ('basic'*, 'digest')
-            @param[in] accept_gzip flag to change the accepted encoding, gzip
+            :param accept_gzip: flag to change the accepted encoding, gzip
                         or not
-            @param[in] head_only   if True: only execute a HEAD request
-            @returns a file object for reading the url
+            :param head_only: if True: only execute a HEAD request
+            :returns a file object for reading the url
         '''
         auth_handler = self._supported_http_authentification_methods[
             authentification_method]
@@ -187,8 +167,8 @@ class Retrieve(object):
     @staticmethod
     def _getUncompressedStream(urlObj):
         ''' transparently uncompressed the given data stream
-            @param[in] urlObj
-            @returns an urlObj containing the uncompressed data
+            :param urlObj:
+            :returns: an urlObj containing the uncompressed data
         '''
         compressedStream = io.BytesIO(urlObj.read())
         return GzipFile(fileobj=compressedStream)

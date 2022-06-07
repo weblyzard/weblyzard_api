@@ -4,7 +4,6 @@
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch> 
 '''
 from __future__ import unicode_literals
-import logging
 
 from weblyzard_api.util.http import Retrieve
 from weblyzard_api.client import MultiRESTClient
@@ -13,8 +12,11 @@ from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
+import logging
+logger = logging.getLogger(__name__)
+
 INTERNAL_PROFILE_PREFIX = 'extras.'
-LOGGER = logging.getLogger('weblyzard_api.client.recognize')
+
 SUPPORTED_LANGS = ('en', 'fr', 'de')
 
 
@@ -95,7 +97,7 @@ class Recognize(MultiRESTClient):
             if float(version[0:3]) >= 0.5:  # .startswith('0.5'):
                 return xml.get_xml_document(xml_version=2013).strip()
         except Exception as e:
-            LOGGER.warn('Could not parse version: %s' % version)
+            logger.warning('Could not parse version: %s' % version)
         return xml.as_dict(mapping=cls.ATTRIBUTE_MAPPING,
                            ignore_non_sentence=False,
                            add_titles_to_sentences=True)
@@ -232,8 +234,8 @@ class Recognize(MultiRESTClient):
                 self.add_profile(profile_name)
             except Exception:
                 profile_names.remove(profile_name)
-                msg = 'could not load profile %s, skipping' % profile_name
-                LOGGER.warn(msg)
+                msg = 'Could not load profile %s, skipping' % profile_name
+                logger.warning(msg)
 
         content_type = 'application/json'
 

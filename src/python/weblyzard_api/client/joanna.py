@@ -8,11 +8,7 @@ Created on Oct 30, 2015
 from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
-from builtins import str
-from builtins import range
-from builtins import object
 import json
-import logging
 import urllib.request, urllib.error
 
 from random import random
@@ -20,7 +16,9 @@ from time import sleep
 
 from weblyzard_api.client import MultiRESTClient
 
-logger = logging.getLogger('weblyzard_api.client.joanna')
+import logging
+logger = logging.getLogger(__name__)
+
 DEFAULT_MAX_RETRY_DELAY = 15
 DEFAULT_MAX_RETRY_ATTEMPTS = 5
 DAYS_BACK_DEFAULT = 20

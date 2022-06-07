@@ -8,6 +8,7 @@ Created on Jan 25, 2018
 from __future__ import unicode_literals
 from builtins import object
 import json
+import html
 
 from datetime import datetime
 from decimal import Decimal
@@ -58,6 +59,13 @@ class Document(object):
                  partitions=None, header=None, annotations=None):
         ''' '''
         self.content_id = content_id
+
+        # unescape existing HTML entities
+        try:
+            content = html.unescape(content)
+        except Exception as e:
+            pass  # ignore
+
         self.content = content
         self.content_type = content_type
         self.lang = lang.lower() if lang else lang
