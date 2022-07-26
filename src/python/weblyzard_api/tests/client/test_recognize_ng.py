@@ -390,6 +390,7 @@ class TestRecognizeDisambiguation(TestRecognizeNg):
                    u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
 
 
+@pytest.mark.xfail(reason='Expected to fail with switch to unique only osm lexika.')
 class TestDisambiguationOsmEn(TestRecognizeNg):
     """Test contextual disambiguation of string-identical streets
     based on their parent attributes (cities) when occurring in the same text.).
@@ -484,8 +485,7 @@ class TestDisambiguationOsmEnWallStreetLA(TestRecognizeNg):
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
 
 
-#
-#
+@pytest.mark.xfail(reason='Expected to fail with switch to unique only osm lexika.')
 class TestDisambiguationOsmEnAlternate(TestRecognizeNg):
     """Test contextual disambiguation of string-identical streets
     based on their parent attributes (cities, countries) when occurring in
@@ -506,8 +506,7 @@ class TestDisambiguationOsmEnAlternate(TestRecognizeNg):
                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
 
 
-#
-#
+@pytest.mark.xfail(reason='Expected to fail with switch to unique only osm lexika.')
 class TestDisambiguationOsmEs(TestRecognizeNg):
     """Test contextual disambiguation of string-identical streets
     based on their parent attributes (cities) when occurring in the same text.
