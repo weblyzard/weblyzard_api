@@ -161,9 +161,8 @@ class Document(object):
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
                         result[key] = value
-            #             if not len(result):
-            #                 return None
             return result
+        
         if isinstance(data, object):
             result = {}
             for key, value in data.__dict__.items():

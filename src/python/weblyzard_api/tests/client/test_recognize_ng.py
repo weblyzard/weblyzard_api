@@ -5,12 +5,11 @@ Created on Aug 30, 2016
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
+
 import unittest
 import re
-import copy
 import os
+import pytest
 
 from collections import OrderedDict
 
@@ -22,6 +21,7 @@ RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
 class TestRecognizeNg(unittest.TestCase):
 
     REQUIRED_REGEXPS = []
+    UNDESIRED_REGEXPS = []
 
     SERVICE_URL = RECOGNIZE_NG_SERVICE_URL
     PROFILE_NAME = 'en_full_all'
@@ -332,23 +332,27 @@ class TestRecognizeNg(unittest.TestCase):
             if self.REQUIRED_REGEXPS:
                 for regexp in self.REQUIRED_REGEXPS:
                     assert any([re.match(regexp, entity['key']) for entity in annotations])
+            if self.UNDESIRED_REGEXPS:
+                for regexp in self.UNDESIRED_REGEXPS:
+                    assert not any([re.match(regexp, entity['key']) for entity in annotations])
 
-# class TestRecognizeWien(TestRecognizeNg):
-#
-#     PROFILE_NAME = 'de_full_all'
-#     DOCUMENTS = [{u'annotations': [],
-#                    u'content': u'Die Hufgasse in Wien ist alles mögliche, aber weder eine wichtige Einkaufsstraße noch eine Sackgasse, und noch nicht mal eine Hauptstraße oder eine Landstraße.',
-#                    u'format': u'text/html',
-#                    u'header': {},
-#                    u'id': u'1000',
-#                    u'lang': u'DE',
-#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
-#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-#
+
+class TestRecognizeWien(TestRecognizeNg):
+
+    PROFILE_NAME = 'de_full_all'
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': u'Die Satzberggasse in Wien ist alles mögliche, aber weder eine wichtige Einkaufsstraße noch eine Sackgasse, und noch nicht mal eine Hauptstraße oder eine Landstraße.',
+                   u'format': u'text/html',
+                   u'header': {},
+                   u'id': u'1000',
+                   u'lang': u'DE',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
 #
 # class TestRecognizeJobCockpit(TestRecognizeNg):
 #     PROFILE_NAME = "JOBCOCKPIT_DE_STANF"
-
+#
 #     DOCUMENTS = [{u'annotations': [],
 #                   u'content': u'Akademiker mit mehrjähriger Berufserfahrung in der Datenaufbereitung, zuletzt in leitender Position, sucht neue Herausforderungen.',
 #                   u'format': u'text/html',
@@ -359,102 +363,189 @@ class TestRecognizeNg(unittest.TestCase):
 #                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
 #
 #
-# class TestRecognizeDisambiguation(TestRecognizeNg):
-#     """Test contextual disambiguation of string-identical streets
-#     based on their parent attributes (cities) when occurring in the same text.
-#     Wels
-#     """
-#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
-#
-#     PROFILE_NAME = 'de_full_all'
-#
-#     DOCUMENTS = [{u'annotations': [],
-#                    u'content': 'In der Waidhausenstraße in Wien ist ab dem 25. Januar 2021 eine Baustelle.',
-#                    u'format': u'text/html',
-#                    u'header': {},  #
-#                    u'id': u'1000',
-#                    u'lang': u'DE',
-#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-#                    u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-#
-#
-# class TestDisambiguationOsmEn(TestRecognizeNg):
-#     """Test contextual disambiguation of string-identical streets
-#     based on their parent attributes (cities) when occurring in the same text.).
-#     We expect Downing Street, London
-#     """
-#
-#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*4244999')]
-#
-#     PROFILE_NAME = 'en_full_all_new'
-#
-#     DOCUMENTS = [{u'annotations': [],
-#                    u'content': 'In the United Kingdom, Downing Street is more than just a street name.',
-#                    u'format': u'text/html',
-#                    u'header': {},  #
-#                    u'id': u'1000',
-#                    u'lang': u'EN',
-#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-#
-#
-# class TestDisambiguationOsmEnAlternate(TestRecognizeNg):
-#     """Test contextual disambiguation of string-identical streets
-#     based on their parent attributes (cities, countries) when occurring in
-#     the same text.).
-#     There is a Downing street in Christchurch
-#     """
-#
-#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*22988383')]
-#     PROFILE_NAME = 'en_full_all'
-#
-#     DOCUMENTS = [{u'annotations': [],
-#                    u'content': 'There is another Downing Street in New Zealand.',
-#                    u'format': u'text/html',
-#                    u'header': {},  #
-#                    u'id': u'1000',
-#                    u'lang': u'EN',
-#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-#
-#
-# class TestDisambiguationOsmEs(TestRecognizeNg):
-#     """Test contextual disambiguation of string-identical streets
-#     based on their parent attributes (cities) when occurring in the same text.
-#     (WIP as of 2020-10-10)."""
-#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
-#
-#     PROFILE_NAME = 'es_full_all'
-#
-#     DOCUMENTS = [{u'annotations': [],
-#                    u'content': 'Paseo de las Acacias en Murcia es una atracción principal.',
-#                    u'format': u'text/html',
-#                    u'header': {},
-#                    u'id': u'1000',
-#                    u'lang': u'ES',
-#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-#
-#
-# class TestDisambiguationOsmFr(TestRecognizeNg):
-#     """Test contextual disambiguation of string-identical streets
-#     based on their parent attributes (cities) when occurring in the same text.
-#     (WIP as of 2020-10-10)."""
-#     REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
 
-#     PROFILE_NAME = 'fr_full_all'
+
+@pytest.mark.xfail(reason='Currently `de_full_all` uses only unique street '
+                         'names, reactivate the test when disambiguation of '
+                         'non-unique names has been reactivated in production.')
+class TestRecognizeDisambiguation(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.
+    Wels
+    """
+    REQUIRED_REGEXPS = [
+        re.compile(r'.*geonames.*'),
+        re.compile(r'.*openstreetmap.*149673')]
+    UNDESIRED_REGEXPS = [re.compile(r'.*openstreetmap.*23900645')]
+
+    PROFILE_NAME = 'de_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'In der Waidhausenstraße in Wien ist ab dem 25. Januar 2021 eine Baustelle.',
+                   u'format': u'text/html',
+                   u'header': {},  #
+                   u'id': u'1000',
+                   u'lang': u'DE',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+@pytest.mark.xfail(reason='Expected to fail with switch to unique only osm lexika.')
+class TestDisambiguationOsmEn(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.).
+    We expect Downing Street, London
+    """
+
+    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*4244999')]
+
+    PROFILE_NAME = 'en_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'In the United Kingdom, Downing Street is more than just a street name.',
+                   u'format': u'text/html',
+                   u'header': {},  #
+                   u'id': u'1000',
+                   u'lang': u'EN',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+class TestDisambiguationOsmEnWallStreet(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.).
+    We expect No osm entity returned because of disambiguation failure. This
+    test should work even if there are issues within a country
+
+    As of 2022-05, with a profile containing non-unique streets, this succeeds
+    """
+
+    UNDESIRED_REGEXPS = [re.compile(r'.*openstreetmap.*')]
+
+    PROFILE_NAME = 'en_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'Wall Street is performing well after an initial panic earlier today.',
+                   u'format': u'text/html',
+                   u'header': {},  #
+                   u'id': u'1000',
+                   u'lang': u'EN',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+@pytest.mark.xfail
+class TestDisambiguationOsmEnWallStreetNewYork(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.).
+    We expect https://www.openstreetmap.org/way/5672361, i.e. Wall Street
+    in Manhattan, New York
+
+    As of 2022-05, with a profile containing non-unique streets, this fails
+    with another US street apparently randomly selected
+    """
+
+    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*5672361.*')]
+    UNDESIRED_REGEXPS = []
+
+    PROFILE_NAME = 'en_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'New York City: Wall Street in Manhattan is performing well after an initial panic earlier today.',
+                   u'format': u'text/html',
+                   u'header': {},  #
+                   u'id': u'1000',
+                   u'lang': u'EN',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+@pytest.mark.xfail
+class TestDisambiguationOsmEnWallStreetLA(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.).
+    We expect Wall Street in LA, https://www.openstreetmap.org/way/13378624
+
+    As of 2022-05, with a profile containing non-unique streets, this fails
+    with another US street apparently randomly selected
+    """
+
+    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*13378624.*')]
+    UNDESIRED_REGEXPS = []
+
+    PROFILE_NAME = 'en_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'Wall Street in Los Angeles is a different matter altogether',
+                   u'format': u'text/html',
+                   u'header': {},  #
+                   u'id': u'1000',
+                   u'lang': u'EN',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+@pytest.mark.xfail(reason='Expected to fail with switch to unique only osm lexika.')
+class TestDisambiguationOsmEnAlternate(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities, countries) when occurring in
+    the same text.).
+    There is a Downing street in Christchurch
+    """
+
+    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*22988383')]
+    PROFILE_NAME = 'en_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'There is another Downing Street in New Zealand.',
+                   u'format': u'text/html',
+                   u'header': {},  #
+                   u'id': u'1000',
+                   u'lang': u'EN',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+@pytest.mark.xfail(reason='Expected to fail with switch to unique only osm lexika.')
+class TestDisambiguationOsmEs(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.
+    (WIP as of 2020-10-10)."""
+    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
+
+    PROFILE_NAME = 'es_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'Paseo de las Acacias en Murcia es una atracción principal.',
+                   u'format': u'text/html',
+                   u'header': {},
+                   u'id': u'1000',
+                   u'lang': u'ES',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
 #
 #
-#     # wien gn id: http://sws.geonames.org/2761333
-#     # wels gn id http://sws.geonames.org/2761524
-#     DOCUMENTS = [{u'annotations': [],
-#                    u'content': 'Rue Alphonse Daudet en Marseille c\'é un attraction principale.',
-#                    u'format': u'text/html',
-#                    u'header': {},  #
-#                    u'id': u'1000',
-#                    u'lang': u'FR',
-#                    u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+class TestDisambiguationOsmFr(TestRecognizeNg):
+    """Test contextual disambiguation of string-identical streets
+    based on their parent attributes (cities) when occurring in the same text.
+    (WIP as of 2020-10-10)."""
+    REQUIRED_REGEXPS = [re.compile(r'.*geonames.*'), re.compile(r'.*openstreetmap.*')]
+
+    PROFILE_NAME = 'fr_full_all'
+
+    # wien gn id: http://sws.geonames.org/2761333
+    # wels gn id http://sws.geonames.org/2761524
+    DOCUMENTS = [{u'annotations': [],
+                   u'content': 'Rue Alphonse Daudet en Marseille c\'é un attraction principale.',
+                   u'format': u'text/html',
+                   u'header': {},  #
+                   u'id': u'1000',
+                   u'lang': u'FR',
+                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
 #
 #
 # class TestRecognizeOsmNl(TestRecognizeNg):
@@ -472,7 +563,7 @@ class TestRecognizeNg(unittest.TestCase):
 #
 # class TestRecognizeEvents(TestRecognizeNg):
 #     REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
-
+#
 #     # PROFILE_NAME = 'sandbox_events'
 #     PROFILE_NAME = 'de_full_all'
 #     DOCUMENTS = [{u'annotations': [],
@@ -518,7 +609,6 @@ class TestRecognizeNg(unittest.TestCase):
 # class TestRecognizeEventsEn(TestRecognizeNg):
 #     REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
 #
-#     # PROFILE_NAME = 'sandbox_events'
 #     PROFILE_NAME = 'en_full_all'
 #     DOCUMENTS = [{u'annotations': [],
 #                   'content': 'There\'s a lot to celebrate on Easter Monday.',
@@ -541,39 +631,68 @@ class TestRecognizeNg(unittest.TestCase):
 #                               }
 #                 self.REQUIRED_REGEXPS = [re.compile(r'.*Easter.*#{year}.*'.format(year=year))]
 #                 TestRecognizeNg.test_annotate_document(self)
-#
-#
-# class TestRecognizeCustomDe(TestRecognizeNg):
-#     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
-#                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
-#
-#     PROFILE_NAME = 'journalists_test'
-#     DOCUMENTS = [{u'annotations': [],
-#                   # 'content': 'Boris Becker is a famous tennis player.',
-#                   'content': 'Armin Wolf ist ein österreichischer Journalist, der für den ORF arbeitet. Immer wieder berichtet er auch über den Klimawandel.',
-#                   u'format': u'text/html',
-#                   u'header': {},
-#                   u'id': u'1000',
-#                   u'lang': u'DE',
-#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
-#
-#
-# class TestRecognizeJournalistsDe(TestRecognizeNg):
-#     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
-#                         re.compile(r'http://www.wikidata.org/entity/Q688378')]
-#
-#     PROFILE_NAME = 'de_full_all'
-#
-#     DOCUMENTS = [{u'annotations': [],
-#                 'content': 'Armin Wolf, Florian Klenk, Isabell Widek, Su Sametinger, Ingrid Thurnher und Karim El-Gawhary sind alle österreichische Journalisten.' +
-#                             'Bernd Affenzeller auch. Vielleicht ist auch Karim El Gawhary ein Journalist?',
-#                   u'format': u'text/html',
-#                   u'header': {},
-#                   u'id': u'1000',
-#                   u'lang': u'DE',
-#                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
-#                   u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+@pytest.mark.skip('This test is not working (ideally it should work and be the goal).')
+class TestRecognizeWhiteHouse(TestRecognizeNg):
+    # FIXME: Incorrect Kevin O'Connor annotated
+    # FIXME: White House annotated with Casablanca
+    REQUIRED_REGEXPS = [re.compile(r'http://www.wikidata.org/entity/Q6279'),  # Biden
+                        re.compile(r'http://www.wikidata.org/entity/Q104881886'),  # Kevin O'Connor
+                        re.compile(r'http://www.wikidata.org/entity/Q2566904'),  # White House
+                        ]
+
+    PROFILE_NAME = 'en_full_all'
+    DOCUMENTS = [{u'annotations': [],
+                  'content': 'President Biden, at 79, is of advanced age and ostensibly vulnerable to the virus’s worst effects. ' +
+                            'But his illness never really advanced beyond an occasional cough, elevated temperature and a stuffy nose, ' +
+                            'according to The White House physician Kevin O’Connor.',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+class TestRecognizeCustomDe(TestRecognizeNg):
+    # FIXME: ORF is not annotated
+    REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
+                        re.compile(r'http://www.wikidata.org/entity/Q688378')]
+
+    PROFILE_NAME = 'de_full_all'
+    DOCUMENTS = [{u'annotations': [],
+                  'content': 'Armin Wolf ist ein österreichischer Journalist, der für den ORF arbeitet. Immer wieder berichtet er auch über den Klimawandel.',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+
+class TestRecognizeJournalistsDe(TestRecognizeNg):
+    REQUIRED_REGEXPS = [re.compile(r'http://www.wikidata.org/entity/Q688378'),
+                        re.compile(r'http://www.wikidata.org/entity/Q1342403'),
+                        re.compile(r'http://weblyzard.com/skb/entity/person/isabell_widek'),
+                        re.compile(r'http://weblyzard.com/skb/entity/person/su_sametinger'),
+                        re.compile(r'http://www.wikidata.org/entity/Q1608032'),
+                        re.compile(r'http://www.wikidata.org/entity/Q1729359'),
+                        re.compile(r'http://weblyzard.com/skb/entity/person/bernd_affenzeller'),
+                        re.compile(r'http://www.wikidata.org/entity/Q1729359'),
+                        ]
+
+    PROFILE_NAME = 'de_full_all'
+
+    DOCUMENTS = [{u'annotations': [],
+                'content': 'Armin Wolf, Florian Klenk, Isabell Widek, Su Sametinger, Ingrid Thurnher und Karim El-Gawhary sind alle österreichische Journalisten.' +
+                            'Bernd Affenzeller auch. Vielleicht ist auch Karim El Gawhary ein Journalist?',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
 
 # class TestRecognizeBlazegraphDe(TestRecognizeNg):
 #     REQUIRED_REGEXPS = [re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
