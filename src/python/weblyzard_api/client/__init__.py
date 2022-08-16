@@ -19,6 +19,7 @@ from builtins import object
 import traceback
 import logging
 import random
+import json
 
 from urllib.parse import urlencode
 from six import string_types
@@ -156,7 +157,6 @@ class MultiRESTClient(object):
                  default_timeout=WS_DEFAULT_TIMEOUT, use_random_server=True):
 
         self._service_urls = self.fix_urls(service_urls, user, password)
-
         if use_random_server:
             random.shuffle(self._service_urls)
 
@@ -207,25 +207,46 @@ class MultiRESTClient(object):
     def _connect_clients(cls, service_urls, user=None, password=None,
                          default_timeout=WS_DEFAULT_TIMEOUT):
 
-        clients = []
-
-        if isinstance(service_urls, str):
-            service_urls = [service_urls]
+        clients = {}
 
         for url in service_urls:
-            if user is None and password is None:
-                service_url, user, password = Retrieve.get_user_password(url)
+            if not isinstance(url, str):
+                continue
+            if url.startswith('{'):
+                url = json.loads(url)
+                count = len(url.keys())
+            elif '<' in url:
+                param = url[url.find("<") + 1:url.find(">")]
+                if '%' in param:
+                    key, count = param.split('%')
+                    count = int(count)
+                    for i in range(0, count):
+                        url_i = url.replace(f'<{param}>', f'{i}')
 
-            clients.append(RESTClient(service_url=service_url,
-                                      user=user,
-                                      password=password,
-                                      default_timeout=default_timeout))
+                        if user is None and password is None:
+                            url_i, user, password = Retrieve.get_user_password(url_i)
+
+                        clients[i] = RESTClient(service_url=url_i,
+                                                user=user,
+                                                password=password,
+                                                default_timeout=default_timeout)
+                    return clients
+            else:
+
+                if user is None and password is None:
+                    url, user, password = Retrieve.get_user_password(url)
+
+                # append to end
+                clients[len(clients)] = RESTClient(service_url=url,
+                                                   user=user,
+                                                   password=password,
+                                                   default_timeout=default_timeout)
         return clients
 
-    def request(self, path, parameters=None, return_plain=False,
-                execute_all_services=False, json_encode_arguments=True,
+    def request(self, path, source_id:int=None, parameters=None,
+                return_plain=False, json_encode_arguments=True,
                 query_parameters=None, content_type='application/json',
-                pass_through_exceptions=()):
+                execute_all_services=False, pass_through_exceptions=()):
         ''' performs the given json request
         @param url: the url to query
         @param parameters: optional paramters
@@ -236,7 +257,17 @@ class MultiRESTClient(object):
         '''
         response = None
         errors = []
-        for client in self.clients:
+
+        clients = []
+        if source_id is not None and source_id > 0:
+            client_id = source_id % len(self.clients)
+            if client_id in self.clients:
+                clients = [self.clients[client_id]]
+
+        if not len(clients):
+            clients = self.clients.values()
+
+        for client in clients:
             try:
                 response = client.execute(
                     command=path,
