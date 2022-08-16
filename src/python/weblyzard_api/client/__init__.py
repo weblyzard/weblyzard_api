@@ -157,6 +157,7 @@ class MultiRESTClient(object):
                  default_timeout=WS_DEFAULT_TIMEOUT, use_random_server=True):
 
         self._service_urls = self.fix_urls(service_urls, user, password)
+
         if use_random_server:
             random.shuffle(self._service_urls)
 
@@ -243,13 +244,14 @@ class MultiRESTClient(object):
                                                    default_timeout=default_timeout)
         return clients
 
-    def request(self, path, source_id:int=None, parameters=None,
+    def request(self, path, parameters=None, source_id:int=None,
                 return_plain=False, json_encode_arguments=True,
                 query_parameters=None, content_type='application/json',
                 execute_all_services=False, pass_through_exceptions=()):
         ''' performs the given json request
-        @param url: the url to query
+        @param path: the path to query
         @param parameters: optional paramters
+        :param source_id:
         @param pass_through_exceptions:
             set to True, if the client shall pass through all exceptions
         @param return_plain: whether to return the result without prior
