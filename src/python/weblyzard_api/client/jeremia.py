@@ -87,10 +87,11 @@ class Jeremia(MultiRESTClient):
         :param usr: optional user name
         :param pwd: optional password
         '''
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
-                                 default_timeout=default_timeout)
+        MultiRESTClient.__init__(self, service_urls=url,
+                                 default_timeout=default_timeout,
+                                 user=usr, password=pwd)
 
-    def submit_document(self, document,
+    def submit_document(self, document, source_id:int=None,
                         wait_time=DEFAULT_WAIT_TIME,
                         max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
                         max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
@@ -109,8 +110,10 @@ class Jeremia(MultiRESTClient):
             # submit the request
             try:
                 logger.debug('Submit_document: %s', document)
-                result = self.request(
-                    'submit_document', document, pass_through_exceptions=True)
+                result = self.request(path='submit_document',
+                                      source_id=source_id,
+                                      parameters=document,
+                                      pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
                 logger.warning('Submit_document failed... Sleeping before retry...')
@@ -119,7 +122,8 @@ class Jeremia(MultiRESTClient):
 
         # this access most certainly causes an exception since the
         # requests above have failed.
-        return self.request('submit_document', document)
+        return self.request(path='submit_document', source_id=source_id,
+                            parameters=document)
 
     def submit_documents(self, documents, source_id=-1,
                          double_sentence_threshold=10,
@@ -142,7 +146,7 @@ class Jeremia(MultiRESTClient):
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
             # wait until threads are available
-            while self.has_queued_threads() and time() - start_time < wait_time:
+            while self.has_queued_threads(source_id=source_id) and time() - start_time < wait_time:
                 sleep(max_retry_delay * random())
 
             # submit the request
@@ -150,7 +154,8 @@ class Jeremia(MultiRESTClient):
             #   case that has_queued_threads has not been
             #   up to date.
             try:
-                result = self.request(request, documents,
+                result = self.request(path=request, source_id=source_id,
+                                      parameters=documents,
                                       pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
@@ -159,7 +164,8 @@ class Jeremia(MultiRESTClient):
 
         # this access most certainly causes an exception since the
         # requests above have failed.
-        return self.request(request, documents)
+        return self.request(path=request, source_id=source_id,
+                            parameters=documents)
 
     def status(self):
         '''
@@ -195,8 +201,9 @@ class Jeremia(MultiRESTClient):
 
         :param source_id: the blacklist's source id
         '''
-        url = 'cache/update_blacklist/%s' % source_id
-        return self.request(url, blacklist)
+        path = 'cache/update_blacklist/%s' % source_id
+        return self.request(path=path, source_id=source_id,
+                            parameters=blacklist)
 
     def clear_blacklist(self, source_id):
         '''
@@ -204,16 +211,19 @@ class Jeremia(MultiRESTClient):
 
         Empties the existing sentence blacklisting cache for the given source_id
         '''
-        return self.request('cache/clear_blacklist/%s' % source_id)
+        return self.request(path='cache/clear_blacklist/%s' % source_id,
+                            source_id=source_id)
 
-    def get_blacklist(self, source_id):
+    def get_blacklist(self, source_id:int):
         '''
         :param source_id: the blacklist's source id
         :returns: the sentence blacklist for the given source_id'''
-        return self.request('cache/get_blacklist/%s' % source_id)
+        return self.request(path='cache/get_blacklist/%s' % source_id,
+                            source_id=source_id)
 
-    def has_queued_threads(self):
+    def has_queued_threads(self, source_id:int=None):
         '''
+        :param source_id: source id
         :returns:
             True if Jeremia still has queued (i.e. unprocessed) threads or
             False otherwise.
@@ -223,7 +233,7 @@ class Jeremia(MultiRESTClient):
             will slow down the overall performance.
         '''
         try:
-            result = self.request('has_queued_threads')
+            result = self.request('has_queued_threads', source_id=source_id)
         except Exception as e:
             result = True
         return result
