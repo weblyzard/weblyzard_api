@@ -249,12 +249,12 @@ class MultiRESTClient(object):
                 query_parameters=None, content_type='application/json',
                 execute_all_services=False, pass_through_exceptions=()):
         ''' performs the given json request
-        @param path: the path to query
-        @param parameters: optional paramters
-        :param source_id:
-        @param pass_through_exceptions:
+        :param path: the path to query
+        :param parameters: optional paramters
+        :param source_id: optional source_id param
+        :param pass_through_exceptions:
             set to True, if the client shall pass through all exceptions
-        @param return_plain: whether to return the result without prior
+        :param return_plain: whether to return the result without prior
                              deserialization using json.load (False*)
         '''
         response = None
@@ -302,7 +302,7 @@ class MultiRESTClient(object):
 
     def get_service_urls(self):
         ''' '''
-        return [client.service_url for client in self.clients]
+        return [client.service_url for client in self.clients.values()]
 
     @classmethod
     def get_document_batch(cls, documents, batch_size=None):
