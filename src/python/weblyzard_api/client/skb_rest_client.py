@@ -116,7 +116,8 @@ class SKBRESTClient(object):
         return self.save_entity(entity_dict=skb_relevant_data)
 
     def save_entity(self, entity_dict:dict, force_update:bool=False,
-                    ignore_cache:bool=False, headers:dict=None) -> Optional[dict]:
+                    ignore_cache:bool=False, no_enrichment:bool=False,
+                    headers:dict=None) -> Optional[dict]:
         '''
         Save an entity to the SKB, the Entity encoded as `dict`.
         The `entity_dict` must contain a 'uri' and an 'entityType' entry
@@ -129,6 +130,7 @@ class SKBRESTClient(object):
         :param entity_dict: the entity as dict
         :param force_update: force a comparison and update on any existing SKB values
         :param ignore_cache: bypass recently requested URI cache
+        :param no_enrichment: do not attempt jairo enrichment
         :param headers: request header for e.g. X-WEBLYZARD-ROLE
         
         :returns: json response as dict or None, if an error occurred
@@ -161,7 +163,8 @@ class SKBRESTClient(object):
         assert 'provenance' in entity_dict
 
         params = {'force_update': force_update,
-                  'ignore_cache': ignore_cache}
+                  'ignore_cache': ignore_cache,
+                  'no_enrichment': no_enrichment}
 
         response = requests.post(url=f'{self.url}/{self.ENTITY_PATH}',
                                  params=params,
@@ -211,7 +214,8 @@ class SKBRESTClient(object):
         return self.drop_error_responses(response)
 
     def save_entity_batch(self, entity_list:List[dict], force_update:bool=False,
-                          ignore_cache:bool=False, headers:dict=None) -> Optional[dict]:
+                          ignore_cache:bool=False, no_enrichment:bool=False,
+                          headers:dict=None) -> Optional[dict]:
         '''
         Save a list of entities to the SKB, the individual entities encoded as 
         `dict`. Each `entity_dict` must contain an 'entityType' and a 
@@ -224,6 +228,7 @@ class SKBRESTClient(object):
         :param entity_list: entities as list of dicts
         :param force_update: force a comparison and update on any existing SKB values
         :param ignore_cache: bypass recently requested URI cache
+        :param no_enrichment: do not attempt jairo enrichment
         :param headers: request header for e.g. X-WEBLYZARD-ROLE
         
         :returns: json response as dict or None, if an error occurred
@@ -260,7 +265,8 @@ class SKBRESTClient(object):
             assert 'provenance' in entity_dict
 
         params = {'force_update': force_update,
-                  'ignore_cache': ignore_cache}
+                  'ignore_cache': ignore_cache,
+                  'no_enrichment': no_enrichment}
 
         response = requests.post(url=f'{self.url}/{self.ENTITY_BATCH_PATH}',
                                  params=params,
