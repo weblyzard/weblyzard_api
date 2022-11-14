@@ -132,7 +132,7 @@ class RESTClient(object):
         ''' executes a json command on the given web service
         :param command: the command to execute
         :param identifier: an optional identifier (e.g. batch_id, ...)
-        :param parameters: optional post paramters
+        :param parameters: optional post parameters
         :param return_plain: return the result without prior deserialization
                              using json.load (False*)
         :param json_encode_arguments: whether to json encode the parameters
@@ -250,7 +250,7 @@ class MultiRESTClient(object):
                 execute_all_services=False, pass_through_exceptions=()):
         ''' performs the given json request
         :param path: the path to query
-        :param parameters: optional paramters
+        :param parameters: optional parameters
         :param source_id: optional source_id param
         :param pass_through_exceptions:
             set to True, if the client shall pass through all exceptions
