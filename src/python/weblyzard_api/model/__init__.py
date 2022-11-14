@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 
 
 class CharSpan(object):
-    DICT_MAPPING = {'@type': 'span_type',
+    DICT_MAPPING = {'span_type': 'span_type',
+                    '@type': 'span_type',
                     'start': 'start',
                     'end': 'end'}
 

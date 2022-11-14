@@ -6,17 +6,20 @@ Created on Oct 24, 2016
 @author: stefan
 '''
 
-from builtins import object
 import json
-import logging
-from typing import List, Optional
-
 import requests
+
+from builtins import object
+from typing import List, Optional
+from deprecated import deprecated
+
 from weblyzard_api.client.rdf import prefix_uri
 
+import logging
 logger = logging.getLogger(__name__)
 
 
+@deprecated
 class SKBRESTClient(object):
 
     VERSION = 1.0
