@@ -62,6 +62,7 @@ class TokenCharSpan(CharSpan):
                     'start': 'start',
                     'end': 'end',
                     'pos': 'pos',
+                    'dep': 'dependency',
                     'dependency': 'dependency'}
     DEFAULT_POS = 'XY'
 
