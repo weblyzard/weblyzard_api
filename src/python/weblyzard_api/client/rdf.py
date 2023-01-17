@@ -34,6 +34,8 @@ class Namespace(Enum):
     LEMON = 'http://lemon-model.net/lemon#'
     LEXINFO = 'http://www.lexinfo.net/ontology/2.0/lexinfo#'
     LANG = 'http://id.loc.gov/vocabulary/iso639-1/'
+    WN30SYNSET = 'http://wordnet-rdf.princeton.edu/rdf/pwn30/'
+    WNLEMMA = 'http://wordnet-rdf.princeton.edu/rdf/lemma/'
 
     # wikidata, dbpedia, geo
     DBO = 'http://dbpedia.org/ontology/'
@@ -58,6 +60,9 @@ class Namespace(Enum):
     SKBEVENT = 'http://weblyzard.com/skb/event/'
     SKBCAT = 'http://weblyzard.com/skb/entity/category/'
     AGENT = 'http://weblyzard.com/skb/entity/agent/'
+    LEXFORM = 'http://lex.weblyzard.com/form/'
+    LEXTERM = 'http://lex.weblyzard.com/term/'
+    LEXSENSE = 'http://lex.weblyzard.com/sense/'
 
     # weblyzard keywords per language
     SKBKWEN = 'http://weblyzard.com/skb/keyword/en#'
