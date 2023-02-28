@@ -58,6 +58,9 @@ class CharSpan(object):
 
 
 class TokenCharSpan(CharSpan):
+
+    SPAN_TYPE = 'TokenCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
@@ -66,8 +69,9 @@ class TokenCharSpan(CharSpan):
                     'dependency': 'dependency'}
     DEFAULT_POS = 'XY'
 
-    def __init__(self, span_type, start, end, pos=None, dependency=None):
-        CharSpan.__init__(self, span_type, start, end)
+    def __init__(self, start: int, end:int, span_type: str=SPAN_TYPE,
+                 pos: str=None, dependency=None):
+        CharSpan.__init__(self, span_type=span_type, start=start, end=end)
         if pos is None:
             pos = self.DEFAULT_POS
         self.pos = pos
@@ -85,6 +89,9 @@ class TokenCharSpan(CharSpan):
 
 
 class SentenceCharSpan(CharSpan):
+
+    SPAN_TYPE = 'SentenceCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
@@ -94,9 +101,10 @@ class SentenceCharSpan(CharSpan):
                     'emotions': 'emotions',
                     'id': 'md5sum'}
 
-    def __init__(self, span_type, start, end, md5sum=None, sem_orient=0.0,
-                 significance=0.0, emotions=None, multimodal_sentiment=None):
-        CharSpan.__init__(self, span_type, start, end)
+    def __init__(self, start: int, end: int, span_type: str=SPAN_TYPE,
+                 md5sum: str=None, significance: float=0.0,
+                 sem_orient: float=0.0, emotions=None, multimodal_sentiment=None):
+        CharSpan.__init__(self, span_type=span_type, start=start, end=end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
@@ -114,6 +122,7 @@ class SentenceCharSpan(CharSpan):
 
 
 class MultiplierCharSpan(CharSpan):
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
@@ -127,6 +136,7 @@ class MultiplierCharSpan(CharSpan):
 
 
 class SentimentCharSpan(CharSpan):
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
