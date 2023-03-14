@@ -198,6 +198,8 @@ class SpanFactory(object):
             span_type = span['@type']
         elif 'span_type' in span:
             span_type = span['span_type']
+        elif 'dep' in span:
+            span_type = 'TokenCharSpan'  # TODO: workaround until text_tagger gets fixed
 
         if span_type is not None and span_type in cls.SPAN_TYPE_TO_CLASS:
             try:
