@@ -127,6 +127,7 @@ class WltSearchRestApiClient(WltApiClient):
 
         result_count = 0
         total = 1
+        r = None
 
         while result_count < total:
             query["offset"] = result_count
@@ -140,8 +141,11 @@ class WltSearchRestApiClient(WltApiClient):
                     if max_docs > 0:
                         total = max_docs
                     hits = response.get('hits', [])
-                    result_count += len(hits)
-                    yield hits
+                    if len(hits) > 0:
+                        result_count += len(hits)
+                        yield hits
+                    else:
+                        return r
                 else:
                     return r
             except Exception as e:

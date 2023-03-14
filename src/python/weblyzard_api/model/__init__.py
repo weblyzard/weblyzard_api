@@ -15,6 +15,7 @@ import hashlib
 import logging
 
 from collections import namedtuple
+
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
@@ -25,12 +26,15 @@ logger = logging.getLogger(__name__)
 
 
 class CharSpan(object):
+
+    SPAN_TYPE = 'CharSpan'
+
     DICT_MAPPING = {'span_type': 'span_type',
                     '@type': 'span_type',
                     'start': 'start',
                     'end': 'end'}
 
-    def __init__(self, span_type, start, end):
+    def __init__(self, start: int, end: int, span_type: str=SPAN_TYPE):
         self.span_type = span_type
         self.start = start
         self.end = end
@@ -46,6 +50,8 @@ class CharSpan(object):
         #    pass  # debugging
         kwargs = {cls.DICT_MAPPING.get(k, k): v for k, v in dict_.items()}
         try:
+            if 'span_type' in kwargs:
+                del kwargs['span_type']
             return cls(**kwargs)
         except TypeError as e:
             raise e
@@ -70,7 +76,7 @@ class TokenCharSpan(CharSpan):
     DEFAULT_POS = 'XY'
 
     def __init__(self, start: int, end:int, span_type: str=SPAN_TYPE,
-                 pos: str=None, dependency=None):
+                 pos: str=None, dependency: str=None):
         CharSpan.__init__(self, span_type=span_type, start=start, end=end)
         if pos is None:
             pos = self.DEFAULT_POS
@@ -101,10 +107,10 @@ class SentenceCharSpan(CharSpan):
                     'emotions': 'emotions',
                     'id': 'md5sum'}
 
-    def __init__(self, start: int, end: int, span_type: str=SPAN_TYPE,
+    def __init__(self, start: int, end: int,
                  md5sum: str=None, significance: float=0.0,
                  sem_orient: float=0.0, emotions=None, multimodal_sentiment=None):
-        CharSpan.__init__(self, span_type=span_type, start=start, end=end)
+        CharSpan.__init__(self, span_type=self.SPAN_TYPE, start=start, end=end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
@@ -123,13 +129,15 @@ class SentenceCharSpan(CharSpan):
 
 class MultiplierCharSpan(CharSpan):
 
+    SPAN_TYPE = 'MultiplierCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
                     'value': 'value'}
 
-    def __init__(self, span_type, start, end, value=None):
-        super(MultiplierCharSpan, self).__init__(span_type=span_type,
+    def __init__(self, start, end, value=None):
+        super(MultiplierCharSpan, self).__init__(span_type=self.SPAN_TYPE,
                                                  start=start,
                                                  end=end)
         self.value = value
@@ -137,20 +145,25 @@ class MultiplierCharSpan(CharSpan):
 
 class SentimentCharSpan(CharSpan):
 
+    SPAN_TYPE = 'SentimentCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
                     'value': 'value',
                     'modality': 'modality'}
 
-    def __init__(self, span_type, start, end, value, modality='polarity'):
-        super(SentimentCharSpan, self).__init__(span_type=span_type,
+    def __init__(self, start, end, value, modality='polarity'):
+        super(SentimentCharSpan, self).__init__(span_type=self.SPAN_TYPE,
                                                 start=start, end=end)
         self.value = value
         self.modality = modality
 
 
 class LayoutCharSpan(CharSpan):
+
+    SPAN_TYPE = 'LayoutCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
@@ -158,8 +171,8 @@ class LayoutCharSpan(CharSpan):
                     'title': 'title',
                     'level': 'level'}
 
-    def __init__(self, span_type, start, end, layout, title, level):
-        CharSpan.__init__(self, span_type=span_type, start=start, end=end)
+    def __init__(self, start, end, layout, title, level):
+        CharSpan.__init__(self, span_type=self.SPAN_TYPE, start=start, end=end)
         self.layout = layout
         self.title = title
         self.level = level
