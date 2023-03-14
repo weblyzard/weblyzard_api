@@ -232,13 +232,13 @@ class Document(object):
             if 'annotations' in parsed_content else {}
 
         return cls(content_id=int(parsed_content['content_id']),
-                        content=parsed_content.get('content'),
-                        nilsimsa=parsed_content.get('nilsimsa'),
-                        lang=parsed_content.get('lang'),
-                        content_type=parsed_content.get('content_type'),
-                        partitions=partitions,
-                        header=header,
-                        annotations=annotations)
+                   content=parsed_content.get('content'),
+                   nilsimsa=parsed_content.get('nilsimsa'),
+                   lang=parsed_content.get('lang'),
+                   content_type=parsed_content.get('content_type'),
+                   partitions=partitions,
+                   header=header,
+                   annotations=annotations)
 
     def to_json(self):
         '''
