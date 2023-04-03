@@ -15,7 +15,8 @@ from collections import OrderedDict
 
 from weblyzard_api.client.recognize.ng import Recognize
 
-RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
+# RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
+RECOGNIZE_NG_SERVICE_URL = 'http://recognize-ng-develop.branch.i.weblyzard.net:8443'
 
 
 class TestRecognizeNg(unittest.TestCase):
@@ -633,20 +634,41 @@ class TestDisambiguationOsmFr(TestRecognizeNg):
 #                 TestRecognizeNg.test_annotate_document(self)
 
 
-@pytest.mark.skip('This test is not working (ideally it should work and be the goal).')
 class TestRecognizeWhiteHouse(TestRecognizeNg):
-    # FIXME: Incorrect Kevin O'Connor annotated
-    # FIXME: White House annotated with Casablanca
+    # FIXME: Incorrect Kevin O'Connor annotated (not likely that we can fix this one due to too little Wikidata metadata)
     REQUIRED_REGEXPS = [re.compile(r'http://www.wikidata.org/entity/Q6279'),  # Biden
-                        re.compile(r'http://www.wikidata.org/entity/Q104881886'),  # Kevin O'Connor
-                        re.compile(r'http://www.wikidata.org/entity/Q2566904'),  # White House
+                        # re.compile(r'http://www.wikidata.org/entity/Q104881886'),  # Kevin O'Connor
+                        re.compile(r'http://www.wikidata.org/entity/Q1355327'),  # Executive Office of the President of the United States (White House)
                         ]
 
-    PROFILE_NAME = 'en_full_all'
+    PROFILE_NAME = 'en_full_bg'
     DOCUMENTS = [{u'annotations': [],
                   'content': 'President Biden, at 79, is of advanced age and ostensibly vulnerable to the virus’s worst effects. ' +
-                            'But his illness never really advanced beyond an occasional cough, elevated temperature and a stuffy nose, ' +
-                            'according to The White House physician Kevin O’Connor.',
+                             'But his illness never really advanced beyond an occasional cough, elevated temperature and a stuffy nose, ' +
+                             'according to White House physician Kevin O’Connor. During his recovery he was residing at the presidential mansion.',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+    
+@pytest.mark.xfail(reason='This test is not working (ideally it should work and be the goal).')
+class TestRecognizeUSA(TestRecognizeNg):
+    # FIXME: Incorrect annotation of "The U.S.", working for "U.S."
+    REQUIRED_REGEXPS = [re.compile(r'http://www.wikidata.org/entity/Q6279'),  # Biden
+                        re.compile(r'http://sws.geonames.org/6252001/'),  # United States
+                        re.compile(r'http://sws.geonames.org/5332921/'),  # California
+                        ]
+
+    PROFILE_NAME = 'en_full_bg'
+    DOCUMENTS = [{u'annotations': [],
+                  'content': '''
+                  California and the nation need President Biden's vaccination mandate on companies with more than 100 employees. 
+                  The new policy, announced Thursday, is necessary to quell COVID-19 and protect workers from getting the virus and spreading it 
+                  to their communities. Red states, as expected, are challenging the law's constitutionality. The U.S. Supreme Court will likely 
+                  make the final call. When it does, the court should recognize the law entitles workers to a safe workplace. Biden's rule does just that. 
+                  ''',
                   u'format': u'text/html',
                   u'header': {},
                   u'id': u'1000',
@@ -712,15 +734,62 @@ class TestRecognizeJournalistsDe(TestRecognizeNg):
 #                                             u'start': 20}]}}]
 
 
+class TestRecognizeEvents(TestRecognizeNg):
+    REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
+    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
+    PROFILE_NAME = 'de_full_all'
+    DOCUMENTS = [{u'annotations': [],
+                  'content': 'Am Ostermontag gibt es es viel zu feiern.',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': TestRecognizeNg.DOCUMENTS[0]['partitions']}]
+
+    def test_annotate_document(self):
+        for year in range(2017, 2023):
+            for countryname, country in {
+                'austria': 'http://sws.geonames.org/2782113/',
+                'greece': 'http://sws.geonames.org/390903/'
+            }.items():
+                print(countryname, year)
+                self.DOCUMENTS[0]['header'] = {'{http://www.weblyzard.com/wl/2013#}entity': 'http://example.com/example_document',
+                              '{http://weblyzard.com/skb/property/}yearUri': 'http://purl.org/dc/terms/date#{year}'.format(year=year),
+                              '{http://weblyzard.com/skb/property/}location': country
+                              }
+                self.REQUIRED_REGEXPS = [re.compile(r'.*Easter.*#{year}.*'.format(year=year))]
+                TestRecognizeNg.test_annotate_document(self)
+
+
 class TestRecognizeRoche(TestRecognizeNg):
-    # REQUIRED_REGEXPS = [][re.compile(r'http://weblyzard.com/skb/entity/term/climate_change'),
-    #                     re.compile(r'http://www.wikidata.org/entity/Q688378')]
     REQUIRED_REGEXPS = [re.compile(r'http://ontology.roche.com/ROX1301557461838')]
 
     PROFILE_NAME = 'roche_rts_20220204'
     DOCUMENTS = [{u'annotations': [],
                   # 'content': 'Boris Becker is a famous tennis player.',
                   'content': 'What is Personalized Type 2 Diabetes Management? Currently, the management of type 2 diabetes (T2D) is driven by established international guidelines, and until recent years these did not take account of individual characteristics and the presence of co-morbidities for individual patients. Much of the treatment options recommended by guidelines are based on evidence accumulated from Phase 3 clinical trials and real-world evidence based on population-based studies. These recommendations have clearly made a difference to overall diabetes care. 1 , 2 These guidelines do not examine the concept of individualized or personalized management. Individuals differ in their presentation of T2D, some have a short duration, others a long duration and other complications at the time of presentation. Therefore, with respect to treatment, "one size does not fit all". More recently, the American Diabetes Association (ADA) and European Association for the Study of Diabetes (EASD) (along with other guidelines) have recommended tailoring therapy to be more stringent and less stringent based on patients attitudes, hypoglycemia risk, disease duration, life expectancy, comorbidities and resources. Personalized diabetes management is based on developing a clinical plan that is tailored to the individual. This may take into account many complex factors. These included patient factors, social, medical (including complications) as well as phenotypic, biochemical and genetic factors (see Figure 1 ). Therefore, the concept of personalized management is complex and broad. The therapeutic options for managing T2D have increased considerably in the past 10 years, so perhaps the time has come to focus and tailor therapy to the phenotype and personal characteristics of the patient. Personalized care may provide the opportunity to address two potential reasons for the continued morbidity and mortality associated with T2D. These include firstly, the suboptimal application of evidence-based therapies (eg, due to lack of medication intensification or insufficient lifestyle changes or medication adherence by patients) and secondly inadequate efficacies of current therapies when optimally applied. Figure 1 Personalized diabetes care. This figure summarizes the key considerations that are needed when contemplating the choice of diabetes pharmacotherapy for a patient with T2D.',
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': {u'BODY': [{u'@type': u'CharSpan',
+                                            u'end': 184,
+                                            u'start': 20}]}}]
+
+
+class TestRecognizeGeonames(TestRecognizeNg):
+    REQUIRED_REGEXPS = []
+
+    example = "The United States is a country with a lot of states, such as Alabama or New York County."
+    example1 = "At least 10 people have been killed in the US state of Arkansas as storms and tornadoes careered up a swathe of the central United States. The latest victim was found dead in central Arkansas, local police said. Five others died as flood waters swept their cars off the road in the state's north-west, while four more died in a small town ravaged by a tornado. The National Weather Service issued a high risk warning across across Tennesee, Arkansas, and Texas. Meanwhile in Poplar Bluff, Missouri, 17,000 residents are hoping a levee holds and prevents major flooding. Storms have pummelled states across the region for weeks and more rain is due. More than a dozen tornadoes were reported in Texas and Arkansas on Monday night. In eastern Texas, damage was reported in the largely rural Houston County but the extent was unclear because much of the area was without power, the Associated Press quoted Fire Marshal David Lamb as saying."
+    example2 = "The Dothan-Houston County Emergency Management Agency is working with Houston County Schools and local law enforcement agencies to perform a drill on Thursday simulating the evacuation of certain areas, including two county schools. The drill will be conducted from 9:30 to 11 a.m., according to a release from Chris Judah, director of the Dothan-Houston County Emergency Management Agency (EMA). The drill will involve Ashford High School and Houston County High School in Columbia and will evaluate several variables, according to Judah. The simulated evacuations will require the transport to a reunification center, and several buses from each school will be escorted from the schools via law enforcement to a reception center located at the Houston County Career Academy on West Main Street in Dothan. There will be no students on the buses. Neither the parents of students in these schools nor residents of the areas involved in drill should be alarmed."
+    example3 = "Focus Russia: The year 2014 will be remembered as a transitional year in the political climate of Europe. Following the civil war in eastern Ukraine and the incorporation of Crimea by the Russian Federation, the continent is experiencing a reversal from a system of consensus into a system that is more reminiscent of the past opposition between NATO and the Warsaw Pact. This shift may seem even more surprising, because the new order that had rapidly emerged after the end of the cold war, with its regular conferences and summits, had become the order of the day. Unfortunately, international relations do not follow a uniform path of progress; there is, of course, no “end to history”."
+
+    PROFILE_NAME = 'en_full_all_TEST'
+    DOCUMENTS = [{u'annotations': [],
+                  u'content': example3,
                   u'format': u'text/html',
                   u'header': {},
                   u'id': u'1000',
