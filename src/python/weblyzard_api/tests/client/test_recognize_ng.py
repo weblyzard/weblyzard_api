@@ -778,7 +778,7 @@ class TestRecognizeRoche(TestRecognizeNg):
                                             u'end': 184,
                                             u'start': 20}]}}]
 
-
+@pytest.mark.skip(reason='For manual testing only.')
 class TestRecognizeGeonames(TestRecognizeNg):
     REQUIRED_REGEXPS = []
 
@@ -787,9 +787,9 @@ class TestRecognizeGeonames(TestRecognizeNg):
     example2 = "The Dothan-Houston County Emergency Management Agency is working with Houston County Schools and local law enforcement agencies to perform a drill on Thursday simulating the evacuation of certain areas, including two county schools. The drill will be conducted from 9:30 to 11 a.m., according to a release from Chris Judah, director of the Dothan-Houston County Emergency Management Agency (EMA). The drill will involve Ashford High School and Houston County High School in Columbia and will evaluate several variables, according to Judah. The simulated evacuations will require the transport to a reunification center, and several buses from each school will be escorted from the schools via law enforcement to a reception center located at the Houston County Career Academy on West Main Street in Dothan. There will be no students on the buses. Neither the parents of students in these schools nor residents of the areas involved in drill should be alarmed."
     example3 = "Focus Russia: The year 2014 will be remembered as a transitional year in the political climate of Europe. Following the civil war in eastern Ukraine and the incorporation of Crimea by the Russian Federation, the continent is experiencing a reversal from a system of consensus into a system that is more reminiscent of the past opposition between NATO and the Warsaw Pact. This shift may seem even more surprising, because the new order that had rapidly emerged after the end of the cold war, with its regular conferences and summits, had become the order of the day. Unfortunately, international relations do not follow a uniform path of progress; there is, of course, no “end to history”."
 
-    PROFILE_NAME = 'en_full_all_TEST'
+    PROFILE_NAME = 'en_full_bg'
     DOCUMENTS = [{u'annotations': [],
-                  u'content': example3,
+                  u'content': example1,
                   u'format': u'text/html',
                   u'header': {},
                   u'id': u'1000',
