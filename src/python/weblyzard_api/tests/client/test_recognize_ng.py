@@ -15,8 +15,7 @@ from collections import OrderedDict
 
 from weblyzard_api.client.recognize.ng import Recognize
 
-# RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
-RECOGNIZE_NG_SERVICE_URL = 'http://recognize-ng-develop.branch.i.weblyzard.net:8443'
+RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
 
 
 class TestRecognizeNg(unittest.TestCase):
