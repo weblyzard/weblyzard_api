@@ -778,7 +778,7 @@ class TestRecognizeRoche(TestRecognizeNg):
                                             u'end': 184,
                                             u'start': 20}]}}]
 
-@pytest.mark.skip(reason='For manual testing only.')
+@pytest.mark.skip(reason='For manual testing.')
 class TestRecognizeGeonames(TestRecognizeNg):
     REQUIRED_REGEXPS = []
 
@@ -794,6 +794,34 @@ class TestRecognizeGeonames(TestRecognizeNg):
                   u'header': {},
                   u'id': u'1000',
                   u'lang': u'DE',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': {u'BODY': [{u'@type': u'CharSpan',
+                                            u'end': 184,
+                                            u'start': 20}]}}]
+    
+class TestRecognizeGeonamesAU(TestRecognizeNg):
+    REQUIRED_REGEXPS = ['http://sws.geonames.org/7839347/', # Broome
+                        'http://sws.geonames.org/2075265/', # Busselton
+                        'http://sws.geonames.org/2067119/', # Mandurah
+                        'http://sws.geonames.org/2077963/', # Albany
+                        'http://sws.geonames.org/2077456/', # Australia
+                        'http://sws.geonames.org/7839517/', # Jondaloop (through regex)
+                        'http://sws.geonames.org/7839519/', # Kalgoorlie (through regex)
+                        'http://sws.geonames.org/2071858/', # Esperance (through regex)
+                        ]
+
+    text = '''
+    Travelling through Australia there are a lot of areas to see: Mandurah, Busselton, Joondalup. Albany is very well known.
+    Less well known are Esperance, Broome and Kalgoorlie, but still worth a visit. Shire of Esperance and Kalgoorlie Boulder are regions. 
+    '''
+    
+    PROFILE_NAME = 'en_full_bg_AU'
+    DOCUMENTS = [{u'annotations': [],
+                  u'content': text,
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'EN',
                   u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
                   u'partitions': {u'BODY': [{u'@type': u'CharSpan',
                                             u'end': 184,
