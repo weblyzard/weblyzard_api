@@ -39,8 +39,18 @@ class CharSpan(object):
         self.start = start
         self.end = end
 
+    def __json__(self):
+        return self.to_dict()
+
     def to_dict(self):
         return {k: getattr(self, v) for k, v in self.DICT_MAPPING.items()}
+
+    def __eq__(self, other):
+        if not isinstance(other, CharSpan):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+
+        return self.to_dict() == other.to_dict()
 
     @classmethod
     def from_dict(cls, dict_):
