@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from future import standard_library
+from typing import Dict
 standard_library.install_aliases()
 
 import time
@@ -50,7 +51,7 @@ def getHostName(x): return "://".join(urlsplit(x)[:2])
 
 
 class Retrieve(object):
-    ''' @class Retrieve
+    """ @class Retrieve
         retrieves URLs using HTTP
 
         .. remarks:
@@ -66,7 +67,7 @@ class Retrieve(object):
         which are _not_ handled correctly by the underlying urllib2 library(!)
         Please use urllib in such cases.
 
-    '''
+    """
 
     __slots__ = ('module', 'sleep_time', 'last_access_time', 'user_agent',
                  '_supported_http_authentification_methods')
@@ -85,15 +86,16 @@ class Retrieve(object):
         self.user_agent = user_agent % self.module \
             if "%s" in user_agent else user_agent
 
-    def open(self, url, data=None, headers={}, user=None, pwd=None, retry=0,
-             authentification_method="basic", accept_gzip=True,
-             head_only=False):
-        ''' Opens an URL and returns the matching file object
+    def open(self, url: str, user: str=None, pwd: str=None,
+             data=None, headers: Dict={}, retry: int=0,
+             authentification_method: str="basic", accept_gzip: bool=True,
+             head_only: bool=False):
+        """ Open a URL and returns the matching file object
             :param url: the URL to open
-            :param data: optional data to submit
-            :param headers: a dictionary of optional headers
             :param user: optional user name
             :param pwd: optional password
+            :param data: optional data to submit
+            :param headers: a dictionary of optional headers
             :param retry: number of retries in case of an temporary error
             :param authentification_method: the used authentification_method
                         ('basic'*, 'digest')
@@ -101,7 +103,7 @@ class Retrieve(object):
                         or not
             :param head_only: if True: only execute a HEAD request
             :returns a file object for reading the url
-        '''
+        """
         auth_handler = self._supported_http_authentification_methods[
             authentification_method]
         urlObj = None
@@ -147,18 +149,24 @@ class Retrieve(object):
         return urlObj
 
     @staticmethod
-    def _getHTTPBasicAuthOpener(url, user, pwd):
-        ''' returns an opener, capable of handling http-auth '''
+    def _getHTTPBasicAuthOpener(url: str, user: str, pwd: str):
+        """ Return an opener, capable of handling http-auth.
+        :param url:
+        :param user:
+        :param pwd:
+        """
         passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
         passman.add_password(None, [url], user, pwd)
         auth_handler = urllib.request.HTTPBasicAuthHandler(passman)
         return auth_handler
 
     @staticmethod
-    def _getHTTPDigestAuthOpener(url, user, pwd):
-        '''
-        returns an opener, capable of handling http-digest authentification
-        '''
+    def _getHTTPDigestAuthOpener(url: str, user: str, pwd: str):
+        """ Return an HTTP opener, capable of handling http-digest authentification.
+        :param url:
+        :param user:
+        :param pwd:
+        """
         passwdmngr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
         passwdmngr.add_password('realm', url, user, pwd)
         auth_handler = urllib.request.HTTPDigestAuthHandler(passwdmngr)
@@ -166,15 +174,15 @@ class Retrieve(object):
 
     @staticmethod
     def _getUncompressedStream(urlObj):
-        ''' transparently uncompressed the given data stream
-            :param urlObj:
-            :returns: an urlObj containing the uncompressed data
-        '''
+        """ Transparently uncompress a given data stream.
+        :param urlObj:
+        :returns: an urlObj containing the uncompressed data
+        """
         compressedStream = io.BytesIO(urlObj.read())
         return GzipFile(fileobj=compressedStream)
 
     def _throttle(self):
-        ''' delays web access according to the content provider's policy '''
+        """ delays web access according to the content provider's policy """
 
         if (time.time() - self.last_access_time) < \
                 DEFAULT_WEB_REQUEST_SLEEP_TIME:
@@ -182,19 +190,19 @@ class Retrieve(object):
         self.last_access_time = time.time()
 
     def __enter__(self):
-        ''' support of the context protocol '''
+        """ support of the context protocol """
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        ''' context protocol support '''
+        """ context protocol support """
         if exc_type is not None:
             log.critical("%s" % exc_type)
 
     @staticmethod
-    def get_user_password(url):
-        ''' returns the url, username, password if present in the url
-        @param url: well formed url, starting with a schema
-        @return: tuple (new_url, user, password) '''
+    def get_user_password(url: str):
+        """ Extract username and password from a URL, if present.
+        :param url: well formed url, starting with a schema
+        :return: tuple (new_url, user, password) """
         if not url.startswith('http'):
             url = 'http://%s' % url
 
@@ -215,7 +223,7 @@ class Retrieve(object):
         return url, user, password
 
     @staticmethod
-    def add_user_password(url, user, password):
+    def add_user_password(url: str, user: str, password: str):
         split_url = urlsplit(url)
         return urlunsplit((split_url.scheme,
                            '%s:%s@%s' % (user, password, split_url.netloc),
