@@ -13,6 +13,8 @@ import html
 from datetime import datetime
 from decimal import Decimal
 from itertools import chain
+from typing import Dict
+from enum import Enum
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import Sentence, SpanFactory, CharSpan
@@ -20,21 +22,57 @@ from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.exceptions import (MissingFieldException,
                                             UnexpectedFieldException)
-from typing import Dict
+
+
+class Partition(str, Enum):
+    FRAGMENT_KEY = 'FRAGMENT'
+    SENTENCE_KEY = 'SENTENCE'
+    DUPLICATE_KEY = 'DUPLICATE'
+    TITLE_KEY = 'TITLE'
+    BODY_KEY = 'BODY'
+    LINE_KEY = 'LINE'
+    TOKEN_KEY = 'TOKEN'
+    LAYOUT_KEY = 'LAYOUT'
+    SENTIMENT_KEY = 'SENTIMENT_SCOPE'
+    MISC_KEY = 'MISC'
+    # NEGATION_KEY = u'NEGATION_SCOPE'
+    MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
+
+    @classmethod
+    def is_valid(cls, partition_key: str):
+        if isinstance(partition_key, cls):
+            partition_key = partition_key.value
+        if not partition_key.upper() in cls.list():
+            return False
+        else:
+            return True
+
+    @classmethod
+    def list(cls):
+        return list(map(lambda c: c.value, cls))
+
+
+class PartitionDict(dict):
+
+    def __init__(self, *args, **kwargs):
+        dict.__init__(self, *args, **kwargs)
+        if len(args):
+            for label, spans in args[0].items():
+                self[label] = [SpanFactory.new_span(span) for span in spans]
+
+    def __setitem__(self, k, v):
+        if Partition.is_valid(k):
+            super().__setitem__(Partition(k), v)
+        else:
+            raise KeyError(f"Partition {k} is not valid")
+
+    def __getitem__(self, k):
+        if isinstance(k, str):
+            k = Partition(k.upper())
+        return super().__getitem__(k)
 
 
 class Document(object):
-    # supported partition keys
-    FRAGMENT_KEY = 'FRAGMENT'
-    SENTENCE_KEY = u'SENTENCE'
-    DUPLICATE_KEY = u'DUPLICATE'
-    TITLE_KEY = u'TITLE'
-    BODY_KEY = u'BODY'
-    TOKEN_KEY = u'TOKEN'
-    LAYOUT_KEY = u'LAYOUT'
-    SENTIMENT_KEY = u'SENTIMENT_SCOPE'
-    # NEGATION_KEY = u'NEGATION_SCOPE'
-    MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
 
     # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id",
@@ -74,18 +112,18 @@ class Document(object):
 
         # populate default dicts:
         if partitions is None:
-            self.partitions = {}
+            self.partitions = PartitionDict()
         else:
-            self.partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                                for label, spans in partitions.items()}
+            self.partitions = PartitionDict(partitions)
+
         self.header = header if header else {}
         self.annotations = annotations if annotations else []
 
     def get_body(self):
         if self.content is None or len(self.content) == 0:
             return ''
-        if self.BODY_KEY in self.partitions:
-            body_spans = self.partitions[self.BODY_KEY]
+        if Partition.BODY_KEY in self.partitions:
+            body_spans = self.partitions[Partition.BODY_KEY]
             spans = [self.content[span.start:span.end] for span in body_spans]
             return ' '.join(spans)
         return ''
@@ -93,8 +131,8 @@ class Document(object):
     def get_title(self):
         if self.content is None or len(self.content) == 0:
             return ''
-        if self.TITLE_KEY in self.partitions:
-            title_spans = self.partitions[self.TITLE_KEY]
+        if Partition.TITLE_KEY in self.partitions:
+            title_spans = self.partitions[Partition.TITLE_KEY]
             titles = [self.content[span.start:span.end] for span in title_spans]
             return ' '.join(titles)
         return ''
@@ -104,7 +142,7 @@ class Document(object):
         assert title in self.content
         start_index = self.content.index(title)
         end_index = start_index + len(title)
-        self.partitions[self.TITLE_KEY] = [{
+        self.partitions[Partition.TITLE_KEY] = [{
             "@type": "CharSpan",
             "start": start_index,
             "end": end_index
@@ -320,7 +358,7 @@ class Document(object):
         :param annotation
         :return: the POS of the annotation
         """
-        for token_span in self.partitions[self.TOKEN_KEY]:
+        for token_span in self.partitions[Partition.TOKEN_KEY]:
             if not isinstance(token_span, CharSpan):
                 token_span = SpanFactory.new_span(token_span)
             if token_span.start >= annotation['start']:
@@ -338,10 +376,10 @@ class Document(object):
         """
         result = []
         offset = 0
-        requested_keys = [self.SENTENCE_KEY]
+        requested_keys = [Partition.SENTENCE_KEY]
 
         if include_fragments:
-            requested_keys.append(self.FRAGMENT_KEY)
+            requested_keys.append(Partition.FRAGMENT_KEY)
         if not any([key in self.partitions for key in requested_keys]):
             return result
         sentence_spans = chain(
@@ -361,10 +399,10 @@ class Document(object):
             # get tokens
             token_spans = self.get_partition_overlaps(
                                             search_span=sentence_span,
-                                            target_partition_key=self.TOKEN_KEY)
+                                            target_partition_key=Partition.TOKEN_KEY)
             is_title = len(
                 self.get_partition_overlaps(search_span=sentence_span,
-                                            target_partition_key=self.TITLE_KEY)) > 0
+                                            target_partition_key=Partition.TITLE_KEY)) > 0
             if not include_title and is_title:
                 continue
 
