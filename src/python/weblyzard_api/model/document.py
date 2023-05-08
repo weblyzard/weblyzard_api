@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Jan 25, 2018
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
-'''
+"""
 from __future__ import unicode_literals
 from builtins import object
 import json
@@ -74,6 +74,18 @@ class PartitionDict(dict):
 
 class Document(object):
 
+    # TODO: to be removed, legacy mode only
+    FRAGMENT_KEY = 'FRAGMENT'
+    SENTENCE_KEY = u'SENTENCE'
+    DUPLICATE_KEY = u'DUPLICATE'
+    TITLE_KEY = u'TITLE'
+    BODY_KEY = u'BODY'
+    TOKEN_KEY = u'TOKEN'
+    LAYOUT_KEY = u'LAYOUT'
+    SENTIMENT_KEY = u'SENTIMENT_SCOPE'
+    # NEGATION_KEY = u'NEGATION_SCOPE'
+    MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
+    
     # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id",
                "md5sum": "id",
@@ -96,7 +108,7 @@ class Document(object):
 
     def __init__(self, content_id, content, content_type, lang, nilsimsa=None,
                  partitions=None, header=None, annotations=None):
-        ''' '''
+        """ """
         self.content_id = content_id
 
         # unescape existing HTML entities
@@ -155,12 +167,12 @@ class Document(object):
 
     @classmethod
     def _dict_transform(cls, data, mapping=None):
-        ''' 
+        """ 
         Recursively transform a document object to a JSON serializable dict, 
         with MAPPING applied as well as empty results removed.
         :param data, the data to be transformed to a dict
         :return a dictionary of a document, ready for JSON serialization
-        '''
+        """
         if mapping is None:
             mapping = cls.MAPPING
         if data is None:
@@ -222,20 +234,20 @@ class Document(object):
 
     @classmethod
     def from_json(cls, json_payload):
-        ''' 
+        """ 
         Convert a JSON object into a content model.
         :param json_payload, the string representation of the JSON content model
-        '''
+        """
         parsed_content = json.loads(json_payload, strict=False)
         return cls.from_dict(dict_=parsed_content)
 
     @classmethod
     def from_dict(cls, dict_):
-        '''
+        """
         Convert a `dict` object corresponding to the JSON serialisation
         into a Document object.
         :param dict_, the `dict` representing the Document.
-        '''
+        """
         # validation
         for required_field in cls.REQUIRED_FIELDS:
             if not required_field in dict_:
@@ -279,26 +291,26 @@ class Document(object):
                    annotations=annotations)
 
     def to_json(self):
-        '''
-        Serialize a document to JSON '''
+        """
+        Serialize a document to JSON """
         return json.dumps(self.to_dict())
 
     def to_dict(self):
-        '''
+        """
         Create a dict representing the Document analogous to the JSON structure.
-        '''
+        """
         result = self._dict_transform(self)
         return result
 
     def to_xml(self, ignore_title=False, include_fragments=False,
                xml_version=XML2013.VERSION):
-        ''' 
+        """ 
         Serialize a document to XML.
         :param ignore_titles: if set, titles will not be serialized.
         :param include_fragments: non-sentence fragments will be included.
         :param xml_version: the version of XML to be used (defaults to 2013)
         :return: the serialized XML
-        '''
+        """
         if not hasattr(self, 'features'):
             self.features = {}
 
@@ -317,26 +329,26 @@ class Document(object):
             sentences=self.get_sentences(include_fragments=include_fragments))
 
     def get_text_by_span(self, span: CharSpan):
-        ''' 
+        """ 
         Return the textual content of a span. 
         :param span, the span to extract content for.
-        '''
+        """
         if not isinstance(span, CharSpan):
             span = SpanFactory.new_span(span)
         return self.content[span.start:span.end]
 
     @classmethod
     def overlapping(cls, spanA: CharSpan, spanB: CharSpan):
-        ''' Return whether two spans overlap. '''
+        """ Return whether two spans overlap. """
         return (spanB.start <= spanA.start and spanB.end > spanA.start) or \
                 (spanA.start <= spanB.start and spanA.end > spanB.start)
 
     def get_partition_overlaps(self, search_span: CharSpan,
                                target_partition_key: str):
-        ''' Return all spans from a given target_partition_key that overlap 
+        """ Return all spans from a given target_partition_key that overlap 
         the search span. 
         :param search_span, the span to search for overlaps by.
-        :param target_partition_key, the target partition'''
+        :param target_partition_key, the target partition"""
         result = []
 
         if not target_partition_key in self.partitions:
