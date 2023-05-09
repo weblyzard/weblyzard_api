@@ -170,6 +170,22 @@ class SentimentCharSpan(CharSpan):
         self.modality = modality
 
 
+class NerCharSpan(CharSpan):
+
+    SPAN_TYPE = 'NamedEntityCharSpan'
+
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'label': 'label'}
+
+    def __init__(self, start, end, entity=None, label=None):
+        super(NerCharSpan, self).__init__(span_type=self.SPAN_TYPE,
+                                          start=start,
+                                          end=end)
+        self.label = label
+
+
 class LayoutCharSpan(CharSpan):
 
     SPAN_TYPE = 'LayoutCharSpan'
