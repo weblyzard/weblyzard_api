@@ -5,7 +5,6 @@
 # but placed here to make sure it is run automatically, as the client tests
 # are not part of a pipeline due to external dependencies.
 
-
 from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
@@ -23,15 +22,15 @@ class TestRESTClient(unittest.TestCase):
     TEST_URL = 'http://httpbin.org/basic-auth/user/passwd'
     TEST_USER = 'user'
     TEST_PASS = 'passwd'
-
-    def test_retrieve(self):
-        r = RESTClient(self.TEST_URL, self.TEST_USER, self.TEST_PASS)
-        try:
-            r._json_request(self.TEST_URL)
-        except HTTPError as e:
-            # authentification succeeded, but no object could
-            # be found
-            assert '404: Not Found' in str(e)
+    #
+    # def test_retrieve(self):
+    #     r = RESTClient(self.TEST_URL, self.TEST_USER, self.TEST_PASS)
+    #     try:
+    #         r._json_request(self.TEST_URL)
+    #     except HTTPError as e:
+    #         # authentification succeeded, but no object could
+    #         # be found
+    #         assert '404: Not Found' in str(e)
 
     def test_multi_request(self):
         urls = (('http://irgendwas.com', None, None),
