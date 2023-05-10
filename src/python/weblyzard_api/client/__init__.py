@@ -94,9 +94,9 @@ class RESTClient(object):
         """
         if parameters:
             handle = self.retrieve(
-                url,
-                dumps(parameters) if json_encode_arguments else parameters,
-                {'Content-Type': content_type})
+                url=url,
+                data=dumps(parameters) if json_encode_arguments else parameters,
+                headers={'Content-Type': content_type})
         else:
             handle = self.retrieve(url)
 
