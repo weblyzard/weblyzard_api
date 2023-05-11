@@ -12,64 +12,14 @@ import html
 
 from datetime import datetime
 from decimal import Decimal
-from itertools import chain
-from typing import Dict
-from enum import Enum
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
-from weblyzard_api.model import Sentence, SpanFactory, CharSpan
+from weblyzard_api.model import SpanFactory, CharSpan
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.exceptions import (MissingFieldException,
                                             UnexpectedFieldException)
-
-
-class Partition(str, Enum):
-    FRAGMENT_KEY = 'FRAGMENT'
-    SENTENCE_KEY = 'SENTENCE'
-    DUPLICATE_KEY = 'DUPLICATE'
-    TITLE_KEY = 'TITLE'
-    BODY_KEY = 'BODY'
-    LINE_KEY = 'LINE'
-    TOKEN_KEY = 'TOKEN'
-    LAYOUT_KEY = 'LAYOUT'
-    SENTIMENT_KEY = 'SENTIMENT_SCOPE'
-    MISC_KEY = 'MISC'
-    # NEGATION_KEY = u'NEGATION_SCOPE'
-    MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
-
-    @classmethod
-    def is_valid(cls, partition_key: str):
-        if isinstance(partition_key, cls):
-            partition_key = partition_key.value
-        if not partition_key.upper() in cls.list():
-            return False
-        else:
-            return True
-
-    @classmethod
-    def list(cls):
-        return list(map(lambda c: c.value, cls))
-
-
-class PartitionDict(dict):
-
-    def __init__(self, *args, **kwargs):
-        dict.__init__(self, *args, **kwargs)
-        if len(args):
-            for label, spans in args[0].items():
-                self[label] = [SpanFactory.new_span(span) for span in spans]
-
-    def __setitem__(self, k, v):
-        if Partition.is_valid(k):
-            super().__setitem__(Partition(k), v)
-        else:
-            raise KeyError(f"Partition {k} is not valid")
-
-    def __getitem__(self, k):
-        if isinstance(k, str):
-            k = Partition(k.upper())
-        return super().__getitem__(k)
+from weblyzard_api.model.partition import PartitionDict, PartitionKey
 
 
 class Document(object):
@@ -85,7 +35,7 @@ class Document(object):
     SENTIMENT_KEY = u'SENTIMENT_SCOPE'
     # NEGATION_KEY = u'NEGATION_SCOPE'
     MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
-    
+
     # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id",
                "md5sum": "id",
@@ -134,8 +84,8 @@ class Document(object):
     def get_body(self):
         if self.content is None or len(self.content) == 0:
             return ''
-        if Partition.BODY_KEY in self.partitions:
-            body_spans = self.partitions[Partition.BODY_KEY]
+        if PartitionKey.BODY in self.partitions:
+            body_spans = self.partitions[PartitionKey.BODY]
             spans = [self.content[span.start:span.end] for span in body_spans]
             return ' '.join(spans)
         return ''
@@ -143,8 +93,8 @@ class Document(object):
     def get_title(self):
         if self.content is None or len(self.content) == 0:
             return ''
-        if Partition.TITLE_KEY in self.partitions:
-            title_spans = self.partitions[Partition.TITLE_KEY]
+        if PartitionKey.TITLE in self.partitions:
+            title_spans = self.partitions[PartitionKey.TITLE]
             titles = [self.content[span.start:span.end] for span in title_spans]
             return ' '.join(titles)
         return ''
@@ -154,7 +104,7 @@ class Document(object):
         assert title in self.content
         start_index = self.content.index(title)
         end_index = start_index + len(title)
-        self.partitions[Partition.TITLE_KEY] = [{
+        self.partitions[PartitionKey.TITLE] = [{
             "@type": "CharSpan",
             "start": start_index,
             "end": end_index
@@ -337,111 +287,3 @@ class Document(object):
             span = SpanFactory.new_span(span)
         return self.content[span.start:span.end]
 
-    @classmethod
-    def overlapping(cls, spanA: CharSpan, spanB: CharSpan):
-        """ Return whether two spans overlap. """
-        return (spanB.start <= spanA.start and spanB.end > spanA.start) or \
-                (spanA.start <= spanB.start and spanA.end > spanB.start)
-
-    def get_partition_overlaps(self, search_span: CharSpan,
-                               target_partition_key: str):
-        """ Return all spans from a given target_partition_key that overlap 
-        the search span. 
-        :param search_span, the span to search for overlaps by.
-        :param target_partition_key, the target partition"""
-        result = []
-
-        if not target_partition_key in self.partitions:
-            return result
-
-        for other_span in self.partitions[target_partition_key]:
-            if not isinstance(other_span, CharSpan):
-                other_span = SpanFactory.new_span(other_span)
-            if not isinstance(search_span, CharSpan):
-                search_span = SpanFactory.new_span(search_span)
-            if self.overlapping(other_span, search_span):
-                result.append(other_span)
-
-        return result
-
-    def get_pos_for_annotation(self, annotation: Dict):
-        """
-        Get the part-of-speech for a given annotation.
-        :param annotation
-        :return: the POS of the annotation
-        """
-        for token_span in self.partitions[Partition.TOKEN_KEY]:
-            if not isinstance(token_span, CharSpan):
-                token_span = SpanFactory.new_span(token_span)
-            if token_span.start >= annotation['start']:
-                return token_span.pos
-        return None
-
-    def get_sentences(self, zero_based: bool=False,
-                      include_title: bool=True,
-                      include_fragments: bool=False):
-        """
-        Legacy method to extract webLyzard sentences from content model.
-        :param zero_based: if True, enforce token indices starting at 0
-        :param include_title: if True, include title sentences
-        :param include_fragments: if True, include fragments (non-sentence text)
-        """
-        result = []
-        offset = 0
-        requested_keys = [Partition.SENTENCE_KEY]
-
-        if include_fragments:
-            requested_keys.append(Partition.FRAGMENT_KEY)
-        if not any([key in self.partitions for key in requested_keys]):
-            return result
-        sentence_spans = chain(
-            *(self.partitions.get(key, []) for key in requested_keys)
-        )
-        sentence_spans = sorted(sentence_spans, key=lambda span: span.start)
-
-        for sentence_span in sentence_spans:
-            if not isinstance(sentence_span, CharSpan):
-                sentence_span = SpanFactory.new_span(sentence_span)
-
-            if zero_based:
-                offset = sentence_span.start
-            if not sentence_span.span_type == 'SentenceCharSpan':
-                raise Exception('Bad sentence span')
-
-            # get tokens
-            token_spans = self.get_partition_overlaps(
-                                            search_span=sentence_span,
-                                            target_partition_key=Partition.TOKEN_KEY)
-            is_title = len(
-                self.get_partition_overlaps(search_span=sentence_span,
-                                            target_partition_key=Partition.TITLE_KEY)) > 0
-            if not include_title and is_title:
-                continue
-
-            # serialize POS, tokens, and dependecy to string
-            pos_sequence = ' '.join([ts.pos for ts in token_spans])
-            tok_sequence = ' '.join(
-                ['{},{}'.format(ts.start - offset, ts.end - offset) for ts in
-                 token_spans])
-            try:
-                dep_sequence = ' '.join(
-                    ['{}:{}'.format(*ts.dependency.values()) for ts in
-                     token_spans])
-            except AttributeError:
-                dep_sequence = None
-
-            # prefer semOrient over sem_orient, if both are annotated and non-zero
-            sem_orient = sentence_span.sem_orient
-
-            # finally, extract the sentence text.
-            value = self.get_text_by_span(sentence_span)
-
-            result.append(Sentence(md5sum=sentence_span.md5sum,
-                                   sem_orient=sem_orient,
-                                   significance=sentence_span.significance,
-                                   pos=pos_sequence, token=tok_sequence,
-                                   value=value, is_title=is_title,
-                                   dependency=dep_sequence,
-                                   emotions=sentence_span.emotions))
-
-        return result
