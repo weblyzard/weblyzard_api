@@ -119,6 +119,14 @@ class Document(object):
         self.contentx.language = val
 
     @property
+    def title(self):
+        return self.contentx.get_title()
+
+    @title.setter
+    def title(self, val: str):
+        self.contentx.set_title(val)
+
+    @property
     def nilsimsa(self):
         return self.contentx.nilsimsa
 
@@ -316,13 +324,4 @@ class Document(object):
             titles=titles,
             attributes=self.header,
             sentences=self.get_sentences(include_fragments=include_fragments))
-
-    def get_text_by_span(self, span: CharSpan):
-        """ 
-        Return the textual content of a span. 
-        :param span, the span to extract content for.
-        """
-        if not isinstance(span, CharSpan):
-            span = SpanFactory.new_span(span)
-        return self.content[span.start:span.end]
 
