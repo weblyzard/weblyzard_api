@@ -12,6 +12,7 @@ import html
 
 from datetime import datetime
 from decimal import Decimal
+from typing import Dict
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import SpanFactory, CharSpan
@@ -19,7 +20,8 @@ from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.exceptions import (MissingFieldException,
                                             UnexpectedFieldException)
-from weblyzard_api.model.partition import PartitionDict, PartitionKey
+from weblyzard_api.model.partition import PartitionDict, AnnotationDict
+from weblyzard_api.model.content import ContentModel
 
 
 class Document(object):
@@ -56,64 +58,101 @@ class Document(object):
                               XML2013.VERSION: XML2013,
                               XMLDeprecated.VERSION: XMLDeprecated}
 
-    def __init__(self, content_id, content, content_type, lang, nilsimsa=None,
-                 partitions=None, header=None, annotations=None):
-        """ """
+    def __init__(self, content_id: int, content: str, content_type: str,
+                 lang: str, nilsimsa: str=None, partitions: Dict=None,
+                 header: Dict=None, annotations: Dict=None):
+        """ 
+        :param content_id:
+        :param content:
+        :param content_type:
+        :param lang:
+        :param nilsimsa:
+        :param partitions:
+        :param header:
+        :param annotations:
+        """
         self.content_id = content_id
 
         # unescape existing HTML entities
-        try:
-            content = html.unescape(content)
-        except Exception as e:
-            pass  # ignore
+        if isinstance(content, str):
+            try:
+                content = html.unescape(content)
+            except Exception as e:
+                pass  # ignore
 
-        self.content = content
         self.content_type = content_type
-        self.lang = lang.lower() if lang else lang
-        self.nilsimsa = nilsimsa
+
+        #
+        # self.lang = lang.lower() if lang else lang
+        # self.nilsimsa = nilsimsa
 
         # populate default dicts:
-        if partitions is None:
-            self.partitions = PartitionDict()
-        else:
-            self.partitions = PartitionDict(partitions)
+        part_dict = PartitionDict()
+        if partitions is not None:
+            part_dict = PartitionDict(partitions)
+
+        anno_dict = AnnotationDict()
+        if annotations is not None:
+            anno_dict = AnnotationDict(annotations)
+
+        self.contentx = ContentModel(text=content,
+                                     language=lang.lower() if lang else lang,
+                                     nilsimsa=nilsimsa,
+                                     partitions=part_dict,
+                                     annotations=anno_dict)
 
         self.header = header if header else {}
-        self.annotations = annotations if annotations else []
-
-    def get_body(self):
-        if self.content is None or len(self.content) == 0:
-            return ''
-        if PartitionKey.BODY in self.partitions:
-            body_spans = self.partitions[PartitionKey.BODY]
-            spans = [self.content[span.start:span.end] for span in body_spans]
-            return ' '.join(spans)
-        return ''
-
-    def get_title(self):
-        if self.content is None or len(self.content) == 0:
-            return ''
-        if PartitionKey.TITLE in self.partitions:
-            title_spans = self.partitions[PartitionKey.TITLE]
-            titles = [self.content[span.start:span.end] for span in title_spans]
-            return ' '.join(titles)
-        return ''
-
-    def set_title(self, title):
-        """ """
-        assert title in self.content
-        start_index = self.content.index(title)
-        end_index = start_index + len(title)
-        self.partitions[PartitionKey.TITLE] = [{
-            "@type": "CharSpan",
-            "start": start_index,
-            "end": end_index
-        }]
-
-    title = property(get_title, set_title)
 
     def __repr__(self):
         return 'Document: {}'.format(self.__dict__)
+
+    @property
+    def content(self):
+        return self.contentx.text
+
+    @property
+    def lang(self):
+        return self.contentx.language
+
+    @lang.setter
+    def lang(self, val: str):
+        self.contentx.language = val
+
+    @property
+    def nilsimsa(self):
+        return self.contentx.nilsimsa
+
+    @nilsimsa.setter
+    def nilsimsa(self, val: str):
+        self.contentx.nilsimsa = val
+
+    @property
+    def partitions(self):
+        return self.contentx.partitions
+
+    @partitions.setter
+    def partitions(self, val: Dict):
+        if not isinstance(val, PartitionDict):
+            val = PartitionDict(dict)
+
+        self.contentx.partitions = val
+
+    @property
+    def annotations(self):
+        return self.contentx.annotations
+
+    @annotations.setter
+    def annotations(self, val: Dict):
+        if not isinstance(val, AnnotationDict):
+            val = AnnotationDict(dict)
+
+        self.contentx.annotations = val
+
+    def get_body(self) -> str:
+        return self.contentx.get_body()
+
+    def get_title(self) -> str:
+        return self.contentx.get_title()
 
     @classmethod
     def _dict_transform(cls, data, mapping=None):

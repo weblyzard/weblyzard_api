@@ -12,7 +12,15 @@ from enum import Enum
 from weblyzard_api.model import Sentence, SpanFactory, CharSpan
 
 
+class AnnotationKey(str, Enum):
+
+    ORGANISATION = 'OranisationEntity'
+    PERSON = 'PersonEntity'
+    GEO = 'GeoEntity'
+
+
 class PartitionKey(str, Enum):
+
     FRAGMENT = 'FRAGMENT'
     SENTENCE = 'SENTENCE'
     DUPLICATE = 'DUPLICATE'
@@ -40,24 +48,62 @@ class PartitionKey(str, Enum):
         return list(map(lambda c: c.value, cls))
 
 
-class PartitionDict(dict):
+class NamedDict(dict):
+
+    NAME = 'Undefined'
+
+    KEYSPACE = None
+
+    def __setitem__(self, k, v):
+        if self.KEYSPACE.is_valid(k):
+            super().__setitem__(self.KEYSPACE(k), v)
+        else:
+            raise KeyError(f"{self.NAME} {k} is not valid")
+
+    def __getitem__(self, k):
+        if isinstance(k, str):
+            k = self.KEYSPACE(k.upper())
+        return super().__getitem__(k)
+
+
+class AnnotationDict(NamedDict):
+
+    Name = 'Annotation'
+
+    KEYSPACE = AnnotationKey
+
+
+class PartitionDict(NamedDict):
+
+    NAME = 'Partition'
+
+    KEYSPACE = PartitionKey
 
     def __init__(self, *args, **kwargs):
-        dict.__init__(self, *args, **kwargs)
+        NamedDict.__init__(self, *args, **kwargs)
         if len(args):
             for label, spans in args[0].items():
                 self[label] = [SpanFactory.new_span(span) for span in spans]
 
-    def __setitem__(self, k, v):
-        if PartitionKey.is_valid(k):
-            super().__setitem__(PartitionKey(k), v)
-        else:
-            raise KeyError(f"Partition {k} is not valid")
+    def partition_content(self, sentences: bool=False, fragments: bool=False) -> str:
+        """ Return the textual content according to partitions only. 
+        :param sentences:
+        :param fragments:
+        """
+        if not sentences and not fragments:
+            return self.text
 
-    def __getitem__(self, k):
-        if isinstance(k, str):
-            k = PartitionKey(k.upper())
-        return super().__getitem__(k)
+        item_dict = {}
+
+        if sentences:
+            for sent in self.get(PartitionKey.SENTENCE, []):
+                item_dict[sent['start']] = self.text[sent['start']:sent['end']]
+        if fragments:
+            for frag in self.get(PartitionKey.FRAGMENT, []):
+                item_dict[frag['start']] = self.text[frag['start']:frag['end']]
+        item_dict = {k: v for k, v in sorted(item_dict.items(),
+                                             key=lambda item: item[0])}
+        return '\n'.join(item_dict.values())
 
     @classmethod
     def overlapping(cls, spanA: CharSpan, spanB: CharSpan) -> bool:
