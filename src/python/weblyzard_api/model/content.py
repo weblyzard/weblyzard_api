@@ -51,11 +51,31 @@ class ContentModel(BaseModel):
             span = SpanFactory.new_span(span)
         return self.text[span.start:span.end]
 
+    def partition_content(self, sentences: bool=False,
+                          fragments: bool=False) -> str:
+        """ Return the textual content according to partitions only. 
+        :param sentences:
+        :param fragments:
+        """
+        if not sentences and not fragments:
+            return self.text
+
+        item_dict = {}
+
+        if sentences:
+            for sent in self.get(PartitionKey.SENTENCE, []):
+                item_dict[sent['start']] = self.text[sent['start']:sent['end']]
+        if fragments:
+            for frag in self.get(PartitionKey.FRAGMENT, []):
+                item_dict[frag['start']] = self.text[frag['start']:frag['end']]
+        item_dict = {k: v for k, v in sorted(item_dict.items(),
+                                             key=lambda item: item[0])}
+        return '\n'.join(item_dict.values())
+
     def get_sentences(self, zero_based: bool=False,
                       include_title: bool=True,
                       include_fragments: bool=False) -> List[Sentence]:
-        """
-        Legacy method to extract webLyzard sentences from content model.
+        """ Extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
         :param include_title: if True, include title sentences
         :param include_fragments: if True, include fragments (non-sentence text)

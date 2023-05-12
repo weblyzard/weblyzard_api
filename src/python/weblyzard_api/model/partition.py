@@ -85,26 +85,6 @@ class PartitionDict(NamedDict):
             for label, spans in args[0].items():
                 self[label] = [SpanFactory.new_span(span) for span in spans]
 
-    def partition_content(self, sentences: bool=False, fragments: bool=False) -> str:
-        """ Return the textual content according to partitions only. 
-        :param sentences:
-        :param fragments:
-        """
-        if not sentences and not fragments:
-            return self.text
-
-        item_dict = {}
-
-        if sentences:
-            for sent in self.get(PartitionKey.SENTENCE, []):
-                item_dict[sent['start']] = self.text[sent['start']:sent['end']]
-        if fragments:
-            for frag in self.get(PartitionKey.FRAGMENT, []):
-                item_dict[frag['start']] = self.text[frag['start']:frag['end']]
-        item_dict = {k: v for k, v in sorted(item_dict.items(),
-                                             key=lambda item: item[0])}
-        return '\n'.join(item_dict.values())
-
     @classmethod
     def overlapping(cls, spanA: CharSpan, spanB: CharSpan) -> bool:
         """ Return whether two spans overlap. """
