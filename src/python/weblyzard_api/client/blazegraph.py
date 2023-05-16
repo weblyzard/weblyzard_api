@@ -7,6 +7,7 @@ from typing import Generator
 from SPARQLWrapper import SPARQLWrapper2, JSON
 from weblyzard_api.client.rdf import PREFIXES
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,20 +47,31 @@ class BlazegraphWrapper(object):
         sparql_endpoint = '{}:{}/{}'.format(host, port, path)
         return sparql_endpoint
 
-    def _set_query_method(self, query):
+    def _set_query_method(self, query:str):
         '''
         Switch to POST if the query is too long.
         '''
         if len(query) > 500:  # not sure if this is the correct cutoff
             self.query_wrapper.method = 'POST'
-
+    
+    def remove_duplicate_prefixes(self, query:str) -> str:
+        """ 
+        Remove duplicate prefix declarations from the query that cause an
+        a `QueryBadFormed` Error for Blazegraph.
+        """
+        prefixes = "\n".join([prefix for prefix in self.PREFIXES.split("\n") \
+                    if prefix not in query])
+        return prefixes
+            
     def run_query(self, query, no_prefix=False):
-        """ Run a given query and return the result's bindings.
+        """ 
+        Run a given query and return the result's bindings.
         :param query: The SPARQL query to run.
         """
         self._set_query_method(query)
         if not no_prefix:
-            query = f'{self.PREFIXES}{query}'
+            prefixes = self.remove_duplicate_prefixes(query)
+            query = f'{prefixes}{query}'
         self.query_wrapper.setQuery(query)
         self.debug(f'running the following query against {self.query_endpoint}\n{query}')
 
@@ -115,6 +127,7 @@ class BlazegraphWrapper(object):
 if __name__ == '__main__':
     blazegraph_wrapper = BlazegraphWrapper.from_config()
     query = '''
+            PREFIX wd: <http://www.wikidata.org/entity/> 
             SELECT ?uri ?label ?country ?headquarters_location WHERE {
                       ?uri rdfs:label ?label;
                         wdt:P279 wd:Q43229;
