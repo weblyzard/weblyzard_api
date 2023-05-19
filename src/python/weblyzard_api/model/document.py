@@ -124,7 +124,7 @@ class Document(object):
 
     @title.setter
     def title(self, val: str):
-        self.contentx.set_title(val)
+        self.contentx.set_title(title=val)
 
     @property
     def nilsimsa(self):
@@ -141,7 +141,7 @@ class Document(object):
     @partitions.setter
     def partitions(self, val: Dict):
         if not isinstance(val, PartitionDict):
-            val = PartitionDict(dict)
+            val = PartitionDict(val)
 
         self.contentx.partitions = val
 
@@ -152,7 +152,7 @@ class Document(object):
     @annotations.setter
     def annotations(self, val: Dict):
         if not isinstance(val, AnnotationDict):
-            val = AnnotationDict(dict)
+            val = AnnotationDict(val)
 
         self.contentx.annotations = val
 
