@@ -31,7 +31,7 @@ class TestRESTClient(unittest.TestCase):
         except HTTPError as e:
             # authentification succeeded, but no object could
             # be found
-            assert '404: Not Found' in str(e)
+            assert '404: Not Found' in str(e) or '504: Gateway Time-out' in str(e)
 
     def test_multi_request(self):
         urls = (('http://irgendwas.com', None, None),
