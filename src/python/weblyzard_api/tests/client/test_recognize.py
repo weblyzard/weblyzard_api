@@ -37,6 +37,7 @@ class TestRecognize(unittest.TestCase):
     def setUp(self):
         self.available_profiles = []
         url = 'localhost:8080/Recognize/rest/recognize'
+        url = 'http://recognize-ng.prod.i.weblyzard.net:8443'
         self.client = Recognize(url)
         self.service_is_online = self.client.is_online()
         if not self.service_is_online:
@@ -79,11 +80,16 @@ class TestRecognize(unittest.TestCase):
 #             print('xmlsearch::::', result)
 
     def test_custom(self):
-        profile_name = 'de.people.ng'
+        profile_name = 'de.people.bg'
         if profile_name not in self.available_profiles:
             print("Profile %s not available!" % profile_name)
             return
-        text = u'Cindy Crawford, George Clooney, Eddie Redmayne, Kaia Gerber, Presley Gerber, Daniel Craig, Clemens Doppler, Alexander Horst, Hanner Jagerhofer, Melanie Rondonell, Helmut Saller, Karin Sailer, Irmgard Wiesinger, Jürgen Demuth, Peter Altrichter, Manfred Sulyok, Berta Sando sind tolle Menschen.'
+        text = u'''Harald Mahrer und Walter Ruck müssen gefunden werden! 
+        Cindy Crawford, George Clooney, Eddie Redmayne, Kaia Gerber, 
+        Presley Gerber, Daniel Craig, Clemens Doppler, Alexander Horst, 
+        Hanner Jagerhofer, Melanie Rondonell, Helmut Saller, Karin Sailer, 
+        Irmgard Wiesinger, Jürgen Demuth, Peter Altrichter, Manfred Sulyok, 
+        Berta Sando sind tolle Menschen.'''
         # Hanner Jagerhofer, Bill Gates, Achim Steiner, Mark Zuckerberg are some people of interest.  Achim Steiner and Tegegnework Gettu and Abdoulaye Mar Dieye and Lenni Montiel and Haoliang Xu and Susan McDade and Robert Piper and Cihan Sultanoğlu are UNEP people.'
 #         geodocs = [{'content_id': '11',
 #                     'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},

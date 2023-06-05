@@ -5,12 +5,24 @@
 """
 from __future__ import unicode_literals
 
+import urllib.error
+
+from time import sleep, time
+from random import random
+
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
 import logging
 logger = logging.getLogger(__name__)
+
+# number of seconds to wait if the web service is occupied
+# - we stop once either DEFAULT_MAX_RETRY_DELAY or DEFAULT_MAX_RETRY_ATTEMPTS is reached
+# . DEFAULT_WAIT_TIME should therefore amount to DEFAULT_MAX_RETRY_DELAY/2 * DEFAULT_MAX_RETRY_ATTEMPTS
+DEFAULT_WAIT_TIME = 20 * 60
+DEFAULT_MAX_RETRY_DELAY = 20
+DEFAULT_MAX_RETRY_ATTEMPTS = 120
 
 
 class Recognize(MultiRESTClient):
@@ -167,7 +179,10 @@ class Recognize(MultiRESTClient):
                                               'limit': limit
                                               })
 
-    def search_documents(self, profile_name, document_list, limit):
+    def search_documents(self, profile_name, document_list, limit,
+                         wait_time=DEFAULT_WAIT_TIME,
+                         max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
+                         max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
         """
         Search the given document for entities specified in the given profiles.
         :param profile_name: the profile to search in
@@ -180,6 +195,29 @@ class Recognize(MultiRESTClient):
 
         content_type = 'application/json'
         search_command = 'search_documents'
+
+        # wait until the web service has available threads for processing
+        # the request
+        attempts = 0
+        start_time = time()
+        while time() - start_time < wait_time and attempts < max_retry_attempts:
+
+            # submit the request
+            # - here we need to check for a 502 and 503 error in
+            #   case that has_queued_threads has not been
+            #   up to date.
+            try:
+                result = self.request(path=search_command,
+                            parameters=document_list,
+                            content_type=content_type,
+                            query_parameters={'profileName': profile_name,
+                                              'limit': limit
+                                              })
+                return result
+            except (urllib.error.HTTPError, urllib.error.URLError) as e:
+                sleep(max_retry_delay * random())
+                attempts = attempts + 1
+
         return self.request(path=search_command,
                             parameters=document_list,
                             content_type=content_type,

@@ -57,21 +57,22 @@ class WltSearchRestApiClient(WltApiClient):
     KEYWORD_ENDPOINT = 'keyentities/'
 
     def search_documents(self, sources: List[str], terms: List[str]=None,
-                         auth_token: str=None,
+                         auth_token: str=None, content_id: int=None,
                          start_date: str=None, end_date: str=None,
                          count: int=10, offset: int=0,
                          max_docs: int=-1, exact_match=True, similarity=70,
                          fields: List[str]=['document.contentid']):
         """ 
         Search an index for documents matching the search parameters.
-        :param sources
-        :param terms, optional list of terms to filter for.
-        :param auth_token, the webLyzard authentication token, if any
-        :param start_date, result documents must be younger than this, if given (e.g. \"2018-08-01\")
-        :param end_date, result documents must be older than this, if given
-        :param count, number of documents to return, default 10
-        :param offset, offset to search (use with combination with count and hints)
-        :param fields, list of fields of document to return, default just contentid
+        :param sources: required sources where to look for content.
+        :param content_id: optional single content_id .
+        :param terms: optional list of terms to filter for.
+        :param auth_token: the webLyzard authentication token, if any.
+        :param start_date: result documents must be younger than this, if given (e.g. \"2018-08-01\")
+        :param end_date: result documents must be older than this, if given
+        :param count: number of documents to return, default 10
+        :param offset: offset to search (use with combination with count and hints)
+        :param fields: list of fields of document to return, default just contentid
         :returns: The result documents as serialized JSON
         :rtype: str
         """
@@ -92,14 +93,19 @@ class WltSearchRestApiClient(WltApiClient):
             "count": count,
             "offset": offset
         }
-        if start_date:
-            query["beginDate"] = str(start_date)
 
-        if end_date:
-            query["endDate"] = str(end_date)
+        term_query = None
+        if content_id is not None and isinstance(content_id, int):
+            # construct an ID query
+            term_query = {
+                "contentid": {
+                    "eq": content_id
+                }
+             }
+            max_docs = 1
+        elif terms is not None:
+            # construct a term query
 
-        # construct a term query
-        if terms is not None:
             term_query = {
                 "bool": {
                     "should": []
@@ -119,6 +125,14 @@ class WltSearchRestApiClient(WltApiClient):
                                                   "percent": similarity}}}
                         }})
 
+            # date filters for term queries
+            if start_date:
+                query["beginDate"] = str(start_date)
+
+            if end_date:
+                query["endDate"] = str(end_date)
+
+        if term_query is not None:
             query["query"] = term_query
 
         headers = {'Authorization': 'Bearer %s' % auth_token,
@@ -160,13 +174,13 @@ class WltSearchRestApiClient(WltApiClient):
                         auth_token: str=None, terms: List[str]=None):
         """ 
         Search an index for top keyword associations matching the search parameters.
-        :param sources
-        :param term_query, the query string
-        :param start_date, result documents must be younger than this (e.g. \"2018-08-01\")
-        :param end_date, result documents must be older than this
-        :param num_keywords, how many keywords to return
-        :param num_associations, how many keyword associations to return
-        :param auth_token, the webLyzard authentication token, if any
+        :param sources: required sources where to look for content.
+        :param term_query: the query string
+        :param start_date: result documents must be younger than this (e.g. \"2018-08-01\")
+        :param end_date: result documents must be older than this
+        :param num_keywords: how many keywords to return
+        :param num_associations: how many keyword associations to return
+        :param auth_token: the webLyzard authentication token, if any
         :returns: The result documents as serialized JSON
         :rtype: str
         """

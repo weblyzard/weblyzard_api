@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-'''
+"""
 .. moduleauthor:: Max Goebel <goebel@weblyzard.com>
-'''
+"""
 from __future__ import unicode_literals
 from weblyzard_api.client import MultiRESTClient
 
@@ -16,16 +16,16 @@ class JairoClient(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
     def set_profile(self, profile_name, profile):
-        ''' '''
+        """ """
         # latest jairo no longer supports profile types
         if 'types' in profile:
             del profile['types']
@@ -51,13 +51,13 @@ class JairoClient(MultiRESTClient):
             return None
 
     def list_profiles(self):
-        ''' '''
+        """ """
         return self.request('list_profiles')
 
     def reload_profiles(self):
-        ''' '''
+        """ """
         return self.request('reload_profiles')
 
     def status(self):
-        ''' '''
+        """ """
         return self.request('status')

@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
-'''
+"""
 from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
-import logging
+
 import urllib.request, urllib.error, urllib.parse
 
 from time import sleep, time
@@ -19,7 +19,8 @@ from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
-logger = logging.getLogger('weblyzard_api.client.jeremia')
+import logging
+logger = logging.getLogger(__name__)
 
 # number of seconds to wait if the web service is occupied
 # - we stop once either DEFAULT_MAX_RETRY_DELAY or DEFAULT_MAX_RETRY_ATTEMPTS is reached
@@ -30,7 +31,7 @@ DEFAULT_MAX_RETRY_ATTEMPTS = 120
 
 
 class JeremiaNg(MultiRESTClient):
-    '''
+    """
     **Jeremia Web Service**
 
     Pre-processes text documents and returns an annotated webLyzard XML document.
@@ -67,7 +68,7 @@ class JeremiaNg(MultiRESTClient):
             client = Jeremia()
             result = client.submit_document(docs)
             pprint(result)
-    '''
+    """
     URL_PATH = 'rest'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'title': 'title',
@@ -80,20 +81,18 @@ class JeremiaNg(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
     def submit_document(self, document):
-        '''
-        processes a single document with jeremia (annotates a single document)
-
+        """ Process a single document with jeremia (annotates a single document)
         :param document: the document to be processed
-        '''
+        """
         return self.request('submit_document', document)
 
     def submit_documents(self, documents, source_id=-1,
@@ -101,10 +100,15 @@ class JeremiaNg(MultiRESTClient):
                          wait_time=DEFAULT_WAIT_TIME,
                          max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
                          max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
-        '''
-        :param batch_id: batch_id to use for the given submission
+        """ Batch submit documents to the Jeremia Web Service. Supports retry
+        with backoff mechanism.
         :param documents: a list of dictionaries containing the document
-        '''
+        :param source_id:
+        :param double_sentence_threshold:
+        :param wait_time:
+        :param max_retry_delay:
+        :param max_retry_attempts:
+        """
         if not documents:
             raise ValueError('Cannot process an empty document list')
 
@@ -116,7 +120,7 @@ class JeremiaNg(MultiRESTClient):
         attempts = 0
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
-            
+
             # submit the request
             # - here we need to check for a 502 and 503 error in
             #   case that has_queued_threads has not been
@@ -134,24 +138,24 @@ class JeremiaNg(MultiRESTClient):
         return self.request(request, documents)
 
     def status(self):
-        '''
+        """
         :returns: the status of the Jeremia web service.
-        '''
+        """
         return self.request('status', return_plain=True)
 
     def version(self):
-        '''
+        """
         :returns: the current version of the jeremia deployed on the server
-        '''
+        """
         return self.request('version', return_plain=True)
 
     def get_xml_doc(self, text, content_id='1'):
-        '''
+        """
         Processes text and returns a XMLContent object.
 
         :param text: the text to process
         :param content_id: optional content id
-        '''
+        """
         batch = [{'id': content_id,
                   'title': '',
                   'body': text,
@@ -162,30 +166,30 @@ class JeremiaNg(MultiRESTClient):
         return XMLContent(result['xml_content'])
 
     def update_blacklist(self, source_id, blacklist):
-        '''
+        """
         updates an existing blacklist cache
 
         :param source_id: the blacklist's source id
-        '''
+        """
         url = 'cache/update_blacklist/%s' % source_id
         return self.request(url, blacklist)
 
     def clear_blacklist(self, source_id):
-        '''
+        """
         :param source_id: the blacklist's source id
 
         Empties the existing sentence blacklisting cache for the given source_id
-        '''
+        """
         return self.request('cache/clear_blacklist/%s' % source_id)
 
     def get_blacklist(self, source_id):
-        '''
+        """
         :param source_id: the blacklist's source id
-        :returns: the sentence blacklist for the given source_id'''
+        :returns: the sentence blacklist for the given source_id"""
         return self.request('cache/get_blacklist/%s' % source_id)
 
     def has_queued_threads(self):
-        '''
+        """
         :returns:
             True if Jeremia still has queued (i.e. unprocessed) threads or
             False otherwise.
@@ -193,7 +197,7 @@ class JeremiaNg(MultiRESTClient):
         :note:
             Submitting jobs if threads are queued is discouraged, since it
             will slow down the overall performance.
-        '''
+        """
         try:
             result = self.request('has_queued_threads')
         except Exception as e:

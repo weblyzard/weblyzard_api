@@ -28,6 +28,8 @@ class JesajaNg(MultiRESTClient):
         :param usr: optional user name
         :param pwd: optional password
         '''
+        # url = 'localhost
+        # url = 'localhost:63002'
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout,
                                  use_random_server=use_random_server)
