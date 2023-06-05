@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Oct 30, 2015
 
 @author: lucas
-'''
+"""
 from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
@@ -25,9 +25,9 @@ DAYS_BACK_DEFAULT = 20
 
 
 class PostRequest(object):
-    ''' Make a post request and return the connection without
+    """ Make a post request and return the connection without
     reading the data. Allows for finer handling of error codes
-    '''
+    """
 
     def __init__(self, url, data):
         self.url = url
@@ -97,28 +97,28 @@ class Joanna(object):
         self.multiRestclient = MultiRESTClient(self.url)
 
     def get_hashes(self, sourceId, portalName):
-        ''' Return the hashes for a specific source and portal
-        '''
+        """ Return the hashes for a specific source and portal
+        """
         request_url = "get_hashes/{}/{}".format(sourceId, portalName)
         return self.multiRestclient.request(request_url)
 
     def get_hash_size(self, sourceId, portalName):
-        ''' Return the hashes for a specific source and portal
-        '''
+        """ Return the hashes for a specific source and portal
+        """
         request_url = "hashes_size/{}/{}".format(sourceId, portalName)
         return self.multiRestclient.request(request_url)
 
     def clean_hashes(self):
-        ''' Make a request to clean old nilsimsa hashes
-        '''
+        """ Make a request to clean old nilsimsa hashes
+        """
         request_url = "clean_hashes"
         return self.multiRestclient.request(request_url)
 
     def similar_document(self, sourceId, nilsimsa, portalName,
                          daysBack=None, nilsimsa_threshold=5):
-        ''' Get the similarity of a single document.
+        """ Get the similarity of a single document.
         Expected response: Boolean True or False
-        '''
+        """
         if daysBack is None:
             daysBack = 20
         request_url = "is_similar/{}/{}/{}/{}/{}".format(
