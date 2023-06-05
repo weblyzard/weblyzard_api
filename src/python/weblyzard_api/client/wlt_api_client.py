@@ -10,9 +10,10 @@ from __future__ import unicode_literals
 
 import json
 import requests
-import logging
-from typing import List
 
+from typing import List, Dict
+
+import logging
 logger = logging.getLogger(__name__)
 
 
@@ -170,7 +171,7 @@ class WltSearchRestApiClient(WltApiClient):
         return r
 
     def search_keywords(self, sources: List[str], start_date: str, end_date: str,
-                        num_keywords: int=5, num_associations: int=5,
+                        num_keywords: int=5, num_associations: int=0,
                         auth_token: str=None, terms: List[str]=None):
         """ 
         Search an index for top keyword associations matching the search parameters.
@@ -213,8 +214,16 @@ class WltSearchRestApiClient(WltApiClient):
         else:
             query = query.replace(',<<term_query>>', '')
         query = json.loads(query)
+
+        # additionally return keyword counts
+        fields = ["keyword.count"]
+        if num_associations:
+            # also return associations per keyword
+            fields.append("keyword.associations")
+
         data = dict(sources=sources, query=query, count=num_keywords,
-                    associations=num_associations)
+                    associations=num_associations,
+                    fields=fields)
         data = json.dumps(data)
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
@@ -255,7 +264,7 @@ class WltMesaApiClient(WltApiClient):
             return r
         return r
 
-    def post(self, data, auth_token: str=None):
+    def post(self, data: Dict, auth_token: str=None):
         """ """
         if auth_token is None:
             auth_token = self.auth_token
