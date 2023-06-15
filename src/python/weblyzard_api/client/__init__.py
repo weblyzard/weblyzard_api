@@ -1,18 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 **webLyzard web service clients**
 
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 migrated from `eWRT` 2021
-'''
+"""
 from __future__ import unicode_literals, print_function
 
 from future import standard_library
 standard_library.install_aliases()
 
 from os import getenv
+from typing import List, Dict
 
 from builtins import range
 from builtins import object
@@ -42,21 +43,24 @@ logger = logging.getLogger(__name__)
 
 
 class RESTClient(object):
-    '''
+    """
     class:: RESTClient
-    '''
+    """
 
-    def __init__(self, service_url, user=None, password=None,
-                 authentification_method='basic',
-                 module_name='eWRT.REST', default_timeout=WS_DEFAULT_TIMEOUT):
-        ''' :param service_url: the base url of the web service
-            :param modul_name: the module name to add to the USER AGENT
+    def __init__(self, service_url: str, user: str=None, password: str=None,
+                 authentification_method: str='basic',
+                 module_name: str='eWRT.REST',
+                 default_timeout: int=WS_DEFAULT_TIMEOUT):
+        """ 
+        :param service_url: the base url of the web service
+        :param modul_name: the module name to add to the USER AGENT
                                description (optional)
-            :param user: username
-            :param password: password
-            :param authentification_method: authentification method to use
-                                            ('basic'*, 'digest').
-        '''
+        :param user: username
+        :param password: password
+        :param authentification_method: authentification method to use
+                                        ('basic'*, 'digest').
+        :param default_timeout: default request timeout
+        """
         # remove superfluous slashes, if required
         self.service_url = service_url[:-1] if service_url.endswith("/") \
             else service_url
@@ -74,45 +78,48 @@ class RESTClient(object):
                                 authentification_method=authentification_method
                                 )
 
-    def _json_request(self, url, parameters=None, return_plain=False,
-                      json_encode_arguments=True,
-                      content_type='application/json'):
-        ''' performs the given json request
+    def _json_request(self, url: str, parameters: Dict=None,
+                      parse_result: bool=True, return_plain: bool=False,
+                      json_encode_arguments: bool=True,
+                      content_type: str='application/json'):
+        """ Execute a given JSON request.
         :param url: the url to query
-        :param parameters: optional paramters
+        :param parameters: optional parameters
+        :param parse_result: a flag to return message only
         :param return_plain: whether to return the result without prior
                              deserialization using json.load (False*)
         :param json_encode_arguments: whether to json encode the parameters
                                       (True*)
         :param content_type: one of 'application/json', 'application/xml'
-        '''
+        """
         if parameters:
             handle = self.retrieve(
-                url,
-                dumps(parameters) if json_encode_arguments else parameters,
-                {'Content-Type': content_type})
+                url=url,
+                data=dumps(parameters) if json_encode_arguments else parameters,
+                headers={'Content-Type': content_type})
         else:
             handle = self.retrieve(url)
 
-        response = handle.read()
-        if response:
-            return response if return_plain else loads(response.decode('utf8'))
-        else:
-            # this will also return empty list, dicts ...
-            return response
+        if parse_result:
+            response = handle.read()
+            if response:
+                return response if return_plain else loads(response.decode('utf8'))
+            else:
+                # this will also return empty list, dicts ...
+                return response
+        return handle
 
     @staticmethod
-    def get_request_url(service_url, command, identifier=None,
-                        query_parameters=None):
-        '''
-        Returns the request url given the command and query parameters
+    def get_request_url(service_url: str, command: str, identifier: str=None,
+                        query_parameters: str=None):
+        """ Return the request url given the command and query parameters.
         :param base_url: the base url of the web service
         :param command: the command to execute at the web service
         :param identifier: an optional identifier (e.g. batch_id, ...)
         :param query_parameters: query parameters to include in the url
-                                 (e.g. execute?debug=True
+                                 (e.g. execute?debug=True)
         :rtype: the complete request url
-        '''
+        """
         # remove superfluous slashes
         if command.startswith("/"):
             command = command[1:]
@@ -126,30 +133,35 @@ class RESTClient(object):
 
         return url
 
-    def execute(self, command, identifier=None, parameters=None,
-                return_plain=False, json_encode_arguments=True,
-                query_parameters=None, content_type='application/json'):
-        ''' executes a json command on the given web service
+    def execute(self, command: str, identifier: str=None, parameters: Dict=None,
+                parse_result: bool=True, return_plain: bool=False,
+                json_encode_arguments: bool=True, query_parameters: str=None,
+                content_type: str='application/json'):
+        """ Execute a given JSON command on the given web service
         :param command: the command to execute
         :param identifier: an optional identifier (e.g. batch_id, ...)
-        :param parameters: optional post paramters
+        :param parameters: optional post parameters
+        :param parse_result: a flag to return message only
         :param return_plain: return the result without prior deserialization
                              using json.load (False*)
         :param json_encode_arguments: whether to json encode the parameters
         :param query_parameters: optional query parameters
         :rtype: the query result
-        '''
+        """
         url = self.get_request_url(self.service_url, command, identifier,
                                    query_parameters)
 
-        logger.debug('Requesting url %s', url)
+        logger.debug(f'Requesting url {url}')
 
-        return self._json_request(url, parameters, return_plain,
-                                  json_encode_arguments, content_type)
+        return self._json_request(url=url, parameters=parameters,
+                                  parse_result=parse_result,
+                                  return_plain=return_plain,
+                                  json_encode_arguments=json_encode_arguments,
+                                  content_type=content_type)
 
 
 class MultiRESTClient(object):
-    ''' allows multiple URLs for access REST services '''
+    """ Allow multiple URLs for access REST services """
     MAX_BATCH_SIZE = 500
     URL_PATH: str = ''
 
@@ -172,16 +184,17 @@ class MultiRESTClient(object):
             return False
 
     @classmethod
-    def fix_urls(cls, urls, user=None, password=None):
-        ''' fixes the urls and put them into the correct format, to maintain
-        the compability to the remaining platform
+    def fix_urls(cls, urls: List[str],
+                 user: str=None, password: str=None) -> List[str]:
+        """ Fix URLs and put them into the correct format, to maintain
+            the compability to the remaining platform.
         :param urls: service urls
         :type urls: string or list or tuple
         :param user: username
         :param password: password
         :returns: correctly formated urls
         :rtype: list
-        '''
+        """
         correct_urls = []
 
         if isinstance(urls, string_types):
@@ -219,7 +232,7 @@ class MultiRESTClient(object):
             elif '<' in url:
                 param = url[url.find("<") + 1:url.find(">")]
                 if '%' in param:
-                    key, count = param.split('%')
+                    _, count = param.split('%')
                     count = int(count)
                     for i in range(0, count):
                         url_i = url.replace(f'<{param}>', f'{i}')
@@ -244,19 +257,21 @@ class MultiRESTClient(object):
                                                    default_timeout=default_timeout)
         return clients
 
-    def request(self, path, parameters=None, source_id:int=None,
-                return_plain=False, json_encode_arguments=True,
-                query_parameters=None, content_type='application/json',
-                execute_all_services=False, pass_through_exceptions=()):
-        ''' performs the given json request
-        @param path: the path to query
-        @param parameters: optional paramters
-        :param source_id:
-        @param pass_through_exceptions:
+    def request(self, path: str, parameters: Dict=None, source_id: int=None,
+                parse_result: bool=True, return_plain: bool=False,
+                json_encode_arguments: bool=True,
+                query_parameters: str=None, content_type: str='application/json',
+                execute_all_services: bool=False, pass_through_exceptions=()):
+        """ Execute a given JSON request.
+        :param path: the path to query
+        :param parameters: optional parameters
+        :param parse_result:
+        :param source_id: optional source_id param
+        :param pass_through_exceptions:
             set to True, if the client shall pass through all exceptions
-        @param return_plain: whether to return the result without prior
+        :param return_plain: whether to return the result without prior
                              deserialization using json.load (False*)
-        '''
+        """
         response = None
         errors = []
 
@@ -274,6 +289,7 @@ class MultiRESTClient(object):
                 response = client.execute(
                     command=path,
                     parameters=parameters,
+                    parse_result=parse_result,
                     return_plain=return_plain,
                     json_encode_arguments=json_encode_arguments,
                     query_parameters=query_parameters,
@@ -301,8 +317,8 @@ class MultiRESTClient(object):
         return response
 
     def get_service_urls(self):
-        ''' '''
-        return [client.service_url for client in self.clients]
+        """ """
+        return [client.service_url for client in self.clients.values()]
 
     @classmethod
     def get_document_batch(cls, documents, batch_size=None):

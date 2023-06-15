@@ -51,19 +51,20 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jersey2.version>2.28</jersey2.version>
 		<jaxb.version>2.3.0</jaxb.version>
-        <jackson.version>[2.13.2,2.13.3)</jackson.version>
+        <jackson.version>2.14.0-rc2</jackson.version>
 	</properties>
 
 	<!-- profiles for the maven deployments -->
+	
 	<profiles>
 		<profile>
 			<id>profile-semanticlab</id>
 			<properties>
 				<environment>semanticlab</environment>
-				<snapshot-repository-id>code.semanticlab.net</snapshot-repository-id>
-				<snapshot-repository-url>dav:http://code.semanticlab.net/deploy/</snapshot-repository-url>
-				<repository-id>code.semanticlab.net</repository-id>
-				<repository-url>dav:http://code.semanticlab.net/deploy/</repository-url>
+				<snapshot-repository-id>wlt-nexus</snapshot-repository-id>
+				<snapshot-repository-url>https://nexus.semanticlab.net/repository/maven-snapshots/</snapshot-repository-url>
+				<repository-id>wlt-nexus</repository-id>
+				<repository-url>https://nexus.semanticlab.net/repository/maven-releases/</repository-url>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>

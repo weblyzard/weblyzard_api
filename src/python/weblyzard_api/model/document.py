@@ -15,11 +15,12 @@ from decimal import Decimal
 from itertools import chain
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
-from weblyzard_api.model import Sentence, SpanFactory, TokenCharSpan
+from weblyzard_api.model import Sentence, SpanFactory, CharSpan
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.exceptions import (MissingFieldException,
                                             UnexpectedFieldException)
+from typing import Dict
 
 
 class Document(object):
@@ -162,7 +163,7 @@ class Document(object):
                     if value is not None:
                         result[key] = value
             return result
-        
+
         if isinstance(data, object):
             result = {}
             for key, value in data.__dict__.items():
@@ -231,13 +232,13 @@ class Document(object):
             if 'annotations' in parsed_content else {}
 
         return cls(content_id=int(parsed_content['content_id']),
-                        content=parsed_content.get('content'),
-                        nilsimsa=parsed_content.get('nilsimsa'),
-                        lang=parsed_content.get('lang'),
-                        content_type=parsed_content.get('content_type'),
-                        partitions=partitions,
-                        header=header,
-                        annotations=annotations)
+                   content=parsed_content.get('content'),
+                   nilsimsa=parsed_content.get('nilsimsa'),
+                   lang=parsed_content.get('lang'),
+                   content_type=parsed_content.get('content_type'),
+                   partitions=partitions,
+                   header=header,
+                   annotations=annotations)
 
     def to_json(self):
         '''
@@ -277,20 +278,23 @@ class Document(object):
             attributes=self.header,
             sentences=self.get_sentences(include_fragments=include_fragments))
 
-    def get_text_by_span(self, span):
+    def get_text_by_span(self, span: CharSpan):
         ''' 
         Return the textual content of a span. 
         :param span, the span to extract content for.
         '''
+        if not isinstance(span, CharSpan):
+            span = SpanFactory.new_span(span)
         return self.content[span.start:span.end]
 
     @classmethod
-    def overlapping(cls, spanA, spanB):
+    def overlapping(cls, spanA: CharSpan, spanB: CharSpan):
         ''' Return whether two spans overlap. '''
         return (spanB.start <= spanA.start and spanB.end > spanA.start) or \
                 (spanA.start <= spanB.start and spanA.end > spanB.start)
 
-    def get_partition_overlaps(self, search_span, target_partition_key):
+    def get_partition_overlaps(self, search_span: CharSpan,
+                               target_partition_key: str):
         ''' Return all spans from a given target_partition_key that overlap 
         the search span. 
         :param search_span, the span to search for overlaps by.
@@ -301,24 +305,31 @@ class Document(object):
             return result
 
         for other_span in self.partitions[target_partition_key]:
+            if not isinstance(other_span, CharSpan):
+                other_span = SpanFactory.new_span(other_span)
+            if not isinstance(search_span, CharSpan):
+                search_span = SpanFactory.new_span(search_span)
             if self.overlapping(other_span, search_span):
                 result.append(other_span)
 
         return result
 
-    def get_pos_for_annotation(self, annotation):
+    def get_pos_for_annotation(self, annotation: Dict):
         """
         Get the part-of-speech for a given annotation.
         :param annotation
         :return: the POS of the annotation
         """
         for token_span in self.partitions[self.TOKEN_KEY]:
+            if not isinstance(token_span, CharSpan):
+                token_span = SpanFactory.new_span(token_span)
             if token_span.start >= annotation['start']:
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based=False, include_title=True,
-                      include_fragments=False):
+    def get_sentences(self, zero_based: bool=False,
+                      include_title: bool=True,
+                      include_fragments: bool=False):
         """
         Legacy method to extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
@@ -339,14 +350,18 @@ class Document(object):
         sentence_spans = sorted(sentence_spans, key=lambda span: span.start)
 
         for sentence_span in sentence_spans:
+            if not isinstance(sentence_span, CharSpan):
+                sentence_span = SpanFactory.new_span(sentence_span)
+
             if zero_based:
                 offset = sentence_span.start
             if not sentence_span.span_type == 'SentenceCharSpan':
                 raise Exception('Bad sentence span')
 
             # get tokens
-            token_spans = self.get_partition_overlaps(search_span=sentence_span,
-                                                      target_partition_key=self.TOKEN_KEY)
+            token_spans = self.get_partition_overlaps(
+                                            search_span=sentence_span,
+                                            target_partition_key=self.TOKEN_KEY)
             is_title = len(
                 self.get_partition_overlaps(search_span=sentence_span,
                                             target_partition_key=self.TITLE_KEY)) > 0
@@ -366,11 +381,7 @@ class Document(object):
                 dep_sequence = None
 
             # prefer semOrient over sem_orient, if both are annotated and non-zero
-            sem_orient = None
-            if getattr(sentence_span, 'semOrient', None):
-                sem_orient = sentence_span.semOrient
-            else:
-                sem_orient = sentence_span.sem_orient
+            sem_orient = sentence_span.sem_orient
 
             # finally, extract the sentence text.
             value = self.get_text_by_span(sentence_span)

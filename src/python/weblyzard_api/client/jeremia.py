@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
+.. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
+"""
 from __future__ import unicode_literals
 
 import urllib.error
@@ -12,11 +16,6 @@ from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
-
-'''
-.. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
-.. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
-'''
 
 standard_library.install_aliases()
 

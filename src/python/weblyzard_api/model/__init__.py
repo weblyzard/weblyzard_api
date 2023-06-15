@@ -15,6 +15,7 @@ import hashlib
 import logging
 
 from collections import namedtuple
+
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
@@ -25,17 +26,31 @@ logger = logging.getLogger(__name__)
 
 
 class CharSpan(object):
-    DICT_MAPPING = {'@type': 'span_type',
+
+    SPAN_TYPE = 'CharSpan'
+
+    DICT_MAPPING = {'span_type': 'span_type',
+                    '@type': 'span_type',
                     'start': 'start',
                     'end': 'end'}
 
-    def __init__(self, span_type, start, end):
+    def __init__(self, start: int, end: int, span_type: str=SPAN_TYPE):
         self.span_type = span_type
         self.start = start
         self.end = end
 
+    def __json__(self):
+        return self.to_dict()
+
     def to_dict(self):
         return {k: getattr(self, v) for k, v in self.DICT_MAPPING.items()}
+
+    def __eq__(self, other):
+        if not isinstance(other, CharSpan):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+
+        return self.to_dict() == other.to_dict()
 
     @classmethod
     def from_dict(cls, dict_):
@@ -45,6 +60,8 @@ class CharSpan(object):
         #    pass  # debugging
         kwargs = {cls.DICT_MAPPING.get(k, k): v for k, v in dict_.items()}
         try:
+            if 'span_type' in kwargs:
+                del kwargs['span_type']
             return cls(**kwargs)
         except TypeError as e:
             raise e
@@ -57,15 +74,20 @@ class CharSpan(object):
 
 
 class TokenCharSpan(CharSpan):
+
+    SPAN_TYPE = 'TokenCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
                     'pos': 'pos',
+                    'dep': 'dependency',
                     'dependency': 'dependency'}
     DEFAULT_POS = 'XY'
 
-    def __init__(self, span_type, start, end, pos=None, dependency=None):
-        CharSpan.__init__(self, span_type, start, end)
+    def __init__(self, start: int, end:int, span_type: str=SPAN_TYPE,
+                 pos: str=None, dependency: str=None):
+        CharSpan.__init__(self, span_type=span_type, start=start, end=end)
         if pos is None:
             pos = self.DEFAULT_POS
         self.pos = pos
@@ -83,6 +105,9 @@ class TokenCharSpan(CharSpan):
 
 
 class SentenceCharSpan(CharSpan):
+
+    SPAN_TYPE = 'SentenceCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
@@ -92,9 +117,10 @@ class SentenceCharSpan(CharSpan):
                     'emotions': 'emotions',
                     'id': 'md5sum'}
 
-    def __init__(self, span_type, start, end, md5sum=None, sem_orient=0.0,
-                 significance=0.0, emotions=None, multimodal_sentiment=None):
-        CharSpan.__init__(self, span_type, start, end)
+    def __init__(self, start: int, end: int,
+                 md5sum: str=None, significance: float=0.0,
+                 sem_orient: float=0.0, emotions=None, multimodal_sentiment=None):
+        CharSpan.__init__(self, span_type=self.SPAN_TYPE, start=start, end=end)
         self.md5sum = md5sum
         self.sem_orient = sem_orient
         self.significance = significance
@@ -112,33 +138,58 @@ class SentenceCharSpan(CharSpan):
 
 
 class MultiplierCharSpan(CharSpan):
+
+    SPAN_TYPE = 'MultiplierCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
                     'value': 'value'}
 
-    def __init__(self, span_type, start, end, value=None):
-        super(MultiplierCharSpan, self).__init__(span_type=span_type,
+    def __init__(self, start, end, value=None):
+        super(MultiplierCharSpan, self).__init__(span_type=self.SPAN_TYPE,
                                                  start=start,
                                                  end=end)
         self.value = value
 
 
 class SentimentCharSpan(CharSpan):
+
+    SPAN_TYPE = 'SentimentCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
                     'value': 'value',
                     'modality': 'modality'}
 
-    def __init__(self, span_type, start, end, value, modality='polarity'):
-        super(SentimentCharSpan, self).__init__(span_type=span_type,
+    def __init__(self, start, end, value, modality='polarity'):
+        super(SentimentCharSpan, self).__init__(span_type=self.SPAN_TYPE,
                                                 start=start, end=end)
         self.value = value
         self.modality = modality
 
 
+class NerCharSpan(CharSpan):
+
+    SPAN_TYPE = 'NamedEntityCharSpan'
+
+    DICT_MAPPING = {'@type': 'span_type',
+                    'start': 'start',
+                    'end': 'end',
+                    'label': 'label'}
+
+    def __init__(self, start, end, entity=None, label=None):
+        super(NerCharSpan, self).__init__(span_type=self.SPAN_TYPE,
+                                          start=start,
+                                          end=end)
+        self.label = label
+
+
 class LayoutCharSpan(CharSpan):
+
+    SPAN_TYPE = 'LayoutCharSpan'
+
     DICT_MAPPING = {'@type': 'span_type',
                     'start': 'start',
                     'end': 'end',
@@ -146,8 +197,8 @@ class LayoutCharSpan(CharSpan):
                     'title': 'title',
                     'level': 'level'}
 
-    def __init__(self, span_type, start, end, layout, title, level):
-        CharSpan.__init__(self, span_type=span_type, start=start, end=end)
+    def __init__(self, start, end, layout, title, level):
+        CharSpan.__init__(self, span_type=self.SPAN_TYPE, start=start, end=end)
         self.layout = layout
         self.title = title
         self.level = level
@@ -173,6 +224,8 @@ class SpanFactory(object):
             span_type = span['@type']
         elif 'span_type' in span:
             span_type = span['span_type']
+        elif 'dep' in span:
+            span_type = 'TokenCharSpan'  # TODO: workaround until text_tagger gets fixed
 
         if span_type is not None and span_type in cls.SPAN_TYPE_TO_CLASS:
             try:
