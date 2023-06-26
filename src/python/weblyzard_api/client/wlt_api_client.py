@@ -28,9 +28,6 @@ class WltApiClient(object):
                  version: float=API_VERSION,
                  username: str=None, password: str=None):
         self.base_url = base_url
-        if not base_url.endswith(str(version)):
-            self.base_url = f'{base_url}/{self.API_VERSION}'
-
         self.version = version
         self.username = username
         self.password = password
