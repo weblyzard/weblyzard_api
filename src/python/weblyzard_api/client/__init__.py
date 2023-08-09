@@ -32,7 +32,7 @@ from weblyzard_api.util.http import Retrieve
 
 # set higher timeout values
 WS_DEFAULT_TIMEOUT = 900
-
+MAX_RETRY_ATTEMPTS = 3
 WEBLYZARD_API_URL = getenv("WEBLYZARD_API_URL") or "http://localhost:8080"
 WEBLYZARD_API_USER = getenv("WEBLYZARD_API_USER")
 WEBLYZARD_API_PASS = getenv("WEBLYZARD_API_PASS")
@@ -75,7 +75,8 @@ class RESTClient(object):
         self.retrieve = partial(url_obj.open,
                                 user=user,
                                 pwd=password,
-                                authentification_method=authentification_method
+                                authentification_method=authentification_method,
+                                retry=MAX_RETRY_ATTEMPTS
                                 )
 
     def _json_request(self, url: str, parameters: Dict=None,
