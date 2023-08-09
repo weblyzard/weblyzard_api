@@ -38,9 +38,9 @@ USER_AGENT = 'eWRT Version/0.1; Module %s +http://p.semanticlab.net/eWRT'
 DEFAULT_WEB_REQUEST_SLEEP_TIME = 1
 PROXY_SERVER = ''
 
-RETRY_WAIT_TIME_RANGE = (2, 10)  # in seconds
+RETRY_WAIT_TIME_RANGE = (2, 60)  # in seconds
 # error codes which might trigger a retry:
-HTTP_TEMPORARY_ERROR_CODES = (500, 503, 504)
+HTTP_TEMPORARY_ERROR_CODES = (502, 503, 504)
 
 # set default socket timeout (otherwise urllib might hang!)
 from socket import setdefaulttimeout
@@ -135,7 +135,7 @@ class Retrieve(object):
             except urllib.error.HTTPError as e:
                 if e.code in HTTP_TEMPORARY_ERROR_CODES and tries < retry:
                     sleep_time = randint(*RETRY_WAIT_TIME_RANGE)
-                    log.info(f'retrying in {sleep_time}; received {e.code}')
+                    log.warning(f'retrying in {sleep_time}; received {e.code} from {url}')
                     time.sleep(sleep_time)
                     tries += 1
                     continue
