@@ -215,9 +215,11 @@ class Recognize(MultiRESTClient):
                                               })
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
+                logger.warning(f'Exception: {e}; Retry#{attempts} with profile_name={profile_name}')
                 sleep(max_retry_delay * random())
                 attempts = attempts + 1
 
+        logger.warning(f'Final retry with profile_name={profile_name}')
         return self.request(path=search_command,
                             parameters=document_list,
                             content_type=content_type,
