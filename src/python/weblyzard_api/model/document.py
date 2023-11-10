@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Jan 25, 2018
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
-'''
+"""
 from __future__ import unicode_literals
 from builtins import object
 import json
@@ -13,6 +13,7 @@ import html
 from datetime import datetime
 from decimal import Decimal
 from itertools import chain
+from typing import Dict
 
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model import Sentence, SpanFactory, CharSpan
@@ -20,7 +21,6 @@ from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.exceptions import (MissingFieldException,
                                             UnexpectedFieldException)
-from typing import Dict
 
 
 class Document(object):

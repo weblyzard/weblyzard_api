@@ -123,12 +123,12 @@ class WltSearchRestApiClient(WltApiClient):
                                                   "percent": similarity}}}
                         }})
 
-            # date filters for term queries
-            if start_date:
-                query["beginDate"] = str(start_date)
+        # date filters for term queries
+        if start_date:
+            query["beginDate"] = str(start_date)
 
-            if end_date:
-                query["endDate"] = str(end_date)
+        if end_date:
+            query["endDate"] = str(end_date)
 
         if term_query is not None:
             query["query"] = term_query

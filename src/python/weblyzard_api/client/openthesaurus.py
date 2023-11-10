@@ -13,6 +13,7 @@ by initializing it with
 '''
 from collections import defaultdict
 from itertools import chain
+from typing import Dict
 
 from weblyzard_api.client import MultiRESTClient
 
@@ -44,8 +45,10 @@ class OpenThesaurusClient(MultiRESTClient):
         kwargs = {k: v for k, v in kwargs.items() if k not in self.SPECIAL_KWS}
         MultiRESTClient.__init__(self, *args, **kwargs)
 
-    def get_synsets(self, term: str):
-        """Get a dict with synonyms sorted by synset id"""
+    def get_synsets(self, term: str) -> Dict:
+        """Get a dict with synonyms sorted by synset id
+        :param term:
+        """
         term = self.normalize(term)
         result = self.request(path='search',
                               query_parameters={
@@ -69,7 +72,7 @@ class OpenThesaurusClient(MultiRESTClient):
         return synonymous_terms
 
     def get_plain_synonyms(self, term):
-        """get an unordered set of all potential synonyms"""
+        """Get an unordered set of all potential synonyms"""
         return set(chain(*self.get_synsets(term).values()))
 
 
