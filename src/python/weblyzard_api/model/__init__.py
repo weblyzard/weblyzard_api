@@ -211,7 +211,8 @@ class SpanFactory(object):
         'SentimentCharSpan': SentimentCharSpan,
         'MultiplierCharSpan': MultiplierCharSpan,
         'SentenceCharSpan': SentenceCharSpan,
-        'LayoutCharSpan': LayoutCharSpan
+        'LayoutCharSpan': LayoutCharSpan,
+        'NamedEntityCharSpan': NerCharSpan
     }
 
     @classmethod
@@ -433,7 +434,7 @@ class Sentence(object):
             yield res
 
     def is_digit(self, x):
-        """built in is_digit rejects negative number strings like -1 (used for
+        """Built in is_digit rejects negative number strings like -1 (used for
         root in dependency annotations"""
         try:
             _ = int(x)
