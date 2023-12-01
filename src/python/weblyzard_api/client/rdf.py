@@ -40,10 +40,12 @@ class Namespace(Enum):
     # wikidata, dbpedia, geo
     DBO = 'http://dbpedia.org/ontology/'
     GEO = 'http://www.opengis.net/ont/geosparql#'
+    WIKIBASE = 'http://wikiba.se/ontology#'
     WDT = 'http://www.wikidata.org/prop/direct/'
     WD = 'http://www.wikidata.org/entity/'
     P = 'http://www.wikidata.org/prop/'
     PS = 'http://www.wikidata.org/prop/statement/'
+    PSV = 'http://www.wikidata.org/prop/statement/value/'
     PQ = 'http://www.wikidata.org/prop/qualifier/'
     GEONAMES = 'http://sws.geonames.org/'
     GN = 'http://www.geonames.org/ontology#'
