@@ -826,6 +826,30 @@ class TestRecognizeGeonamesAU(TestRecognizeNg):
                                             u'end': 184,
                                             u'start': 20}]}}]
 
+class TestRecognizeCountries(TestRecognizeNg):
+    REQUIRED_REGEXPS = ['http://sws.geonames.org/6254930/', # Palestine
+                        ]
+
+    text = '''
+    It runs nurseries, soup kitchens, libraries, sporting clubs, a television channel and a children’s magazine.
+    Such services meet a need for ordinary Palestinians, who are starved, harassed and murdered by the Israeli occupation.
+    The formation of the group was linked to the rise of Islamist groups known as the Muslim Brotherhood across the Middle East. The Muslim Brotherhood in Palestine was formed in 1946.
+    From its beginning Hamas has had to transform itself repeatedly, shifting its theory, ideology and politics to be in step with the ordinary Palestinians and maintain popular support.
+    The group spelled out its aims in the 1988 covenant, written during the First Intifada.
+    '''
+    
+    PROFILE_NAME = 'de_full_bg'
+    DOCUMENTS = [{u'annotations': [],
+                  u'content': text,
+                  u'format': u'text/html',
+                  u'header': {},
+                  u'id': u'1000',
+                  u'lang': u'EN',
+                  u'nilsimsa': u'00FC4CB928D78CB770521A11DFDE0923DC3C19 E1642274E6AC7C06650B80E6ED',
+                  u'partitions': {u'BODY': [{u'@type': u'CharSpan',
+                                            u'end': 184,
+                                            u'start': 20}]}}]
+
 
 if __name__ == '__main__':
     unittest.main()
