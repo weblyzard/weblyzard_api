@@ -34,6 +34,9 @@ class XML2013(XMLParser):
         'creator': ('creator', 'dc'),
         'author': ('creator', 'dc'),
         'publisher': ('publisher', 'dc'),
+        'license': ('license', 'dc'),
+        'provenance': ('provenance', 'dc'),
+        'hasFormat': ('hasFormat', 'dc'),
 
         'og:site_name': ('publisher', 'dc'),
         'application-name': ('publisher', 'dc'),
@@ -82,6 +85,8 @@ class XML2013(XMLParser):
         # reference to other document (outgoing link)
         'references': ('references', 'dc'),
         'relation': ('relation', 'dc'),
+        'hasPart': ('hasPart', 'dc'),
+        'isPartOf': ('isPartOf', 'dc'),
 
         # reference to similar document (re-tweet)
         'source': ('source', 'dc'),
