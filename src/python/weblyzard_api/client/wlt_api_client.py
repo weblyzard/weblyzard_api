@@ -59,7 +59,7 @@ class WltSearchRestApiClient(WltApiClient):
                          start_date: str=None, end_date: str=None,
                          count: int=10, offset: int=0,
                          max_docs: int=-1, exact_match=True, similarity=70,
-                         fields: List[str]=['document.contentid']):
+                         fields: List[str]=['document.contentid'], source_ids:List[str]=None):
         """ 
         Search an index for documents matching the search parameters.
         :param sources: required sources where to look for content.
@@ -71,6 +71,7 @@ class WltSearchRestApiClient(WltApiClient):
         :param count: number of documents to return, default 10
         :param offset: offset to search (use with combination with count and hints)
         :param fields: list of fields of document to return, default just contentid
+        :param source_ids: optional list of source IDs to filter for.
         :returns: The result documents as serialized JSON
         :rtype: str
         """
@@ -122,6 +123,21 @@ class WltSearchRestApiClient(WltApiClient):
                                               "minmatching": {
                                                   "percent": similarity}}}
                         }})
+
+        if source_ids is not None:
+            assert isinstance(source_ids, list)
+            if term_query is None:
+                term_query = {
+                    "bool": {
+                        "filter": []
+                    }
+                }
+            else:
+                if "filter" not in term_query["bool"]:
+                    term_query["bool"]["filter"] = []
+
+            source_id_filter = {"terms": {"sourceid": source_ids}}
+            term_query["bool"]["filter"].append(source_id_filter)  
 
         # date filters for term queries
         if start_date:
