@@ -15,6 +15,7 @@ setup(
     install_requires=['future',
                       'nose',
                       'lxml',
+                      'redis',
                       'requests[security]>=2.13,<3',
                       'pytest',
                       'python-dotenv',
