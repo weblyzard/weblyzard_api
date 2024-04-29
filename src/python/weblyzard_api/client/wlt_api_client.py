@@ -22,24 +22,30 @@ class WltApiClient(object):
     TOKEN_ENDPOINT = 'token'
 
     BASE_URL = 'https://api.weblyzard.com'
-    API_VERSION = 1.0
+    API_VERSION = '1.0'
 
     def __init__(self, base_url: str=BASE_URL,
                  version: float=API_VERSION,
                  username: str=None, password: str=None):
+        """
+        Constructor.
+        """
         self.base_url = base_url
         self.version = version
         self.username = username
         self.password = password
+        self.auth_token = None
         self.auth_token = self.get_auth_token(self.username, self.password)
 
-    def get_auth_token(self, username: str, password: str):
+    def get_auth_token(self, username: str, password: str) -> str:
         """ 
         GET a valid authentication token from the server. 
         :param username, as provided by webLyzard
         :param password, as provided by webLyzard
         """
-        url = '/'.join([self.base_url, self.TOKEN_ENDPOINT])
+        if self.auth_token:
+            return self.auth_token
+        url = '/'.join([self.base_url, self.version, self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
         if r.status_code == 200:
             return r.content.decode('utf-8')
@@ -55,16 +61,20 @@ class WltSearchRestApiClient(WltApiClient):
     KEYWORD_ENDPOINT = 'keyentities/'
 
     def search_documents(self, sources: List[str], terms: List[str]=None,
+                         entities: List[str]=None,
                          auth_token: str=None, content_id: int=None,
                          start_date: str=None, end_date: str=None,
-                         count: int=10, offset: int=0,
-                         max_docs: int=-1, exact_match=True, similarity=70,
+                         count: int=10, offset: int=0, source_ids: int=None,
+                         max_docs: int=-1, exact_match: bool=True,
+                         similarity: int=70,
                          fields: List[str]=['document.contentid']):
         """ 
         Search an index for documents matching the search parameters.
         :param sources: required sources where to look for content.
         :param content_id: optional single content_id .
         :param terms: optional list of terms to filter for.
+        :param entities: optional list of entity URIs to filter for.
+        :param source_ids: optional source_ids to filter by.
         :param auth_token: the webLyzard authentication token, if any.
         :param start_date: result documents must be younger than this, if given (e.g. \"2018-08-01\")
         :param end_date: result documents must be older than this, if given
@@ -81,6 +91,9 @@ class WltSearchRestApiClient(WltApiClient):
 
         assert auth_token is not None
 
+        if max_docs is None:
+            max_docs = 1000
+
         if not isinstance(sources, list):
             sources = [sources]
         query = {
@@ -92,22 +105,43 @@ class WltSearchRestApiClient(WltApiClient):
             "offset": offset
         }
 
-        term_query = None
+        term_query = {}
         if content_id is not None and isinstance(content_id, int):
             # construct an ID query
-            term_query = {
-                "contentid": {
-                    "eq": content_id
-                }
-             }
+            term_query.update(
+                {
+                    "contentid": {
+                        "eq": content_id
+                    }
+                })
             max_docs = 1
-        elif terms is not None:
+
+        if source_ids is not None:
+            if not isinstance(source_ids, list):
+                source_ids = [source_ids]
+
+            # construct an ID query
+            term_query.update(
+                {
+                    "source_identifier": {
+                        "terms": source_ids
+                    }
+                })
+        # elif entities is not None and isinstance(entities, list):
+        #     term_query = {
+        #        "entity": {
+        #            "key": entities
+        #         }
+        #     }
+        if terms is not None:
             # construct a term query
 
-            term_query = {
-                "bool": {
-                    "should": []
-            }}
+            term_query.update(
+                {
+                    "bool": {
+                        "should": []
+                    }
+                })
             for term in terms:
                 if exact_match:
                     term_query["bool"]["should"].append(
@@ -131,11 +165,11 @@ class WltSearchRestApiClient(WltApiClient):
             query["endDate"] = str(end_date)
 
         if term_query is not None:
-            query["query"] = term_query
+            query["filter"] = term_query
 
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.DOCUMENT_ENDPOINT])
+        url = '/'.join([self.base_url, self.version, self.DOCUMENT_ENDPOINT])
 
         result_count = 0
         total = 1
@@ -224,7 +258,7 @@ class WltSearchRestApiClient(WltApiClient):
         data = json.dumps(data)
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.KEYWORD_ENDPOINT])
+        url = '/'.join([self.base_url, self.version, self.KEYWORD_ENDPOINT])
         try:
             r = requests.post(url,
                               data=data,
