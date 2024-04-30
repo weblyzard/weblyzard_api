@@ -59,6 +59,7 @@ class WltSearchRestApiClient(WltApiClient):
     """
     DOCUMENT_ENDPOINT = 'search/'
     KEYWORD_ENDPOINT = 'keyentities/'
+    ENTITIES_ENDPOINT = 'entities/'
 
     def search_documents(self, sources: List[str], terms: List[str]=None,
                          entities: List[str]=None,
@@ -247,7 +248,7 @@ class WltSearchRestApiClient(WltApiClient):
         query = json.loads(query)
 
         # additionally return keyword counts
-        fields = ["keyword.count"]
+        fields = ["keyword.count", "keyword.key", "keyword.name"]
         if num_associations:
             # also return associations per keyword
             fields.append("keyword.associations")
@@ -258,7 +259,74 @@ class WltSearchRestApiClient(WltApiClient):
         data = json.dumps(data)
         headers = {'Authorization': 'Bearer %s' % auth_token,
                    'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.version, self.KEYWORD_ENDPOINT])
+        url = '/'.join([self.base_url, self.version, self.KEYWORDS_ENDPOINT])
+        try:
+            r = requests.post(url,
+                              data=data,
+                              headers=headers)
+            if r.status_code == 200:
+                return json.loads(r.content)['result']
+        except Exception as e:
+            logger.error(
+                "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
+            return r
+        return r
+
+    def search_entities(self, sources: List[str], start_date: str, end_date: str,
+                        num_results: int=5, entity_types: List[str]=None,
+                        auth_token: str=None, terms: List[str]=None):
+        """ 
+        Search an index for top entities matching the search parameters.
+        :param sources: required sources where to look for content.
+        :param term_query: the query string
+        :param start_date: result documents must be younger than this (e.g. \"2018-08-01\")
+        :param end_date: result documents must be older than this
+        :param num_results: how many entities to return
+        :param entity_types: what entity types to return
+        :param auth_token: the webLyzard authentication token, if any
+        :returns: The result documents as serialized JSON
+        :rtype: str
+        """
+        if not auth_token:
+            auth_token = self.auth_token
+        if not isinstance(sources, list):
+            sources = [sources]
+        query = """{"bool" : {
+                          "must" : [
+                            {
+                              "date" : {
+                                "gte":"%s",
+                                "lte":"%s"
+                              }
+                            },<<term_query>>
+                          ]
+                        }}
+        """ % (start_date, end_date)
+        # construct a term query
+        if terms is not None:
+            term_query = {
+                "filter": []
+            }
+            for term in terms:
+                term_query["filter"].append(term)
+
+            query["query"] = term_query
+
+            query = query.replace(',<<term_query>>', term_query)
+        else:
+            query = query.replace(',<<term_query>>', '')
+        query = json.loads(query)
+
+        # additionally return keyword counts
+        fields = ["keyword.count", "keyword.key", "keyword.name"]
+
+        data = dict(sources=sources, query=query, count=num_results,
+                    entityTypes=entity_types,
+                    fields=fields)
+        data = json.dumps(data)
+        headers = {'Authorization': 'Bearer %s' % auth_token,
+                   'Content-Type': 'application/json'}
+        url = '/'.join([self.base_url, self.version, self.ENTITIES_ENDPOINT])
         try:
             r = requests.post(url,
                               data=data,
