@@ -53,7 +53,7 @@ class TestWlSearchRestApiClient(unittest.TestCase):
             "document.title",
             "document.url",
             "document.date",
-            "document.source_indentifier"
+            "document.source_identifier"
         ]
         result = [d for d in client.search_documents(
                                             auth_token=auth_token,
@@ -62,8 +62,10 @@ class TestWlSearchRestApiClient(unittest.TestCase):
                                             start_date=start_date,
                                             end_date=end_date,
                                             source_ids=['http:cnn.com'])]
-
-        assert len(result)
+        expected_fields = ["contentid", "score", "title", "url", "date", "source_identifier"]
+        for doc in result:
+            assert all([field in doc for field in expected_fields])
+            assert doc['source_identifier'] == 'http:cnn.com'
 
         pass
 
