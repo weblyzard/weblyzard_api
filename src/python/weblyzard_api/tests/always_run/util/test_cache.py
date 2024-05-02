@@ -20,8 +20,6 @@ from multiprocessing import Pool
 from shutil import rmtree
 from os.path import exists, join
 
-import redis
-
 from weblyzard_api.util.module_path import get_resource
 from weblyzard_api.util.cache import (MemoryCache, MemoryCached, DiskCached,
                                       DiskCache, Cache, IterableCache,
@@ -73,6 +71,7 @@ class TestCached(unittest.TestCase):
 
 
 class TestMemoryCached(TestCached):
+
     @staticmethod
     @MemoryCached
     def add(a=1, b=2):
@@ -87,6 +86,7 @@ class TestMemoryCached(TestCached):
 
 
 class SkipTestDiskCached(TestCached):
+
     @staticmethod
     @DiskCached(get_cache_dir(1))
     def add(a=1, b=2):
@@ -245,6 +245,7 @@ class TestRedisCache(unittest.TestCase):
         d = dummy_return_dict(2)
         assert (isinstance(d, dict))
 
+
 class TestTTLMemoryCached(unittest.TestCase):
 
     def test_fast_expiry(self):
@@ -263,6 +264,7 @@ class TestTTLMemoryCached(unittest.TestCase):
     def test_slow_expiry(self):
 
         fn = mock.MagicMock(return_value=1)
+
         @TTLMemoryCached(ttl=datetime.timedelta(days=1))
         def dummy_slow_expiry():
             return fn()
@@ -276,6 +278,7 @@ class TestTTLMemoryCached(unittest.TestCase):
 class TestHybridMemDiskCached():
 
     def test_hybrid_disk_cache(self):
+
         def g_(param):
             return param
 
@@ -287,6 +290,7 @@ class TestHybridMemDiskCached():
         except:
             pass
         test_caches = []
+
         @HybridMemDiskCached('test_disk_cache_function', cache_dir_path='/tmp',
                              group=test_caches)
         def test_function(param):
@@ -336,8 +340,10 @@ class TestHybridMemRedisCache():
                f'{DEFAULT_REDIS_HOST}:{DEFAULT_REDIS_PORT}'
     )
     def test_hybrid_redis_cache(self):
+
         def g_(param):
             return param
+
         redis_instance = redis.StrictRedis(host=DEFAULT_REDIS_HOST,
                                            port=DEFAULT_REDIS_PORT)
 
@@ -350,6 +356,7 @@ class TestHybridMemRedisCache():
             logger.warning(e, exc_info=True)
         for k in redis_instance.hkeys('test_redis_cache_function'):
             redis_instance.hdel('test_redis_cache_function', k)
+
         @HybridMemRedisCached(key='test_redis_cache_function')
         def test_function_1(input):
             return mocked_g(input)
@@ -361,12 +368,14 @@ class TestHybridMemRedisCache():
         mocked_g.assert_called_once()
         mocked_h = mock.MagicMock()
         mocked_h.return_value = 2
+
         # Two different functions using the same global key - do not do this
         # at home! (here it serves to simulate two workers retrieving data
         # independently)
         @HybridMemRedisCached(key='test_redis_cache_function', group=redis_test_caches)
         def test_function_2(input):
             return mocked_h(input)
+
         assert test_function_2(1) == 2
         update_hybrid_cache_group()
         assert test_function_2(1) == 2
@@ -399,13 +408,15 @@ class TestHybridMemRedisCache():
         writing vs. writing only as part of update method."""
 
         inputs = list(range(100000))
+
         def add_one(n):
             return n + 1
+
         print('Runtime no caching')
         start_time_no_caching = time.time()
         for i in inputs:
             a = add_one(i)
-        print(time.time()-start_time_no_caching)
+        print(time.time() - start_time_no_caching)
         # 0.011200189590454102 with 100k
 
         print('Write time to local redis cache with delayed writing, dirty keys only')
@@ -421,6 +432,7 @@ class TestHybridMemRedisCache():
                               group=hybrid_bulk_caches)
         def test_function_bulk(n):
             return n + 1
+
         start_time_bulk = time.time()
         for i in inputs:
             a = test_function_bulk(i)
@@ -462,9 +474,7 @@ class TestHybridMemRedisCache():
         except Exception as e:
             logger.warning(e, exc_info=True)
         hybrid_bulk_caches = []
-        @HybridMemRedisCached('test_hybrid_redis_performance', group=hybrid_bulk_caches)
-        def test_function_bulk(n):
-            return n + 1
+
         start_time_bulk = time.time()
         for i in inputs:
             a = test_function_bulk(i)
@@ -512,6 +522,7 @@ class TestHybridMemRedisCache():
         time.sleep(10)
         hybrid_realtime_caches = []
         print('write time to local realtime hybrid redis cache')
+
         @RealtimeRedisMemCached('test_hybrid_redis_performance', group=hybrid_realtime_caches)
         def test_function_realtime(n):
             return n + 1
