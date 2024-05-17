@@ -30,6 +30,8 @@ class WltApiClient(object):
         """
         Constructor.
         """
+        if base_url.endswith(f'/{version}'):
+            base_url = base_url.replace(f'/{version}', '')
         self.base_url = base_url
         self.version = version
         self.username = username
@@ -107,6 +109,7 @@ class WltSearchRestApiClient(WltApiClient):
         }
 
         term_query = {}
+        entity_query = {}
         if content_id is not None and isinstance(content_id, int):
             # construct an ID query
             term_query.update(
@@ -128,12 +131,12 @@ class WltSearchRestApiClient(WltApiClient):
                         "terms": source_ids
                     }
                 })
-        # elif entities is not None and isinstance(entities, list):
-        #     term_query = {
-        #        "entity": {
-        #            "key": entities
-        #         }
-        #     }
+        if entities is not None and isinstance(entities, list):
+            entity_query = {
+               "entity": {
+                   "key": entities[0]
+                }
+            }
         if terms is not None:
             # construct a term query
 
@@ -165,7 +168,10 @@ class WltSearchRestApiClient(WltApiClient):
         if end_date:
             query["endDate"] = str(end_date)
 
-        if term_query is not None:
+        if entity_query is not None and len(entity_query):
+            query["query"] = entity_query
+
+        if term_query is not None and len(term_query):
             query["filter"] = term_query
 
         headers = {'Authorization': 'Bearer %s' % auth_token,
@@ -204,11 +210,13 @@ class WltSearchRestApiClient(WltApiClient):
 
     def search_keywords(self, sources: List[str], start_date: str, end_date: str,
                         num_keywords: int=5, num_associations: int=0,
-                        auth_token: str=None, terms: List[str]=None):
+                        auth_token: str=None, terms: List[str]=None,
+                        entities: List[str]=None):
         """ 
         Search an index for top keyword associations matching the search parameters.
-        :param sources: required sources where to look for content.
-        :param term_query: the query string
+        :param sources: required sources where to look for content
+        :param terms: the query string
+        :param entities: optional entities for filtering
         :param start_date: result documents must be younger than this (e.g. \"2018-08-01\")
         :param end_date: result documents must be older than this
         :param num_keywords: how many keywords to return
@@ -273,7 +281,8 @@ class WltSearchRestApiClient(WltApiClient):
         return r
 
     def search_entities(self, sources: List[str], start_date: str, end_date: str,
-                        num_results: int=5, entity_types: List[str]=None,
+                        count: int=5, entity_types: List[str]=None,
+                        fields: List[str]=None,
                         auth_token: str=None, terms: List[str]=None):
         """ 
         Search an index for top entities matching the search parameters.
@@ -281,7 +290,7 @@ class WltSearchRestApiClient(WltApiClient):
         :param term_query: the query string
         :param start_date: result documents must be younger than this (e.g. \"2018-08-01\")
         :param end_date: result documents must be older than this
-        :param num_results: how many entities to return
+        :param count: how many entities to return
         :param entity_types: what entity types to return
         :param auth_token: the webLyzard authentication token, if any
         :returns: The result documents as serialized JSON
@@ -318,9 +327,11 @@ class WltSearchRestApiClient(WltApiClient):
         query = json.loads(query)
 
         # additionally return keyword counts
-        fields = ["keyword.count", "keyword.key", "keyword.name"]
+        if fields is None:
+            fields = []
+        fields.extend(["keyword.count", "keyword.key", "keyword.name"])
 
-        data = dict(sources=sources, query=query, count=num_results,
+        data = dict(sources=sources, query=query, count=count,
                     entityTypes=entity_types,
                     fields=fields)
         data = json.dumps(data)
