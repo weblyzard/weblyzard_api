@@ -257,7 +257,7 @@ class WltDocumentApiClient(WltApiClient):
         super().__init__(username=username, password=password)
         self.repository = repository
 
-    def post_url_documents(self, urls:List[str]):
+    def post_url_documents(self, urls: List[str]):
         """
         Send a POST request with a list of Web URLs to the document endpoint to be ingested.
         :param urls: list of website URLs
@@ -280,6 +280,7 @@ class WltDocumentApiClient(WltApiClient):
             logger.error("Accessing: %s : %s - %s", url, urls, e,
                          exc_info=True)
         return r
+
 
 class WltMesaApiClient(WltApiClient):
     """
