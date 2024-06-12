@@ -243,6 +243,7 @@ class WltSearchRestApiClient(WltApiClient):
             return r
         return r
 
+
 class WltDocumentApiClient(WltApiClient):
     """
     The client for the WL Document REST API.
@@ -258,9 +259,8 @@ class WltDocumentApiClient(WltApiClient):
 
     def post_url_documents(self, urls:List[str]):
         """
-        
-        :param urls:
-        :param auth_token:
+        Send a POST request with a list of Web URLs to the document endpoint to be ingested.
+        :param urls: list of website URLs
         """
         headers = {'Authorization': f'Bearer {self.auth_token}',
                    'Content-Type': 'application/x-ndjson'}
@@ -270,9 +270,7 @@ class WltDocumentApiClient(WltApiClient):
         # build the nd-json payload
         data = [{'repository_id': self.repository, 'uri': url_item} for url_item in urls]
         ndjson_data = '\n'.join(json.dumps(d) for d in data)
-    
-        print(url)
-        print(ndjson_data)
+
         r = requests.post(url, data=ndjson_data, headers=headers)
         try:
             if r.status_code == 200:
