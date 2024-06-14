@@ -1,4 +1,4 @@
-
+import socket
 from _collections import defaultdict
 import logging
 from pprint import pprint
@@ -123,6 +123,43 @@ class BlazegraphWrapper(object):
                     result[row_key].append(value)
         return result
 
+    def ask(self, query:str, no_prefix:bool=False) -> bool:
+        '''
+        Run a given ask query against the query endpoint.
+        :param query: the ask query to run
+        :param no_prefix: do not preface with rdf PREFIXES
+        '''
+        if not no_prefix:
+            query = f'{self.PREFIXES}{query}'
+        self.debug(f'running the following ask query against {self.query_endpoint}\n{query}')
+        try:
+            self.query_wrapper.setQuery(query)
+            res = self.query_wrapper.query().convert()
+            return res["boolean"]
+        except socket.error as e:
+            logger.warning(
+                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+            raise e
+
+    def exists(self, uri) -> bool:
+        """ Check if a given URI is already in the store.
+        :param uri:
+        """
+        if uri in self.uri_cache:
+            return True
+        query = f'''
+                SELECT ?p WHERE {{
+                  {{ <{uri}> ?p ?o. }} UNION {{?s ?p <{uri}> }} .
+                }}
+                LIMIT 1
+        '''
+        result = list(self.run_query(query=query))
+        if len(result) > 0:
+            self.uri_cache.add(uri)
+            return True
+        else:
+            return False
+
 
 if __name__ == '__main__':
     blazegraph_wrapper = BlazegraphWrapper.from_config()
@@ -141,3 +178,6 @@ if __name__ == '__main__':
     bindings = blazegraph_wrapper.run_query(query)
     for result in blazegraph_wrapper.group_bindings(bindings):
         pprint(result)
+
+    print(blazegraph_wrapper.exists(uri='http://www.wikidata.org/entity/Q76'))
+    print(blazegraph_wrapper.ask(query='ASK WHERE {{ wd:Q128660 wdt:P17 wd:Q40 }}'))
