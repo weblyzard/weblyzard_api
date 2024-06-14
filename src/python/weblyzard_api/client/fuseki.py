@@ -16,6 +16,7 @@ import os
 import socket
 import time
 import logging
+from typing import List, Tuple
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 import rdflib.term
@@ -30,9 +31,9 @@ TIMEOUT = 600000000
 
 
 class FusekiWrapper(object):
-    '''
+    """
     provides methods to easily interface fuseki or other triple stores.
-    '''
+    """
 
     PREFIXES = PREFIXES
 
@@ -90,14 +91,14 @@ class FusekiWrapper(object):
         return decorator
 
     def fix_uri(self, o):
-        '''
+        """
         If a uri is only the full uri, i.e. not prefixed, it needs
         to be enclosed in angled brackets.
         If a value is not a str it needs to be converted.
-        '''
+        """
 
         if isinstance(o, tuple) and len(o) == 3:
-            return(self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2]))
+            return self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2])
         elif isinstance(o, (str, bytes)):
             if isinstance(o, bytes):
                 o = o.decode('utf-8')
@@ -108,9 +109,9 @@ class FusekiWrapper(object):
             return str(o)
 
     def is_uri(self, value):
-        '''
+        """
         Check if the value is a URI or not.
-        '''
+        """
         if isinstance(value, int):
             return False
         elif isinstance(value, (str, bytes)):
@@ -124,7 +125,7 @@ class FusekiWrapper(object):
             return False
 
     def variable_to_python(self, variable_dict, add_language_tag=False):
-        '''
+        """
         Convert a given variable_dict to the closest python representation.
         :param variable_dict: The dict representing the variable.
         :type variable_dict: `dict`
@@ -132,7 +133,7 @@ class FusekiWrapper(object):
                 be language-tagged (and wrapped in double quotes).
         :type add_language_tag: `bool`
         :rtype: `object`
-        '''
+        """
         if variable_dict['type'] == 'uri':
             return variable_dict['value']
         elif variable_dict['type'] == 'literal':
@@ -215,12 +216,17 @@ class FusekiWrapper(object):
         except socket.error as e:
             logger.warning(
                 f'socket error {self.query_endpoint}: {e}', exc_info=True)
-            raise(e)
+            raise e
 
     def run_query(self, query, no_prefix=False, batch_size=None,
                   order_by_stmt=None, caching=False):
-        """ Run a given query and return the result's bindings.
-        :param query: The SPARQL query to run.
+        """
+        Run a given query and return the result's bindings.
+        :param no_prefix: if True does not inject all PREFIX values
+        :param batch_size: controls LIMIT and OFFSET in batch queries
+        :param order_by_stmt: accepts and ORDER BY query part for batch updates
+        :param caching: caches to a file (?)
+        :param query: the SPARQL query to run.
         """
         if not no_prefix:
             query = u'{}{}'.format(self.PREFIXES, query)
@@ -246,7 +252,9 @@ class FusekiWrapper(object):
 
     @_retry_with_backoff
     def run_update(self, query, no_prefix=False):
-        """ Run a given update query against the update endpoint.
+        """
+        Run a given update query against the update endpoint.
+        :param no_prefix: if True does not inject all PREFIX values
         :param query: The query (insert, update) to run.
         """
         if not no_prefix:
@@ -263,14 +271,14 @@ class FusekiWrapper(object):
         except socket.error as e:
             logger.warning(
                 f'socket error {self.query_endpoint}: {e}', exc_info=True)
-            raise(e)
+            raise e
 
-    def ask(self, query:str, no_prefix:bool=False) -> bool:
-        '''
+    def ask(self, query: str, no_prefix: bool = False) -> bool:
+        """
         Run a given ask query against the query endpoint.
         :param query: the ask query to run
         :param no_prefix: do not preface with rdf PREFIXES
-        '''
+        """
         if not no_prefix:
             query = u'{}{}'.format(self.PREFIXES, query)
         self.debug(u'running the following ask query against {endpoint}\n{query}'.format(
@@ -283,11 +291,12 @@ class FusekiWrapper(object):
         except socket.error as e:
             logger.warning(
                 f'socket error {self.query_endpoint}: {e}', exc_info=True)
-            raise(e)
+            raise e
 
     def exists(self, uri):
-        """ Check if a given URI is already in the store.
-        :param uri:
+        """
+        Check if a given URI is already in the store.
+        :param uri: unprefixed, full uri value
         """
         if uri in self.uri_cache:
             return True
@@ -318,10 +327,10 @@ class FusekiWrapper(object):
                 self.uri_cache.add(row['o']['value'])
 
     def get_new_URI(self, base_uri):
-        """ Get a new URI that does not yet exist in the RDF graph. It appends
+        """
+        Get a new URI that does not yet exist in the RDF graph. It appends
         numerical, increasing suffixes to the base_uri until it finds a free
         URI.
-        :param base_uri
         """
         candidate_uri = base_uri
         if candidate_uri not in self.uri_cache and not self.exists(candidate_uri):
@@ -329,14 +338,19 @@ class FusekiWrapper(object):
         else:
             suffix = 1
             candidate_uri = u'{}_{}'.format(base_uri, suffix)
-            while not(candidate_uri not in self.uri_cache and not self.exists(candidate_uri)):
+            while not (candidate_uri not in self.uri_cache and not self.exists(candidate_uri)):
                 if candidate_uri not in self.uri_cache:
                     self.uri_cache.add(candidate_uri)
                 suffix += 1
                 candidate_uri = u'{}_{}'.format(base_uri, suffix)
             return candidate_uri
 
-    def insert_triples(self, triple_list, graph_name=None):
+    def insert_triples(self, triple_list: List[Tuple], graph_name: str = None) -> None:
+        """
+        Add triples to the Fuseki dataset.
+        :param triple_list: List of triple tuples (s, p, o)
+        :param graph_name: if provided, adds to that named GRAPH
+        """
         slice_size = 250
         lower = 0
         num_triples = len(triple_list)
@@ -374,7 +388,14 @@ class FusekiWrapper(object):
         [self.uri_cache.add(t[0]) for t in triple_list]
         [self.uri_cache.add(t[2]) for t in triple_list if self.is_uri(t[2])]
 
-    def insert_triple(self, s, p, o, graph_name=None):
+    def insert_triple(self, s, p, o, graph_name=None) -> None:
+        """
+        Adds a single triple, consisting of s, p, o to the Fuseki dataset.
+        :param s: subject
+        :param p: predicate
+        :param o: object
+        :param graph_name: if provided, adds to that named GRAPH
+        """
         triple = ' '.join([self.fix_uri(s), self.fix_uri(p), self.fix_uri(o)])
         if graph_name:
             query_body = f"""
