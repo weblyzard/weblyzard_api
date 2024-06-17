@@ -39,6 +39,11 @@ class WltApiClient(object):
         self.auth_token = None
         self.auth_token = self.get_auth_token(self.username, self.password)
 
+    # def authenticate(self, username:str, password=str):
+    #     self.auth_token = self.get_auth_token(username, password)
+    #     if isinstance(self.auth_token, str):
+    #         logger.info('Authentication: OK')
+
     def get_auth_token(self, username: str, password: str) -> str:
         """ 
         GET a valid authentication token from the server. 
@@ -50,6 +55,7 @@ class WltApiClient(object):
         url = '/'.join([self.base_url, self.version, self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
         if r.status_code == 200:
+            logger.info('Token retrieved')
             return r.content.decode('utf-8')
         return r
 
@@ -284,7 +290,7 @@ class WltSearchRestApiClient(WltApiClient):
                         count: int=5, entity_types: List[str]=None,
                         fields: List[str]=None,
                         auth_token: str=None, terms: List[str]=None):
-        """ 
+        """
         Search an index for top entities matching the search parameters.
         :param sources: required sources where to look for content.
         :param term_query: the query string
@@ -348,6 +354,44 @@ class WltSearchRestApiClient(WltApiClient):
             logger.error(
                 "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
             return r
+        return r
+
+
+class WltDocumentApiClient(WltApiClient):
+    """
+    The client for the WL Document REST API.
+    `Documentation <https://api.weblyzard.com/doc/ui/#/Document_API>`_
+    """
+    DOCUMENT_ENDPOINT = 'documents'
+
+    def __init__(self, username:str=None, password:str=None,
+                 repository:str=None):
+
+        super().__init__(username=username, password=password)
+        self.repository = repository
+
+    def post_url_documents(self, urls: List[str]):
+        """
+        Send a POST request with a list of Web URLs to the document endpoint to be ingested.
+        :param urls: list of website URLs
+        """
+        headers = {'Authorization': f'Bearer {self.auth_token}',
+                   'Content-Type': 'application/x-ndjson'}
+        url = '/'.join([self.base_url, str(self.API_VERSION),
+                        self.DOCUMENT_ENDPOINT, self.repository])
+
+        # build the nd-json payload
+        data = [{'repository_id': self.repository, 'uri': url_item} for url_item in urls]
+        ndjson_data = '\n'.join(json.dumps(d) for d in data)
+
+        r = requests.post(url, data=ndjson_data, headers=headers)
+        try:
+            if r.status_code == 200:
+                response = json.loads(r.content)['result']
+                return response
+        except Exception as e:
+            logger.error("Accessing: %s : %s - %s", url, urls, e,
+                         exc_info=True)
         return r
 
 
