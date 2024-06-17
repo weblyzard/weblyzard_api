@@ -30,12 +30,19 @@ class WltApiClient(object):
         """
         Constructor.
         """
+        if base_url.endswith(f'/{version}'):
+            base_url = base_url.replace(f'/{version}', '')
         self.base_url = base_url
         self.version = version
         self.username = username
         self.password = password
         self.auth_token = None
         self.auth_token = self.get_auth_token(self.username, self.password)
+
+    # def authenticate(self, username:str, password=str):
+    #     self.auth_token = self.get_auth_token(username, password)
+    #     if isinstance(self.auth_token, str):
+    #         logger.info('Authentication: OK')
 
     def get_auth_token(self, username: str, password: str) -> str:
         """ 
@@ -48,6 +55,7 @@ class WltApiClient(object):
         url = '/'.join([self.base_url, self.version, self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
         if r.status_code == 200:
+            logger.info('Token retrieved')
             return r.content.decode('utf-8')
         return r
 
@@ -107,6 +115,7 @@ class WltSearchRestApiClient(WltApiClient):
         }
 
         term_query = {}
+        entity_query = {}
         if content_id is not None and isinstance(content_id, int):
             # construct an ID query
             term_query.update(
@@ -128,12 +137,12 @@ class WltSearchRestApiClient(WltApiClient):
                         "terms": source_ids
                     }
                 })
-        # elif entities is not None and isinstance(entities, list):
-        #     term_query = {
-        #        "entity": {
-        #            "key": entities
-        #         }
-        #     }
+        if entities is not None and isinstance(entities, list):
+            entity_query = {
+               "entity": {
+                   "key": entities[0]
+                }
+            }
         if terms is not None:
             # construct a term query
 
@@ -165,7 +174,10 @@ class WltSearchRestApiClient(WltApiClient):
         if end_date:
             query["endDate"] = str(end_date)
 
-        if term_query is not None:
+        if entity_query is not None and len(entity_query):
+            query["query"] = entity_query
+
+        if term_query is not None and len(term_query):
             query["filter"] = term_query
 
         headers = {'Authorization': 'Bearer %s' % auth_token,
@@ -204,11 +216,13 @@ class WltSearchRestApiClient(WltApiClient):
 
     def search_keywords(self, sources: List[str], start_date: str, end_date: str,
                         num_keywords: int=5, num_associations: int=0,
-                        auth_token: str=None, terms: List[str]=None):
+                        auth_token: str=None, terms: List[str]=None,
+                        entities: List[str]=None):
         """ 
         Search an index for top keyword associations matching the search parameters.
-        :param sources: required sources where to look for content.
-        :param term_query: the query string
+        :param sources: required sources where to look for content
+        :param terms: the query string
+        :param entities: optional entities for filtering
         :param start_date: result documents must be younger than this (e.g. \"2018-08-01\")
         :param end_date: result documents must be older than this
         :param num_keywords: how many keywords to return
@@ -273,15 +287,16 @@ class WltSearchRestApiClient(WltApiClient):
         return r
 
     def search_entities(self, sources: List[str], start_date: str, end_date: str,
-                        num_results: int=5, entity_types: List[str]=None,
+                        count: int=5, entity_types: List[str]=None,
+                        fields: List[str]=None,
                         auth_token: str=None, terms: List[str]=None):
-        """ 
+        """
         Search an index for top entities matching the search parameters.
         :param sources: required sources where to look for content.
         :param term_query: the query string
         :param start_date: result documents must be younger than this (e.g. \"2018-08-01\")
         :param end_date: result documents must be older than this
-        :param num_results: how many entities to return
+        :param count: how many entities to return
         :param entity_types: what entity types to return
         :param auth_token: the webLyzard authentication token, if any
         :returns: The result documents as serialized JSON
@@ -318,9 +333,11 @@ class WltSearchRestApiClient(WltApiClient):
         query = json.loads(query)
 
         # additionally return keyword counts
-        fields = ["keyword.count", "keyword.key", "keyword.name"]
+        if fields is None:
+            fields = []
+        fields.extend(["keyword.count", "keyword.key", "keyword.name"])
 
-        data = dict(sources=sources, query=query, count=num_results,
+        data = dict(sources=sources, query=query, count=count,
                     entityTypes=entity_types,
                     fields=fields)
         data = json.dumps(data)
@@ -337,6 +354,44 @@ class WltSearchRestApiClient(WltApiClient):
             logger.error(
                 "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
             return r
+        return r
+
+
+class WltDocumentApiClient(WltApiClient):
+    """
+    The client for the WL Document REST API.
+    `Documentation <https://api.weblyzard.com/doc/ui/#/Document_API>`_
+    """
+    DOCUMENT_ENDPOINT = 'documents'
+
+    def __init__(self, username:str=None, password:str=None,
+                 repository:str=None):
+
+        super().__init__(username=username, password=password)
+        self.repository = repository
+
+    def post_url_documents(self, urls: List[str]):
+        """
+        Send a POST request with a list of Web URLs to the document endpoint to be ingested.
+        :param urls: list of website URLs
+        """
+        headers = {'Authorization': f'Bearer {self.auth_token}',
+                   'Content-Type': 'application/x-ndjson'}
+        url = '/'.join([self.base_url, str(self.API_VERSION),
+                        self.DOCUMENT_ENDPOINT, self.repository])
+
+        # build the nd-json payload
+        data = [{'repository_id': self.repository, 'uri': url_item} for url_item in urls]
+        ndjson_data = '\n'.join(json.dumps(d) for d in data)
+
+        r = requests.post(url, data=ndjson_data, headers=headers)
+        try:
+            if r.status_code == 200:
+                response = json.loads(r.content)['result']
+                return response
+        except Exception as e:
+            logger.error("Accessing: %s : %s - %s", url, urls, e,
+                         exc_info=True)
         return r
 
 
