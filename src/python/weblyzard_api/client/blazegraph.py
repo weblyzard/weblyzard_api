@@ -1,6 +1,7 @@
 from deprecated import deprecated
 from weblyzard_api.client.triplestore.blazegraph import BlazegraphWrapper as NewBlazegraphWrapper
 
+
 @deprecated(reason="Class was moved, use triplestore.blazegraph")
 class DeprecationHelperBlazegraphWrapper(object):
 

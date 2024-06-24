@@ -1,7 +1,7 @@
 import logging
+import socket
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from socket import socket
 from typing import Generator
 
 from SPARQLWrapper import SPARQLWrapper2, JSON, SPARQLWrapper

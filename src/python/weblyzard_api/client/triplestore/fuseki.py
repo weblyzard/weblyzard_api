@@ -197,59 +197,6 @@ class FusekiWrapper(TriplestoreWrapper1):
                 f'socket error {self.query_endpoint}: {e}', exc_info=True)
             raise e
 
-    # def ask(self, query: str, no_prefix: bool = False) -> bool:
-    #     """
-    #     Run a given ask query against the query endpoint.
-    #     :param query: the ask query to run
-    #     :param no_prefix: do not preface with rdf PREFIXES
-    #     """
-    #     if not no_prefix:
-    #         query = u'{}{}'.format(self.PREFIXES, query)
-    #     self.debug(u'running the following ask query against {endpoint}\n{query}'.format(
-    #         query=query,
-    #         endpoint=self.query_endpoint))
-    #     try:
-    #         self.query_wrapper.setQuery(query)
-    #         res = self.query_wrapper.query().convert()
-    #         return res["boolean"]
-    #     except socket.error as e:
-    #         logger.warning(
-    #             f'socket error {self.query_endpoint}: {e}', exc_info=True)
-    #         raise e
-    #
-    # def exists(self, uri):
-    #     """
-    #     Check if a given URI is already in the store.
-    #     :param uri: unprefixed, full uri value
-    #     """
-    #     if uri in self.uri_cache:
-    #         return True
-    #     query = u'''
-    #     SELECT ?p WHERE {{
-    #       {{ <{x}> ?p ?o. }} UNION {{?s ?p <{x}> }} .
-    #     }}
-    #     LIMIT 1
-    #     '''.format(x=uri)
-    #     result = list(self.run_query(query=query))
-    #     if len(result) > 0:
-    #         self.uri_cache.add(uri)
-    #         return True
-    #     else:
-    #         return False
-
-    # def populate_uri_cache(self):
-    #     query = u'''
-    #     SELECT ?s ?o WHERE {{
-    #       {{ ?s ?p ?o. }} .
-    #     }}
-    #     '''
-    #     result = self.run_query(query=query)
-    #     for row in result:
-    #         if row['s']['type'] == 'uri':
-    #             self.uri_cache.add(row['s']['value'])
-    #         if row['o']['type'] == 'uri':
-    #             self.uri_cache.add(row['o']['value'])
-
     def get_new_uri(self, base_uri):
         """
         Get a new URI that does not yet exist in the RDF graph. It appends
@@ -339,24 +286,3 @@ class FusekiWrapper(TriplestoreWrapper1):
         self.uri_cache.add(s)
         if self.is_uri(o):
             self.uri_cache.add(o)
-
-
-def test_fuseki_queries():
-    fuseki_wrapper = FusekiWrapper(sparql_endpoint='http://fuseki-lod.prod.i.weblyzard.net:8443/wikidata.20190603',
-                                   debug=True)
-    query = '''
-            PREFIX wd: <http://www.wikidata.org/entity/> 
-            SELECT ?uri ?label ?country ?headquarters_location WHERE {
-                      ?uri rdfs:label ?label;
-                        wdt:P279 wd:Q43229;
-                        wdt:P17 ?country.
-                      OPTIONAL { ?uri wdt:P159 ?headquarters_location. }
-                    }
-            LIMIT 1000
-            '''
-
-    for row in fuseki_wrapper.run_query(query):
-        pprint(row)
-
-    assert(fuseki_wrapper.exists(uri='http://www.wikidata.org/entity/Q76'))
-    assert(fuseki_wrapper.ask(query='ASK WHERE {{ wd:Q128660 wdt:P17 wd:Q40 }}'))

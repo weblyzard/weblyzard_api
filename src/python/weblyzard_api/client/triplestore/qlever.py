@@ -19,24 +19,3 @@ class QleverWrapper(TriplestoreWrapper2):
     def from_config(host, port, dataset: str):
         return QleverWrapper(sparql_endpoint=f'{host}:{port}/{dataset}',
                              debug=False)
-
-
-def test_qlever_queries():
-    qlever_wrapper = QleverWrapper(sparql_endpoint='https://qlever.cs.uni-freiburg.de/api/wikidata')
-    query = '''
-            PREFIX wd: <http://www.wikidata.org/entity/> 
-            SELECT ?uri ?label ?country ?headquarters_location WHERE {
-                      ?uri rdfs:label ?label;
-                        wdt:P279 wd:Q43229;
-                        wdt:P17 ?country.
-                      OPTIONAL { ?uri wdt:P159 ?headquarters_location. }
-                      FILTER((LANG(?label)) = "en")
-                    }
-            LIMIT 1000
-            '''
-
-    bindings = qlever_wrapper.run_query(query)
-    for result in qlever_wrapper.group_bindings(bindings):
-        pprint(result)
-
-    assert(qlever_wrapper.exists(uri='http://www.wikidata.org/entity/Q76'))
