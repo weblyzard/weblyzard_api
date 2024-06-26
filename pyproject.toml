@@ -1,0 +1,56 @@
+[build-system]
+requires = ["poetry-core", "toml", "mock"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.2"
+requests-mock = "^1.10.0"
+elasticsearch_dsl = "*"
+parameterized = "*"
+requests = "^2.11.1"
+
+
+[tool.poetry]
+name = "weblyzard-api"
+version = "4.0.0-dev"
+description = "OS clients to webLyzard services"
+authors = ["Albert Weichselbraun <weichselbraun@weblyzard.com>"]
+readme = "README.md"
+license = "Proprietary"
+packages = [{ include = "weblyzard_api", from = "src/python" }]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.8",
+    "Operating System :: OS Independent",
+]
+
+[[tool.poetry.source]]
+name = "wlt_nexus"
+url = "https://nexus.semanticlab.net/repository/pypi-group/simple"
+priority = "primary"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+future = "*"
+nose = "*"
+lxml = "*"
+requests = "*"
+pytest = "*"
+sparqlwrapper = "*"
+
+[tool.pylint]
+max-line-length = 88
+disable = [
+    "C0103", # (invalid-name)
+    "C0114", # (missing-module-docstring)
+    "C0115", # (missing-class-docstring)
+    "C0116", # (missing-function-docstring)
+    "R0903", # (too-few-public-methods)
+    "R0913", # (too-many-arguments)
+    "W0105", # (pointless-string-statement)
+]
+
+
