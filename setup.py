@@ -17,6 +17,7 @@ setup(
                       'lxml',
                       'redis',
                       'requests',
+                      'urllib3==1.26.15', # temp to test effect on dependency resolution
                       'pytest',
                       'python-dotenv',
                       'sparqlwrapper'],
