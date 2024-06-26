@@ -4,70 +4,69 @@
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
 # cp -no-clobber copies files but doesn't overwrite existing ones (e.g. sonar property settings)
 .python_defaults: &py_anchor  # using anchor magic
-    image: registry.gitlab.semanticlab.net/docker/py3full:3.8
-    before_script:
-        - git submodule sync --recursive
-        - git submodule update --init --recursive --remote
-        - cp --no-clobber wl_python_utils/python3/* .
-        - sed -i s/-dev/".$(date +%Y%m%d.%H%M)"/g setup.py
-        - export PROJECT=$(/usr/bin/python3 -W ignore ./setup.py --name | awk 'NR==1{print $1}')
-        - export VERSION=$(/usr/bin/python3 -W ignore ./setup.py --version | awk 'NR==1{print $1}')
-        - export TESTSDIR=src/python/weblyzard_api/tests/always_run/
-        - export SRCDIR=src/python/weblyzard_api/
-    tags:
-        - docker
+  image: registry.gitlab.semanticlab.net/docker/py3full:3.10
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive --remote
+    - cp wl_python_utils/python3/* .
+    - sed -i s/-dev/".$(date +%Y%m%d.%H%M)"/g pyproject.toml
+    - if test -f "version.txt"; then cat version.txt; else poetry version | awk {'print $2'} > version.txt; fi
+    - export PROJECT=`poetry version | awk {'print $1'}`
+    - export VERSION=`poetry version | awk {'print $2'}`
+    - export TESTSDIR=src/python/weblyzard_api/tests/always_run/
+    - export SRCDIR=src/python/weblyzard_api/
+    - python3.10 -m pip install tox
+  tags:
+    - docker
 
 stages:
-    - test-python
-    - test-java
-    - deploy
-    - build-package
+  - test-python
+  - test-java
+  - deploy
+  - build-package
 
 pytest:
-    <<: *py_anchor  # we reference the anchor here
-    stage: test-python
-    only:
-        - branches 
-    script:
-        - tox -q -e pytest
-        - sonar-scanner -D sonar.host.url=${sonarhost} -D sonar.login=${sonarlogin}
+  <<: *py_anchor  # we reference the anchor here
+  stage: test-python
+  only:
+    - branches
+  script:
+    - poetry config repositories.wlt_nexus ${NEXUS_URL}
+    - poetry config http-basic.wlt_nexus ${NEXUS_USER} ${NEXUS_PW}
+    - poetry lock
+    - poetry install
+    - poetry run pytest tests
+    - sonar-scanner -D sonar.host.url=${sonarhost} -D sonar.login=${sonarlogin}
 
 pylint:
-    <<: *py_anchor
-    stage: test-python
-    only:
-        - branches 
-    script:
-        - tox -q -e pylint
-    when: manual
+  <<: *py_anchor
+  stage: test-python
+  only:
+    - branches
+  script:
+    - tox -q -e pylint
+  when: manual
 
 vulture:
-    <<: *py_anchor
-    stage: test-python
-    only:
-        - branches 
-    script:
-        - tox -q -e vulture
-    when: manual
+  <<: *py_anchor
+  stage: test-python
+  only:
+    - branches
+  script:
+    - tox -q -e vulture
+  when: manual
 
 
-# the sed and exports needed are in the actual build-package.sh
-build:
-    stage: build-package
-    before_script:
-        - git submodule sync --recursive
-        - git submodule update --init --recursive --remote
-        - cp --no-clobber wl_python_utils/python3/* .
-        - sed -i s/-dev/".$(date +%Y%m%d.%H%M)"/g setup.py
-    script:
-        - chmod +x build-package.sh
-        - ./build-package.sh
-        - echo ':triggering build of py3full'
-        - curl -X POST -F token=$PY3FULL_TOKEN -F ref=master https://gitlab.semanticlab.net/api/v4/projects/650/trigger/pipeline
-    only:
-        - master
-    tags:
-        - shell-runner
+job_build_package:
+  stage: build-package
+  script:
+    - chmod +x build-package.sh
+    - ./build-package.sh
+  only:
+    - master
+  tags:
+    - backend-runner
+  when: manual
 
 sonarqube_preview:
   script:

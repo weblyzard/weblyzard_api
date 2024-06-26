@@ -2,7 +2,6 @@
 # encoding: utf-8
 
 from setuptools import setup, find_packages
-from setuptools.command import sdist
 
 setup(
     name='weblyzard_api',
@@ -20,11 +19,11 @@ setup(
                       'sparqlwrapper'],
     classifiers=[
         'Programming Language :: Python :: 3.10',
-                 'Programming Language :: Python :: 3.9',
-                 'Programming Language :: Python :: 3.8',
-                 'Programming Language :: Python :: 3.7',
-                 'Programming Language :: Python :: 3.6',
-                 'Programming Language :: Python :: 3 :: Only'],
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3 :: Only'],
     zip_safe=False,
     include_package_data=True,
     scripts=['src/python/weblyzard_api/client/openrdf/wl_upload_repository.py', ]

@@ -34,7 +34,6 @@ class XML2013(XMLParser):
         'creator': ('creator', 'dc'),
         'author': ('creator', 'dc'),
         'publisher': ('publisher', 'dc'),
-        'license': ('license', 'dc'),
         'provenance': ('provenance', 'dc'),
         'hasFormat': ('hasFormat', 'dc'),
 
