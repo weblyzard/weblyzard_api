@@ -16,7 +16,7 @@ setup(
                       'nose',
                       'lxml',
                       'redis',
-                      'requests[security]>=2.13,<3',
+                      'requests',
                       'pytest',
                       'python-dotenv',
                       'sparqlwrapper'],
