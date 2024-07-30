@@ -58,7 +58,7 @@ class Document(object):
 
     def __init__(self, content_id, content, content_type, lang, nilsimsa=None,
                  partitions=None, header=None, annotations=None):
-        ''' '''
+        """ """
         self.content_id = content_id
 
         # unescape existing HTML entities
@@ -77,7 +77,7 @@ class Document(object):
             self.partitions = {}
         else:
             self.partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                                for label, spans in partitions.items()}
+                               for label, spans in partitions.items()}
         self.header = header if header else {}
         self.annotations = annotations if annotations else []
 
@@ -117,12 +117,12 @@ class Document(object):
 
     @classmethod
     def _dict_transform(cls, data, mapping=None):
-        ''' 
+        """ 
         Recursively transform a document object to a JSON serializable dict, 
         with MAPPING applied as well as empty results removed.
         :param data, the data to be transformed to a dict
         :return a dictionary of a document, ready for JSON serialization
-        '''
+        """
         if mapping is None:
             mapping = cls.MAPPING
         if data is None:
@@ -166,6 +166,8 @@ class Document(object):
 
         if isinstance(data, object):
             result = {}
+            if not hasattr(data, "__dict__"):
+                return None
             for key, value in data.__dict__.items():
                 if key in mapping:
                     key = mapping[key]
@@ -184,20 +186,20 @@ class Document(object):
 
     @classmethod
     def from_json(cls, json_payload):
-        ''' 
+        """ 
         Convert a JSON object into a content model.
         :param json_payload, the string representation of the JSON content model
-        '''
+        """
         parsed_content = json.loads(json_payload, strict=False)
         return cls.from_dict(dict_=parsed_content)
 
     @classmethod
     def from_dict(cls, dict_):
-        '''
+        """
         Convert a `dict` object corresponding to the JSON serialisation
         into a Document object.
         :param dict_, the `dict` representing the Document.
-        '''
+        """
         # validation
         for required_field in cls.REQUIRED_FIELDS:
             if not required_field in dict_:
@@ -210,7 +212,7 @@ class Document(object):
         # This is tricky ... the mapping cannot be easily inversed
         # making the md5sum to content_id conversion at the top level necessary
         inverse_mapping = {v: k for k, v in cls.MAPPING.items() if
-                                                    k != 'content_id'}
+                           k != 'content_id'}
         parsed_content = Document._dict_transform(dict_,
                                                   mapping=inverse_mapping)
         parsed_content['content_id'] = parsed_content.pop('md5sum')
@@ -241,26 +243,26 @@ class Document(object):
                    annotations=annotations)
 
     def to_json(self):
-        '''
-        Serialize a document to JSON '''
+        """
+        Serialize a document to JSON """
         return json.dumps(self.to_dict())
 
     def to_dict(self):
-        '''
+        """
         Create a dict representing the Document analogous to the JSON structure.
-        '''
+        """
         result = self._dict_transform(self)
         return result
 
     def to_xml(self, ignore_title=False, include_fragments=False,
                xml_version=XML2013.VERSION):
-        ''' 
+        """ 
         Serialize a document to XML.
         :param ignore_titles: if set, titles will not be serialized.
         :param include_fragments: non-sentence fragments will be included.
         :param xml_version: the version of XML to be used (defaults to 2013)
         :return: the serialized XML
-        '''
+        """
         if not hasattr(self, 'features'):
             self.features = {}
 
@@ -279,26 +281,26 @@ class Document(object):
             sentences=self.get_sentences(include_fragments=include_fragments))
 
     def get_text_by_span(self, span: CharSpan):
-        ''' 
+        """ 
         Return the textual content of a span. 
         :param span, the span to extract content for.
-        '''
+        """
         if not isinstance(span, CharSpan):
             span = SpanFactory.new_span(span)
         return self.content[span.start:span.end]
 
     @classmethod
     def overlapping(cls, spanA: CharSpan, spanB: CharSpan):
-        ''' Return whether two spans overlap. '''
+        """ Return whether two spans overlap. """
         return (spanB.start <= spanA.start and spanB.end > spanA.start) or \
-                (spanA.start <= spanB.start and spanA.end > spanB.start)
+            (spanA.start <= spanB.start and spanA.end > spanB.start)
 
     def get_partition_overlaps(self, search_span: CharSpan,
                                target_partition_key: str):
-        ''' Return all spans from a given target_partition_key that overlap 
+        """ Return all spans from a given target_partition_key that overlap 
         the search span. 
         :param search_span, the span to search for overlaps by.
-        :param target_partition_key, the target partition'''
+        :param target_partition_key, the target partition"""
         result = []
 
         if not target_partition_key in self.partitions:
@@ -327,9 +329,9 @@ class Document(object):
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based: bool=False,
-                      include_title: bool=True,
-                      include_fragments: bool=False):
+    def get_sentences(self, zero_based: bool = False,
+                      include_title: bool = True,
+                      include_fragments: bool = False):
         """
         Legacy method to extract webLyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
@@ -360,8 +362,8 @@ class Document(object):
 
             # get tokens
             token_spans = self.get_partition_overlaps(
-                                            search_span=sentence_span,
-                                            target_partition_key=self.TOKEN_KEY)
+                search_span=sentence_span,
+                target_partition_key=self.TOKEN_KEY)
             is_title = len(
                 self.get_partition_overlaps(search_span=sentence_span,
                                             target_partition_key=self.TITLE_KEY)) > 0
