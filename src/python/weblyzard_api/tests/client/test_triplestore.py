@@ -9,6 +9,8 @@ from weblyzard_api.client.triplestore.qlever import QleverWrapper
 
 class TriplestoreTestFuseki(unittest.TestCase):
     FUSEKI_ENDPOINT = getenv('FUSEKI_ENDPOINT')
+    if not FUSEKI_ENDPOINT:
+        raise ValueError("No Fuseki query service endpoint set!")
     fuseki_wrapper = FusekiWrapper(sparql_endpoint=FUSEKI_ENDPOINT, debug=True)
 
     def test_fuseki_query(self):
@@ -55,6 +57,31 @@ class TriplestoreTestBlazegraph(unittest.TestCase):
             pprint(result)
             assert (all(k in result.keys() for k in ['uri', 'label', 'country']))
             assert (all(value.split('@')[1] in ['de', 'en'] for value in result['label']))
+
+    def test_value_from_grouped_bindings(self):
+        query = '''
+                PREFIX wd: <http://www.wikidata.org/entity/> 
+                SELECT ?uri ?label ?country ?headquarters_location WHERE {
+                        VALUES ?uri {wd:Q18214700}
+                          ?uri rdfs:label ?label;
+                            wdt:P279 wd:Q43229;
+                            wdt:P17 ?country.
+                          OPTIONAL { ?uri wdt:P159 ?headquarters_location. }
+                          FILTER(((LANG(?label)) = "en") || ((LANG(?label)) = "de"))
+                        }
+                LIMIT 100
+                '''
+        bindings = self.blazegraph_wrapper.run_query(query)
+        for result in self.blazegraph_wrapper.group_bindings(bindings):
+            assert (self.blazegraph_wrapper.get_value_from_grouped_bindings(result, field='label', language='de')
+                    in "Öffentliche Einrichtung" )
+            assert (self.blazegraph_wrapper.get_value_from_grouped_bindings(result, field='label')
+                    is None)  # no non-specified language value
+            assert (self.blazegraph_wrapper.get_value_from_grouped_bindings(result, field='country', language='de')
+                    == "http://www.wikidata.org/entity/Q31")  # defaults to non-specified language
+            assert (self.blazegraph_wrapper.get_value_from_grouped_bindings(result, field='country')
+                    == "http://www.wikidata.org/entity/Q31")
+
 
     def test_exists(self):
         assert (self.blazegraph_wrapper.exists(uri='http://www.wikidata.org/entity/Q76'))
