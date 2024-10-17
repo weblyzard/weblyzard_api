@@ -271,3 +271,17 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
                 if value not in result[row_key]:
                     result[row_key].append(value)
         return result
+
+    @staticmethod
+    def get_value_from_grouped_bindings(grouped_bindings: dict, field: str, language: str = None) -> Optional[str]:
+        lang_agnostic_value = None
+        for value in list(grouped_bindings.get(field, [])):
+            try:
+                value, lang = parse_language_tagged_string(value)
+                if language is not None and lang == language:
+                    return value
+                if not lang:
+                    lang_agnostic_value = value
+            except ValueError:
+                pass  # can not be parsed
+        return lang_agnostic_value
