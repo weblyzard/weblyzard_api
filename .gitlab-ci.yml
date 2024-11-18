@@ -34,7 +34,7 @@ pytest:
     - poetry config repositories.wlt_nexus ${NEXUS_URL}
     - poetry config http-basic.wlt_nexus ${NEXUS_USER} ${NEXUS_PW}
     - poetry install
-    - poetry run pytest src/python/weblyzard_api/tests/always_run
+    - poetry run pytest ${TESTSDIR}
     - sonar-scanner -D sonar.host.url=${sonarhost} -D sonar.login=${sonarlogin}
 
 pylint:
