@@ -1,19 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
 import pytest
+import os
 
 from weblyzard_api.client.joanna import Joanna
 
 class JoannaTest(unittest.TestCase):
 
+    SERVICE_URL = 'localhost:63002/rest'
+
     def setUp(self):
-        self.joanna = Joanna(url="http://localhost:63002/rest")
+        service_url = os.getenv('JAIRO_SERVICE_URL', self.SERVICE_URL)
+        self.joanna = Joanna(url=service_url)
         self.docs = 10
         self.rand_strings = self.joanna.rand_strings(self.docs)
         self.source_id = 21555
@@ -84,9 +88,9 @@ class JoannaTest(unittest.TestCase):
 
     @pytest.mark.skip(reason='TODO')
     def test_existing_document(self):
-        ''' Test an existing doc from the database. Note:
+        """ Test an existing doc from the database. Note:
         this is expected to fail when the document becomes very old
-        '''
+        """
         existing_doc = [
             '1100101100100110001001110011001000000010001000001010100',
             '001001110100010000001001110110010101100111101000011000',

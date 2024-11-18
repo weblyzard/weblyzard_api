@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
@@ -13,8 +13,8 @@ class TestDomainSpecificity(unittest.TestCase):
     
     def setUp(self):
         self.client = DomainSpecificity()
-        self.service_is_online = self.jesaja.is_online()
-        if not self.service_is_online: 
+        self.service_is_online = self.client.is_online()
+        if not self.service_is_online:
             print('WARNING: Webservice is offline --> not executing all tests!!')
             
     def test_domain_specificity(self):

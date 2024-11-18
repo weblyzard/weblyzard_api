@@ -31,7 +31,7 @@ DEFAULT_MAX_RETRY_ATTEMPTS = 120
 
 
 class Jeremia(MultiRESTClient):
-    '''
+    """
     **Jeremia Web Service**
 
     Pre-processes text documents and returns an annotated webLyzard XML document.
@@ -68,7 +68,7 @@ class Jeremia(MultiRESTClient):
             client = Jeremia()
             result = client.submit_document(docs)
             pprint(result)
-    '''
+    """
     URL_PATH = 'jeremia/rest'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
                          'title': 'title',
@@ -81,11 +81,11 @@ class Jeremia(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(self, service_urls=url,
                                  default_timeout=default_timeout,
                                  user=usr, password=pwd)
@@ -94,11 +94,11 @@ class Jeremia(MultiRESTClient):
                         wait_time=DEFAULT_WAIT_TIME,
                         max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
                         max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
-        '''
+        """
         processes a single document with jeremia (annotates a single document)
 
         :param document: the document to be processed
-        '''
+        """
 
         # wait until the web service has available threads for processing
         # the request
@@ -129,10 +129,10 @@ class Jeremia(MultiRESTClient):
                          wait_time=DEFAULT_WAIT_TIME,
                          max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
                          max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
-        '''
+        """
         :param batch_id: batch_id to use for the given submission
         :param documents: a list of dictionaries containing the document
-        '''
+        """
         if not documents:
             raise ValueError('Cannot process an empty document list')
 
@@ -167,24 +167,24 @@ class Jeremia(MultiRESTClient):
                             parameters=documents)
 
     def status(self):
-        '''
+        """
         :returns: the status of the Jeremia web service.
-        '''
+        """
         return self.request('status', return_plain=True)
 
     def version(self):
-        '''
+        """
         :returns: the current version of the jeremia deployed on the server
-        '''
+        """
         return self.request('version', return_plain=True)
 
     def get_xml_doc(self, text, content_id='1'):
-        '''
+        """
         Processes text and returns a XMLContent object.
 
         :param text: the text to process
         :param content_id: optional content id
-        '''
+        """
         batch = [{'id': content_id,
                   'title': '',
                   'body': text,
@@ -195,33 +195,33 @@ class Jeremia(MultiRESTClient):
         return XMLContent(result['xml_content'])
 
     def update_blacklist(self, source_id, blacklist):
-        '''
+        """
         updates an existing blacklist cache
 
         :param source_id: the blacklist's source id
-        '''
+        """
         path = 'cache/update_blacklist/%s' % source_id
         return self.request(path=path, source_id=source_id,
                             parameters=blacklist)
 
     def clear_blacklist(self, source_id):
-        '''
+        """
         :param source_id: the blacklist's source id
 
         Empties the existing sentence blacklisting cache for the given source_id
-        '''
+        """
         return self.request(path='cache/clear_blacklist/%s' % source_id,
                             source_id=source_id)
 
     def get_blacklist(self, source_id:int):
-        '''
+        """
         :param source_id: the blacklist's source id
-        :returns: the sentence blacklist for the given source_id'''
+        :returns: the sentence blacklist for the given source_id"""
         return self.request(path='cache/get_blacklist/%s' % source_id,
                             source_id=source_id)
 
     def has_queued_threads(self, source_id:int=None):
-        '''
+        """
         :param source_id: source id
         :returns:
             True if Jeremia still has queued (i.e. unprocessed) threads or
@@ -230,7 +230,7 @@ class Jeremia(MultiRESTClient):
         :note:
             Submitting jobs if threads are queued is discouraged, since it
             will slow down the overall performance.
-        '''
+        """
         try:
             result = self.request('has_queued_threads', source_id=source_id)
         except Exception as e:

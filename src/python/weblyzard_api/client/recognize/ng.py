@@ -5,16 +5,16 @@
 """
 from __future__ import unicode_literals
 
+import logging
 import urllib.error
-
-from time import sleep, time
 from random import random
+from time import sleep, time
+from typing import List
 
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
                                   WEBLYZARD_API_PASS)
 
-import logging
 logger = logging.getLogger(__name__)
 
 # number of seconds to wait if the web service is occupied
@@ -147,7 +147,7 @@ class Recognize(MultiRESTClient):
                                               'limit': limit
                                               })
 
-    def search_xmldocument(self, profile_name, document, limit):
+    def search_xmldocument(self, profile_name: str, document, limit: int):
         """
         Search the given document for entities specified in the given profiles.
         This should only be called with Jeremia results.
@@ -179,15 +179,19 @@ class Recognize(MultiRESTClient):
                                               'limit': limit
                                               })
 
-    def search_documents(self, profile_name, document_list, limit,
-                         wait_time=DEFAULT_WAIT_TIME,
-                         max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
-                         max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
+    def search_documents(self, profile_name: str, document_list: List,
+                         limit: int,
+                         wait_time: int = DEFAULT_WAIT_TIME,
+                         max_retry_delay: int = DEFAULT_MAX_RETRY_DELAY,
+                         max_retry_attempts: int = DEFAULT_MAX_RETRY_ATTEMPTS):
         """
         Search the given document for entities specified in the given profiles.
         :param profile_name: the profile to search in
         :param document_list: a list of documents to search in
         :param limit: maximum number of results to return
+        :param max_retry_attempts:
+        :param max_retry_delay:
+        :param wait_time:
         :rtype: the tagged text
         """
         if not document_list:
@@ -208,16 +212,20 @@ class Recognize(MultiRESTClient):
             #   up to date.
             try:
                 result = self.request(path=search_command,
-                            parameters=document_list,
-                            content_type=content_type,
-                            query_parameters={'profileName': profile_name,
-                                              'limit': limit
-                                              })
+                                      parameters=document_list,
+                                      content_type=content_type,
+                                      query_parameters={
+                                          'profileName': profile_name,
+                                          'limit': limit
+                                      })
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                logger.warning(f'Exception: {e}; Retry#{attempts} with profile_name={profile_name}')
+                logger.warning(
+                    f'Exception: {e}; Retry#{attempts} with profile_name={profile_name}')
                 sleep(max_retry_delay * random())
                 attempts = attempts + 1
+            except Exception as e:
+                print(e)
 
         logger.warning(f'Final retry with profile_name={profile_name}')
         return self.request(path=search_command,

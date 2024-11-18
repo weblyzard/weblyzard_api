@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import range
@@ -29,9 +29,9 @@ class JeremiaTest(unittest.TestCase):
         self.assertTrue(document_annotated != "")
 
     def test_single_document_with_annotations(self):
-        '''
+        """
         Tests the handling of single document annotations.
-        '''
+        """
         DOC = {'id': 12,
                'body': 'UBS has finally succeeded. They obtained a 10% share of CS.',
                'title': 'UBS versus Credit Suisse.',
@@ -134,9 +134,9 @@ class JeremiaTest(unittest.TestCase):
                 list(XMLContent(res_xml).sentences[0].tokens)) == token_number
 
     def _get_sentences(self, jeremia_result):
-        ''' extracts the list of sentences (as text) from an
+        """ extracts the list of sentences (as text) from an
             jeremia result.
-        '''
+        """
         result = []
         for json_document in jeremia_result:
             result.append([s.sentence for s in XMLContent(
@@ -145,7 +145,7 @@ class JeremiaTest(unittest.TestCase):
         return result
 
     def test_blacklist(self):
-        ''' tests the blacklist-based sentence filtering '''
+        """ tests the blacklist-based sentence filtering """
         source_id = 1
         blacklist = ['6e44889df94d6408bbeeab8837bfbe01',
                      '422d7f2000393b8c50a37f9d363ad511']
@@ -182,7 +182,7 @@ class JeremiaTest(unittest.TestCase):
         assert [] == j.get_blacklist(source_id)
 
     def test_custom_headers(self):
-        ''' verifies that custom headers are preserved and no headers added '''
+        """ verifies that custom headers are preserved and no headers added """
         docs = ({'id': 123,
                  'body': 'Hier wird die Zensur zuschlagen. Der zweite Satz ist aber okay.',
                  'title': 'Testdokument :)',
@@ -250,9 +250,9 @@ class JeremiaTest(unittest.TestCase):
 
 
 def test_suite():
-    '''
+    """
     add support for calling Jeremia tests as part of a test suite
-    '''
+    """
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(JeremiaTest, 'test'))
     return suite

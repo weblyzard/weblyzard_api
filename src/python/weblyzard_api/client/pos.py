@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Part-of-speech (POS) tagging service
 
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
@@ -18,11 +18,11 @@ class POS(RESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         RESTClient.__init__(self, url, usr, pwd)
 
     def pos_tagging(self, text, lang):

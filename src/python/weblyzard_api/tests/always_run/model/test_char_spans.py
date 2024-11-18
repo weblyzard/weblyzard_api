@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on September 11, 2019
 
 @author: jakob <jakob.steixner@modul.ac.at>
-'''
+"""
 
 import unittest
 import pytest

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Aug 30, 2016
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
-'''
+"""
 
 import unittest
 import re
@@ -15,7 +15,7 @@ from collections import OrderedDict
 
 from weblyzard_api.client.recognize.ng import Recognize
 
-RECOGNIZE_NG_SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
+SERVICE_URL = os.getenv('RECOGNIZE_NG_URL', None)
 
 
 class TestRecognizeNg(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestRecognizeNg(unittest.TestCase):
     REQUIRED_REGEXPS = []
     UNDESIRED_REGEXPS = []
 
-    SERVICE_URL = RECOGNIZE_NG_SERVICE_URL
+    SERVICE_URL = SERVICE_URL
     PROFILE_NAME = 'en_full_all'
     URLS_PROFILES_MAPPING = None
     DOCUMENTS = [{u'annotations': [],
@@ -662,12 +662,12 @@ class TestRecognizeUSA(TestRecognizeNg):
 
     PROFILE_NAME = 'en_full_bg'
     DOCUMENTS = [{u'annotations': [],
-                  'content': '''
+                  'content': """
                   California and the nation need President Biden's vaccination mandate on companies with more than 100 employees. 
                   The new policy, announced Thursday, is necessary to quell COVID-19 and protect workers from getting the virus and spreading it 
                   to their communities. Red states, as expected, are challenging the law's constitutionality. The U.S. Supreme Court will likely 
                   make the final call. When it does, the court should recognize the law entitles workers to a safe workplace. Biden's rule does just that. 
-                  ''',
+                  """,
                   u'format': u'text/html',
                   u'header': {},
                   u'id': u'1000',
@@ -735,7 +735,6 @@ class TestRecognizeJournalistsDe(TestRecognizeNg):
 
 class TestRecognizeEvents(TestRecognizeNg):
     REQUIRED_REGEXPS = [re.compile(r'.*weblyzard.*event.*')]
-    SERVICE_URL = 'http://recognize-ng.prod.i.weblyzard.net:8443'
     PROFILE_NAME = 'de_full_all'
     DOCUMENTS = [{u'annotations': [],
                   'content': 'Am Ostermontag gibt es es viel zu feiern.',
@@ -809,10 +808,10 @@ class TestRecognizeGeonamesAU(TestRecognizeNg):
                         'http://sws.geonames.org/2071858/', # Esperance (through regex)
                         ]
 
-    text = '''
+    text = """
     Travelling through Australia there are a lot of areas to see: Mandurah, Busselton, Joondalup. Albany is very well known.
     Less well known are Esperance, Broome and Kalgoorlie, but still worth a visit. Shire of Esperance and Kalgoorlie Boulder are regions. 
-    '''
+    """
     
     PROFILE_NAME = 'en_full_bg_AU'
     DOCUMENTS = [{u'annotations': [],

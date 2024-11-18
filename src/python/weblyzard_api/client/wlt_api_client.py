@@ -69,14 +69,15 @@ class WltSearchRestApiClient(WltApiClient):
     KEYWORD_ENDPOINT = 'keyentities/'
     ENTITIES_ENDPOINT = 'entities/'
 
-    def search_documents(self, sources: List[str], terms: List[str]=None,
-                         entities: List[str]=None,
-                         auth_token: str=None, content_id: int=None,
-                         start_date: str=None, end_date: str=None,
-                         count: int=10, offset: int=0, source_ids: int=None,
-                         max_docs: int=-1, exact_match: bool=True,
-                         similarity: int=70,
-                         fields: List[str]=['document.contentid']):
+    def search_documents(self, sources: List[str], terms: List[str] = None,
+                         entities: List[str] = None,
+                         auth_token: str = None, content_id: int = None,
+                         start_date: str = None, end_date: str = None,
+                         count: int = 10, offset: int = 0,
+                         source_ids: int = None,
+                         max_docs: int = -1, exact_match: bool = True,
+                         similarity: int = 70,
+                         fields: List[str] = ['document.contentid']):
         """ 
         Search an index for documents matching the search parameters.
         :param sources: required sources where to look for content.
@@ -101,7 +102,7 @@ class WltSearchRestApiClient(WltApiClient):
         assert auth_token is not None
 
         if max_docs is None:
-            max_docs = 1000
+            max_docs = 1000000
 
         if not isinstance(sources, list):
             sources = [sources]
@@ -198,26 +199,26 @@ class WltSearchRestApiClient(WltApiClient):
                     response = json.loads(r.content)['result']
                     total = response.get('total', 0)
                     if max_docs > 0:
-                        total = max_docs
+                        total = min(total, max_docs)
                     hits = response.get('hits', [])
                     if len(hits) > 0:
                         result_count += len(hits)
                         yield hits
                     else:
-                        return r
+                        yield []
                 else:
-                    return r
+                    raise Exception(
+                        f'Error fetching content from ES: {r.status_code} - {r.text}')
             except Exception as e:
                 logger.error("Accessing: %s : %s - %s", url, squery, e,
                              exc_info=True)
                 return r
 
-        return r
-
-    def search_keywords(self, sources: List[str], start_date: str, end_date: str,
-                        num_keywords: int=5, num_associations: int=0,
-                        auth_token: str=None, terms: List[str]=None,
-                        entities: List[str]=None):
+    def search_keywords(self, sources: List[str], start_date: str,
+                        end_date: str,
+                        num_keywords: int = 5, num_associations: int = 0,
+                        auth_token: str = None, terms: List[str] = None,
+                        entities: List[str] = None):
         """ 
         Search an index for top keyword associations matching the search parameters.
         :param sources: required sources where to look for content
@@ -286,10 +287,11 @@ class WltSearchRestApiClient(WltApiClient):
             return r
         return r
 
-    def search_entities(self, sources: List[str], start_date: str, end_date: str,
-                        count: int=5, entity_types: List[str]=None,
-                        fields: List[str]=None,
-                        auth_token: str=None, terms: List[str]=None):
+    def search_entities(self, sources: List[str], start_date: str,
+                        end_date: str,
+                        count: int = 5, entity_types: List[str] = None,
+                        fields: List[str] = None,
+                        auth_token: str = None, terms: List[str] = None):
         """
         Search an index for top entities matching the search parameters.
         :param sources: required sources where to look for content.
@@ -364,8 +366,8 @@ class WltDocumentApiClient(WltApiClient):
     """
     DOCUMENT_ENDPOINT = 'documents'
 
-    def __init__(self, username:str=None, password:str=None,
-                 repository:str=None):
+    def __init__(self, username: str = None, password: str = None,
+                 repository: str = None):
 
         super().__init__(username=username, password=password)
         self.repository = repository
@@ -381,7 +383,8 @@ class WltDocumentApiClient(WltApiClient):
                         self.DOCUMENT_ENDPOINT, self.repository])
 
         # build the nd-json payload
-        data = [{'repository_id': self.repository, 'uri': url_item} for url_item in urls]
+        data = [{'repository_id': self.repository, 'uri': url_item} for url_item
+                in urls]
         ndjson_data = '\n'.join(json.dumps(d) for d in data)
 
         r = requests.post(url, data=ndjson_data, headers=headers)

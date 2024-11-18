@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 .. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
-'''
+"""
 from __future__ import unicode_literals
 
 from weblyzard_api.client import MultiRESTClient
@@ -13,11 +13,11 @@ from weblyzard_api.client import (
 
 
 class Jesaja(MultiRESTClient):
-    ''' 
+    """
     Provides access to the Jesaja keyword service. 
 
     Jesaja extracts associations (i.e. keywords) from text documents.
-    '''
+    """
 
     VALID_CORPUS_FORMATS = ('xml', 'csv')
     URL_PATH = 'jesaja/rest'
@@ -38,33 +38,33 @@ class Jesaja(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
     @classmethod
     def get_documents(cls, xml_content_dict):
-        ''' 
+        """
         converts a list of weblyzard xml files to the 
         json format required by the jesaja web service.
-        '''
+        """
         if not isinstance(xml_content_dict, list):
             xml_content_dict = [xml_content_dict]
         return [cls.convert_document(xml) for xml in xml_content_dict]
 
     @classmethod
     def convert_document(cls, xml):
-        ''' converts an XML String to a dictionary with the correct parameters
+        """ converts an XML String to a dictionary with the correct parameters
         (ignoring non-sentences and adding the titles 
 
         :param xml: str representing the document
         :returns: converted document
         :rtype: dict
-        '''
+        """
         if isinstance(xml, dict):
             return xml
 
@@ -76,7 +76,7 @@ class Jesaja(MultiRESTClient):
                            add_titles_to_sentences=True)
 
     def add_profile(self, profile_name, keyword_calculation_profile):
-        ''' Add a keyword profile to the server
+        """ Add a keyword profile to the server
 
         :param profile_name: the name of the keyword profile
         :param keyword_calculation_profile: the full keyword calculation \
@@ -107,13 +107,13 @@ class Jesaja(MultiRESTClient):
             * ``com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm``
             * ``com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm``
 
-        '''
+        """
         return self.request('add_or_refresh_profile/%s' % profile_name,
                             keyword_calculation_profile)
 
     def add_or_update_corpus(self, corpus_name, corpus_format, corpus,
                              profile_name=None, skip_profile_check=False):
-        ''' 
+        """
         Adds/updates a corpus at Jesaja.
 
         :param corpus_name: the name of the corpus
@@ -133,7 +133,7 @@ class Jesaja(MultiRESTClient):
 
         .. attention:: uploading documents (corpus_format = doc, wlxml) \
             requires a call to finalize_corpora to trigger the corpus generation!         
-        '''
+        """
         assert corpus_format in self.VALID_CORPUS_FORMATS
         path = None
 
@@ -161,13 +161,13 @@ class Jesaja(MultiRESTClient):
         return self.request(path, corpus)
 
     def get_keywords_xml(self, profile_name, documents):
-        ''' converts each document to a dictionary and calculates the \
-            keywords'''
+        """ converts each document to a dictionary and calculates the \
+            keywords"""
         documents = self.get_documents(documents)
         return self.get_keywords(profile_name, documents)
 
     def get_keywords(self, profile_name, documents):
-        ''' 
+        """
         :param profile_name: keyword profile to use 
         :param documents: a list of webLyzard xml documents to annotate
 
@@ -196,7 +196,7 @@ class Jesaja(MultiRESTClient):
                      'lang': 'en',
                      }
                 ]
-        '''
+        """
         if not self.has_profile(profile_name):
             raise Exception(
                 'Cannot compute keywords - unknown profile %s' % profile_name)
@@ -218,41 +218,41 @@ class Jesaja(MultiRESTClient):
         return self.request('get_corpus_size/%s' % profile_name)
 
     def add_or_update_stoplist(self, name, stoplist):
-        '''
+        """
         .. deprecated:: 0.1
            Use: :func:`add_stoplist` instead.
-        '''
+        """
         return self.add_stoplist(name, stoplist)
 
     def add_stoplist(self, name, stoplist):
-        '''
+        """
         :param name: name of the stopword list
         :param stoplist: a list of stopwords for the keyword computation
-        '''
+        """
         return self.request('set_stoplist/%s' % name, stoplist)
 
     def list_stoplists(self):
-        '''
+        """
         :returns: a list of all available stopword lists.
-        '''
+        """
         return self.request('list_stoplists')
 
     def change_log_level(self, level):
-        '''
+        """
         Changes the log level of the keyword service
 
         :param level: the new log level to use.
-        '''
+        """
         return self.request('set_log_level/%s' % level, return_plain=True)
 
     def finalize_corpora(self):
-        '''
+        """
         .. note::
 
            This function needs to be called after uploading 'doc' or 'wlxml'
            corpora, since it triggers the computations of the token counts
            based on the 'valid_pos_tags' parameter.
-        '''
+        """
         return self.request('finalize_corpora', return_plain=True)
 
     def finalize_profile(self, profile_name):

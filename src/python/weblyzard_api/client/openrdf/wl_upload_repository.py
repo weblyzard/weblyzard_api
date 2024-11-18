@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-'''
+"""
 Created on 17.12.2013
 @author: heinz-peterlang
 Before uploading a new repository, visit the web-interface and create the
 repository (type: Java Native store).
 ATTENTION: uploading the same dataset multiple times will lead to redundant data.
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import range
@@ -39,7 +39,7 @@ def get_files(src_directory, file_ext=None):
 def upload_directory(src_directory, repository=None, graph_name=None,
                      server_url=WEBLYZARD_API_URL, file_ext=None,
                      chunk_size=100000, max_retry=5):
-    ''' uploads all files with the correct file extension to the repository '''
+    """ uploads all files with the correct file extension to the repository """
 
     client = OpenRdfClient(server_url)
     available_repositories = client.get_repositories()

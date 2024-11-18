@@ -9,6 +9,7 @@ from future import standard_library
 standard_library.install_aliases()
 
 import urllib.request, urllib.error, urllib.parse
+from typing import List
 
 from time import sleep, time
 from random import random
@@ -78,6 +79,9 @@ class JeremiaNg(MultiRESTClient):
                                            'token': 'token',
                                            'value': 'value',
                                            'md5sum': 'id'}}
+
+    # these are hard-coded as no new languages are expected to be added
+    SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'es', 'it', 'nl']
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
@@ -203,3 +207,7 @@ class JeremiaNg(MultiRESTClient):
         except Exception as e:
             result = True
         return result
+
+    def get_available_languages(self) -> List[str]:
+        """List available languages."""
+        return self.SUPPORTED_LANGUAGES

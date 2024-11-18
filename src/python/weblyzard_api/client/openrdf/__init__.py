@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-'''
+"""
 Created on 19.12.2013
 
 @author: heinz-peterlang
@@ -9,7 +9,7 @@ For details: `check Sesame REST API<http://openrdf.callimachus.net/sesame/2.7/do
 
 http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrdf-sesame-2.6.10/docs/system/ch08.html
 
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 from future import standard_library
@@ -31,17 +31,17 @@ except ImportError:
     from urllib import urlencode
 
 QUERIES = {
-    'configured_profiles': '''
+    'configured_profiles': """
                 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX re: <http://www.semanticlab.net/prj/recognize/voc/>
                 SELECT ?s ?profile_name ?analyzer
                 WHERE {
                        ?s rdfs:label  ?profile_name .
                        ?s re:analyzer ?analyzer .
-                }''',
-    'all_subjects': '''
+                }""",
+    'all_subjects': """
             select distinct ?s where {?s ?p ?o}
-        '''
+        """
 }
 
 RepositoryDetail = namedtuple('RepositoryDetail', ['id', 'uri', 'title'])
@@ -54,9 +54,9 @@ class OpenRdfClient(object):
                    'fetch_statements_repository': ('', 'GET')}
 
     def __init__(self, server_uri):
-        ''' initializes the client
+        """ initializes the client
         :param server_uri: URL of the server
-        '''
+        """
         plain_server_uri = server_uri
         if not 'openrdf-sesame' in server_uri:
             server_uri = '%s/openrdf-sesame' % server_uri
@@ -84,7 +84,7 @@ class OpenRdfClient(object):
         sparql.query()
 
     def cleanup_config(self):
-        ''' '''
+        """ """
         for orphan in self.get_orphaned_analyzers():
             self.delete_statements(self.config_repository,
                                    subj='_:%s' % orphan,
@@ -108,9 +108,9 @@ class OpenRdfClient(object):
         return orphaned
 
     def get_profiles(self):
-        ''' returns a dictionary (subject_uri, profile_name) for all profiles
+        """ returns a dictionary (subject_uri, profile_name) for all profiles
         configured in the config repositoriy
-        '''
+        """
         self.check_config_repo()
 
         query = QUERIES['configured_profiles']
@@ -130,7 +130,7 @@ class OpenRdfClient(object):
         return profiles
 
     def remove_profile(self, profile_name):
-        ''' Removes a given profile name '''
+        """ Removes a given profile name """
         subject_uris = []
         profiles = self.get_profiles()
         if profile_name in profiles:
@@ -156,7 +156,7 @@ class OpenRdfClient(object):
                     print(e)
 
     def update_profile(self, profile_name, profile_definition):
-        ''' Updates the given profile on the server '''
+        """ Updates the given profile on the server """
 
         profiles = self.get_profiles()
 
@@ -183,12 +183,12 @@ class OpenRdfClient(object):
     def request(self, function, data=None, params=None, delete=False,
                 content_type='applicatoni/rdf+json',
                 accept='application/sparql-results+json'):
-        ''' executes the requests to the TripleStores
+        """ executes the requests to the TripleStores
         :param function: function (path) to request
         :param data: data to add to the POST request
         :returns: result of the server
         :rtype: json encoded dict
-        '''
+        """
         print('{}/{}'.format(self.server_uri, function))
 
         if data:
@@ -219,12 +219,12 @@ class OpenRdfClient(object):
             return text
 
     def get_repo_size(self, repo_id):
-        ''' '''
+        """ """
         result = self.request('repositories/%s/size' % repo_id)
         print('get_repo_size', result)
 
     def get_repositories(self):
-        ''' '''
+        """ """
         result = self.request('repositories')
         repositories = {}
 
@@ -264,7 +264,7 @@ class OpenRdfClient(object):
         return self.request(function, params=params, delete=delete)
 
     def upload_statement(self, content, context, target_repository):
-        ''' '''
+        """ """
         print('uploading to {}'.format(target_repository))
         params = 'context=%s' % context
         function = 'repositories/%s/statements' % target_repository
@@ -273,7 +273,7 @@ class OpenRdfClient(object):
                      content_type='application/x-turtle;charset=UTF-8')
 
     def check_exists(self, object, repository):
-        ''' '''
+        """ """
         query = 'describe <{}>'.format(object)
         endpoint = "{}/repositories/{}" .format(self.server_uri, repository)
 
@@ -292,7 +292,7 @@ class OpenRdfClient(object):
         return (response, content)
 
     def execute_query(self, query, repository):
-        ''' '''
+        """ """
         params = {'query': query}
         headers = {
             'content-type': 'application/x-www-form-urlencoded',
@@ -306,7 +306,7 @@ class OpenRdfClient(object):
         return (response, ast.literal_eval(content))
 
     def execute_update(self, query, repository):
-        ''' '''
+        """ """
         params = {'update': query}
         headers = {
             'content-type': 'application/x-www-form-urlencoded',
@@ -321,13 +321,13 @@ class OpenRdfClient(object):
         return(response)
 
     def delete_triples_by_types(self, repository, types):
-        ''' '''
+        """ """
         for rdf_type in types:
             query = 'DELETE ?s WHERE {?s ?p ?o FILTER(?s = <%s>)}' % rdf_type
             self.execute_update(query, repository)
 
     def upload_repo_from_file(self, filename, repository):
-        ''' '''
+        """ """
         base_fn = os.path.basename(filename)
 
         assert base_fn.endswith('ttl')
@@ -354,14 +354,14 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         self.config_repository = config_repository
 
     def cleanup_config(self):
-        ''' '''
+        """ """
         for orphan in self.get_orphaned_analyzers():
             self.delete_statements(self.config_repository,
                                    subj='_:%s' % orphan,
                                    delete=True)
 
     def get_orphaned_analyzers(self):
-        ''' '''
+        """ """
         profiles = self.get_profiles()
         configured = []
         for profile in profiles.values():
@@ -379,9 +379,9 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         return orphaned
 
     def get_profiles(self):
-        ''' returns a dictionary (subject_uri, profile_name) for all profiles
+        """ returns a dictionary (subject_uri, profile_name) for all profiles
         configured in the config repositoriy
-        '''
+        """
         self.check_config_repo()
 
         query = QUERIES['configured_profiles']
@@ -401,7 +401,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         return profiles
 
     def remove_profile(self, profile_name):
-        ''' Removes a given profile name '''
+        """ Removes a given profile name """
         subject_uris = []
         profiles = self.get_profiles()
         if profile_name in profiles:
@@ -427,7 +427,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
                     print(e)
 
     def update_profile(self, profile_name, profile_definition):
-        ''' Updates the given profile on the server '''
+        """ Updates the given profile on the server """
 
         profiles = self.get_profiles()
 
@@ -447,7 +447,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
                               target_repository=self.config_repository)
 
     def check_config_repo(self):
-        ''' '''
+        """ """
         repositories = self.get_repositories()
 
         if not self.config_repository in repositories:
@@ -456,7 +456,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
             )
 
     def create_template(self, entity, entity_type, language='en'):
-        ''' '''
+        """ """
         if entity_type.lower() == 'person':
             names = entity.split('/')[-1].split('_')
             surname = names[-1]
@@ -482,9 +482,9 @@ class RecognizeOpenRdfClient(OpenRdfClient):
 
     def add_dbpedia_entity_to_repository(self, repository, label, entity_type,
                                          language=None):
-        '''
+        """
         http://de.dbpedia.org/page/Matthias_Strolz?output=text%2Fplain
-        '''
+        """
 
         base_url = 'http://dbpedia.org/page/'
 #         if language and language != 'en':

@@ -69,11 +69,11 @@ class TestRESTClient(unittest.TestCase):
             {'debug': True}).endswith("/execute/12?debug=True")
 
     def test_fix_url(self):
-        ''' tests fix url '''
+        """ tests fix url """
 
     def test_randomize_urls(self):
-        ''' this test might fail, if random returns the same list, but this is
-        very unlikely '''
+        """ this test might fail, if random returns the same list, but this is
+        very unlikely """
         client = MultiRESTClient(service_urls='http://test.url',
                                  use_random_server=True)
 

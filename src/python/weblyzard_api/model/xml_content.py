@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Feb, 27 2013
 
 .. codeauthor: Heinz-Peter Lang <lang@weblyzard.com>
@@ -16,7 +16,7 @@ Functions added:
 Remove functions:
  - compatibility fixes for namespaces, encodings etc.
  - support for the old POS tags mapping.
-'''
+"""
 from __future__ import unicode_literals
 from builtins import str
 from builtins import object
@@ -33,7 +33,6 @@ SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
 
 
 class XMLContent(object):
-
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
                               XMLDeprecated.VERSION: XMLDeprecated}
@@ -111,7 +110,7 @@ class XMLContent(object):
             try:
                 sent_obj = Sentence(**sentence)
             except:
-                sent_obj = Sentence(**{k:v for k,v in sentence.items() if k in Sentence.API_MAPPINGS[1.0]})
+                sent_obj = Sentence(**{k: v for k, v in sentence.items() if k in Sentence.API_MAPPINGS[1.0]})
 
             if sent_obj.is_title:
                 titles.append(sent_obj)
@@ -144,7 +143,7 @@ class XMLContent(object):
                          relations=None,
                          ignore_title=False,
                          xml_version=XML2013.VERSION):
-        '''
+        """
         :param header_fields: the header_fields to include
         :param sentence_attributes: sentence attributes to include
         :param annotations, optionally
@@ -152,7 +151,7 @@ class XMLContent(object):
         :param relations, optionally to overwrite
         :param xml_version: version of the webLyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
         :returns: the XML representation of the webLyzard XML object
-        '''
+        """
 
         if not xml_version:
             xml_version = self.xml_version
@@ -179,7 +178,7 @@ class XMLContent(object):
                                                                  relations=relations)
 
     def get_plain_text(self, include_title=False):
-        ''' :returns: the plain text of the XML content '''
+        """ :returns: the plain text of the XML content """
         if not len(self.all_sentences):
             return ''
         if not include_title:
@@ -189,7 +188,7 @@ class XMLContent(object):
 
     @classmethod
     def get_text(cls, text):
-        ''' :returns: the utf-8 encoded text '''
+        """ :returns: the utf-8 encoded text """
         if isinstance(text, str):
             text = text.decode('utf-8')
         return text
@@ -200,12 +199,12 @@ class XMLContent(object):
         self.attributes[key] = value
 
     def update_attributes(self, new_attributes):
-        '''
+        """
         Updates the existing attributes with new ones 
 
         :param new_attributes: The new attributes to set.
         :type new_attributes: dict
-        '''
+        """
 
         # not using dict.update to allow advanced processing
 
@@ -232,7 +231,7 @@ class XMLContent(object):
     def as_dict(self, mapping=None, ignore_non_sentence=False,
                 ignore_features=False, ignore_relations=False,
                 add_titles_to_sentences=False):
-        ''' convert the XML content to a dictionary.
+        """ convert the XML content to a dictionary.
 
         :param mapping: an optional mapping by which to restrict/rename \
             the returned dictionary
@@ -241,7 +240,7 @@ class XMLContent(object):
         :param ignore_features: if true, document features do not get serialized
         :param ignore_relations: if true, document relations do not get serialized
         :param add_titles_to_sentences: if true, titles are treated as sentences
-        '''
+        """
         try:
             if mapping is None:
                 mapping = self.ATTRIBUTE_MAPPING
@@ -303,7 +302,7 @@ class XMLContent(object):
         return result
 
     def to_api_dict(self, version=1.0):
-        '''
+        """
         Transforms the XMLContent object to a dict analoguous to the
         API JSON definition in the given version.
 
@@ -311,7 +310,7 @@ class XMLContent(object):
         :type version: float
         :returns: A dict.
         :rtype: dict
-        '''
+        """
         document_dict = self.as_dict()
         api_dict = {}
         for key in self.API_MAPPINGS[version]:
@@ -327,10 +326,10 @@ class XMLContent(object):
                     version)] + api_dict.get('sentences', [])
                 if 'title' not in api_dict:
                     api_dict['title'] = t.value
-#                 elif api_dict['title'] != t.value:
-#                     raise Exception('Mismatch between sentence marked as title and '+\
-#                                     'title attribute:\n'+\
-#                                     '%s != %s' % (t.value, api_dict['title']))
+        #                 elif api_dict['title'] != t.value:
+        #                     raise Exception('Mismatch between sentence marked as title and '+\
+        #                                     'title attribute:\n'+\
+        #                                     '%s != %s' % (t.value, api_dict['title']))
         annotations = document_dict.get('annotations', None)
         if annotations:
             api_dict['annotations'] = annotations
@@ -342,7 +341,7 @@ class XMLContent(object):
         return api_dict
 
     def to_json(self, version=1.0):
-        '''
+        """
         Serializes the XMLContent object to JSON according to the
         specified version.
 
@@ -350,11 +349,11 @@ class XMLContent(object):
         :type version: float
         :returns: A JSON string.
         :rtype: str
-        '''
+        """
         return json.dumps(self.to_api_dict(version=version))
 
     def _get_attribute(self, attr_name):
-        ''' ::returns: the attribute for the given name '''
+        """ ::returns: the attribute for the given name """
         return self.attributes.get(attr_name, None)
 
     def get_nilsimsa(self):
@@ -377,13 +376,13 @@ class XMLContent(object):
 
     def get_sentences(self, include_title_sentences=False):
         return self.titles * include_title_sentences + \
-               self.sentence_objects
+            self.sentence_objects
 
     def get_all_sentences(self):
         return self.get_sentences(include_title_sentences=True)
 
     def update_sentences(self, sentences):
-        ''' 
+        """ 
         updates the values of the existing sentences. if the list of 
         sentence object is empty, sentence_objects will be set to the new
         sentences. 
@@ -391,7 +390,7 @@ class XMLContent(object):
         :param sentences: list of Sentence objects 
 
         .. warning:: this function will not add new sentences
-        '''
+        """
         if not self.sentence_objects:
             self.sentence_objects = sentences
         else:

@@ -1,7 +1,7 @@
-'''
+"""
 Created on 14.02.2014
 @author: heinz-peterlang
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 from future import standard_library
@@ -13,14 +13,14 @@ from weblyzard_api.client.openrdf import RecognizeOpenRdfClient
 
 
 def cleanup_config(service_url, config_repository):
-    ''' '''
+    """ """
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
     client.cleanup_config()
 
 
 def remove_all_profiles(service_url, config_repository):
-    ''' '''
+    """ """
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
     for profile_name in client.get_profiles():
@@ -30,14 +30,14 @@ def remove_all_profiles(service_url, config_repository):
 
 
 def remove_profile(profile_fn, service_url, config_repository):
-    ''' '''
+    """ """
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)
     client.remove_profile(profile_fn)
 
 
 def upload_profile(profile_fn, service_url, config_repository):
-    ''' '''
+    """ """
 
     client = RecognizeOpenRdfClient(server_uri=service_url,
                                     config_repository=config_repository)

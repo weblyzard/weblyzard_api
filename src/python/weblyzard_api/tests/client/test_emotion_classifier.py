@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on April 22, 2021
 
 @author: jakob <jakob.steixner@modul.ac.at>
-'''
+"""
 
 from os import getenv
 import unittest
@@ -15,13 +15,14 @@ from weblyzard_api.client.emotion_classifier_client import EmotionClassifierClie
 from weblyzard_api.model.document import Document
 from weblyzard_api.xml_content import XMLContent
 
+SERVICE_URL = 'http://localhost:5000'
+
 @pytest.fixture
 def client():
-    webservice_url = getenv('WL_TEST_OPINION_MINING', 'http://emotion-classifier.prod.i.weblyzard.net:8443')
-    # webservice_url = getenv('WL_TEST_OPINION_MINING', 'http://localhost:5000')
-    if webservice_url is None:
+    service_url = getenv('EMOTION_CLASSIFIER_URL', SERVICE_URL)
+    if service_url is None:
         return
-    client = EmotionClassifierClient(url=webservice_url)
+    client = EmotionClassifierClient(url=service_url)
     return client
 
 

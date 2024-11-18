@@ -40,9 +40,9 @@ class TestXMLParser(unittest.TestCase):
 #             assert len(xml_content.sentences) > 0
 
     def test_scientific_notation_bug(self):
-        '''
+        """
         make sure that a decoding bug for strings in scientific notation yielding infinity doesn't occur
-        '''
+        """
         import hashlib
 
         m = hashlib.md5()
@@ -57,7 +57,7 @@ class TestXMLParser(unittest.TestCase):
 class TestXML2005(unittest.TestCase):
 
     def test(self):
-        xml = ''' <wl:page xmlns:wl="http://www.weblyzard.com/wl/2005" 
+        xml = """ <wl:page xmlns:wl="http://www.weblyzard.com/wl/2005" 
              lang="de" 
              title="Freihandelsgespr??che - Erleichterungen f??r kleine Firmen geplant" 
              content_type="text/html" 
@@ -71,7 +71,7 @@ class TestXML2005(unittest.TestCase):
             pos="NE $( NE ( NE ) $( ADJA KON ADJA NN VMFIN APPR NN APPRART NN APPR ART NE VVFIN $." 
             token="0,7 7,8 8,18 19,20 20,27 27,28 29,30 31,37 38,41 42,50 51,62 63,69 70,73 74,89 90,94 95,101 102,105 106,109 110,113 114,120 120,121">
                 <![CDATA[Br??ssel/Washington (APA/dpa) - Kleine und mittlere Unternehmen k??nnen auf Erleichterungen beim Handel mit den USA hoffen.]]>    
-        </wl:sentence></wl:page>'''
+        </wl:sentence></wl:page>"""
 
         attributes, sentences, title_annotations, body_annotations, features, \
             relations = XML2005.parse(xml)
@@ -87,7 +87,7 @@ class TestXML2005(unittest.TestCase):
 class TestXML2013(unittest.TestCase):
 
     def test(self):
-        xml = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" 
+        xml = """<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" 
              xmlns:dc="http://purl.org/dc/elements/1.1/" 
              wl:id="578351358" 
              dc:format="text/html" 
@@ -108,7 +108,7 @@ class TestXML2013(unittest.TestCase):
             wl:start="0"
             wl:end="10"
             wl:md5sum="b42bb3f2cb7ed667ba311811823f37cf">
-        </wl:annotation></wl:page>'''
+        </wl:annotation></wl:page>"""
 
         attributes, sentences, _, _, _, _ = XML2013.parse(xml)
 

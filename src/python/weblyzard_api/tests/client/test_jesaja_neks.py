@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Aug 30, 2016
 
 .. codeauthor: max goebel <mcgoebel@gmail.com>
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 
@@ -22,7 +22,7 @@ from weblyzard_api.tests.test_helper import get_full_path
 
 class TestJesajaNeks(unittest.TestCase):
 
-    xml_content = '''
+    xml_content = """
 <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247"> <wl:sentence wl:id="060ed6ac1243488b7bb613218a559443" wl:is_title="true"><![CDATA[Journalismus - Social Media für die Nachrichtenverbreitung]]></wl:sentence>
   <wl:sentence wl:dependency="10:adpmod 0:adpobj 1:adpmod 2:adpobj 10:auxpass 10:nsubjpass 10:adpmod 9:det 9:amod 6:adpobj -1:ROOT" wl:id="bbe56bd8da7d00c4c4631db3c21434b3" wl:pos="APPRART NN APPR NE VAFIN NN APPR ART ADJA NN VVPP" wl:significance="6474.394537668186" wl:token="0,4 5,25 26,28 29,36 37,43 44,54 55,58 59,62 63,72 73,86 87,98"><![CDATA[Beim Journalismusfestival in Perugia werden Reaktionen auf die geänderte Mediennutzung präsentiert]]></wl:sentence>
   <wl:sentence wl:dependency="6:det 5:advmod 5:adpmod 4:amod 2:adpobj 6:amod 10:nsubj 10:adpmod 9:amod 7:adpobj -1:ROOT 14:advmod 14:advmod 14:det 10:attr 18:p 18:aux 18:dobj 10:NMOD 18:cc 22:advmod 22:aux 18:conj 10:NMOD" wl:id="0eae768acc5f5cca1a27a4c097dc0158" wl:pos="ART ADV APPRART ADJA NN ADJA NN APPRART ADJA NN VAFIN ADJD ADV ART NN $, KOUI PRF VVIZU KON ADV PTKZU VVINF $." wl:sem_orient="0.7647191129018726" wl:significance="6302.26668899656" wl:token="0,3 4,11 12,15 16,23 24,27 28,42 43,63 64,66 67,80 81,88 89,92 93,104 105,109 110,113 114,125 125,126 127,129 130,134 135,148 149,152 153,164 165,167 168,174 174,175"><![CDATA[Das nunmehr zum neunten Mal stattfindenden Journalismusfestival im italienischen Perugia ist alljährlich auch ein Tummelplatz, um sich auszutauschen und voneinander zu lernen.]]></wl:sentence>
@@ -64,7 +64,7 @@ class TestJesajaNeks(unittest.TestCase):
   <wl:annotation wl:sentence="12" wl:entityType="GeoEntity" wl:end="34" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="21" wl:surfaceForm="San Francisco"/>
   <wl:annotation wl:sentence="24" wl:entityType="GeoEntity" wl:end="92" wl:key="http://sws.geonames.org/6252001/" wl:preferredName="USA" wl:start="84" wl:surfaceForm="New York"/>
 </wl:page>
-'''
+"""
 
     JESAJA_URL = 'http://localhost:63002/rest/'
     PROFILE_NAME = 'default'
@@ -88,9 +88,9 @@ class TestJesajaNeks(unittest.TestCase):
     }
 
     def setUp(self):
-        '''
+        """
         Setup Jesaja Keyword Server
-        '''
+        """
         self.jesaja = JesajaNg(url=self.JESAJA_URL)
         self.service_is_online = self.jesaja.is_online()
 
@@ -128,12 +128,12 @@ class TestJesajaNeks(unittest.TestCase):
             print('WARNING: Webservice is offline --> not executing all tests!!')
 
     def test_nek_annotation(self):
-        ''' test nek annotations '''
-        xml_content = '''<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247">
+        """ test nek annotations """
+        xml_content = """<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247">
                             <wl:sentence> Did you hear about Obama? This is a really good story.</wl:sentence>
                             <wl:sentence wl:dependency="1:advmod -1:ROOT 1:advmod 1:advmod 1:adpmod 6:det 4:adpobj 6:adpmod 7:adpobj 10:compmod 8:appos 1:p" wl:id="312ea95b45c50be0c5dd4a215d5adaaf" wl:pos="ADV VVFIN ADV ADV APPR ART NN APPR NN NE NE $." wl:token="0,2 3,12 13,17 18,24 25,28 29,34 35,44 45,48 49,61 62,68 69,74 74,75"><![CDATA[So geschehen auch jüngst bei einem Interview mit US-Präsident Barack Obama.]]></wl:sentence>
                             <wl:annotation wl:sentence="1" wl:entity_type="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:md5sum="312ea95b45c50be0c5dd4a215d5adaaf" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
-                         </wl:page>'''
+                         </wl:page>"""
         if self.service_is_online:
             result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME,
                                                          [xml_content])

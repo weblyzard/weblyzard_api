@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on 19.04.2013
 
 :author: heinz-peterlang
 
 Test helper module to load test files from TEST_DATA directory
 
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import os
@@ -35,12 +35,12 @@ def get_full_path(fn, data_dir=None):
 
 
 def get_test_data_dir():
-    ''' returns the test_data_directory
+    """ returns the test_data_directory
 
     Usage:
     >>> get_test_data_dir() # doctest: +ELLIPSIS
     '.../wl_mirroring/test/data'
-    '''
+    """
     print(os.path.abspath(os.path.join(os.path.dirname(__file__), 'data')))
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'data'))
 

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Jan 16, 2013
 
 @author: Philipp Kuntschik <philipp.kuntschik@htwchur.ch>
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
