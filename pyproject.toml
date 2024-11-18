@@ -33,12 +33,14 @@ url = "https://nexus.semanticlab.net/repository/pypi-group/simple"
 priority = "primary"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.8,<3.12"
 future = "*"
 nose = "*"
 lxml = "*"
+redis = "*"
 requests = "*"
 pytest = "*"
+python-dotenv = "*"
 sparqlwrapper = "*"
 
 [tool.pylint]

@@ -20,6 +20,7 @@
 
 from future import standard_library
 from typing import Dict
+
 standard_library.install_aliases()
 
 import time
@@ -32,6 +33,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 # logging
 import logging
+
 log = logging.getLogger(__name__)
 
 USER_AGENT = 'eWRT Version/0.1; Module %s +http://p.semanticlab.net/eWRT'
@@ -44,6 +46,7 @@ HTTP_TEMPORARY_ERROR_CODES = (502, 503, 504)
 
 # set default socket timeout (otherwise urllib might hang!)
 from socket import setdefaulttimeout
+
 DEFAULT_TIMEOUT = 60
 
 
@@ -70,7 +73,7 @@ class Retrieve(object):
     """
 
     __slots__ = ('module', 'sleep_time', 'last_access_time', 'user_agent',
-                 '_supported_http_authentification_methods')
+                 '_supported_http_authentication_methods')
 
     def __init__(self, module, sleep_time=DEFAULT_WEB_REQUEST_SLEEP_TIME,
                  user_agent=USER_AGENT, default_timeout=DEFAULT_TIMEOUT):
@@ -79,17 +82,17 @@ class Retrieve(object):
         self.sleep_time = sleep_time
         self.last_access_time = 0
 
-        self._supported_http_authentification_methods = {
+        self._supported_http_authentication_methods = {
             'basic': Retrieve._getHTTPBasicAuthOpener,
             'digest': Retrieve._getHTTPDigestAuthOpener}
 
         self.user_agent = user_agent % self.module \
             if "%s" in user_agent else user_agent
 
-    def open(self, url: str, user: str=None, pwd: str=None,
-             data=None, headers: Dict={}, retry: int=0,
-             authentification_method: str="basic", accept_gzip: bool=True,
-             head_only: bool=False):
+    def open(self, url: str, user: str = None, pwd: str = None,
+             data=None, headers: Dict = {}, retry: int = 0,
+             authentication_method: str = "basic", accept_gzip: bool = True,
+             head_only: bool = False):
         """ Open a URL and returns the matching file object
             :param url: the URL to open
             :param user: optional user name
@@ -97,15 +100,15 @@ class Retrieve(object):
             :param data: optional data to submit
             :param headers: a dictionary of optional headers
             :param retry: number of retries in case of an temporary error
-            :param authentification_method: the used authentification_method
+            :param authentication_method: the used authentication method
                         ('basic'*, 'digest')
             :param accept_gzip: flag to change the accepted encoding, gzip
                         or not
             :param head_only: if True: only execute a HEAD request
             :returns a file object for reading the url
         """
-        auth_handler = self._supported_http_authentification_methods[
-            authentification_method]
+        auth_handler = self._supported_http_authentication_methods[
+            authentication_method]
         urlObj = None
         tries = 0
         if isinstance(data, str):
@@ -125,7 +128,8 @@ class Retrieve(object):
 
             opener = []
             if PROXY_SERVER:
-                opener.append(urllib.request.ProxyHandler({"http": PROXY_SERVER}))
+                opener.append(
+                    urllib.request.ProxyHandler({"http": PROXY_SERVER}))
             if user and pwd:
                 opener.append(auth_handler(url, user, pwd))
 
@@ -135,7 +139,8 @@ class Retrieve(object):
             except urllib.error.HTTPError as e:
                 if e.code in HTTP_TEMPORARY_ERROR_CODES and tries < retry:
                     sleep_time = randint(*RETRY_WAIT_TIME_RANGE)
-                    log.warning(f'retrying in {sleep_time}; received {e.code} from {url}')
+                    log.warning(
+                        f'retrying in {sleep_time}; received {e.code} from {url}')
                     time.sleep(sleep_time)
                     tries += 1
                     continue
