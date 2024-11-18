@@ -864,4 +864,4 @@ reference = "wlt_nexus"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "0a893d5c9c9eb156141623b9ab4f294d20c243f21e968c1a1c34281e0cd4f0c0"
+content-hash = "ab647df3ae36881f0c828ddb6db73dc96b58f09a0df7368700e127c565830e64"
