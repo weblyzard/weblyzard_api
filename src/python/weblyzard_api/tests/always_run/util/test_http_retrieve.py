@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-''' cloned from @package eWRT.access.http
-    provides access to resources using http '''
+""" cloned from @package eWRT.access.http
+    provides access to resources using http """
 
 # (C)opyrights 2008-2012 by Albert Weichselbraun <albert@weblyzard.com>
 #
@@ -29,7 +29,7 @@ from weblyzard_api.util.http import DEFAULT_TIMEOUT, Retrieve, setdefaulttimeout
 
 
 class TestHttpRetrieve(unittest.TestCase):
-    ''' tests the http class '''
+    """ tests the http class """
 
     TEST_URLS = (
         'http://www.google.at/search?hl=de&q=andreas&btnG=Google-Suche&meta=',
@@ -46,7 +46,7 @@ class TestHttpRetrieve(unittest.TestCase):
         setdefaulttimeout(self.default_timeout)
 
     def testRetrieval(self):
-        ''' tries to retrieve the following url's from the list '''
+        """ tries to retrieve the following url's from the list """
 
         r_handler = Retrieve(self.__class__.__name__)
         for url in self.TEST_URLS:
@@ -56,14 +56,14 @@ class TestHttpRetrieve(unittest.TestCase):
             r.close()
 
     def testRetrieveContext(self):
-        ''' tests the retrieve context module '''
+        """ tests the retrieve context module """
         with Retrieve(self.__class__.__name__) as r:
             c = r.open("http://www.heise.de")
             content = c.read()
         assert len(content) > 100
 
     def testRetrievalTimeout(self):
-        ''' tests whether the socket timeout is honored by our class '''
+        """ tests whether the socket timeout is honored by our class """
         SLOW_URL = "http://www.csse.uwa.edu.au/"
 
         with raises((timeout, urllib.error.URLError)):
@@ -73,7 +73,7 @@ class TestHttpRetrieve(unittest.TestCase):
             r.close()
 
     def testMultiProcessing(self):
-        ''' verifies that retrieves works with multi-processing '''
+        """ verifies that retrieves works with multi-processing """
         from multiprocessing import Pool
         p = Pool(5)
 
@@ -101,11 +101,11 @@ class TestHttpRetrieve(unittest.TestCase):
                 assert url != test_url
 
 def t_retrieve(url):
-    ''' retrieves the given url from the web
+    """ retrieves the given url from the web
 
         @remarks
         helper module for the testMultiProcessing unit test.
-    '''
+    """
     r = Retrieve(__name__).open(url)
     try:
         content = r.read()

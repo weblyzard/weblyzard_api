@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on April 15, 2021
 
 @author: jakob <jakob.steixner@modul.ac.at>
-'''
+"""
 import logging
 
 from weblyzard_api.client import MultiRESTClient
@@ -23,17 +23,17 @@ class EmotionClassifierClient(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
     def get_emotions(self, content, content_format,
                      emotional_categories=DEFAULT_EMOTIONAL_CATEGORIES):
-        '''
+        """
         Sends the content in the content_format to the opinion mining server
         to calculate the polarity/sentiment of the content.
 
@@ -44,7 +44,7 @@ class EmotionClassifierClient(MultiRESTClient):
             polarity in a dict with content and polarity as keys. If an error
             ocurred, it is also contained in the dict with the 'error' key.
         :rtype: dict
-        '''
+        """
         result = None
         retrycount = 1
         retries = 0

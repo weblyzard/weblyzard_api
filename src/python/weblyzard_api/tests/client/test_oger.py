@@ -1,16 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Nov 15, 2018
 
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
+import os
 
 from pprint import pprint
 
-from weblyzard_api.client import OGER_API_URL
 
 from weblyzard_api.client.ontogene import OgerClient
 from weblyzard_api.client.recognize import Recognize
@@ -18,10 +18,12 @@ from weblyzard_api.client.jeremia import Jeremia
 
 
 class TestOGER(unittest.TestCase):
+
+    SERVICE_URL = 'localhost:5555'
+
     def setUp(self):
-        url =  OGER_API_URL    
-        print(url)    
-        self.client = OgerClient(url)
+        service_url =  os.getenv('OGER_SERVICE_URL', self.SERVICE_URL)
+        self.client = OgerClient(service_url)
     
     def test_raise_exception_if_service_urls_is_array(self):
         with self.assertRaises(Exception) as context:

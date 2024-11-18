@@ -2,11 +2,11 @@ import logging
 import socket
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Generator
+from typing import Generator, Optional
 
 from SPARQLWrapper import SPARQLWrapper2, JSON, SPARQLWrapper
 
-from weblyzard_api.client.rdf import PREFIXES, NAMESPACES
+from weblyzard_api.client.rdf import PREFIXES, NAMESPACES, parse_language_tagged_string
 
 logger = logging.getLogger(__name__)
 
@@ -233,6 +233,7 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         """
         Group a query result's bindings, using `key` as a grouping indicator.
         Result bindings need to be ordered by `key` var for grouping.
+        Yields defaultdicts with sets for _all_ dictionary values!
         :param bindings: a query result's bindings
         :param key: the query var by which the results are grouped
         """
@@ -271,3 +272,17 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
                 if value not in result[row_key]:
                     result[row_key].append(value)
         return result
+
+    @staticmethod
+    def get_value_from_grouped_bindings(grouped_bindings: dict, field: str, language: str = None) -> Optional[str]:
+        lang_agnostic_value = None
+        for value in list(grouped_bindings.get(field, [])):
+            try:
+                value, lang = parse_language_tagged_string(value)
+                if language is not None and lang == language:
+                    return value
+                if not lang:
+                    lang_agnostic_value = value
+            except ValueError:
+                pass  # can not be parsed
+        return lang_agnostic_value

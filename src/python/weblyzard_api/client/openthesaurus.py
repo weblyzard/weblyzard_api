@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on May 15, 2020;
 
 @author: jakob <jakob.steixner@modul.ac.at>
@@ -10,7 +10,7 @@ synonyms for German. The public API endpoint is available at
 https://www.openthesaurus.de/, so this client can be used out of a box
 by initializing it with
 <HOST>/synonyme/search?format=application/json&q=lockerung
-'''
+"""
 from collections import defaultdict
 from itertools import chain
 from typing import Dict

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on November 14, 2019
 
 @author: jakob <jakob.steixner@modul.ac.at>
-'''
+"""
 from itertools import chain
 
 from typing import Tuple, List, Optional

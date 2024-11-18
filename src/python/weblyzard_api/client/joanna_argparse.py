@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Oct 30, 2015
 
 @author: lucas
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import str
@@ -22,10 +22,10 @@ DAYS_BACK_DEFAULT = 20
 
 
 def check_arguments(args):
-    ''' Check the appropriate argument, give feedback on correct
+    """ Check the appropriate argument, give feedback on correct
     or incorrect arguments and route to the appropriate function 
     in joanna
-    '''
+    """
     if args.host_url:
         jo = Joanna(url=args.host_url)
     else:
@@ -102,8 +102,8 @@ def random_content_id():
 
 
 def main():
-    ''' Parser for argparse. Define the command line arguments
-    '''
+    """ Parser for argparse. Define the command line arguments
+    """
     from argparse import ArgumentParser
 
     parser = ArgumentParser()

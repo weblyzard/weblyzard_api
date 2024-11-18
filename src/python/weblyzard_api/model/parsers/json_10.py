@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This module contains code to create XMLContent objects from the Weblyzard API
 JSON format.
 
     .. moduleauthor:: Fabian Fischer fabian.fischer@modul.ac.at
-'''
+"""
 from __future__ import unicode_literals
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers import JSONParserBase
@@ -15,10 +15,10 @@ from weblyzard_api.model import Sentence
 
 
 class JSON10ParserXMLContent(JSONParserBase):
-    '''
+    """
     This class is the parser class for JSON documents conforming to
     the Weblyzard API 1.0 definition.
-    '''
+    """
     FIELDS_REQUIRED = ['uri']
     FIELDS_OPTIONAL = ['title', 'language_id', 'sentences', 'content',
                        'features', 'relations', 'confidence'] \
@@ -27,7 +27,7 @@ class JSON10ParserXMLContent(JSONParserBase):
 
     @classmethod
     def from_api_dict(cls, api_dict):
-        '''
+        """
         Parses a dict with a structure analoguous to the JSON format defined
         in the API specification.
 
@@ -35,7 +35,7 @@ class JSON10ParserXMLContent(JSONParserBase):
         :type api_dict: dict
         :returns: The parsed document as XMLContent object.
         :rtype: :py:class:`weblyzard_api.model.xml_content.XMLContent`
-        '''
+        """
         cls._check_document_format(api_dict, strict=True)
         # This basically creates an empty XMLContent object
         xml_content = XMLContent(xml_content=None, remove_duplicates=True)
@@ -76,10 +76,10 @@ class JSON10ParserXMLContent(JSONParserBase):
 
 
 class JSON10ParserSentence(JSONParserBase):
-    '''
+    """
     This class is the parser class for JSON sentences conforming to
     the Weblyzard API 1.0 definition.
-    '''
+    """
     FIELDS_REQUIRED = ['id', 'value']
     FIELDS_OPTIONAL = ['is_title', 'pos_list', 'tok_list', 'dep_tree',
                        'sentence_number', 'paragraph_number', 'polarity',
@@ -88,7 +88,7 @@ class JSON10ParserSentence(JSONParserBase):
 
     @classmethod
     def from_api_dict(cls, api_dict):
-        '''
+        """
         Parses a dict with a structure analoguous to the JSON format defined
         in the API specification.
 
@@ -96,7 +96,7 @@ class JSON10ParserSentence(JSONParserBase):
         :type api_dict: dict
         :returns: The parsed document as XMLContent object.
         :rtype: :py:class:`weblyzard_api.model.xml_content.Sentence`
-        '''
+        """
         cls._check_document_format(api_dict)
         sentence = Sentence(
             md5sum=api_dict['id'],
@@ -111,10 +111,10 @@ class JSON10ParserSentence(JSONParserBase):
 
 
 class JSON10ParserAnnotation(JSONParserBase):
-    '''
+    """
     This class is the parser class for JSON annotations conforming to
     the Weblyzard API 1.0 definition.
-    '''
+    """
     FIELDS_REQUIRED = ['start', 'end', 'surface_form', 'annotation_type']
     FIELDS_OPTIONAL = ['key', 'sentence', 'confidence', 'md5sum', 'entityType',
                        'score', 'profileName', 'type', 'preferredName', 'surfaceForm',
@@ -123,7 +123,7 @@ class JSON10ParserAnnotation(JSONParserBase):
 
     @classmethod
     def from_api_dict(cls, api_dict):
-        '''
+        """
         Parses a dict with a structure analoguous to the JSON annotation 
         format defined in the API specification.
 
@@ -133,7 +133,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         :type api_dict: dict
         :returns: The parsed annotation as dict
         :rtype: dict
-        '''
+        """
 
         cls._check_document_format(api_dict)
         result = dict(api_dict)
@@ -142,7 +142,7 @@ class JSON10ParserAnnotation(JSONParserBase):
 
     @classmethod
     def to_api_dict(cls, annotation_type, annotation):
-        '''
+        """
         This method simply puts the annotation_type within
         the annotation dict again.
 
@@ -152,7 +152,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         :type annotation: dict
         :returns: the annotation with annotation_type set 
         :rtype: dict
-        '''
+        """
         result = dict(annotation)
         if 'annotationType' in result:
             del result['annotationType']
@@ -178,7 +178,7 @@ class JSON10ParserAnnotation(JSONParserBase):
 
     @classmethod
     def from_api_list(cls, api_list):
-        '''
+        """
         Parses a list of annotations and returns a dict mapping the
         annotations to their annotation type. I.e. each annotation
         in the list individually states its type and in the output
@@ -197,7 +197,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         :returns: a nested dict with the annotation types as key \
                 and a list of annotations as the value.
         :rtype: dict
-        '''
+        """
         result = {}
         api_list = cls._normalize_compact_form(api_list)
         for annotation in api_list:
@@ -209,7 +209,7 @@ class JSON10ParserAnnotation(JSONParserBase):
 
     @classmethod
     def to_api_list(cls, annotations):
-        '''
+        """
         Takes a dict that nests a list of annotations in their annotation_type
         and returns a flat list of annotations where each has its
         annotation_type set individually.
@@ -222,7 +222,7 @@ class JSON10ParserAnnotation(JSONParserBase):
         :type annotations: dict
         :returns: The flat list of annotations.
         :rtype: list
-        '''
+        """
         result = []
         if not annotations:
             return result

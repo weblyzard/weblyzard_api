@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 
@@ -14,21 +14,21 @@ from weblyzard_api.client import (
 
 
 class SentimentAnalysis(RESTClient):
-    '''
+    """
     Sentiment Analysis Web Service
-    '''
+    """
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         RESTClient.__init__(self, url, usr, pwd)
 
     def parse_document(self, text, lang):
-        ''' Returns the sentiment of the given text for the given
+        """ Returns the sentiment of the given text for the given
             language.
 
             :param text: the input text
@@ -41,12 +41,12 @@ class SentimentAnalysis(RESTClient):
                          disambiguation
                  * tuple[1]: the context terms with their number of \
                         occurrences in the document.
-        '''
+        """
         return self.execute("sentiment_parse_document",
                             None, {'text': text, 'lang': lang})
 
     def parse_document_list(self, document_list, lang):
-        ''' Returns the sentiment of the given text for the given
+        """ Returns the sentiment of the given text for the given
             language.
 
             :param document_list: the input text
@@ -59,43 +59,43 @@ class SentimentAnalysis(RESTClient):
                         disambiguation
                   * tuple[1]: the context terms with their number of \
                         occurrences in the document.
-        '''
+        """
         return self.execute("sentiment_parse_document_list",
                             None, {'document_list': document_list, 'lang': lang})
 
     def update_context(self, context_dict, lang):
-        ''' Uploads the given context dictionary to the Web service.
+        """ Uploads the given context dictionary to the Web service.
 
             :param context_dict: a dictionary containing the context \
                                  information
             :param lang: the used language
-        '''
+        """
         return self.execute('sentiment_update_context', None,
                             {'context_dict': context_dict, 'lang': lang})
 
     def update_lexicon(self, corpus_dict, lang):
-        ''' Uploads the given corpus dictionary to the Web service.
+        """ Uploads the given corpus dictionary to the Web service.
 
             :param corpus_dict: a dictionary containing the corpus information
             :param lang: the used language
-        '''
+        """
         return self.execute('sentiment_update_lexicon', None,
                             {'corpus_dict': corpus_dict, 'lang': lang})
 
     def update_negation(self, negation_trigger_dict, lang):
-        ''' Uploads the given negation triggers to the Web service.
+        """ Uploads the given negation triggers to the Web service.
 
             :param negation_trigger_list: a list of negation triggers to
                     use with the given language
                     example: ``{'doesn't': 'doesnt', ....}``
             :param lang: the used language
-        '''
+        """
         return self.execute('sentiment_update_negation', None,
                             {'negation_trigger_dict': negation_trigger_dict,
                              'lang': lang})
 
     def reset(self, lang):
-        ''' Restores the default data files for the given language
+        """ Restores the default data files for the given language
             (if available).
 
 
@@ -104,7 +104,7 @@ class SentimentAnalysis(RESTClient):
             .. note::
                 Currently this operation is only supported for German and
                 English.
-         '''
+         """
         return self.execute('sentiment_reset', None,
                             {'lang': lang})
 
@@ -203,19 +203,19 @@ class SentimentAnalysisTest(TestCase):
         self.assertEqual(sent, -1.0)
         self.assertEqual(cnt_pos, 1)
         self.assertEqual(cnt_neg, 0)
-        '''
+        """
 
         # neg negation
         sent, cnt_pos, cnt_neg, _, _ =  frsa.parse_document('Ce n\'est pas affligeant', 'fr')
         self.assertEqual(sent, 1.0)
         self.assertEqual(cnt_pos, 1)
         self.assertEqual(cnt_neg, 0)
-        '''
+        """
 
     def _prepare_sentiment_analysis(self):
-        ''' prepares the sentiment analysis object and uploads the
+        """ prepares the sentiment analysis object and uploads the
             language resources.
-        '''
+        """
         sa = SentimentAnalysis()
         sa.update_context(self.TEST_CONTEXT, self.TEST_LANG)
         sa.update_lexicon(self.TEST_LEXICON, self.TEST_LANG)

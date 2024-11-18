@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on 15.12.2014
 
-'''
+"""
 import logging
 
 from weblyzard_api.client import MultiRESTClient
@@ -21,11 +21,11 @@ class OpinionClient(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
 
@@ -33,7 +33,7 @@ class OpinionClient(MultiRESTClient):
                      allow_unsupported=False, ignored_entity_regexp=None,
                      extra_categories=None, textblob_method=0,
                      textblob_threshold=None):
-        '''
+        """
         Sends the content in the content_format to the opinion mining server
         to calculate the polarity/sentiment of the content.
 
@@ -44,7 +44,7 @@ class OpinionClient(MultiRESTClient):
             polarity in a dict with content and polarity as keys. If an error
             ocurred, it is also contained in the dict with the 'error' key.
         :rtype: dict
-        '''
+        """
         result = None
         retrycount = 1
         retries = 0
