@@ -13,6 +13,7 @@ from json import dumps, loads
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
+WEBLYZARD_ANNOTATOR_URL =  "http://localhost:8080/annotator/rest/annotator"
 
 class Annotator(object):
 

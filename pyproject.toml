@@ -42,6 +42,7 @@ requests = "*"
 pytest = "*"
 python-dotenv = "*"
 sparqlwrapper = "*"
+mock = "*"
 
 [tool.pylint]
 max-line-length = 88
