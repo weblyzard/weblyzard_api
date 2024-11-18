@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Oct 22, 2018
 
 .. codeauthor:: Max Göbel <goebel@weblyzard.com>
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import range

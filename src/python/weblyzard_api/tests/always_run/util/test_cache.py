@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on May 29, 2020
 
 @author: jakob <jakob.steixner@modul.ac.at>
 cloned from eWRT
-'''
+"""
 import time
 import datetime
 import mock
@@ -36,7 +36,7 @@ get_cache_dir = lambda no: get_resource(__file__, ('.unittest-temp%d' % (no),))
 
 
 class TestCached(unittest.TestCase):
-    ''' tests the MemoryCached Decorator '''
+    """ tests the MemoryCached Decorator """
 
     @staticmethod
     def add(a=2, b=3):
@@ -47,7 +47,7 @@ class TestCached(unittest.TestCase):
         return a - b
 
     def testNonKeywordArguments(self):
-        ''' tests the class with non Keyword Arguments '''
+        """ tests the class with non Keyword Arguments """
         for x in range(1, 20):
             assert self.add(x, 5) == (x + 5)
             assert self.add(x, 5) == (x + 5)
@@ -58,7 +58,7 @@ class TestCached(unittest.TestCase):
             assert self.sub(x, 5) == x - 5
 
     def testContainsDel(self):
-        ''' tests the contains and del functions '''
+        """ tests the contains and del functions """
         d = MemoryCache()
         d.fetchObjectId("10", self.add, *(), **{'a': 3, 'b': 4})
         assert "10" in d
@@ -66,7 +66,7 @@ class TestCached(unittest.TestCase):
         assert "10" not in d
 
     def testKeywordArguments(self):
-        ''' tests keyword arguments '''
+        """ tests keyword arguments """
         assert self.add(3, b=7) == 3 + 7
         assert self.add(3, b=7) == 3 + 7
         assert self.add(a=9, b=8) == 9 + 8
@@ -101,13 +101,13 @@ class SkipTestDiskCached(TestCached):
         self.diskCache = DiskCache(get_cache_dir(4))
 
     def tearDown(self):
-        ''' remove the cache directories '''
+        """ remove the cache directories """
         for cacheDirNo in range(10):
             if exists(get_cache_dir(cacheDirNo)):
                 rmtree(get_cache_dir(cacheDirNo))
 
     def testObjectKeyGeneration(self):
-        ''' ensures that the diskcache object's location does not change '''
+        """ ensures that the diskcache object's location does not change """
         CACHE_DIR = get_cache_dir(3)
         d = DiskCache(CACHE_DIR)
         getCacheLocation = lambda x: join(CACHE_DIR, Cache.getObjectId(x))
@@ -119,7 +119,7 @@ class SkipTestDiskCached(TestCached):
         assert exists(getCacheLocation(((2,), ())))
 
     def testContains(self):
-        ''' verifies that 'key' in cache works '''
+        """ verifies that 'key' in cache works """
         # diskcache
         assert self.diskCache.fetchObjectId(1, str, 1) == "1"
 
@@ -132,7 +132,7 @@ class SkipTestDiskCached(TestCached):
         assert 9 not in self.add
 
     def testDelItem(self):
-        ''' verifies that delitem works '''
+        """ verifies that delitem works """
         # diskcache
         assert self.diskCache.fetch(str, 2) == "2"
         key = self.diskCache.getKey(2)
@@ -149,7 +149,7 @@ class SkipTestDiskCached(TestCached):
         assert key not in self.add
 
     def testDirectCall(self):
-        ''' tests directly calling the cache object using __call__ '''
+        """ tests directly calling the cache object using __call__ """
         CACHE_DIR = get_cache_dir(4)
         cached_str = DiskCache(CACHE_DIR, fn=str)
 
@@ -157,7 +157,7 @@ class SkipTestDiskCached(TestCached):
         assert cached_str.getKey(7) in cached_str
 
     def testIterableCache(self):
-        ''' tests the iterable cache '''
+        """ tests the iterable cache """
         CACHE_DIR = get_cache_dir(5)
         i = IterableCache(CACHE_DIR)
 
@@ -171,7 +171,7 @@ class SkipTestDiskCached(TestCached):
 
     @pytest.mark.slow
     def testThreadSafety(self):
-        '''  tests whether everything is thread safe '''
+        """  tests whether everything is thread safe """
 
         for a in range(1000):
             c = DiskCache(get_cache_dir(6))
@@ -185,12 +185,12 @@ class SkipTestDiskCached(TestCached):
 
 
 def f(c):
-    ''' Function for checking Diskcache with larger files.
+    """ Function for checking Diskcache with larger files.
 
         @remarks
         required for the testThreadSafety unittest.
         considers None results.
-    '''
+    """
     from random import randint
     r = randint(1, 17)
     blow = lambda x: x not in (7, 8) and 100000 * str(x) or None
@@ -199,12 +199,12 @@ def f(c):
 
 
 def g(c):
-    ''' Function for checking DiskCache with small files.
+    """ Function for checking DiskCache with small files.
 
         @remarks
         required for the testThreadSafety unittest.
         considers None results.
-    '''
+    """
 
     from random import randint
     r = randint(111, 117)

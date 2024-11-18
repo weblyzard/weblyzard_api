@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on 07.04.2014
 
 @author: heinz-peterlang
-'''
+"""
 from __future__ import unicode_literals
 from weblyzard_api.model.parsers import XMLParser
 from weblyzard_api.client.rdf import Namespace

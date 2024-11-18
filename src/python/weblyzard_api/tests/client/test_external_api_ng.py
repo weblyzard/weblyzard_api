@@ -1,15 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 .. codeauthor:: Rod Coronel 
-'''
+"""
 
 import unittest
 from weblyzard_api.client.external_api_ng import ExternalApiNg
 
-'''
-WEBLYZARD_API_URL=XXXXX WEBLYZARD_API_USER=XXXXXX WEBLYZARD_API_PASS=XXXXXX python3 -m pytest tests/client/test_external_api_ng.py
-'''
+"""
+WEBLYZARD_API_URL=XXXXX 
+
+WEBLYZARD_API_USER=XXXXXX WEBLYZARD_API_PASS=XXXXXX python3 -m pytest tests/client/test_external_api_ng.py
+"""
 class ExternalApiNgTest(unittest.TestCase):
 
     def test_hello_world(self):

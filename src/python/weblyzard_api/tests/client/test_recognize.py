@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Aug 29, 2016
 
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
+from os import getenv
 
-from pprint import pprint
 
 from weblyzard_api.client.recognize import Recognize
 
@@ -16,34 +16,38 @@ from weblyzard_api.client.recognize import Recognize
 class TestRecognize(unittest.TestCase):
 
     DOCS_XML = [
-        '''
+        """
             <?xml version="1.0" encoding="UTF-8"?>
             <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" dc:title="" wl:id="99933" dc:format="text/html" xml:lang="de" wl:nilsimsa="030472f84612acc42c7206e07814e69888267530636221300baf8bc2da66b476" dc:related="http://www.heise.de http://www.kurier.at">
                <wl:sentence wl:id="50612085a00cf052d66db97ff2252544" wl:pos="NE NE VAFIN CARD NE NE VVPP $." wl:token="0,5 6,12 13,16 17,19 20,23 24,27 28,36 36,37" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Georg Müller hat 10 Mio CHF gewonnen.]]></wl:sentence>
                <wl:sentence wl:id="a3b05957957e01060fd58af587427362" wl:pos="NN NE VMFIN APPR ART NN APPR CARD NE NE $, PRELS PPER NE NE VVFIN $, PIS VVINF $." wl:token="0,4 5,12 13,19 20,23 24,27 28,35 36,39 40,42 43,46 47,50 50,51 52,55 56,59 60,65 66,72 73,84 84,85 86,92 93,101 101,102" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Harald Schmidt konnte mit dem Angebot von 10 Mio CHF, das ihm Georg Müller hinterlegte, nichts anfangen.]]></wl:sentence>
             </wl:page>
-            ''',
-        '''
+            """,
+        """
             <?xml version="1.0" encoding="UTF-8"?>
             <wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" dc:title="" wl:id="99934" dc:format="text/html" xml:lang="de" wl:nilsimsa="020ee211a20084bb0d2208038548c02405bb0110d2183061db9400d74c15553a" dc:related="http://www.heise.de http://www.kurier.at">
                <wl:sentence wl:id="f98a0c4d2ddffd60b64b9b25f1f5657a" wl:pos="NN NE VVFIN $, KOUS ART NN ADV CARD ADJD VAINF VAFIN $." wl:token="0,6 7,14 15,23 23,24 25,29 30,33 34,37 38,42 43,47 48,59 60,64 65,69 69,70" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[Gery Keszler erklärte, dass die Niederösterreich auch 2014 erfolgreich sein wird.]]></wl:sentence>
             </wl:page>
-            ''']
+            """]
 
     TESTED_PROFILES = ['de.people.ng', 'en.geo.500000.ng', 'fr.people.ng', 'es.people.ng',
                        'de.geo.500000.ng', 'en.organization.ng', 'en.people.ng']
     IS_ONLINE = True
 
+    SERVICE_URL = 'http://localhost:8080'
+
     def setUp(self):
-        self.available_profiles = []
-        url = 'localhost:8080/Recognize/rest/recognize'
-        url = 'http://recognize-ng.prod.i.weblyzard.net:8443'
-        self.client = Recognize(url)
+        service_url = getenv('RECOGNIZE_NG_URL', self.SERVICE_URL)
+        if service_url is None:
+            return
+        self.client = Recognize(service_url)
         self.service_is_online = self.client.is_online()
         if not self.service_is_online:
             print('WARNING: Webservice is offline --> not executing all tests!!')
             self.IS_ONLINE = False
             return
+
+        self.available_profiles = []
 
         recognize_profiles = self.client.list_profiles()
         for profile in recognize_profiles:
@@ -72,7 +76,7 @@ class TestRecognize(unittest.TestCase):
 #         print("end")
 #
 #     def test_search_xml(self):
-#         ''' '''
+#         """ """
 #         if self.IS_ONLINE and self.service_is_online:
 #             self.client.add_profile('en.geo.500000.ng')
 #             result = self.client.search_documents(
@@ -84,12 +88,12 @@ class TestRecognize(unittest.TestCase):
         if profile_name not in self.available_profiles:
             print("Profile %s not available!" % profile_name)
             return
-        text = u'''Harald Mahrer und Walter Ruck müssen gefunden werden! 
+        text = u"""Harald Mahrer und Walter Ruck müssen gefunden werden! 
         Cindy Crawford, George Clooney, Eddie Redmayne, Kaia Gerber, 
         Presley Gerber, Daniel Craig, Clemens Doppler, Alexander Horst, 
         Hanner Jagerhofer, Melanie Rondonell, Helmut Saller, Karin Sailer, 
         Irmgard Wiesinger, Jürgen Demuth, Peter Altrichter, Manfred Sulyok, 
-        Berta Sando sind tolle Menschen.'''
+        Berta Sando sind tolle Menschen."""
         # Hanner Jagerhofer, Bill Gates, Achim Steiner, Mark Zuckerberg are some people of interest.  Achim Steiner and Tegegnework Gettu and Abdoulaye Mar Dieye and Lenni Montiel and Haoliang Xu and Susan McDade and Robert Piper and Cihan Sultanoğlu are UNEP people.'
 #         geodocs = [{'content_id': '11',
 #                     'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},
@@ -149,14 +153,14 @@ class TestRecognize(unittest.TestCase):
 #             print 'result', len(result), first[0]['preferredName']
 
 #     def test_geo_swiss(self):
-#         '''
+#         """
 #         Tests the geo annotation service for Swiss media samples.
 #
 #         .. note::
 #
 #             ``de_CH.geo.5000.ng`` detects Swiss cities with more than 5000
 #             and worldwide cities with more than 500,000 inhabitants.
-#         '''
+#         """
 #         required_profile = 'de_CH.geo.5000.ng'
 #         if required_profile not in self.available_profiles:
 #             print("Profile %s not available!" % required_profile)

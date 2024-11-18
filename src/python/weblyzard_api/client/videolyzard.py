@@ -1,6 +1,6 @@
 # #!/usr/bin/python
 # # -*- coding: utf-8 -*-
-# '''
+# """
 # Created on 16.04.2014
 # .. seealso::
 #
@@ -8,7 +8,7 @@
 #
 #     :mod::`wl_data_scripts.projects.videolyzard.import_data`
 # @author: heinz-peterlang
-# '''
+# """
 # from __future__ import division
 # from __future__ import unicode_literals
 #
@@ -25,7 +25,7 @@
 #
 #
 # class VideolyzardClient(object):
-#     '''
+#     """
 #     A Python client for the Weblyzard API.
 #
 #     .. seealso::
@@ -33,7 +33,7 @@
 #     `API Documentation <https://gitlab.semanticlab.net/matthiasb/weblyzard-youtube-tab/wikis/api-documentation>`_
 #
 #     :mod::`wl_data_scripts.projects.videolyzard.import_data`
-#     '''
+#     """
 #     SERVER_URL = 'http://ccc.modul.ac.at/videolyzard'
 #     UPLOAD_URL = '%(server_url)s/add-json?username=%(username)s&password=%(password)s'
 #     VIDEO_DATA_URL = '%(server_url)s/get-data?username=%(username)s&password=%(password)s&type=json&'
@@ -44,9 +44,9 @@
 #     FILTER_COMPLETED = 'completed'
 #
 #     def __init__(self, username, password, server_url=None):
-#         '''
+#         """
 #         The Videolyzard client requires a password and a username.
-#         '''
+#         """
 #         assert username, 'No username was provided!'
 #         assert password, 'No password was provided!'
 #
@@ -56,23 +56,23 @@
 #
 #     @classmethod
 #     def convert_datetime_to_timestamp(cls, datetime_obj):
-#         '''
+#         """
 #         Generate a total timestamp used by the Videolyzard API.
 #
 #         :param datetime_obj: A datetime object from the standard library
 #         :returns: an integer timestamp e.g. 1396310400
-#         '''
+#         """
 #         converted_time = time.mktime(
 #             datetime_obj.timetuple()) + old_div(datetime_obj.microsecond, 1E6)
 #         return int(converted_time)
 #
 #     @classmethod
 #     def convert_videos_csv_to_dict(cls, file_obj):
-#         '''
+#         """
 #         Convert a video CSV file to a dict.
 #         :param file_obj: A file object.
 #         :returns: A dictionary with the fields portal_name, original_url, title and text.
-#         '''
+#         """
 #         reader = csv.reader(file_obj)
 #         titles = next(reader)
 #
@@ -100,7 +100,7 @@
 #         return videos
 #
 #     def post_dict_videos_to_queue(self, videos):
-#         '''
+#         """
 #         Post a list of video dictionaries to the Videolyzard queue.
 #
 #         :param list videos: A list of video dictionaries.
@@ -112,7 +112,7 @@
 #                             * 'text': the title of the video
 #
 #         :returns: A response object
-#         '''
+#         """
 #         assert isinstance(videos, list)
 #         assert all('portal_name' in video for video in videos)
 #         assert all('original_url' in video for video in videos)
@@ -121,7 +121,7 @@
 #         return response
 #
 #     def post_csv_to_queue(self, csv_file_object):
-#         '''
+#         """
 #         Accepts a CSV file object and posts the lines to
 #         the Videolyzard queue.
 #
@@ -132,7 +132,7 @@
 #             * description
 #             * text: the title of the video
 #
-#         '''
+#         """
 #         videos = self.convert_videos_csv_to_dict(csv_file_object)
 #         return self.post_dict_videos_to_queue(videos)
 #
@@ -151,7 +151,7 @@
 #         return response
 #
 #     def get_video_data(self, portal, since=None, page=1, status=None):
-#         '''
+#         """
 #         Query video data from the Videolyzard API.
 #
 #         .. note :: The returned video_urls are modified!
@@ -164,7 +164,7 @@
 #         :param status: Filters results by their state (processing, failed, completed); shows all if not specified
 #         :param since: Shows results only from the specified timestamp (e.g. 1396310400); shows all if not specified
 #         :param page: Current selected page (e.g. 5); shows page 1 if not specified
-#         '''
+#         """
 #         assert isinstance(page, int), page
 #         parameters = {'portal': portal}
 #

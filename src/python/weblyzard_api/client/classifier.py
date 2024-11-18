@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Jan 16, 2013
 
 .. codeauthor: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor: Norman Suesstrunk <norman.suesstrunk@htwchur.ch>
 .. codeauthor: Philipp Kuntschik <philipp.kuntschik@htwchur.ch>
 
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 import unittest
@@ -22,32 +22,32 @@ from weblyzard_api.client import (
 
 
 class Classifier(MultiRESTClient):
-    '''
+    """
     **Classifier**
 
     Provides support for text classification.
-    '''
+    """
     CLASSIFIER_WS_BASE_PATH = '/joseph/rest/'
 
     def __init__(self, url=WEBLYZARD_API_URL,
                  usr=WEBLYZARD_API_USER, pwd=WEBLYZARD_API_PASS):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(
             self, service_urls=url, user=usr, password=pwd)
 
     def hello_world(self):
-        '''
+        """
         Simple hello world test.
-        '''
+        """
         return self.request(self.CLASSIFIER_WS_BASE_PATH + 'helloworld')
 
     def classify_v2(self, classifier_profile, weblyzard_xml, search_agents=None,
                     num_results=1):
-        '''
+        """
         Classify weblyzard XML documents based on the given classifier profile
         using the new classifier interface
 
@@ -69,7 +69,7 @@ class Classifier(MultiRESTClient):
            ]
         :param num_results: number of classes to return
         :returns: the classification result
-        '''
+        """
         classifier_request = {'xml_document': weblyzard_xml,
                               'numOfResults': num_results, }
         if search_agents is not None:
@@ -82,7 +82,7 @@ class Classifier(MultiRESTClient):
 
     def train(self, classifier_profile, weblyzard_xml, correct_category,
               incorrect_category=None, document_timestamp=None):
-        '''
+        """
         Trains (and corrects) the classifier's knowledge base.
 
         :param classifier_profile: the profile to use for classification \
@@ -96,7 +96,7 @@ class Classifier(MultiRESTClient):
             the document has been classified (used for retraining temporal \
             knowledge bases)
         :returns: a response object with a status code and message.
-        '''
+        """
         learn_request = {
             'xml_document': weblyzard_xml,
             'category': correct_category,
@@ -120,7 +120,7 @@ class TestClassifier(unittest.TestCase):
                                                                for sa in search_agents])
 
     def test_submit_classify_v2(self):
-        ''' test the version 2 classifier '''
+        """ test the version 2 classifier """
 
         weblyzard_xml = open(get_resource(
             __file__, 'data/classifier_v2_testfile.xml')).read()

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 .. codeauthor:: Rod Coronel 
-'''
+"""
 
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (

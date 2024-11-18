@@ -29,8 +29,8 @@ class TestWlSearchRestApiClient(unittest.TestCase):
                                         password=self.PASSWORD)
 
         sources = ['climate.6.climate2_media']
-        start_date = '2016-09-20'
-        end_date = '2016-09-21'
+        start_date = '2024-09-20'
+        end_date = '2024-09-21'
         num_keywords = 5
         num_associations = 5
         auth_token = client.get_auth_token(username=self.USERNAME,

@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class BlazegraphWrapper(object):
-    '''
+    """
     Built upon the SPARQLWrapper for accessing blazegraph.
-    '''
+    """
 
     PREFIXES = PREFIXES
 
@@ -48,9 +48,9 @@ class BlazegraphWrapper(object):
         return sparql_endpoint
 
     def _set_query_method(self, query:str):
-        '''
+        """
         Switch to POST if the query is too long.
-        '''
+        """
         if len(query) > 500:  # not sure if this is the correct cutoff
             self.query_wrapper.method = 'POST'
     
@@ -81,12 +81,12 @@ class BlazegraphWrapper(object):
 
     @staticmethod
     def group_bindings(bindings, key:str='uri') -> Generator:
-        '''
+        """
         Group a query result's bindings, using `key` as a grouping indicator.
         Result bindings need to be ordered by `key` var for grouping.
         :param bindings: a query result's bindings
         :param key: the query var by which the results are grouped
-        '''
+        """
         uri = None
         result = defaultdict(set)
         for row in bindings:
@@ -106,12 +106,12 @@ class BlazegraphWrapper(object):
 
     @staticmethod
     def group_all_bindings(bindings) -> dict:
-        '''
+        """
         Group all bindings of the query result.
         To use with queries that return different values for one entity, e.g.
         entity (jairo) enrichment queries.
         :param bindings: query result bindings
-        '''
+        """
         result = defaultdict(list)
         for row in bindings:
             for row_key, row_value in row.items():
@@ -126,7 +126,7 @@ class BlazegraphWrapper(object):
 
 if __name__ == '__main__':
     blazegraph_wrapper = BlazegraphWrapper.from_config()
-    query = '''
+    query = """
             PREFIX wd: <http://www.wikidata.org/entity/> 
             SELECT ?uri ?label ?country ?headquarters_location WHERE {
                       ?uri rdfs:label ?label;
@@ -136,7 +136,7 @@ if __name__ == '__main__':
                       FILTER(((LANG(?label)) = "en") || ((LANG(?label)) = "de"))
                     }
             LIMIT 1000
-            '''
+            """
 
     bindings = blazegraph_wrapper.run_query(query)
     for result in blazegraph_wrapper.group_bindings(bindings):

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-'''
+"""
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch> 
-'''
+"""
 from __future__ import unicode_literals
 
 from weblyzard_api.util.http import Retrieve
@@ -21,7 +21,7 @@ SUPPORTED_LANGS = ('en', 'fr', 'de')
 
 
 class Recognize(MultiRESTClient):
-    '''
+    """
     Provides access to the Recognize Web Service.
 
     **Workflow:**
@@ -55,7 +55,7 @@ class Recognize(MultiRESTClient):
                         buckets=40,
                         limit=40)  
             pprint(result)
-    '''
+    """
     OUTPUT_FORMATS = ('standard', 'minimal', 'annie', 'compact')
     URL_PATH = 'recognize/rest/recognize'
     ATTRIBUTE_MAPPING = {'content_id': 'id',
@@ -68,18 +68,18 @@ class Recognize(MultiRESTClient):
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
-        '''
+        """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
-        '''
+        """
         MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
                                  default_timeout=default_timeout)
         self.profile_cache = []
 
     @classmethod
     def convert_document(cls, xml, version='0.4'):
-        ''' converts an XML String to a document dictionary necessary for \
+        """ converts an XML String to a document dictionary necessary for \
             transmitting the document to Recognize.
 
         :param xml: weblyzard_xml representation of the document
@@ -89,7 +89,7 @@ class Recognize(MultiRESTClient):
         .. note::
             non-sentences are ignored and titles are added based on the
             XmlContent's interpretation of the document.
-        '''
+        """
         if not isinstance(xml, XMLContent):
             xml = XMLContent(xml)
 
@@ -103,26 +103,26 @@ class Recognize(MultiRESTClient):
                            add_titles_to_sentences=True)
 
     def list_profiles(self):
-        ''' :returns: a list of all pre-loaded profiles
+        """ :returns: a list of all pre-loaded profiles
 
             .. code-block:: python
 
             >>> r=Recognize()
             >>> r.list_profiles()
             [u'Cities.DACH.10000.de_en', u'People.DACH.de']
-        '''
+        """
         return self.request('list_profiles')
 
     def list_configured_profiles(self):
-        ''' :returns: a list of all profiles supported in the current \
-                configuration '''
+        """ :returns: a list of all profiles supported in the current \
+                configuration """
         return self.request('list_configured_profiles')
 
     def add_profile(self, profile_name, force=False):
-        ''' pre-loads the given profile 
+        """ pre-loads the given profile
 
         ::param profile_name: name of the profile to load.
-        '''
+        """
         if profile_name.startswith(INTERNAL_PROFILE_PREFIX):
             return
 
@@ -138,16 +138,16 @@ class Recognize(MultiRESTClient):
             return self.request('add_profile/%s' % profile_name)
 
     def get_xml_document(self, document):
-        ''' :returns: the correct XML representation required by the Recognize \
-            service'''
+        """ :returns: the correct XML representation required by the Recognize \
+            service"""
         return document.xml_content.as_dict(self.ATTRIBUTE_MAPPING)
 
     def remove_profile(self, profile_name):
-        ''' removes a profile from the list of pre-loaded profiles '''
+        """ removes a profile from the list of pre-loaded profiles """
         return self.request('remove_profile/%s' % profile_name)
 
     def extract_geo_location(self, text, language='en'):
-        ''' convenience method to extract a GEO location from free text '''
+        """ convenience method to extract a GEO location from free text """
         profile_names = ['%s.geo.500000.ng' % language]
         for profile_name in profile_names:
             self.add_profile(profile_name)
@@ -162,7 +162,7 @@ class Recognize(MultiRESTClient):
 
     def search_text(self, profile_names, text, debug=False, max_entities=1,
                     buckets=1, limit=1, output_format='minimal'):
-        '''
+        """
         Search text for entities specified in the given profiles.
 
         :param profile_names: the profile to search in
@@ -175,7 +175,7 @@ class Recognize(MultiRESTClient):
         :param output_format: the output format to use ('standard', \
             *'minimal'*, 'annie')
         :rtype: the tagged text
-        '''
+        """
         assert output_format in self.OUTPUT_FORMATS
         if isinstance(profile_names, str):
             profile_names = (profile_names,)
@@ -195,7 +195,7 @@ class Recognize(MultiRESTClient):
     def search_document(self, profile_names, document, debug=False,
                         max_entities=1, buckets=1, limit=1,
                         output_format='minimal'):
-        '''
+        """
         :param profile_names: a list of profile names
         :param document: a single document to analyze (see example documents \
             below)
@@ -222,7 +222,7 @@ class Recognize(MultiRESTClient):
         .. note:: Corresponding web call
 
             http://localhost:8080/recognize/searchXml/ofwi.people
-        '''
+        """
         assert output_format in self.OUTPUT_FORMATS
         if not document:
             return
@@ -259,7 +259,7 @@ class Recognize(MultiRESTClient):
     def search_documents(self, profile_names, doc_list, debug=False,
                          max_entities=1, buckets=1, limit=1,
                          output_format='compact'):
-        '''
+        """
         :param profile_names: a list of profile names
         :param doc_list: a list of documents to analyze (see example below)         
         :param debug: compute and return an explanation
@@ -282,7 +282,7 @@ class Recognize(MultiRESTClient):
               # option 2: list of weblyzardXML dictionary representations
               (XMLContent('<?xml version="1.0"...').as_list(),
                XMLContent('<?xml version="1.0"...').as_list(),)
-         '''
+         """
         assert output_format in self.OUTPUT_FORMATS
         if not doc_list or len(doc_list) == 0:
             return
@@ -342,7 +342,7 @@ class Recognize(MultiRESTClient):
                                 'debug': debug})
 
     def get_focus(self, profile_names, doc_list, max_results=1):
-        '''
+        """
         :param profile_names: a list of profile names
         :param doc_list: a list of documents to analyze based on the \
                          weblyzardXML format
@@ -352,7 +352,7 @@ class Recognize(MultiRESTClient):
         .. note:: Corresponding web call
 
            http://localhost:8080/recognize/focus?profiles=ofwi.people&profiles=ofwi.organizations.context
-        '''
+        """
         if isinstance(profile_names, str):
             profile_names = (profile_names,)
 
@@ -373,13 +373,13 @@ class Recognize(MultiRESTClient):
                                               'limit': max_results})
 
     def status(self):
-        '''
+        """
         :returns: the status of the Recognize web service.
-        '''
+        """
         return self.request(path='status')
 
     def get_version(self):
-        ''' 
+        """
         :returns: the version of the Recognize web service.
-        '''
+        """
         return self.request(path='version', return_plain=True)

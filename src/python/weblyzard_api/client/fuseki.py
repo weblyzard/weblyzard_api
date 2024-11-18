@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This module provides a class that provides some convenience methods
 to access a fuseki triplestore.
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 
@@ -30,9 +30,9 @@ TIMEOUT = 600000000
 
 
 class FusekiWrapper(object):
-    '''
+    """
     provides methods to easily interface fuseki or other triple stores.
-    '''
+    """
 
     PREFIXES = PREFIXES
 
@@ -90,11 +90,11 @@ class FusekiWrapper(object):
         return decorator
 
     def fix_uri(self, o):
-        '''
+        """
         If a uri is only the full uri, i.e. not prefixed, it needs
         to be enclosed in angled brackets.
         If a value is not a str it needs to be converted.
-        '''
+        """
 
         if isinstance(o, tuple) and len(o) == 3:
             return(self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2]))
@@ -108,9 +108,9 @@ class FusekiWrapper(object):
             return str(o)
 
     def is_uri(self, value):
-        '''
+        """
         Check if the value is a URI or not.
-        '''
+        """
         if isinstance(value, int):
             return False
         elif isinstance(value, (str, bytes)):
@@ -124,7 +124,7 @@ class FusekiWrapper(object):
             return False
 
     def variable_to_python(self, variable_dict, add_language_tag=False):
-        '''
+        """
         Convert a given variable_dict to the closest python representation.
         :param variable_dict: The dict representing the variable.
         :type variable_dict: `dict`
@@ -132,7 +132,7 @@ class FusekiWrapper(object):
                 be language-tagged (and wrapped in double quotes).
         :type add_language_tag: `bool`
         :rtype: `object`
-        '''
+        """
         if variable_dict['type'] == 'uri':
             return variable_dict['value']
         elif variable_dict['type'] == 'literal':
@@ -266,11 +266,11 @@ class FusekiWrapper(object):
             raise(e)
 
     def ask(self, query:str, no_prefix:bool=False) -> bool:
-        '''
+        """
         Run a given ask query against the query endpoint.
         :param query: the ask query to run
         :param no_prefix: do not preface with rdf PREFIXES
-        '''
+        """
         if not no_prefix:
             query = u'{}{}'.format(self.PREFIXES, query)
         self.debug(u'running the following ask query against {endpoint}\n{query}'.format(
@@ -291,12 +291,12 @@ class FusekiWrapper(object):
         """
         if uri in self.uri_cache:
             return True
-        query = u'''
+        query = u"""
         SELECT ?p WHERE {{
           {{ <{x}> ?p ?o. }} UNION {{?s ?p <{x}> }} .
         }}
         LIMIT 1
-        '''.format(x=uri)
+        """.format(x=uri)
         result = list(self.run_query(query=query))
         if len(result) > 0:
             self.uri_cache.add(uri)
@@ -305,11 +305,11 @@ class FusekiWrapper(object):
             return False
 
     def populate_uri_cache(self):
-        query = u'''
+        query = u"""
         SELECT ?s ?o WHERE {{
           {{ ?s ?p ?o. }} .
         }}
-        '''
+        """
         result = self.run_query(query=query)
         for row in result:
             if row['s']['type'] == 'uri':

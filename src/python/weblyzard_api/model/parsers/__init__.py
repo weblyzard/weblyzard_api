@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on 07.04.2014
 
 @author: heinz-peterlang
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 
@@ -49,9 +49,9 @@ class DatesToStrings(json.JSONEncoder):
 
 
 class JSONParserBase(object):
-    '''
+    """
     JSON Parser base class.
-    '''
+    """
     # :  Override this constant in the subclasses based on requirements.
     FIELDS_REQUIRED = []
     # :  Override this constant in the subclasses based on requirements.
@@ -66,7 +66,7 @@ class JSONParserBase(object):
 
     @classmethod
     def from_json_string(cls, json_string):
-        '''
+        """
         Parses a JSON string.
 
         :param json_string: The JSON to parse
@@ -76,7 +76,7 @@ class JSONParserBase(object):
             :py:class:`wl_core_ng.document.Document` or \
             :py:class:`weblyzard_api.model.xml_content.Sentence` or\
             dict.
-        '''
+        """
         try:
             if isinstance(json_string, bytes):
                 json_string = json_string.decode('utf-8')
@@ -94,14 +94,14 @@ class JSONParserBase(object):
 
     @classmethod
     def _missing_fields(cls, api_dict):
-        '''
+        """
         Checks if the given API dict misses a required field.
 
         :param api_dict: The document to check as dict.
         :type api_dict: dict
         :returns: The list of missing fields, None if all present.
         :rtype: list
-        '''
+        """
         missing_fields = []
         for key in cls.FIELDS_REQUIRED:
             if key in api_dict:
@@ -117,14 +117,14 @@ class JSONParserBase(object):
 
     @classmethod
     def _unexpected_fields(cls, api_dict):
-        '''
+        """
         Checks if the given API dict contains an unexpected field.
 
         :param api_dict: The document to check as dict.
         :type api_dict: dict
         :returns: The list of unexpected fields, None if all accepted.
         :rtype: list
-        '''
+        """
         allowed_fields = cls.FIELDS_REQUIRED + cls.FIELDS_OPTIONAL
         unexpected_fields = []
         for key in api_dict:
@@ -137,7 +137,7 @@ class JSONParserBase(object):
 
     @classmethod
     def _check_document_format(cls, api_dict, strict=True):
-        '''
+        """
         Checks if the api_dict has all required fields and if there
         are unexpected and unallowed keys.
 
@@ -146,7 +146,7 @@ class JSONParserBase(object):
         :param strict: If set to true, an UnexpectedFieldException is raised \
                 if an unexpected key is contained in the dict.
         :type strict: bool
-        '''
+        """
         missing_fields = cls._missing_fields(api_dict)
         if missing_fields is not None:
             raise MissingFieldException("Missing field(s) %s" %
@@ -159,11 +159,11 @@ class JSONParserBase(object):
 
     @classmethod
     def _validate_document(cls, json_document, strict=True):
-        ''' Validate a json document for correct format/content.
+        """ Validate a json document for correct format/content.
         :param json_document: the document to verify.
         :param strict: If set to true, an UnexpectedFieldException is raised \
                 if an unexpected key is contained in the dict.
-        '''
+        """
         cls._check_document_format(json_document, strict)
         if 'content' in json_document and 'content_type' not in json_document:
             raise MissingFieldException(
@@ -261,7 +261,7 @@ class XMLParser(object):
 
     @classmethod
     def cast_item(cls, item):
-        ''' '''
+        """ """
         if item.lower() == 'true':
             return True
         elif item.lower() == 'false':
@@ -285,7 +285,7 @@ class XMLParser(object):
 
     @classmethod
     def get_xml_value(cls, value):
-        ''' '''
+        """ """
         try:
             if isinstance(value, int) or isinstance(value, float) or \
                     isinstance(value, datetime):
@@ -319,7 +319,7 @@ class XMLParser(object):
 
     @classmethod
     def parse(cls, xml_content, remove_duplicates=True, raise_on_empty=True):
-        ''' '''
+        """ """
         parser = etree.XMLParser(recover=True, strip_cdata=False)
         cleaned_xml_content = xml_content.replace('encoding="UTF-8"', '')
         root = etree.fromstring(cleaned_xml_content,
@@ -370,7 +370,7 @@ class XMLParser(object):
 
     @classmethod
     def load_annotations(cls, root):
-        ''' '''
+        """ """
         annotations = []
 
         annotation_mapping = cls.invert_mapping(cls.ANNOTATION_MAPPING)
@@ -384,7 +384,7 @@ class XMLParser(object):
 
     @classmethod
     def load_sentences(cls, root, remove_duplicates=True, raise_on_empty=False):
-        ''' '''
+        """ """
         sentences = []
         seen_sentences = []
 
@@ -425,7 +425,7 @@ class XMLParser(object):
 
     @classmethod
     def load_features(cls, root):
-        ''' '''
+        """ """
         features = {}
 
         # inverse feature mapping for loading
@@ -448,7 +448,7 @@ class XMLParser(object):
 
     @classmethod
     def load_relations(cls, root):
-        ''' '''
+        """ """
         relations = {}
 
         # inverse relation mapping for loading
@@ -509,7 +509,7 @@ class XMLParser(object):
 
     @classmethod
     def clean_attributes(cls, attributes):
-        ''' '''
+        """ """
         result = {}
         for key, val in attributes.items():
             if not isinstance(key, str):
@@ -536,7 +536,7 @@ class XMLParser(object):
 
     @classmethod
     def get_required_namespaces(cls, attributes):
-        ''' '''
+        """ """
         result = {}
         try:
             for att in attributes:
@@ -566,7 +566,7 @@ class XMLParser(object):
     @classmethod
     def dump_xml(cls, titles, attributes, sentences, annotations=None,
                  features=None, relations=None):
-        ''' returns a webLyzard XML document '''
+        """ returns a webLyzard XML document """
         if annotations is None:
             annotations = []
         required_namespaces = cls.get_required_namespaces(attributes)
@@ -716,5 +716,5 @@ class XMLParser(object):
 
     @classmethod
     def pre_xml_dump(cls, titles, attributes, sentences):
-        ''' overriding this functions allows to perform custom cleanup tasks'''
+        """ overriding this functions allows to perform custom cleanup tasks"""
         return attributes, sentences
