@@ -43,6 +43,9 @@ python-dotenv = "*"
 sparqlwrapper = "*"
 mock = "*"
 
+[tool.coverage.run]
+source = ["src"]
+
 [tool.pylint]
 max-line-length = 88
 disable = [
