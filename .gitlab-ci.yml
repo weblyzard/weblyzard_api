@@ -35,7 +35,7 @@ pytest:
     - poetry config http-basic.wlt_nexus ${NEXUS_USER} ${NEXUS_PW}
     - poetry install
     - poetry run pytest ${TESTSDIR}
-    - sonar-scanner -D sonar.host.url=${sonarhost} -D sonar.login=${sonarlogin}
+    - sonar-scanner -D sonar.host.url=${sonarhost} -D sonar.login=${sonarlogin} -D project.settings=sonar-project.properties
 
 pylint:
   <<: *py_anchor
