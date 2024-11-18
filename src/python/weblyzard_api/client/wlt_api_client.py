@@ -308,14 +308,17 @@ class WltSearchRestApiClient(WltApiClient):
             auth_token = self.auth_token
         if not isinstance(sources, list):
             sources = [sources]
-
         query = """{"bool" : {
                           "must" : [
-                          <<term_query>>
+                            {
+                              "date" : {
+                                "gte":"%s",
+                                "lte":"%s"
+                              }
+                            },<<term_query>>
                           ]
                         }}
-        """  # % (start_date, end_date)
-
+        """ % (start_date, end_date)
         # construct a term query
         if terms is not None:
             term_query = {
@@ -326,16 +329,10 @@ class WltSearchRestApiClient(WltApiClient):
 
             query["query"] = term_query
 
-            query = query.replace('<<term_query>>', term_query)
+            query = query.replace(',<<term_query>>', term_query)
         else:
-            query = query.replace('<<term_query>>', '')
+            query = query.replace(',<<term_query>>', '')
         query = json.loads(query)
-
-        # date ranges
-        if start_date is not None:
-            query["beginDate"] = start_date
-        if end_date is not None:
-            query["endDate"] = end_date
 
         # additionally return keyword counts
         if fields is None:
