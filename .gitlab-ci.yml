@@ -33,9 +33,8 @@ pytest:
   script:
     - poetry config repositories.wlt_nexus ${NEXUS_URL}
     - poetry config http-basic.wlt_nexus ${NEXUS_USER} ${NEXUS_PW}
-    - poetry lock
     - poetry install
-    - poetry run pytest tests
+    - poetry run pytest src/python/weblyzard_api/tests
     - sonar-scanner -D sonar.host.url=${sonarhost} -D sonar.login=${sonarlogin}
 
 pylint:
