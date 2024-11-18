@@ -8,7 +8,7 @@
   before_script:
     - git submodule sync --recursive
     - git submodule update --init --recursive --remote
-    - cp wl_python_utils/python3/* .
+    - cp --no-clobber wl_python_utils/python3/* .
     - sed -i s/-dev/".$(date +%Y%m%d.%H%M)"/g pyproject.toml
     - if test -f "version.txt"; then cat version.txt; else poetry version | awk {'print $2'} > version.txt; fi
     - export PROJECT=`poetry version | awk {'print $1'}`
