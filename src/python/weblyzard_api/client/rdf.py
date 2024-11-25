@@ -22,6 +22,12 @@ class Namespace(Enum):
 
     # IPTC newscodes / media topics
     MEDTOP = 'http://cv.iptc.org/newscodes/mediatopic/'
+    IKOS = 'http://cv.iptc.org/newscodes/ikos/'
+
+    # NACE
+    NACE2 = 'http://data.europa.eu/ux2/nace2/'
+    NACE2_1 = 'http://data.europa.eu/ux2/nace2.1/' # FIXME: there seems to be no official prefix yet
+    XKOS = 'http://rdf-vocabulary.ddialliance.org/xkos#'
 
     # special interest namespaces
     SKOS = 'http://www.w3.org/2004/02/skos/core#'
@@ -61,6 +67,7 @@ class Namespace(Enum):
     SKBGEO = 'http://weblyzard.com/skb/entity/geo/'
     SKBEVENT = 'http://weblyzard.com/skb/event/'
     SKBCAT = 'http://weblyzard.com/skb/entity/category/'
+    SKBTAG = 'http://weblyzard.com/skb/entity/tag/'
     AGENT = 'http://weblyzard.com/skb/entity/agent/'
     LEXFORM = 'http://lex.weblyzard.com/form/'
     LEXTERM = 'http://lex.weblyzard.com/term/'
