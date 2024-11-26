@@ -58,7 +58,7 @@ class TextQualityClient(MultiRESTClient):
                         count += 1
         return count
 
-    # accept input sentence, returns True if passive Flase otherwise
+    # accept input sentence, returns True if passive False otherwise
     def is_single_sentence_passive(self, sentence: str):
         if sentence:
             result = self.get_document_text_quality(body=sentence)

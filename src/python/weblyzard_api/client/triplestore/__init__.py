@@ -53,13 +53,35 @@ class AbstractTriplestoreWrapper(ABC):
         if self.debug_:
             print(string_)
 
-    def remove_duplicate_prefixes(self, query: str) -> str:
+    def remove_duplicate_prefixes(self, query: str, prefixes: Optional[str] = None) -> str:
         """
-        Remove duplicate prefix declarations from the query that can cause
-        a `QueryBadFormed` Error.
+        Remove duplicate prefix declarations between prefixes and the query that can cause a `QueryBadFormed` Error.
+        :param query: sparql query string
+        :param prefixes: sparql query string part that declares the prefixes at the start
+        :return: deduplicated sparql query string part that declares the prefixes with duplicates removed
+            in case any prefixes are also declared in the `query`
         """
-        prefixes = "\n".join([prefix for prefix in self.PREFIXES.split("\n")
+        if not prefixes:
+            considered_prefixes = self.PREFIXES
+        else:
+            considered_prefixes = prefixes
+
+        prefixes = "\n".join([prefix for prefix in considered_prefixes.split("\n")
                               if prefix not in query])
+        return prefixes
+
+    def retrieve_only_used_prefixes(self, query: str) -> str:
+        prefixes = self.PREFIXES.split("\n")
+        used_prefixes = []
+        for prefix in prefixes:
+            if not prefix:
+                continue
+            pref, *args = prefix.split(':', 1)
+            _, pref = pref.split(' ', 1)
+            if f'{pref}:' in query:
+                used_prefixes.append(prefix)
+
+        prefixes = "\n".join([pref.strip() for pref in used_prefixes])
         return prefixes
 
     def fix_uri(self, o):
@@ -212,11 +234,18 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         """
         Run a given query and return the result's bindings.
         :param query: The SPARQL query to run.
-        :param no_prefix: if True does not inject all PREFIX values
+        :param no_prefix: if True does not inject PREFIX values
         """
         self._set_query_method(query)
         if not no_prefix:
-            prefixes = self.remove_duplicate_prefixes(query)
+            prefixes = None
+            try:
+                prefixes = self.retrieve_only_used_prefixes(query)
+            except Exception as e:
+                pass # injects all known PREFIX values
+
+            prefixes = self.remove_duplicate_prefixes(query,
+                                                      prefixes=prefixes)
             query = f'{prefixes}{query}'
         self.query_wrapper.setQuery(query)
         self.debug(f'running the following query against {self.query_endpoint}\n{query}')
