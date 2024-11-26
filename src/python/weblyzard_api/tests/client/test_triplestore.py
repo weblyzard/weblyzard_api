@@ -7,9 +7,9 @@ from weblyzard_api.client.triplestore.blazegraph import BlazegraphWrapper
 from weblyzard_api.client.triplestore.fuseki import FusekiWrapper
 from weblyzard_api.client.triplestore.qlever import QleverWrapper
 
-FUSEKI_ENDPOINT = 'http://fuseki-lod.prod.i.weblyzard.net:8443/wikidata.20190603'
+
 class TriplestoreTestFuseki(unittest.TestCase):
-    #FUSEKI_ENDPOINT = getenv('FUSEKI_ENDPOINT')
+    FUSEKI_ENDPOINT = getenv('FUSEKI_ENDPOINT')
     if not FUSEKI_ENDPOINT:
         raise ValueError("No Fuseki query service endpoint set!")
     fuseki_wrapper = FusekiWrapper(sparql_endpoint=FUSEKI_ENDPOINT, debug=True)
@@ -39,8 +39,6 @@ class TriplestoreTestFuseki(unittest.TestCase):
 class TriplestoreTestBlazegraph(unittest.TestCase):
     # official wikidata endpoint
     blazegraph_wrapper = BlazegraphWrapper(f'https://query.wikidata.org/sparql')
-    #blazegraph_wrapper = BlazegraphWrapper(f'http://78.142.140.80:9999/bigdata/namespace/wdq')
-
 
     def test_query(self):
         query = '''
