@@ -81,33 +81,37 @@ class JesajaNg(MultiRESTClient):
             {'the': 222, 'a': 200, ...}
         """
         if profile_name is None:
-            raise ValueError('Please specify the profile_name which the documents are designated.')
-        return self.request('add_csv/{}'.format(profile_name), keyword_count_map)
+            raise ValueError(
+                'Please specify the profile_name which the documents are designated.')
+        return self.request('add_csv/{}'.format(profile_name),
+                            keyword_count_map)
 
     def add_documents(self, profile_name, documents):
         """
         Adds reference documents for Jesaja.
 
-        :param matview_id:
+        :param profile_name:
             matview_id for which the documents are relevant
         :param documents:
             a list of weblyzard documents
         """
         if profile_name is None:
-            raise ValueError('Please specify the profile_name for which the documents are designated.')
+            raise ValueError(
+                'Please specify the profile_name for which the documents are designated.')
         return self.request('add_documents/{}'.format(profile_name), documents)
 
     def get_keyword_annotations(self, profile_name, documents,
-                                num_keywords:int=None, add_ngrams=True):
+                                num_keywords: int = None, add_ngrams=True):
         """
-        :param matview_id: the profile_name for which the keywords are computed
+        :param profile_name: the profile_name for which the keywords are computed
         :param documents:  a list of weblyzard documents
         :param num_keywords: the amount of keywords to be returned
         :param add_ngrams: if set, new ngrams are added to the reference corpus
         """
         if not self.has_profile(profile_name):
             raise Exception(
-                'Cannot compute keywords - unknown profile_name {}'.format(profile_name))
+                'Cannot compute keywords - unknown profile_name {}'.format(
+                    profile_name))
 
         endpoint = f'get_nek_annotations/{profile_name}'
         if num_keywords is not None and int(num_keywords) > 0:
@@ -129,7 +133,8 @@ class JesajaNg(MultiRESTClient):
         """
         if not self.has_profile(profile_name):
             raise Exception(
-                'Cannot compute keywords - unknown profile_name {}'.format(profile_name))
+                'Cannot compute keywords - unknown profile_name {}'.format(
+                    profile_name))
         return self.request('get_keywords/{}'.format(profile_name), documents)
 
     def has_profile(self, profile_name):
