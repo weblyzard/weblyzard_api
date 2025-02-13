@@ -209,14 +209,18 @@ class LayoutCharSpan(CharSpan):
                     'end': 'end',
                     'layout': 'layout',
                     'title': 'title',
+                    'semOrient': 'sem_orient',
+                    'emotions': 'emotions',
                     'level': 'level'}
 
-    def __init__(self, start: int, end: int, layout, title: str, level: int):
+    def __init__(self, start: int, end: int, layout, title: str, level: int,
+                    sem_orient: float = 0.0, emotions = None):
         CharSpan.__init__(self, span_type=self.SPAN_TYPE, start=start, end=end)
         self.layout = layout
         self.title = title
         self.level = level
-
+        self.sem_orient = sem_orient
+        self.emotions = emotions or {}
 
 class SpanFactory(object):
     SPAN_TYPE_TO_CLASS = {
