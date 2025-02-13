@@ -210,7 +210,6 @@ class LayoutCharSpan(CharSpan):
                     'layout': 'layout',
                     'title': 'title',
                     'semOrient': 'sem_orient',
-                    'significance': 'significance',
                     'emotions': 'emotions',
                     'level': 'level'}
 
@@ -221,7 +220,7 @@ class LayoutCharSpan(CharSpan):
         self.title = title
         self.level = level
         self.sem_orient = sem_orient
-        self.emotions = emotions
+        self.emotions = emotions or {}
 
 class SpanFactory(object):
     SPAN_TYPE_TO_CLASS = {
