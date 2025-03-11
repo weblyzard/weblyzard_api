@@ -14,7 +14,7 @@ from future import standard_library
 standard_library.install_aliases()
 
 from os import getenv
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from builtins import range
 from builtins import object
@@ -27,7 +27,6 @@ from urllib.parse import urlencode
 from six import string_types
 from json import dumps, loads
 from functools import partial
-from socket import setdefaulttimeout
 
 from weblyzard_api.util.http import Retrieve
 
@@ -178,7 +177,7 @@ class MultiRESTClient(object):
         self.clients = self._connect_clients(self._service_urls,
                                              default_timeout=default_timeout)
 
-    def is_online(self):
+    def is_online(self) -> bool:
         try:
             self.request('status')
             return True
@@ -263,7 +262,7 @@ class MultiRESTClient(object):
     def request(self, path: str, parameters: Dict = None, source_id: int = None,
                 parse_result: bool = True, return_plain: bool = False,
                 json_encode_arguments: bool = True,
-                query_parameters: str = None,
+                query_parameters: Union[str, Dict] = None,
                 content_type: str = 'application/json',
                 execute_all_services: bool = False, pass_through_exceptions=()):
         """ Execute a given JSON request.

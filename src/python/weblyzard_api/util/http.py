@@ -18,8 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from future import standard_library
 from typing import Dict
+
+from future import standard_library
 
 standard_library.install_aliases()
 
@@ -90,30 +91,33 @@ class Retrieve(object):
             if "%s" in user_agent else user_agent
 
     def open(self, url: str, user: str = None, pwd: str = None,
-             data=None, headers: Dict = {}, retry: int = 0,
+             data=None, headers: Dict = None, retry: int = 0,
              authentication_method: str = "basic", accept_gzip: bool = True,
              head_only: bool = False):
         """ Open a URL and returns the matching file object
-            :param url: the URL to open
-            :param user: optional user name
-            :param pwd: optional password
-            :param data: optional data to submit
-            :param headers: a dictionary of optional headers
-            :param retry: number of retries in case of an temporary error
-            :param authentication_method: the used authentication method
-                        ('basic'*, 'digest')
-            :param accept_gzip: flag to change the accepted encoding, gzip
-                        or not
-            :param head_only: if True: only execute a HEAD request
-            :returns a file object for reading the url
+        :param url: the URL to open
+        :param user: optional username
+        :param pwd: optional password
+        :param data: optional data to submit
+        :param headers: a dictionary of optional headers
+        :param retry: number of retries in case of temporary error
+        :param authentication_method: the used authentication method
+                    ('basic'*, 'digest')
+        :param accept_gzip: flag to change the accepted encoding, gzip
+                    or not
+        :param head_only: if True: only execute a HEAD request
+        :returns a file object for reading the url
         """
         auth_handler = self._supported_http_authentication_methods[
             authentication_method]
-        urlObj = None
+        response = None
         tries = 0
+
+        if headers is None:
+            headers = {}
         if isinstance(data, str):
             data = data.encode('utf-8')
-        while not urlObj:
+        while not response:
             request = urllib.request.Request(url, data, headers)
 
             if head_only:
@@ -135,7 +139,7 @@ class Retrieve(object):
 
             urllib.request.install_opener(urllib.request.build_opener(*opener))
             try:
-                urlObj = urllib.request.urlopen(request)
+                response = urllib.request.urlopen(request)
             except urllib.error.HTTPError as e:
                 if e.code in HTTP_TEMPORARY_ERROR_CODES and tries < retry:
                     sleep_time = randint(*RETRY_WAIT_TIME_RANGE)
@@ -148,10 +152,10 @@ class Retrieve(object):
                     raise e
 
             # check whether the data stream is compressed
-            if urlObj.headers.get('Content-Encoding') == 'gzip':
-                return self._getUncompressedStream(urlObj)
+            if response.headers.get('Content-Encoding') == 'gzip':
+                return self._getUncompressedStream(response)
 
-        return urlObj
+        return response
 
     @staticmethod
     def _getHTTPBasicAuthOpener(url: str, user: str, pwd: str):
@@ -167,7 +171,7 @@ class Retrieve(object):
 
     @staticmethod
     def _getHTTPDigestAuthOpener(url: str, user: str, pwd: str):
-        """ Return an HTTP opener, capable of handling http-digest authentification.
+        """ Return an HTTP opener, capable of handling http-digest authentication.
         :param url:
         :param user:
         :param pwd:
@@ -206,7 +210,7 @@ class Retrieve(object):
     @staticmethod
     def get_user_password(url: str):
         """ Extract username and password from a URL, if present.
-        :param url: well formed url, starting with a schema
+        :param url: well-formed url, starting with a schema
         :return: tuple (new_url, user, password) """
         if not url.startswith('http'):
             url = 'http://%s' % url

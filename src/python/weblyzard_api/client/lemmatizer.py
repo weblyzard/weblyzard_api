@@ -5,10 +5,9 @@ Created on November 14, 2019
 
 @author: jakob <jakob.steixner@modul.ac.at>
 """
-from itertools import chain
-
 from typing import Tuple, List, Optional
 
+from itertools import chain
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.model import Sentence
 
@@ -25,8 +24,8 @@ class LemmatizerClient(MultiRESTClient):
         self.url = url
         MultiRESTClient.__init__(self, service_urls=url)
 
-    def get_unique_lemmas_string(self, language: str, plain_text: str='',
-                                 forms:Optional[list]=None,
+    def get_unique_lemmas_string(self, language: str, plain_text: str = '',
+                                 forms: Optional[list] = None,
                                  **kwargs):
         """
         Returns dict of term: lemma but only if the term has a unique lemma,
@@ -43,7 +42,7 @@ class LemmatizerClient(MultiRESTClient):
                 'lemma' in v}
 
     def _get_lemmas_plaintext(self, language: str, plain_text: str,
-                              forms: Optional[list]=None, **kwargs):
+                              forms: Optional[list] = None, **kwargs):
         doc = {
             'lang': language,
             'plain_text': plain_text,
@@ -59,7 +58,7 @@ class LemmatizerClient(MultiRESTClient):
 
     def _get_lemmas_tuples(self, language: str,
                            form_pos_pairs: List[Tuple[str, str]],
-                           check_unique: bool=True, **kwargs: dict):
+                           check_unique: bool = True, **kwargs: dict):
         """
         Helper function for Sentence input
         :param language:
@@ -86,7 +85,7 @@ class LemmatizerClient(MultiRESTClient):
         return self.request(path=self.LEMMATIZER_PATH, parameters=doc)
 
     def get_all_lemmas(self, language: str, plain_text: str,
-                       forms: Optional[list]=None, **kwargs: dict):
+                       forms: Optional[list] = None, **kwargs: dict):
         """
         Get lemmas, including potentially ambiguous ones
         :param language:
@@ -107,8 +106,8 @@ class LemmatizerClient(MultiRESTClient):
 
     def get_lemmas_annotated_sentence(self, language: str,
                                       sentence: Sentence,
-                                      check_unique: bool=False,
-                                      **kwargs):
+                                      check_unique: bool = False,
+                                      **kwargs) -> dict:
         """
         Function allowing weblyzard_api.model.Sentence to be directly input,
         performing pos-specific lemma lookup
@@ -129,7 +128,7 @@ class LemmatizerClient(MultiRESTClient):
 
         token_pairs = list(zip(sentence.tokens, sentence.pos_tags))
         raw = self._get_lemmas_tuples(language=language,
-                                      form_pos_pairs=token_pairs,)
+                                      form_pos_pairs=token_pairs, )
 
         result = {}
         for k, v in raw.get('result', {}).items():
