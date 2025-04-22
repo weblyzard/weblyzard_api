@@ -6,15 +6,14 @@ Created on Aug 29, 2016
 """
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import unittest
 from os import getenv
-
 
 from weblyzard_api.client.recognize import Recognize
 
 
 class TestRecognize(unittest.TestCase):
-
     DOCS_XML = [
         """
             <?xml version="1.0" encoding="UTF-8"?>
@@ -30,20 +29,22 @@ class TestRecognize(unittest.TestCase):
             </wl:page>
             """]
 
-    TESTED_PROFILES = ['de.people.ng', 'en.geo.500000.ng', 'fr.people.ng', 'es.people.ng',
-                       'de.geo.500000.ng', 'en.organization.ng', 'en.people.ng']
+    TESTED_PROFILES = ["de.people.ng", "en.geo.500000.ng", "fr.people.ng",
+                       "es.people.ng",
+                       "de.geo.500000.ng", "en.organization.ng", "en.people.ng"]
     IS_ONLINE = True
 
-    SERVICE_URL = 'http://localhost:8080'
+    SERVICE_URL = "http://localhost:8080"
 
     def setUp(self):
-        service_url = getenv('RECOGNIZE_NG_URL', self.SERVICE_URL)
+        service_url = getenv("RECOGNIZE_NG_URL", self.SERVICE_URL)
         if service_url is None:
             return
         self.client = Recognize(service_url)
         self.service_is_online = self.client.is_online()
         if not self.service_is_online:
-            print('WARNING: Webservice is offline --> not executing all tests!!')
+            print(
+                "WARNING: Webservice is offline --> not executing all tests!!")
             self.IS_ONLINE = False
             return
 
@@ -60,31 +61,31 @@ class TestRecognize(unittest.TestCase):
         self.DOCS = [Recognize.convert_document(
             xml, version=version) for xml in self.DOCS_XML]
 
-#     def test_text_gemet(self):
-#         from pprint import pprint
-#         print("start")
-#         profile_names = ['en.gemet']
-#         text = 'Climate Change is real. Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975.'
-#         result = self.client.search_text(profile_names,
-#                                          text,
-#                                          output_format='compact',
-#                                          max_entities=40,
-#                                          buckets=40,
-#                                          limit=40)
-#         pprint(result)
-#         assert len(result)
-#         print("end")
-#
-#     def test_search_xml(self):
-#         """ """
-#         if self.IS_ONLINE and self.service_is_online:
-#             self.client.add_profile('en.geo.500000.ng')
-#             result = self.client.search_documents(
-#                 'en.geo.500000.ng', self.DOCS)
-#             print('xmlsearch::::', result)
+    #     def test_text_gemet(self):
+    #         from pprint import pprint
+    #         print("start")
+    #         profile_names = ["en.gemet"]
+    #         text = "Climate Change is real. Microsoft is an American multinational corporation headquartered in Redmond, Washington, that develops, manufactures, licenses, supports and sells computer software, consumer electronics and personal computers and services. It was was founded by Bill Gates and Paul Allen on April 4, 1975."
+    #         result = self.client.search_text(profile_names,
+    #                                          text,
+    #                                          output_format="compact",
+    #                                          max_entities=40,
+    #                                          buckets=40,
+    #                                          limit=40)
+    #         pprint(result)
+    #         assert len(result)
+    #         print("end")
+    #
+    #     def test_search_xml(self):
+    #         """ """
+    #         if self.IS_ONLINE and self.service_is_online:
+    #             self.client.add_profile("en.geo.500000.ng")
+    #             result = self.client.search_documents(
+    #                 "en.geo.500000.ng", self.DOCS)
+    #             print("xmlsearch::::", result)
 
     def test_custom(self):
-        profile_name = 'de.people.bg'
+        profile_name = "de.people.bg"
         if profile_name not in self.available_profiles:
             print("Profile %s not available!" % profile_name)
             return
@@ -94,63 +95,64 @@ class TestRecognize(unittest.TestCase):
         Hanner Jagerhofer, Melanie Rondonell, Helmut Saller, Karin Sailer, 
         Irmgard Wiesinger, Jürgen Demuth, Peter Altrichter, Manfred Sulyok, 
         Berta Sando sind tolle Menschen."""
-        # Hanner Jagerhofer, Bill Gates, Achim Steiner, Mark Zuckerberg are some people of interest.  Achim Steiner and Tegegnework Gettu and Abdoulaye Mar Dieye and Lenni Montiel and Haoliang Xu and Susan McDade and Robert Piper and Cihan Sultanoğlu are UNEP people.'
-#         geodocs = [{'content_id': '11',
-#                     'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},
-#                    ]
+        # Hanner Jagerhofer, Bill Gates, Achim Steiner, Mark Zuckerberg are some people of interest.  Achim Steiner and Tegegnework Gettu and Abdoulaye Mar Dieye and Lenni Montiel and Haoliang Xu and Susan McDade and Robert Piper and Cihan Sultanoğlu are UNEP people."
+        #         geodocs = [{"content_id": "11",
+        #                     "content": u"Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?"},
+        #                    ]
 
         if self.IS_ONLINE and self.service_is_online:
 
             print(self.client.list_configured_profiles())
-#             print(self.client.add_profile(profile_name, force=True))
+            #             print(self.client.add_profile(profile_name, force=True))
 
-            print(('list_configured_profiles',
-                  self.client.list_configured_profiles()))
-#             self.client.add_profile('Cities.10000.en')
+            print(("list_configured_profiles",
+                   self.client.list_configured_profiles()))
+            #             self.client.add_profile("Cities.10000.en")
 
-#             self.client.search_documents(profile_names=profile_name,
-#                                          doc_list=geodocs, debug=True,
-#                                          output_format='standard')
-            print(('list_profiles', self.client.list_profiles()))
-#             self.client.add_profile('Cities.10000.en', geodocs)
-#             self.client.add_profile('Cities.10000.en')
+            #             self.client.search_documents(profile_names=profile_name,
+            #                                          doc_list=geodocs, debug=True,
+            #                                          output_format="standard")
+            print(("list_profiles", self.client.list_profiles()))
+            #             self.client.add_profile("Cities.10000.en", geodocs)
+            #             self.client.add_profile("Cities.10000.en")
             result = self.client.search_text(
-                profile_names=profile_name, text=text, output_format='compact',
+                profile_names=profile_name, text=text, output_format="compact",
                 max_entities=20, buckets=20, limit=20)
             for item in result:
-                print(item['preferredName'])
+                print(item["preferredName"])
+
 
 #     def test_geo(self):
-#         required_profile = 'en.geo.500000.ng'
+#         required_profile = "en.geo.500000.ng"
 #         if required_profile not in self.available_profiles:
 #             print("Profile %s not available!" % required_profile)
 #             return
-#         text = u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'
-#         geodocs = [{'content_id': '11',
-#                     'content': u'Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?'},
+#         text = u"Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?"
+#         geodocs = [{"content_id": "11",
+#                     "content": u"Niederösterreich und Wien goes to Los Angeles. Los Angeles, Nice, Germany, Munich is a nice city. Why is Vienna not found?"},
 #                    ]
 #
 #         if self.IS_ONLINE and self.service_is_online:
-#             profile_name = 'en.geo.500000.ng'
+#             profile_name = "en.geo.500000.ng"
 #
 #             print(self.client.list_configured_profiles())
 #             print(self.client.add_profile(profile_name, force=True))
 #
-#             print('list_configured_profiles',
+#             print("list_configured_profiles",
 #                   self.client.list_configured_profiles())
-# #             self.client.add_profile('Cities.10000.en')
+# #             self.client.add_profile("Cities.10000.en")
 #
 # #             self.client.search_documents(profile_names=profile_name,
 # #                                          doc_list=geodocs, debug=True,
-# #                                          output_format='standard')
-#             print('list_profiles', self.client.list_profiles())
-# #             self.client.add_profile('Cities.10000.en', geodocs)
-# #             self.client.add_profile('Cities.10000.en')
+# #                                          output_format="standard")
+#             print("list_profiles", self.client.list_profiles())
+# #             self.client.add_profile("Cities.10000.en", geodocs)
+# #             self.client.add_profile("Cities.10000.en")
 #             result = self.client.search_text(
-#                 profile_name, text, output_format='compact')
+#                 profile_name, text, output_format="compact")
 #             pprint(result)
-#             first = result['11']
-#             print 'result', len(result), first[0]['preferredName']
+#             first = result["11"]
+#             print "result", len(result), first[0]["preferredName"]
 
 #     def test_geo_swiss(self):
 #         """
@@ -161,12 +163,12 @@ class TestRecognize(unittest.TestCase):
 #             ``de_CH.geo.5000.ng`` detects Swiss cities with more than 5000
 #             and worldwide cities with more than 500,000 inhabitants.
 #         """
-#         required_profile = 'de_CH.geo.5000.ng'
+#         required_profile = "de_CH.geo.5000.ng"
 #         if required_profile not in self.available_profiles:
 #             print("Profile %s not available!" % required_profile)
 #             return
 #
-#         if 'noah.semanticlab.net' not in self.client.url:
+#         if "noah.semanticlab.net" not in self.client.url:
 #             print("This test is only run on noah...\n...skipping test.")
 #
 #         self.client.add_profile(required_profile)
@@ -174,89 +176,89 @@ class TestRecognize(unittest.TestCase):
 #
 
 #     def test_docs_organization(self):
-#         required_profile = 'en.organization.ng'
+#         required_profile = "en.organization.ng"
 #         if required_profile not in self.available_profiles:
 #             print "Profile %s not available!" % required_profile
 #             return
 #
 #
 #         xml_docs = []
-#         jeremia = Jeremia(url='http://gecko.wu.ac.at:8081/jeremia/rest/')
-#         docs = [{'content_id': '14', 'content': u'Bill Gates was the CEO of Microsoft.'},
-#                 {'content_id': '15', 'content' :u'Facebook is largest social networks.'}]
+#         jeremia = Jeremia(url="http://gecko.wu.ac.at:8081/jeremia/rest/")
+#         docs = [{"content_id": "14", "content": u"Bill Gates was the CEO of Microsoft."},
+#                 {"content_id": "15", "content" :u"Facebook is largest social networks."}]
 #
 #         for doc in docs:
-#             document = {'id': doc['content_id'],
-#                         'title': '',
-#                         'body': doc['content'],
-#                         'format': 'text',
-#                         'header': None }
+#             document = {"id": doc["content_id"],
+#                         "title": "",
+#                         "body": doc["content"],
+#                         "format": "text",
+#                         "header": None }
 #
-#             xml_content = jeremia.submit_document(document)['xml_content']
+#             xml_content = jeremia.submit_document(document)["xml_content"]
 #             xml_docs.append(xml_content)
 #         if self.IS_ONLINE and self.service_is_online:
 #             print self.client.list_profiles()
-#             self.client.add_profile('en.organization.ng')
-#             result = self.client.search_documents('en.organization.ng', xml_docs)
+#             self.client.add_profile("en.organization.ng")
+#             result = self.client.search_documents("en.organization.ng", xml_docs)
 #             pprint(result)
 #             assert len(result)
 #
 #     def test_docs_people(self):
-#         required_profile = 'en.people.ng'
+#         required_profile = "en.people.ng"
 #         if required_profile not in self.available_profiles:
 #             print "Profile %s not available!" % required_profile
 #             return
 #
 #         xml_docs = []
-#         jeremia = Jeremia(url='http://gecko.wu.ac.at:8081/jeremia/rest/')
-#         docs = [{'content_id': '16', 'content': u'George W. Bush is a former President.'},
-#                 {'content_id': '17', 'content' :u'Mark Zuckerberg speaks Chinese.'}]
+#         jeremia = Jeremia(url="http://gecko.wu.ac.at:8081/jeremia/rest/")
+#         docs = [{"content_id": "16", "content": u"George W. Bush is a former President."},
+#                 {"content_id": "17", "content" :u"Mark Zuckerberg speaks Chinese."}]
 #
 #         for doc in docs:
-#             document = {'id': doc['content_id'],
-#                         'title': '',
-#                         'body': doc['content'],
-#                         'format': 'text',
-#                         'header': None }
+#             document = {"id": doc["content_id"],
+#                         "title": "",
+#                         "body": doc["content"],
+#                         "format": "text",
+#                         "header": None }
 #
-#             xml_content = jeremia.submit_document(document)['xml_content']
+#             xml_content = jeremia.submit_document(document)["xml_content"]
 #             xml_docs.append(xml_content)
 #
 #         if self.IS_ONLINE and self.service_is_online:
 #             print self.client.list_profiles()
-#             self.client.add_profile('en.people.ng')
-#             result = self.client.search_documents('en.people.ng', xml_docs)
+#             self.client.add_profile("en.people.ng")
+#             result = self.client.search_documents("en.people.ng", xml_docs)
 #             assert len(result)
 
 #     def test_docs_date_profile(self):
 #         """ """
 #
 #         xml_docs = []
-#         jeremia = Jeremia(url='http://gecko.wu.ac.at:8081/jeremia/rest/')
-#         docs = [{'content_id': '12',
-#                  'lang': 'en',
-#                  'content': u'Franz Klammer fährt gestern Ski, September 12th, 2014 are we feeling better'}]
+#         jeremia = Jeremia(url="http://gecko.wu.ac.at:8081/jeremia/rest/")
+#         docs = [{"content_id": "12",
+#                  "lang": "en",
+#                  "content": u"Franz Klammer fährt gestern Ski, September 12th, 2014 are we feeling better"}]
 #         for doc in docs:
-#             document = {'id': doc['content_id'],
-#                         'title': '',
-#                         'body': doc['content'],
-#                         'format': 'text',
-#                         'header': None }
+#             document = {"id": doc["content_id"],
+#                         "title": "",
+#                         "body": doc["content"],
+#                         "format": "text",
+#                         "header": None }
 #
-#             xml_content = jeremia.submit_document(document)['xml_content']
+#             xml_content = jeremia.submit_document(document)["xml_content"]
 #             xml_docs.append(xml_content)
 #
-#         profile = 'extras.com.weblyzard.backend.recognize.extras.DateTimeProfile'
+#         profile = "extras.com.weblyzard.backend.recognize.extras.DateTimeProfile"
 #         result = self.client.search_documents(profile_names=[profile], doc_list=xml_docs)
 #         print result
 #         assert len(result)
 #
 #     def test_password(self):
 #         test_cases = (
-#             ('http://test.net', 'test', 'password'),
-#             ('http://test.net', None, None),
-#             (['http://test.net', 'http://test2.net'], 'test', 'password'),
-#             (['http://test.net', 'http://test2.net'], None, None))
+#             ("http://test.net", "test", "password"),
+#             ("http://test.net", None, None),
+#             (["http://test.net", "http://test2.net"], "test", "password"),
+#             (["http://test.net", "http://test2.net"], None, None))
 #
 #         for urls, user, password in test_cases:
 #             correct_urls = Recognize.fix_urls(urls, user, password)
@@ -269,7 +271,7 @@ class TestRecognize(unittest.TestCase):
 #
 #             for correct_url in correct_urls:
 #                 assert correct_url.endswith(Recognize.URL_PATH)
-#                 user_password = '%s:%s@' % (user, password)
+#                 user_password = "%s:%s@" % (user, password)
 #                 if user and password:
 #                     assert user_password in correct_url
 #                     ext_url, ext_user, ext_password = Retrieve.get_user_password(correct_url)
@@ -280,21 +282,21 @@ class TestRecognize(unittest.TestCase):
 #                     assert user_password not in correct_url
 #
 #     def test_swiss_profile(self):
-#         required_profile = 'de_CH.geo.5000.ng'
+#         required_profile = "de_CH.geo.5000.ng"
 #         client = Recognize()
 #         # client.remove_profile(required_profile)
 #         client.add_profile(required_profile)
-#         for text in 'Haldenstein liegt in der Nähe von Landquart.', 'Sargans hat einen wichtigen Bahnhof', 'Vinzenz arbeitet in Winterthur':
-#             result = client.search_text(required_profile, text, output_format='compact' )
+#         for text in "Haldenstein liegt in der Nähe von Landquart.", "Sargans hat einen wichtigen Bahnhof", "Vinzenz arbeitet in Winterthur":
+#             result = client.search_text(required_profile, text, output_format="compact" )
 #             print(result)
 #
-#         required_profile = 'snf.media.criticism.project'
+#         required_profile = "snf.media.criticism.project"
 #         client.add_profile(required_profile)
-#         print client.search_text(required_profile, "Die SRG und die SRF sind sehr kritisch was das Engagement der NZZ betrifft", output_format='compact')
+#         print client.search_text(required_profile, "Die SRG und die SRF sind sehr kritisch was das Engagement der NZZ betrifft", output_format="compact")
 # print client.search_text(required_profile, "die srg und die srf sind
 # sehr kritisch was das engagement der nzz betrifft",
-# output_format='compact')
+# output_format="compact")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

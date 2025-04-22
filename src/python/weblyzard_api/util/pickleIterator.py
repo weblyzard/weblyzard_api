@@ -25,12 +25,13 @@ original author Albert Weichselbraun.
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from future import standard_library
+
 standard_library.install_aliases()
-from builtins import object
 __copyright__ = "GPL"
 
 import gzip
 from binascii import b2a_base64, a2b_base64
+
 try:
     from pickle import dumps, loads
 except ImportError:
@@ -59,14 +60,14 @@ class AbstractIterator(object):
 
     @classmethod
     def get_filename(cls, fname):
-        return fname if fname.endswith('.gz') else fname + '.gz'
+        return fname if fname.endswith(".gz") else fname + ".gz"
 
 
 class WritePickleIterator(AbstractIterator):
     """ writes pickeled elements (available as iterator) to a file """
 
     def __init__(self, fname):
-        AbstractIterator.__init__(self, fname, file_mode='w')
+        AbstractIterator.__init__(self, fname, file_mode="w")
 
     def dump(self, obj):
         """ dumps the following object to the pickle file """

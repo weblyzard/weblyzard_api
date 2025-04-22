@@ -2,10 +2,7 @@
 Created on 14.02.2014
 @author: heinz-peterlang
 """
-from __future__ import print_function
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+
 import os
 import urllib.parse
 
@@ -84,10 +81,11 @@ if __name__ == '__main__':
                         help='location of the profile definition to remove')
     parser.add_argument('--remove-all-profiles', dest='remove_all',
                         help='removes all profiles from the config repo',
-                        action='store_true',)
+                        action='store_true', )
     parser.add_argument('--config-repository', dest='config_repo',
                         help='location of the profile definitions')
-    parser.add_argument('--clean-orphans', dest='clean_orphans', action='store_true',
+    parser.add_argument('--clean-orphans', dest='clean_orphans',
+                        action='store_true',
                         help='cleanup flag to clean weblyzard configuration repository')
     parser.add_argument('--service-url', dest='service_url', required=True,
                         help='the service url to upload the profile to')

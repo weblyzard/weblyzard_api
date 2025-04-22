@@ -5,36 +5,33 @@ Created on Jan 25, 2018
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 """
-from __future__ import unicode_literals
-from builtins import object
-import json
 import html
-
+import json
 from datetime import datetime
 from decimal import Decimal
-from itertools import chain
-from typing import Dict
 
-from weblyzard_api.model.parsers.xml_2013 import XML2013
+from itertools import chain
+
 from weblyzard_api.model import Sentence, SpanFactory, CharSpan
-from weblyzard_api.model.parsers.xml_2005 import XML2005
-from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 from weblyzard_api.model.exceptions import (MissingFieldException,
                                             UnexpectedFieldException)
+from weblyzard_api.model.parsers.xml_2005 import XML2005
+from weblyzard_api.model.parsers.xml_2013 import XML2013
+from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
 
 class Document(object):
     # supported partition keys
-    FRAGMENT_KEY = 'FRAGMENT'
-    SENTENCE_KEY = u'SENTENCE'
-    DUPLICATE_KEY = u'DUPLICATE'
-    TITLE_KEY = u'TITLE'
-    BODY_KEY = u'BODY'
-    TOKEN_KEY = u'TOKEN'
-    LAYOUT_KEY = u'LAYOUT'
-    SENTIMENT_KEY = u'SENTIMENT_SCOPE'
-    # NEGATION_KEY = u'NEGATION_SCOPE'
-    MULTIPLIER_KEY = 'MULTIPLIER_SCOPE'
+    FRAGMENT_KEY = "FRAGMENT"
+    SENTENCE_KEY = u"SENTENCE"
+    DUPLICATE_KEY = u"DUPLICATE"
+    TITLE_KEY = u"TITLE"
+    BODY_KEY = u"BODY"
+    TOKEN_KEY = u"TOKEN"
+    LAYOUT_KEY = u"LAYOUT"
+    SENTIMENT_KEY = u"SENTIMENT_SCOPE"
+    # NEGATION_KEY = u"NEGATION_SCOPE"
+    MULTIPLIER_KEY = "MULTIPLIER_SCOPE"
 
     # mapping from document attributes to serialized JSON fields
     MAPPING = {"content_id": "id",
@@ -45,13 +42,12 @@ class Document(object):
                "sem_orient": "semOrient"}
 
     # list of required attributes
-    REQUIRED_FIELDS = ['id', 'format', 'lang',
-                       'content']
+    REQUIRED_FIELDS = ["id", "format", "lang",
+                       "content"]
 
     # list of optional attributes
-    OPTIONAL_FIELDS = ['partitions', 'annotations', 'encoding',
-                       'features', 'relations', 'header', 'nilsimsa']
-
+    OPTIONAL_FIELDS = ["partitions", "annotations", "encoding",
+                       "features", "relations", "header", "nilsimsa"]
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
                               XMLDeprecated.VERSION: XMLDeprecated}
@@ -76,28 +72,29 @@ class Document(object):
         if partitions is None:
             self.partitions = {}
         else:
-            self.partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                               for label, spans in partitions.items()}
+            self.partitions = {
+                label: [SpanFactory.new_span(span) for span in spans]
+                for label, spans in partitions.items()}
         self.header = header if header else {}
         self.annotations = annotations if annotations else []
 
     def get_body(self):
         if self.content is None or len(self.content) == 0:
-            return ''
+            return ""
         if self.BODY_KEY in self.partitions:
             body_spans = self.partitions[self.BODY_KEY]
             spans = [self.content[span.start:span.end] for span in body_spans]
-            return ' '.join(spans)
-        return ''
+            return " ".join(spans)
+        return ""
 
     def get_title(self):
         if self.content is None or len(self.content) == 0:
-            return ''
+            return ""
         if self.TITLE_KEY in self.partitions:
             title_spans = self.partitions[self.TITLE_KEY]
             titles = [self.content[span.start:span.end] for span in title_spans]
-            return ' '.join(titles)
-        return ''
+            return " ".join(titles)
+        return ""
 
     def set_title(self, title):
         """ """
@@ -113,7 +110,7 @@ class Document(object):
     title = property(get_title, set_title)
 
     def __repr__(self):
-        return 'Document: {}'.format(self.__dict__)
+        return "Document: {}".format(self.__dict__)
 
     @classmethod
     def _dict_transform(cls, data, mapping=None):
@@ -171,11 +168,11 @@ class Document(object):
             for key, value in data.__dict__.items():
                 if key in mapping:
                     key = mapping[key]
-                elif key.startswith('_'):
+                elif key.startswith("_"):
                     continue
 
                 if value is not None:
-                    if key == 'lang':
+                    if key == "lang":
                         value = value.upper()
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
@@ -212,32 +209,32 @@ class Document(object):
         # This is tricky ... the mapping cannot be easily inversed
         # making the md5sum to content_id conversion at the top level necessary
         inverse_mapping = {v: k for k, v in cls.MAPPING.items() if
-                           k != 'content_id'}
+                           k != "content_id"}
         parsed_content = Document._dict_transform(dict_,
                                                   mapping=inverse_mapping)
-        parsed_content['content_id'] = parsed_content.pop('md5sum')
+        parsed_content["content_id"] = parsed_content.pop("md5sum")
 
         # populate default dicts:
         partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                      for label, spans in parsed_content['partitions'].items()} \
-            if 'partitions' in parsed_content else {}
+                      for label, spans in parsed_content["partitions"].items()} \
+            if "partitions" in parsed_content else {}
 
-        header = parsed_content['header'] \
-            if 'header' in parsed_content and parsed_content[
-            'header'] is not None else {}
+        header = parsed_content["header"] \
+            if "header" in parsed_content and parsed_content[
+            "header"] is not None else {}
 
         if not len(header):
-            header = parsed_content['header'] \
-                if 'header' in parsed_content else {}
+            header = parsed_content["header"] \
+                if "header" in parsed_content else {}
 
-        annotations = parsed_content['annotations'] \
-            if 'annotations' in parsed_content else {}
+        annotations = parsed_content["annotations"] \
+            if "annotations" in parsed_content else {}
 
-        return cls(content_id=int(parsed_content['content_id']),
-                   content=parsed_content.get('content'),
-                   nilsimsa=parsed_content.get('nilsimsa'),
-                   lang=parsed_content.get('lang'),
-                   content_type=parsed_content.get('content_type'),
+        return cls(content_id=int(parsed_content["content_id"]),
+                   content=parsed_content.get("content"),
+                   nilsimsa=parsed_content.get("nilsimsa"),
+                   lang=parsed_content.get("lang"),
+                   content_type=parsed_content.get("content_type"),
                    partitions=partitions,
                    header=header,
                    annotations=annotations)
@@ -263,13 +260,13 @@ class Document(object):
         :param xml_version: the version of XML to be used (defaults to 2013)
         :return: the serialized XML
         """
-        if not hasattr(self, 'features'):
+        if not hasattr(self, "features"):
             self.features = {}
 
-        if not hasattr(self, 'relations'):
+        if not hasattr(self, "relations"):
             self.relations = {}
 
-        if not hasattr(self, 'titles'):
+        if not hasattr(self, "titles"):
             self.titles = []
         titles = self.titles
         if ignore_title:
@@ -316,7 +313,7 @@ class Document(object):
 
         return result
 
-    def get_pos_for_annotation(self, annotation: Dict):
+    def get_pos_for_annotation(self, annotation: dict):
         """
         Get the part-of-speech for a given annotation.
         :param annotation
@@ -325,7 +322,7 @@ class Document(object):
         for token_span in self.partitions[self.TOKEN_KEY]:
             if not isinstance(token_span, CharSpan):
                 token_span = SpanFactory.new_span(token_span)
-            if token_span.start >= annotation['start']:
+            if token_span.start >= annotation["start"]:
                 return token_span.pos
         return None
 
@@ -333,7 +330,7 @@ class Document(object):
                       include_title: bool = True,
                       include_fragments: bool = False):
         """
-        Legacy method to extract webLyzard sentences from content model.
+        Legacy method to extract weblyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
         :param include_title: if True, include title sentences
         :param include_fragments: if True, include fragments (non-sentence text)
@@ -357,8 +354,8 @@ class Document(object):
 
             if zero_based:
                 offset = sentence_span.start
-            if not sentence_span.span_type == 'SentenceCharSpan':
-                raise Exception('Bad sentence span')
+            if not sentence_span.span_type == "SentenceCharSpan":
+                raise Exception("Bad sentence span")
 
             # get tokens
             token_spans = self.get_partition_overlaps(
@@ -371,13 +368,13 @@ class Document(object):
                 continue
 
             # serialize POS, tokens, and dependecy to string
-            pos_sequence = ' '.join([ts.pos for ts in token_spans])
-            tok_sequence = ' '.join(
-                ['{},{}'.format(ts.start - offset, ts.end - offset) for ts in
+            pos_sequence = " ".join([ts.pos for ts in token_spans])
+            tok_sequence = " ".join(
+                ["{},{}".format(ts.start - offset, ts.end - offset) for ts in
                  token_spans])
             try:
-                dep_sequence = ' '.join(
-                    ['{}:{}'.format(*ts.dependency.values()) for ts in
+                dep_sequence = " ".join(
+                    ["{}:{}".format(*ts.dependency.values()) for ts in
                      token_spans])
             except AttributeError:
                 dep_sequence = None

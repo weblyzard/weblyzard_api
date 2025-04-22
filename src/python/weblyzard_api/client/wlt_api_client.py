@@ -9,29 +9,28 @@ This module provides a python client for the WLT REST API.
 from __future__ import unicode_literals
 
 import json
-import requests
-
+import logging
 from typing import List, Dict
 
-import logging
+import requests
+
 logger = logging.getLogger(__name__)
 
 
 class WltApiClient(object):
+    TOKEN_ENDPOINT = "token"
 
-    TOKEN_ENDPOINT = 'token'
+    BASE_URL = "https://api.weblyzard.com"
+    API_VERSION = "1.0"
 
-    BASE_URL = 'https://api.weblyzard.com'
-    API_VERSION = '1.0'
-
-    def __init__(self, base_url: str=BASE_URL,
-                 version: float=API_VERSION,
-                 username: str=None, password: str=None):
+    def __init__(self, base_url: str = BASE_URL,
+                 version: float = API_VERSION,
+                 username: str = None, password: str = None):
         """
         Constructor.
         """
-        if base_url.endswith(f'/{version}'):
-            base_url = base_url.replace(f'/{version}', '')
+        if base_url.endswith(f"/{version}"):
+            base_url = base_url.replace(f"/{version}", "")
         self.base_url = base_url
         self.version = version
         self.username = username
@@ -42,7 +41,7 @@ class WltApiClient(object):
     # def authenticate(self, username:str, password=str):
     #     self.auth_token = self.get_auth_token(username, password)
     #     if isinstance(self.auth_token, str):
-    #         logger.info('Authentication: OK')
+    #         logger.info("Authentication: OK")
 
     def get_auth_token(self, username: str, password: str) -> str:
         """ 
@@ -52,11 +51,11 @@ class WltApiClient(object):
         """
         if self.auth_token:
             return self.auth_token
-        url = '/'.join([self.base_url, self.version, self.TOKEN_ENDPOINT])
+        url = "/".join([self.base_url, self.version, self.TOKEN_ENDPOINT])
         r = requests.get(url, auth=(username, password))
         if r.status_code == 200:
-            logger.info('Token retrieved')
-            return r.content.decode('utf-8')
+            logger.info("Token retrieved")
+            return r.content.decode("utf-8")
         return r
 
 
@@ -65,9 +64,9 @@ class WltSearchRestApiClient(WltApiClient):
     The client for the WL Search REST API.
     `Documentation <https://api.weblyzard.com/doc/ui/#!/Search_API>`_
     """
-    DOCUMENT_ENDPOINT = 'search/'
-    KEYWORD_ENDPOINT = 'keyentities/'
-    ENTITIES_ENDPOINT = 'entities/'
+    DOCUMENT_ENDPOINT = "search/"
+    KEYWORD_ENDPOINT = "keyentities/"
+    ENTITIES_ENDPOINT = "entities/"
 
     def search_documents(self, sources: List[str], terms: List[str] = None,
                          entities: List[str] = None,
@@ -77,7 +76,7 @@ class WltSearchRestApiClient(WltApiClient):
                          source_ids: int = None,
                          max_docs: int = -1, exact_match: bool = True,
                          similarity: int = 70,
-                         fields: List[str] = ['document.contentid']):
+                         fields: List[str] = ["document.contentid"]):
         """ 
         Search an index for documents matching the search parameters.
         :param sources: required sources where to look for content.
@@ -97,7 +96,7 @@ class WltSearchRestApiClient(WltApiClient):
         if not auth_token:
             auth_token = self.auth_token
         if isinstance(auth_token, bytes):
-            auth_token = auth_token.decode('utf-8')
+            auth_token = auth_token.decode("utf-8")
 
         assert auth_token is not None
 
@@ -140,8 +139,8 @@ class WltSearchRestApiClient(WltApiClient):
                 })
         if entities is not None and isinstance(entities, list):
             entity_query = {
-               "entity": {
-                   "key": entities[0]
+                "entity": {
+                    "key": entities[0]
                 }
             }
         if terms is not None:
@@ -181,9 +180,9 @@ class WltSearchRestApiClient(WltApiClient):
         if term_query is not None and len(term_query):
             query["filter"] = term_query
 
-        headers = {'Authorization': 'Bearer %s' % auth_token,
-                   'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.version, self.DOCUMENT_ENDPOINT])
+        headers = {"Authorization": "Bearer %s" % auth_token,
+                   "Content-Type": "application/json"}
+        url = "/".join([self.base_url, self.version, self.DOCUMENT_ENDPOINT])
 
         result_count = 0
         total = 1
@@ -196,11 +195,11 @@ class WltSearchRestApiClient(WltApiClient):
             try:
 
                 if r.status_code == 200:
-                    response = json.loads(r.content)['result']
-                    total = response.get('total', 0)
+                    response = json.loads(r.content)["result"]
+                    total = response.get("total", 0)
                     if max_docs > 0:
                         total = min(total, max_docs)
-                    hits = response.get('hits', [])
+                    hits = response.get("hits", [])
                     if len(hits) > 0:
                         result_count += len(hits)
                         yield hits
@@ -208,7 +207,7 @@ class WltSearchRestApiClient(WltApiClient):
                         yield []
                 else:
                     raise Exception(
-                        f'Error fetching content from ES: {r.status_code} - {r.text}')
+                        f"Error fetching content from ES: {r.status_code} - {r.text}")
             except Exception as e:
                 logger.error("Accessing: %s : %s - %s", url, squery, e,
                              exc_info=True)
@@ -257,9 +256,9 @@ class WltSearchRestApiClient(WltApiClient):
 
             query["query"] = term_query
 
-            query = query.replace(',<<term_query>>', term_query)
+            query = query.replace(",<<term_query>>", term_query)
         else:
-            query = query.replace(',<<term_query>>', '')
+            query = query.replace(",<<term_query>>", "")
         query = json.loads(query)
 
         # additionally return keyword counts
@@ -272,15 +271,15 @@ class WltSearchRestApiClient(WltApiClient):
                     associations=num_associations,
                     fields=fields)
         data = json.dumps(data)
-        headers = {'Authorization': 'Bearer %s' % auth_token,
-                   'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.version, self.KEYWORDS_ENDPOINT])
+        headers = {"Authorization": "Bearer %s" % auth_token,
+                   "Content-Type": "application/json"}
+        url = "/".join([self.base_url, self.version, self.KEYWORDS_ENDPOINT])
         try:
             r = requests.post(url,
                               data=data,
                               headers=headers)
             if r.status_code == 200:
-                return json.loads(r.content)['result']
+                return json.loads(r.content)["result"]
         except Exception as e:
             logger.error(
                 "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
@@ -329,9 +328,9 @@ class WltSearchRestApiClient(WltApiClient):
 
             query["query"] = term_query
 
-            query = query.replace(',<<term_query>>', term_query)
+            query = query.replace(",<<term_query>>", term_query)
         else:
-            query = query.replace(',<<term_query>>', '')
+            query = query.replace(",<<term_query>>", "")
         query = json.loads(query)
 
         # additionally return keyword counts
@@ -343,15 +342,15 @@ class WltSearchRestApiClient(WltApiClient):
                     entityTypes=entity_types,
                     fields=fields)
         data = json.dumps(data)
-        headers = {'Authorization': 'Bearer %s' % auth_token,
-                   'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.version, self.ENTITIES_ENDPOINT])
+        headers = {"Authorization": "Bearer %s" % auth_token,
+                   "Content-Type": "application/json"}
+        url = "/".join([self.base_url, self.version, self.ENTITIES_ENDPOINT])
         try:
             r = requests.post(url,
                               data=data,
                               headers=headers)
             if r.status_code == 200:
-                return json.loads(r.content)['result']
+                return json.loads(r.content)["result"]
         except Exception as e:
             logger.error(
                 "Accessing: {} : {} - {}".format(url, data, e), exc_info=True)
@@ -364,7 +363,7 @@ class WltDocumentApiClient(WltApiClient):
     The client for the WL Document REST API.
     `Documentation <https://api.weblyzard.com/doc/ui/#/Document_API>`_
     """
-    DOCUMENT_ENDPOINT = 'documents'
+    DOCUMENT_ENDPOINT = "documents"
 
     def __init__(self, username: str = None, password: str = None,
                  repository: str = None):
@@ -377,20 +376,20 @@ class WltDocumentApiClient(WltApiClient):
         Send a POST request with a list of Web URLs to the document endpoint to be ingested.
         :param urls: list of website URLs
         """
-        headers = {'Authorization': f'Bearer {self.auth_token}',
-                   'Content-Type': 'application/x-ndjson'}
-        url = '/'.join([self.base_url, str(self.API_VERSION),
+        headers = {"Authorization": f"Bearer {self.auth_token}",
+                   "Content-Type": "application/x-ndjson"}
+        url = "/".join([self.base_url, str(self.API_VERSION),
                         self.DOCUMENT_ENDPOINT, self.repository])
 
         # build the nd-json payload
-        data = [{'repository_id': self.repository, 'uri': url_item} for url_item
+        data = [{"repository_id": self.repository, "uri": url_item} for url_item
                 in urls]
-        ndjson_data = '\n'.join(json.dumps(d) for d in data)
+        ndjson_data = "\n".join(json.dumps(d) for d in data)
 
         r = requests.post(url, data=ndjson_data, headers=headers)
         try:
             if r.status_code == 200:
-                response = json.loads(r.content)['result']
+                response = json.loads(r.content)["result"]
                 return response
         except Exception as e:
             logger.error("Accessing: %s : %s - %s", url, urls, e,
@@ -402,33 +401,33 @@ class WltMesaApiClient(WltApiClient):
     """
     The client for the WL Mesa REST API.
     """
-    ENDPOINT = 'mesa/entities'
+    ENDPOINT = "mesa/entities"
 
-    def get(self, auth_token: str=None):
+    def get(self, auth_token: str = None):
         """ """
         if not auth_token:
             auth_token = self.auth_token
-        headers = {'Authorization': 'Bearer %s' % auth_token,
-                   'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.ENDPOINT])
+        headers = {"Authorization": "Bearer %s" % auth_token,
+                   "Content-Type": "application/json"}
+        url = "/".join([self.base_url, self.ENDPOINT])
         try:
             r = requests.get(url, headers=headers)
             if r.status_code == 200:
-                return json.loads(r.content)['result']
+                return json.loads(r.content)["result"]
         except Exception as e:
             logger.error(
                 "Accessing: {} : {}".format(url, e), exc_info=True)
             return r
         return r
 
-    def post(self, data: Dict, auth_token: str=None):
+    def post(self, data: Dict, auth_token: str = None):
         """ """
         if auth_token is None:
             auth_token = self.auth_token
         data = json.dumps(data)
-        headers = {'Authorization': 'Bearer %s' % auth_token,
-                   'Content-Type': 'application/json'}
-        url = '/'.join([self.base_url, self.ENDPOINT])
+        headers = {"Authorization": "Bearer %s" % auth_token,
+                   "Content-Type": "application/json"}
+        url = "/".join([self.base_url, self.ENDPOINT])
         try:
             r = requests.post(url,
                               data=data,

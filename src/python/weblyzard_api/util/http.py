@@ -37,9 +37,9 @@ import logging
 
 log = logging.getLogger(__name__)
 
-USER_AGENT = 'eWRT Version/0.1; Module %s +http://p.semanticlab.net/eWRT'
+USER_AGENT = "eWRT Version/0.1; Module %s +http://p.semanticlab.net/eWRT"
 DEFAULT_WEB_REQUEST_SLEEP_TIME = 1
-PROXY_SERVER = ''
+PROXY_SERVER = ""
 
 RETRY_WAIT_TIME_RANGE = (2, 60)  # in seconds
 # error codes which might trigger a retry:
@@ -73,8 +73,8 @@ class Retrieve(object):
 
     """
 
-    __slots__ = ('module', 'sleep_time', 'last_access_time', 'user_agent',
-                 '_supported_http_authentication_methods')
+    __slots__ = ("module", "sleep_time", "last_access_time", "user_agent",
+                 "_supported_http_authentication_methods")
 
     def __init__(self, module, sleep_time=DEFAULT_WEB_REQUEST_SLEEP_TIME,
                  user_agent=USER_AGENT, default_timeout=DEFAULT_TIMEOUT):
@@ -84,8 +84,8 @@ class Retrieve(object):
         self.last_access_time = 0
 
         self._supported_http_authentication_methods = {
-            'basic': Retrieve._getHTTPBasicAuthOpener,
-            'digest': Retrieve._getHTTPDigestAuthOpener}
+            "basic": Retrieve._getHTTPBasicAuthOpener,
+            "digest": Retrieve._getHTTPDigestAuthOpener}
 
         self.user_agent = user_agent % self.module \
             if "%s" in user_agent else user_agent
@@ -102,7 +102,7 @@ class Retrieve(object):
         :param headers: a dictionary of optional headers
         :param retry: number of retries in case of temporary error
         :param authentication_method: the used authentication method
-                    ('basic'*, 'digest')
+                    ("basic"*, "digest")
         :param accept_gzip: flag to change the accepted encoding, gzip
                     or not
         :param head_only: if True: only execute a HEAD request
@@ -116,17 +116,17 @@ class Retrieve(object):
         if headers is None:
             headers = {}
         if isinstance(data, str):
-            data = data.encode('utf-8')
+            data = data.encode("utf-8")
         while not response:
             request = urllib.request.Request(url, data, headers)
 
             if head_only:
-                request.get_method = lambda: 'HEAD'
+                request.get_method = lambda: "HEAD"
 
-            request.add_header('User-Agent', self.user_agent)
+            request.add_header("User-Agent", self.user_agent)
 
             if accept_gzip:
-                request.add_header('Accept-encoding', 'gzip')
+                request.add_header("Accept-encoding", "gzip")
 
             self._throttle()
 
@@ -144,7 +144,7 @@ class Retrieve(object):
                 if e.code in HTTP_TEMPORARY_ERROR_CODES and tries < retry:
                     sleep_time = randint(*RETRY_WAIT_TIME_RANGE)
                     log.warning(
-                        f'retrying in {sleep_time}; received {e.code} from {url}')
+                        f"retrying in {sleep_time}; received {e.code} from {url}")
                     time.sleep(sleep_time)
                     tries += 1
                     continue
@@ -152,7 +152,7 @@ class Retrieve(object):
                     raise e
 
             # check whether the data stream is compressed
-            if response.headers.get('Content-Encoding') == 'gzip':
+            if response.headers.get("Content-Encoding") == "gzip":
                 return self._getUncompressedStream(response)
 
         return response
@@ -177,7 +177,7 @@ class Retrieve(object):
         :param pwd:
         """
         passwdmngr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-        passwdmngr.add_password('realm', url, user, pwd)
+        passwdmngr.add_password("realm", url, user, pwd)
         auth_handler = urllib.request.HTTPDigestAuthHandler(passwdmngr)
         return auth_handler
 
@@ -191,7 +191,7 @@ class Retrieve(object):
         return GzipFile(fileobj=compressedStream)
 
     def _throttle(self):
-        """ delays web access according to the content provider's policy """
+        """ delays web access according to the content provider"s policy """
 
         if (time.time() - self.last_access_time) < \
                 DEFAULT_WEB_REQUEST_SLEEP_TIME:
@@ -212,22 +212,22 @@ class Retrieve(object):
         """ Extract username and password from a URL, if present.
         :param url: well-formed url, starting with a schema
         :return: tuple (new_url, user, password) """
-        if not url.startswith('http'):
-            url = 'http://%s' % url
+        if not url.startswith("http"):
+            url = "http://%s" % url
 
         split_url = urlsplit(url)
         user = split_url.username
         password = split_url.password
         if user and password:
             new_url = (split_url.scheme,
-                       split_url.netloc.replace('%s:%s@' % (user, password),
-                                                ''),
+                       split_url.netloc.replace("%s:%s@" % (user, password),
+                                                ""),
                        split_url.path,
                        split_url.query,
                        split_url.fragment)
             url = urlunsplit(new_url)
         else:
-            assert not user and not password, 'if set, user AND pwd required'
+            assert not user and not password, "if set, user AND pwd required"
 
         return url, user, password
 
@@ -235,7 +235,7 @@ class Retrieve(object):
     def add_user_password(url: str, user: str, password: str):
         split_url = urlsplit(url)
         return urlunsplit((split_url.scheme,
-                           '%s:%s@%s' % (user, password, split_url.netloc),
+                           "%s:%s@%s" % (user, password, split_url.netloc),
                            split_url.path,
                            split_url.query,
                            split_url.fragment))
