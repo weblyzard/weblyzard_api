@@ -61,7 +61,7 @@ class XMLContent(object):
                                              "surfaceForm": "surfaceForm"
                                              }}
 
-    def __init__(self, xml_content, remove_duplicates=True):
+    def __init__(self, xml_content, remove_duplicates: bool = True):
         self.xml_version = None
         self.attributes = {}
         self.sentence_objects = []
@@ -82,12 +82,12 @@ class XMLContent(object):
         pass
 
     @classmethod
-    def convert(cls, xml_content, target_version):
+    def convert(cls, xml_content, target_version: int):
         xml = XMLContent(xml_content)
         return xml.get_xml_document(xml_version=target_version)
 
     @classmethod
-    def parse_xml_content(cls, xml_content, remove_duplicates=True):
+    def parse_xml_content(cls, xml_content, remove_duplicates: bool = True):
         xml_version = cls.get_xml_version(xml_content)
 
         if not xml_version or not xml_content:
@@ -108,7 +108,7 @@ class XMLContent(object):
         for sentence in sentences:
             try:
                 sent_obj = Sentence(**sentence)
-            except:
+            except Exception as e:
                 sent_obj = Sentence(**{k: v for k, v in sentence.items() if
                                        k in Sentence.API_MAPPINGS[1.0]})
 
@@ -141,16 +141,17 @@ class XMLContent(object):
                          annotations=None,
                          features=None,
                          relations=None,
-                         ignore_title=False,
-                         xml_version=XML2013.VERSION):
+                         ignore_title: bool = False,
+                         xml_version: int = XML2013.VERSION):
         """
+        :param ignore_title:
         :param header_fields: the header_fields to include
         :param sentence_attributes: sentence attributes to include
         :param annotations, optionally
         :param features, optionally to overwrite
         :param relations, optionally to overwrite
-        :param xml_version: version of the webLyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
-        :returns: the XML representation of the webLyzard XML object
+        :param xml_version: version of the weblyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
+        :returns: the XML representation of the weblyzard XML object
         """
 
         if not xml_version:
@@ -177,7 +178,7 @@ class XMLContent(object):
                                                                  features=features,
                                                                  relations=relations)
 
-    def get_plain_text(self, include_title=False):
+    def get_plain_text(self, include_title: bool = False) -> str:
         """ :returns: the plain text of the XML content """
         if not len(self.all_sentences):
             return ""
@@ -199,7 +200,7 @@ class XMLContent(object):
             self.attributes = {}
         self.attributes[key] = value
 
-    def update_attributes(self, new_attributes):
+    def update_attributes(self, new_attributes: dict):
         """
         Updates the existing attributes with new ones 
 
@@ -215,28 +216,28 @@ class XMLContent(object):
         for k, v in new_attributes.items():
             self.attributes[str(k)] = v
 
-    def update_features(self, new_features):
+    def update_features(self, new_features: dict):
         if not new_features or not isinstance(new_features, dict):
             return
 
         for k, v in new_features.items():
             self.features[str(k)] = v
 
-    def update_relations(self, new_relations):
+    def update_relations(self, new_relations: dict):
         if not new_relations or not isinstance(new_relations, dict):
             return
 
         for k, v in new_relations.items():
             self.relations[str(k)] = v
 
-    def as_dict(self, mapping=None, ignore_non_sentence=False,
-                ignore_features=False, ignore_relations=False,
-                add_titles_to_sentences=False):
+    def as_dict(self, mapping=None, ignore_non_sentence: bool = False,
+                ignore_features: bool = False, ignore_relations: bool = False,
+                add_titles_to_sentences: bool = False):
         """ convert the XML content to a dictionary.
 
         :param mapping: an optional mapping by which to restrict/rename \
             the returned dictionary
-        :param ignore_non_sentence: if true, sentences without without POS tags \
+        :param ignore_non_sentence: if true, sentences without POS tags \
             are omitted from the result
         :param ignore_features: if true, document features do not get serialized
         :param ignore_relations: if true, document relations do not get serialized
@@ -293,7 +294,8 @@ class XMLContent(object):
         return result
 
     @classmethod
-    def apply_dict_mapping(cls, attributes, mapping=None):
+    def apply_dict_mapping(cls, attributes: dict,
+                           mapping: dict | None = None) -> dict:
         result = attributes
 
         if mapping:
@@ -304,7 +306,7 @@ class XMLContent(object):
 
         return result
 
-    def to_api_dict(self, version=1.0):
+    def to_api_dict(self, version: float = 1.0) -> dict:
         """
         Transforms the XMLContent object to a dict analoguous to the
         API JSON definition in the given version.
@@ -343,7 +345,7 @@ class XMLContent(object):
             api_dict["relations"] = self.relations
         return api_dict
 
-    def to_json(self, version=1.0):
+    def to_json(self, version: float = 1.0):
         """
         Serializes the XMLContent object to JSON according to the
         specified version.
@@ -355,7 +357,7 @@ class XMLContent(object):
         """
         return json.dumps(self.to_api_dict(version=version))
 
-    def _get_attribute(self, attr_name):
+    def _get_attribute(self, attr_name: str):
         """ ::returns: the attribute for the given name """
         return self.attributes.get(attr_name, None)
 
@@ -377,7 +379,7 @@ class XMLContent(object):
         content_id = self._get_attribute("content_id")
         return int(content_id) if content_id else content_id
 
-    def get_sentences(self, include_title_sentences=False):
+    def get_sentences(self, include_title_sentences: bool = False):
         return self.titles * include_title_sentences + \
             self.sentence_objects
 

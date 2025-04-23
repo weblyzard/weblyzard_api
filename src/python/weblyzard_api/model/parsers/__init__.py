@@ -301,31 +301,33 @@ class XMLParser(object):
         return "xmlns:wl=\"{}\"".format(cls.SUPPORTED_NAMESPACE) in xml_content
 
     @classmethod
-    def invert_mapping(cls, mapping):
+    def invert_mapping(cls, mapping: dict) -> dict:
         result = {}
 
-        if mapping == None:
+        if mapping is None:
             return result
+
         invert_mapping = dict(zip(mapping.values(),
                                   mapping.keys()))
         for key, value in invert_mapping.items():
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
-                    key = f"{cls.DOCUMENT_NAMESPACES[namespace]}{key}"
+                    key = f"{{{cls.DOCUMENT_NAMESPACES[namespace]}}}{key}"
             result[key] = value
         return result
 
     @classmethod
-    def parse(cls, xml_content, remove_duplicates=True, raise_on_empty=True):
+    def parse(cls, xml_content: str, remove_duplicates: bool = True,
+              raise_on_empty: bool = True):
         """ """
         parser = etree.XMLParser(recover=True, strip_cdata=False)
         cleaned_xml_content = xml_content.replace("encoding=\"UTF-8\"", "")
         root = etree.fromstring(cleaned_xml_content,
                                 parser=parser)
         if root is None:
-            raise ValueError(u"Failed to parse root of xml-content, check if "
-                             "this is valid xml: {}".format(xml_content))
+            raise ValueError(f"Failed to parse root of xml-content, check if "
+                             f"this is valid xml: {xml_content}")
         try:
             invert_mapping = cls.invert_mapping(cls.ATTR_MAPPING)
             attributes = cls.load_attributes(root.attrib,
@@ -356,13 +358,15 @@ class XMLParser(object):
         return attributes, sentences, title_annotations, body_annotations, features, relations
 
     @classmethod
-    def load_attributes(cls, attributes, mapping):
-        new_attributes = {}
+    def load_attributes(cls, attributes, mapping: dict) -> dict:
+        new_attributes: dict = {}
 
         for key, value in attributes.items():
             if mapping and key in mapping:
                 key = mapping.get(key, key)
 
+            if value is None:
+                continue
             value = cls.decode_value(value)
 
             if not value == "None":
@@ -386,14 +390,15 @@ class XMLParser(object):
         return annotations
 
     @classmethod
-    def load_sentences(cls, root, remove_duplicates=True, raise_on_empty=False):
+    def load_sentences(cls, root, remove_duplicates: bool = True,
+                       raise_on_empty: bool = False):
         """ """
         sentences = []
         seen_sentences = []
 
         sentence_mapping = cls.invert_mapping(cls.SENTENCE_MAPPING)
 
-        for sent_element in root.iterfind("{%s}sentence" % cls.get_default_ns(),
+        for sent_element in root.iterfind(f"{{{cls.get_default_ns()}}}sentence",
                                           namespaces=cls.DOCUMENT_NAMESPACES):
             if sent_element.text:
                 sent_value = sent_element.text.strip()
