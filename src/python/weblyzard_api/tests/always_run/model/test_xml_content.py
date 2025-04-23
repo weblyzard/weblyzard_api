@@ -1,22 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import str
-from builtins import zip
-import unittest
-import json
 
+import json
+import unittest
 from pprint import pprint
 
+from weblyzard_api.model import LabeledDependency
 from weblyzard_api.model.xml_content import Sentence, XMLContent
 from weblyzard_api.tests.test_helper import get_test_data
-from weblyzard_api.model import LabeledDependency
 
 
 class TestXMLContent(unittest.TestCase):
-
     xml_content1 = """
             <wl:page xmlns:wl="http://www.weblyzard.com/" content_id="228557824" content_type="text/html" lang="DE" title="Der ganze Wortlaut: Offener Brief an Niko Pelinka  | Heute.at   ">
                 <wl:sentence id="7e985ffb692bb6f617f25619ecca39a9"><![CDATA[Ich hasse scheiß encodings .... ]]></wl:sentence>
@@ -47,45 +42,45 @@ class TestXMLContent(unittest.TestCase):
          </wl:page>
     """
     # reference data sets
-    sentence_pos_tags = {'27cd03a5aaac20ae0dba60038f17fdad':
-                         'JJ NN',
-                         '7f3251087b6552159846493558742f18':
-                         ' ( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP'
-                         ' VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP :'
-                         ' PRP VBD PRP JJ NN .'.split(),
-                         '93f56b9d196787d1cf662a06ab5f866b':
-                         ' CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN'
-                         ' VBD RB VB IN DT CD CC RB IN DT CD NNS VBP'
-                         ' VBN DT JJ VBG .'.split()}
+    sentence_pos_tags = {"27cd03a5aaac20ae0dba60038f17fdad":
+                             "JJ NN",
+                         "7f3251087b6552159846493558742f18":
+                             " ( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP"
+                             " VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP :"
+                             " PRP VBD PRP JJ NN .".split(),
+                         "93f56b9d196787d1cf662a06ab5f866b":
+                             " CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN"
+                             " VBD RB VB IN DT CD CC RB IN DT CD NNS VBP"
+                             " VBN DT JJ VBG .".split()}
     sentence_tokens = {
-        '27cd03a5aaac20ae0dba60038f17fdad': ['Global', 'Dimming'],
-        '7f3251087b6552159846493558742f18': ['(', '*', 'FULL', 'DOCUMENTARY',
-                                             ')', 'Since', 'measurements',
-                                             'began', 'in', 'the', '1950s', ',',
-                                             'scientists', 'have', 'discovered',
-                                             'that', 'there', 'has', 'been',
-                                             'a', 'decline', 'of', 'sunlight',
-                                             'reaching', 'the', 'Earth', ';',
-                                             'they', 'called', 'it', 'global',
-                                             'dimming', '.'],
-        '93f56b9d196787d1cf662a06ab5f866b': ['But', 'according', 'to', 'a',
-                                             'paper', 'published', 'in', 'the',
-                                             'journal', 'of', 'Science', ',',
-                                             'the', 'dimming', 'did', 'not',
-                                             'continue', 'into', 'the', '1990s',
-                                             'and', 'indeed', 'since', 'the',
-                                             '1980s', 'scientists', 'have',
-                                             'observed', 'a', 'widespread',
-                                             'brightening', '.']
+        "27cd03a5aaac20ae0dba60038f17fdad": ["Global", "Dimming"],
+        "7f3251087b6552159846493558742f18": ["(", "*", "FULL", "DOCUMENTARY",
+                                             ")", "Since", "measurements",
+                                             "began", "in", "the", "1950s", ",",
+                                             "scientists", "have", "discovered",
+                                             "that", "there", "has", "been",
+                                             "a", "decline", "of", "sunlight",
+                                             "reaching", "the", "Earth", ";",
+                                             "they", "called", "it", "global",
+                                             "dimming", "."],
+        "93f56b9d196787d1cf662a06ab5f866b": ["But", "according", "to", "a",
+                                             "paper", "published", "in", "the",
+                                             "journal", "of", "Science", ",",
+                                             "the", "dimming", "did", "not",
+                                             "continue", "into", "the", "1990s",
+                                             "and", "indeed", "since", "the",
+                                             "1980s", "scientists", "have",
+                                             "observed", "a", "widespread",
+                                             "brightening", "."]
     }
 
     def test_update_sentences(self):
         xml_content = self.xml_content1
-        sentences = [Sentence('7e985ffb692bb6f617f25619ecca39a9'),
-                     Sentence('7e985ffb692bb6f617f25619ecca3910')]
+        sentences = [Sentence("7e985ffb692bb6f617f25619ecca39a9"),
+                     Sentence("7e985ffb692bb6f617f25619ecca3910")]
 
         for s in sentences:
-            s.pos_tags = 'nn nn'
+            s.pos_tags = "nn nn"
             s.significance = 3
             s.sem_orient = 1
 
@@ -104,7 +99,7 @@ class TestXMLContent(unittest.TestCase):
             assert sentence.significance == 3
             assert sentence.sem_orient == 1
 
-        assert 'CDATA' in xml_out
+        assert "CDATA" in xml_out
 
     def test_double_sentences(self):
         xml_content = """
@@ -114,40 +109,41 @@ class TestXMLContent(unittest.TestCase):
             </wl:page> """
 
         xml = XMLContent(xml_content)
-        assert len(xml.sentences) == 1, 'got %s sentences' % len(xml.sentences)
+        assert len(xml.sentences) == 1, f"got {len(xml.sentences)} sentences"
         xml_out = xml.get_xml_document()
-        assert 'CDATA' in xml_out
+        assert "CDATA" in xml_out
 
         xml = XMLContent(xml_content, remove_duplicates=False)
-        assert len(xml.sentences) == 2, 'got %s sentences' % len(xml.sentences)
+        assert len(xml.sentences) == 2, f"got {len(xml.sentences)} sentences"
         xml_out = xml.get_xml_document()
-        assert 'CDATA' in xml_out
+        assert "CDATA" in xml_out
 
     def test_empty_content(self):
         xml = XMLContent(None)
-        assert '' == xml.get_plain_text()
+        assert "" == xml.get_plain_text()
         assert [] == xml.get_sentences()
 
     def test_attributes(self):
         """ """
         xml = XMLContent(self.xml_content1)
 
-        assert 'Der ganze Wortlaut' in xml.title
-        assert xml.lang == 'DE'
-        assert xml.content_type == 'text/html'
+        assert "Der ganze Wortlaut" in xml.title
+        assert xml.lang == "DE"
+        assert xml.content_type == "text/html"
         assert xml.nilsimsa == None
         assert xml.content_id == 228557824
 
     def test_features(self):
         """ """
         xml = XMLContent(self.xml_content3)
-        assert xml.features and xml.features['advert'] == 0
+        assert xml.features and xml.features["advert"] == 0
         pass
 
     def test_relations(self):
         """ """
         xml = XMLContent(self.xml_content3)
-        assert xml.relations and 'http://www.twitter.com/original_tweet1' in xml.relations['retweeted_from']
+        assert xml.relations and "http://www.twitter.com/original_tweet1" in \
+               xml.relations["retweeted_from"]
         pass
 
     def test_supported_version(self):
@@ -264,7 +260,7 @@ class TestXMLContent(unittest.TestCase):
         old_xml_obj = XMLContent(xml_content=old_xml)
         old_xml_str = old_xml_obj.get_xml_document(xml_version=2005)
         assert old_xml_obj.xml_version == 2005
-        assert 'content_id="578351358"' in old_xml_str
+        assert "content_id=\"578351358\"" in old_xml_str
         assert len(old_xml_obj.titles) == 1
 
         new_xml_obj = XMLContent(xml_content=new_xml)
@@ -272,7 +268,7 @@ class TestXMLContent(unittest.TestCase):
         assert new_xml_obj.xml_version == 2013
         assert len(new_xml_obj.titles) == 1
 
-        assert 'wl:id="578351358"' in new_xml_str
+        assert "wl:id=\"578351358\"" in new_xml_str
 
         assert len(old_xml_obj.sentences) == len(new_xml_obj.sentences)
 
@@ -298,48 +294,49 @@ class TestXMLContent(unittest.TestCase):
    <wl:sentence pos_tags="None" sem_orient="0.0" significance="0.0" md5sum="cdc2b1edeec27081819ca4f50e067240" pos="NNP NNP VBZ VBN IN NNS : NNS ." token="0,6 7,15 16,18 19,25 26,28 29,35 35,36 37,42 42,43"><![CDATA[Shihab Rattansi is joined by guests: clima.]]></wl:sentence>
    </wl:page>"""
 
-        expected_result = {'id': 495692737, 'lang': 'en',
-                           'sentence': [{'id': '0c8cb136073a20a932f2d6748204ce9b',
-                                         'token': '0,4 5,7 8,9 9,18 18,19 20,22 23,26 27,32 33,43 43,45 46,51 52,65 66,76 77,79 80,83 84,92 93,101 102,106 107,110 111,119 120,123 124,129 130,132 133,136 137,141 142,146 147,152 153,155 156,158 159,161 162,166 167,169 170,173 174,187 188,191 192,201 202,208 209,211 212,221 222,227 228,239 240,243 244,256 257,259 260,263 264,272 272,273',
-                                         'value': """Dec. 23 (Bloomberg) -- The State Department's final environmental assessment of the Keystone pipeline from the Canadian tar sands to the U.S. Gulf Coast is c. We look at the environmental and political impact if President Obama greenlights the construction of the pipeline.""",
-                                         'pos': 'NNP CD ( NN ) : DT NNP NNP POS JJ JJ NN IN DT NN NN IN DT JJ NN NNS TO DT NNP NNP NNP VBZ VBN PRP VBP IN DT JJ CC JJ NN IN NNP NNP VBZ DT NN IN DT NN .'},
-                                        {'id': 'cdc2b1edeec27081819ca4f50e067240',
-                                         'token': '0,6 7,15 16,18 19,25 26,28 29,35 35,36 37,42 42,43',
-                                         'value': 'Shihab Rattansi is joined by guests: clima.',
-                                         'pos': 'NNP NNP VBZ VBN IN NNS : NNS .'}]}
+        expected_result = {"id": 495692737, "lang": "en",
+                           "sentence": [
+                               {"id": "0c8cb136073a20a932f2d6748204ce9b",
+                                "token": "0,4 5,7 8,9 9,18 18,19 20,22 23,26 27,32 33,43 43,45 46,51 52,65 66,76 77,79 80,83 84,92 93,101 102,106 107,110 111,119 120,123 124,129 130,132 133,136 137,141 142,146 147,152 153,155 156,158 159,161 162,166 167,169 170,173 174,187 188,191 192,201 202,208 209,211 212,221 222,227 228,239 240,243 244,256 257,259 260,263 264,272 272,273",
+                                "value": """Dec. 23 (Bloomberg) -- The State Department's final environmental assessment of the Keystone pipeline from the Canadian tar sands to the U.S. Gulf Coast is c. We look at the environmental and political impact if President Obama greenlights the construction of the pipeline.""",
+                                "pos": "NNP CD ( NN ) : DT NNP NNP POS JJ JJ NN IN DT NN NN IN DT JJ NN NNS TO DT NNP NNP NNP VBZ VBN PRP VBP IN DT JJ CC JJ NN IN NNP NNP VBZ DT NN IN DT NN ."},
+                               {"id": "cdc2b1edeec27081819ca4f50e067240",
+                                "token": "0,6 7,15 16,18 19,25 26,28 29,35 35,36 37,42 42,43",
+                                "value": "Shihab Rattansi is joined by guests: clima.",
+                                "pos": "NNP NNP VBZ VBN IN NNS : NNS ."}]}
 
         xml_obj = XMLContent(xml_content)
 
-        attr_mapping = {'content_id': 'id',
-                        'lang': 'lang',
-                        'sentences': 'sentence',
-                        'sentences_map': {'pos': 'pos',
-                                          'token': 'token',
-                                          'md5sum': 'id',
-                                          'value': 'value'}}
+        attr_mapping = {"content_id": "id",
+                        "lang": "lang",
+                        "sentences": "sentence",
+                        "sentences_map": {"pos": "pos",
+                                          "token": "token",
+                                          "md5sum": "id",
+                                          "value": "value"}}
 
         result = xml_obj.as_dict(mapping=attr_mapping)
 
-        print('result: ')
+        print("result: ")
         pprint(result)
 
-        print('expected result')
+        print("expected result")
         pprint(expected_result)
         assert result == expected_result
 
         # add the titles
         result2 = xml_obj.as_dict(mapping=attr_mapping,
                                   add_titles_to_sentences=True)
-        assert len(result2['sentence']) == 3
+        assert len(result2["sentence"]) == 3
 
         # ignore non-sentences (without pos tags)
         result3 = xml_obj.as_dict(mapping=attr_mapping,
-                                  ignore_non_sentence=True,
-                                  add_titles_to_sentences=True)
-        assert len(result3['sentence']) == 2
+                                  add_titles_to_sentences=True,
+                                  ignore_non_sentence=True)
+        assert len(result3["sentence"]) == 2
 
     def test_2013_to_2005(self):
-        xml = u"""<wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1234" dc:format="text/html" xml:lang="de" wl:nilsimsa="c131b2b10e82b95c36635540b7bbdf0704a7f8db022025e03a80b0c0205b5ea9">
+        xml = """<wl:page xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wl="http://www.weblyzard.com/wl/2013#" wl:id="1234" dc:format="text/html" xml:lang="de" wl:nilsimsa="c131b2b10e82b95c36635540b7bbdf0704a7f8db022025e03a80b0c0205b5ea9">
    <wl:sentence wl:id="27c236ff13ce52930c4b3cbc47c63e0d" wl:pos="ADJA ADV ADJD $," wl:token="0,10 11,13 14,28 28,29" wl:is_title="true" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[@neuholder So eidesstattlich,]]></wl:sentence>
    <wl:sentence wl:id="0b1bd9b348e90e02738da7d20db09196" wl:pos="ADJA ADV ADJD $, PWAV ART NN ART ADJA NN" wl:token="0,10 11,13 14,28 28,29 30,33 34,37 38,47 48,51 52,58 59,65" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[@neuholder So eidesstattlich, wie die Erklärung der Wiener Grünen]]></wl:sentence>
    <wl:sentence wl:id="c02b4e7c55c7cc7a09770e1879a2c029" wl:pos="APPRART NN ART NN $." wl:token="0,3 4,20 21,24 25,35 35,36" wl:sem_orient="0.0" wl:significance="0.0"><![CDATA[zur Demokratisierung des Wahlrechts?]]></wl:sentence>
@@ -347,25 +344,26 @@ class TestXMLContent(unittest.TestCase):
 </wl:page>"""
 
         xml_obj = XMLContent(xml)
-        assert len(xml_obj.sentences) == 3, 'got %s sentences' % len(
+        assert len(xml_obj.sentences) == 3, "got %s sentences" % len(
             xml_obj.sentences)
-        assert len(xml_obj.titles) == 1, 'got %s titles' % len(xml_obj.titles)
+        assert len(xml_obj.titles) == 1, "got %s titles" % len(xml_obj.titles)
 
         xml2005 = xml_obj.get_xml_document(xml_version=2005)
         xml2013 = xml_obj.get_xml_document(xml_version=2013)
 
-        assert 'id="0b1bd9b348e90e02738da7d20db09196"' not in xml2005
-        assert 'md5sum="0b1bd9b348e90e02738da7d20db09196"' in xml2005
+        assert "id=\"0b1bd9b348e90e02738da7d20db09196\"" not in xml2005
+        assert "md5sum=\"0b1bd9b348e90e02738da7d20db09196\"" in xml2005
 
-        assert 'wl:id="0b1bd9b348e90e02738da7d20db09196"' in xml2013
-        assert 'md5sum="0b1bd9b348e90e02738da7d20db09196"' not in xml2013
+        assert "wl:id=\"0b1bd9b348e90e02738da7d20db09196\"" in xml2013
+        assert "md5sum=\"0b1bd9b348e90e02738da7d20db09196\"" not in xml2013
 
     def test_tokenization(self):
         """ tests the tokenization """
         xml = XMLContent(self.xml_content2)
         for sentence in xml.sentences:
             for token, reference_token in zip(sentence.tokens,
-                                              self.sentence_tokens[sentence.md5sum]):
+                                              self.sentence_tokens[
+                                                  sentence.md5sum]):
                 print((token, reference_token))
                 self.assertEqual(token, reference_token)
 
@@ -383,19 +381,20 @@ class TestXMLContent(unittest.TestCase):
         assert len(xml.as_dict()) > 0
 
     def test_sentence_tokens(self):
-        sent = Sentence('md5sum',
-                        pos='NN VVFIN ADV ADV ADJA NN $, KON ADV NN $.',
-                        value=u'Horuck-Aktionen bringen da wenig ökonomischen Anreiz, aber vielleicht Wählerstimmen.',
-                        token='0,15 16,23 24,26 27,32 33,45 46,52 52,53 54,58 59,69 70,83 83,84')
+        sent = Sentence("md5sum",
+                        pos="NN VVFIN ADV ADV ADJA NN $, KON ADV NN $.",
+                        value="Horuck-Aktionen bringen da wenig ökonomischen Anreiz, aber vielleicht Wählerstimmen.",
+                        token="0,15 16,23 24,26 27,32 33,45 46,52 52,53 54,58 59,69 70,83 83,84")
 
         result = list(sent.tokens)
         print(result)
-        assert result == [u'Horuck-Aktionen', u'bringen', u'da', u'wenig',
-                          u'ökonomischen', u'Anreiz', u',', u'aber', u'vielleicht',
-                          u'Wählerstimmen', u'.']
+        assert result == ["Horuck-Aktionen", "bringen", "da", "wenig",
+                          "ökonomischen", "Anreiz", ",", "aber",
+                          "vielleicht",
+                          "Wählerstimmen", "."]
 
     def test_missing_sentence_content(self):
-        xml_content = get_test_data('test-quotes.xml')
+        xml_content = get_test_data("test-quotes.xml")
         xml = XMLContent(xml_content)
         for sentence in xml.sentences:
             assert "\"" in sentence.pos_tag_string
@@ -406,74 +405,74 @@ class TestXMLContent(unittest.TestCase):
         dependency are handled correctly.
         """
         xml_content_string = """<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" dc:format="html/text" xml:lang="en" wl:id="192292" wl:nilsimsa="15d10438875d418899a17909c2ca05591252b24450b259006242105024d43de4">
-          <wl:sentence wl:dependency="2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT" wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ." wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46"><![CDATA[Therefore we could show that "x>y" and "y<z.".]]></wl:sentence>
+          <wl:sentence wl:dependency="2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT" wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ." wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46"><![CDATA[Therefore we could show that 'x>y' and 'y<z.'.]]></wl:sentence>
           </wl:page>"""
         xml_content = XMLContent(xml_content_string)
         sentence = xml_content.sentences[0]
         assert sentence.pos_tags_list == [
-            'RB', 'PRP', 'MD', 'VB', 'IN', "'", 'CC', 'JJR', 'JJ', "'", 'CC', "'", 'NN', 'JJR', 'CD', "'", '.']
+            'RB', 'PRP', 'MD', 'VB', 'IN', "'", 'CC', 'JJR', 'JJ', "'", 'CC',
+            "'", 'NN', 'JJR', 'CD', "'", '.']
         assert sentence.pos_tag_string == "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ."
 
         assert sentence.dependency_list == [
-            LabeledDependency(parent='2', pos='RB', label='ADV'),
-            LabeledDependency(parent='2', pos='PRP', label='SBJ'),
-            LabeledDependency(parent='16', pos='MD', label='DEP'),
-            LabeledDependency(parent='2', pos='VB', label='VC'),
-            LabeledDependency(parent='3', pos='IN', label='OBJ'),
-            LabeledDependency(parent='3', pos="'", label='P'),
-            LabeledDependency(parent='16', pos='CC', label='DEP'),
-            LabeledDependency(parent='8', pos='JJR', label='AMOD'),
-            LabeledDependency(parent='16', pos='JJ', label='DEP'),
-            LabeledDependency(parent='8', pos="'", label='P'),
-            LabeledDependency(parent='8', pos='CC', label='COORD'),
-            LabeledDependency(parent='10', pos="'", label='P'),
-            LabeledDependency(parent='10', pos='NN', label='CONJ'),
-            LabeledDependency(parent='14', pos='JJR', label='NMOD'),
-            LabeledDependency(parent='12', pos='CD', label='COORD'),
-            LabeledDependency(parent='14', pos="'", label='P'),
-            LabeledDependency(parent='-1', pos='.', label='ROOT')]
+            LabeledDependency(parent="2", pos="RB", label="ADV"),
+            LabeledDependency(parent="2", pos="PRP", label="SBJ"),
+            LabeledDependency(parent="16", pos="MD", label="DEP"),
+            LabeledDependency(parent="2", pos="VB", label="VC"),
+            LabeledDependency(parent="3", pos="IN", label="OBJ"),
+            LabeledDependency(parent="3", pos="'", label="P"),
+            LabeledDependency(parent="16", pos="CC", label="DEP"),
+            LabeledDependency(parent="8", pos="JJR", label="AMOD"),
+            LabeledDependency(parent="16", pos="JJ", label="DEP"),
+            LabeledDependency(parent="8", pos="'", label="P"),
+            LabeledDependency(parent="8", pos="CC", label="COORD"),
+            LabeledDependency(parent="10", pos="'", label="P"),
+            LabeledDependency(parent="10", pos="NN", label="CONJ"),
+            LabeledDependency(parent="14", pos="JJR", label="NMOD"),
+            LabeledDependency(parent="12", pos="CD", label="COORD"),
+            LabeledDependency(parent="14", pos="'", label="P"),
+            LabeledDependency(parent="-1", pos=".", label="ROOT")]
         tmp_dependency = sentence.dependency_list
         sentence.dependency_list = tmp_dependency
         assert sentence.dependency_list == tmp_dependency
 
     def test_inverted_dependency(self):
-            """
-            Test that the dependencies are correctly handled even when
-            the input has them in reversed order (dep_label:parent index)
-            by detecting whether a supposed parent index is numeric
-            """
-            xml_content_string = """<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" dc:format="html/text" xml:lang="en" wl:id="192292" wl:nilsimsa="15d10438875d418899a17909c2ca05591252b24450b259006242105024d43de4">
-              <wl:sentence wl:dependency="ADV:2 SBJ:2 DEP:16 VC:2 OBJ:3 P:3 DEP:16 AMOD:8 DEP:16 P:8 COORD:8 P:10 CONJ:10 NMOD:14 COORD:12 P:14 ROOT:-1" wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ." wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46"><![CDATA[Therefore we could show that "x>y" and "y<z.".]]></wl:sentence>
-              </wl:page>"""
-            xml_content = XMLContent(xml_content_string)
-            sentence = xml_content.sentences[0]
-            assert sentence.pos_tags_list == [
-                'RB', 'PRP', 'MD', 'VB', 'IN', "'", 'CC', 'JJR', 'JJ', "'",
-                'CC', "'", 'NN', 'JJR', 'CD', "'", '.']
-            assert sentence.pos_tag_string == "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ."
+        """
+        Test that the dependencies are correctly handled even when
+        the input has them in reversed order (dep_label:parent index)
+        by detecting whether a supposed parent index is numeric
+        """
+        xml_content_string = """<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:dc="http://purl.org/dc/elements/1.1/" dc:format="html/text" xml:lang="en" wl:id="192292" wl:nilsimsa="15d10438875d418899a17909c2ca05591252b24450b259006242105024d43de4">
+          <wl:sentence wl:dependency="ADV:2 SBJ:2 DEP:16 VC:2 OBJ:3 P:3 DEP:16 AMOD:8 DEP:16 P:8 COORD:8 P:10 CONJ:10 NMOD:14 COORD:12 P:14 ROOT:-1" wl:id="6e4c1420b2edaa374ff9d2300b8df31d" wl:pos="RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ." wl:token="0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46"><![CDATA[Therefore we could show that "x>y" and "y<z.".]]></wl:sentence>
+          </wl:page>"""
+        xml_content = XMLContent(xml_content_string)
+        sentence = xml_content.sentences[0]
+        assert sentence.pos_tags_list == [
+            'RB', 'PRP', 'MD', 'VB', 'IN', "'", 'CC', 'JJR', 'JJ', "'",
+            'CC', "'", 'NN', 'JJR', 'CD', "'", '.']
+        assert sentence.pos_tag_string == "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' ."
 
-            assert sentence.dependency_list == [
-                LabeledDependency(parent='2', pos='RB', label='ADV'),
-                LabeledDependency(parent='2', pos='PRP', label='SBJ'),
-                LabeledDependency(parent='16', pos='MD', label='DEP'),
-                LabeledDependency(parent='2', pos='VB', label='VC'),
-                LabeledDependency(parent='3', pos='IN', label='OBJ'),
-                LabeledDependency(parent='3', pos="'", label='P'),
-                LabeledDependency(parent='16', pos='CC', label='DEP'),
-                LabeledDependency(parent='8', pos='JJR', label='AMOD'),
-                LabeledDependency(parent='16', pos='JJ', label='DEP'),
-                LabeledDependency(parent='8', pos="'", label='P'),
-                LabeledDependency(parent='8', pos='CC', label='COORD'),
-                LabeledDependency(parent='10', pos="'", label='P'),
-                LabeledDependency(parent='10', pos='NN', label='CONJ'),
-                LabeledDependency(parent='14', pos='JJR', label='NMOD'),
-                LabeledDependency(parent='12', pos='CD', label='COORD'),
-                LabeledDependency(parent='14', pos="'", label='P'),
-                LabeledDependency(parent='-1', pos='.', label='ROOT')]
-            tmp_dependency = sentence.dependency_list
-            sentence.dependency_list = tmp_dependency
-            assert sentence.dependency_list == tmp_dependency
-        
+        assert sentence.dependency_list == [
+            LabeledDependency(parent="2", pos="RB", label="ADV"),
+            LabeledDependency(parent="2", pos="PRP", label="SBJ"),
+            LabeledDependency(parent="16", pos="MD", label="DEP"),
+            LabeledDependency(parent="2", pos="VB", label="VC"),
+            LabeledDependency(parent="3", pos="IN", label="OBJ"),
+            LabeledDependency(parent="3", pos="'", label="P"),
+            LabeledDependency(parent="16", pos="CC", label="DEP"),
+            LabeledDependency(parent="8", pos="JJR", label="AMOD"),
+            LabeledDependency(parent="16", pos="JJ", label="DEP"),
+            LabeledDependency(parent="8", pos="'", label="P"),
+            LabeledDependency(parent="8", pos="CC", label="COORD"),
+            LabeledDependency(parent="10", pos="'", label="P"),
+            LabeledDependency(parent="10", pos="NN", label="CONJ"),
+            LabeledDependency(parent="14", pos="JJR", label="NMOD"),
+            LabeledDependency(parent="12", pos="CD", label="COORD"),
+            LabeledDependency(parent="14", pos="'", label="P"),
+            LabeledDependency(parent="-1", pos=".", label="ROOT")]
+        tmp_dependency = sentence.dependency_list
+        sentence.dependency_list = tmp_dependency
+        assert sentence.dependency_list == tmp_dependency
 
 
 class TestSentence(unittest.TestCase):
@@ -482,8 +481,8 @@ class TestSentence(unittest.TestCase):
     it to JSON for the API.
     """
     test_sentence = Sentence(
-        md5sum=u'6e4c1420b2edaa374ff9d2300b8df31d',
-        pos=u"RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+        md5sum="6e4c1420b2edaa374ff9d2300b8df31d",
+        pos="RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
         sem_orient=0.0,
         significance=None,
         token=u'0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
@@ -514,18 +513,17 @@ class TestSentence(unittest.TestCase):
         for word in self.test_xml_wide_chars.plain_text.split():
             assert word.strip(punctuation) in tokens
 
-
     def test_sentence_to_json(self):
         """
         Tests that Sentence objects can successfully be serialized to
         JSON.
         """
-        # [mig] this tests seems a bit pointless, because the serialization order doesn't matter, but we're checking for it anyway
+        # [mig] this tests seems a bit pointless, because the serialization order doesn't matter, but we"re checking for it anyway
         # [mig] so I will serialize the contents, then read them again and compare the dictionaries
         serialized_dict = json.dumps(self.test_sentence_dict)
         serialized_sentence = self.test_sentence.to_json(version=1.0)
         assert json.loads(serialized_dict) == json.loads(serialized_sentence)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -1,5 +1,4 @@
 import logging
-from pprint import pprint
 
 from weblyzard_api.client.triplestore import TriplestoreWrapper2
 
@@ -17,5 +16,5 @@ class QleverWrapper(TriplestoreWrapper2):
 
     @staticmethod
     def from_config(host, port, dataset: str):
-        return QleverWrapper(sparql_endpoint=f'{host}:{port}/{dataset}',
+        return QleverWrapper(sparql_endpoint=f"{host}:{port}/{dataset}",
                              debug=False)

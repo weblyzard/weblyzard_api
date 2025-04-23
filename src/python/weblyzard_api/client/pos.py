@@ -7,6 +7,7 @@ Part-of-speech (POS) tagging service
 """
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import unittest
 
 from weblyzard_api.client import RESTClient
@@ -30,15 +31,15 @@ class POS(RESTClient):
 
         :returns: the corresponding ANNIE compatible annotations
         """
-        return self.execute("pos-tagging", None, {'text': text, 'lang': lang})
+        return self.execute("pos-tagging", None, {"text": text, "lang": lang})
 
 
 class POSTest(unittest.TestCase):
 
     def test_POS(self):
         p = POS()
-        print(p.pos_tagging('Guten Tag Herr Mayer!', 'de'))
+        print(p.pos_tagging("Guten Tag Herr Mayer!", "de"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

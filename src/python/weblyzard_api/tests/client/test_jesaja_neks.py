@@ -9,6 +9,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from future import standard_library
+
 standard_library.install_aliases()
 import unittest
 
@@ -21,7 +22,6 @@ from weblyzard_api.tests.test_helper import get_full_path
 
 
 class TestJesajaNeks(unittest.TestCase):
-
     xml_content = """
 <wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247"> <wl:sentence wl:id="060ed6ac1243488b7bb613218a559443" wl:is_title="true"><![CDATA[Journalismus - Social Media für die Nachrichtenverbreitung]]></wl:sentence>
   <wl:sentence wl:dependency="10:adpmod 0:adpobj 1:adpmod 2:adpobj 10:auxpass 10:nsubjpass 10:adpmod 9:det 9:amod 6:adpobj -1:ROOT" wl:id="bbe56bd8da7d00c4c4631db3c21434b3" wl:pos="APPRART NN APPR NE VAFIN NN APPR ART ADJA NN VVPP" wl:significance="6474.394537668186" wl:token="0,4 5,25 26,28 29,36 37,43 44,54 55,58 59,62 63,72 73,86 87,98"><![CDATA[Beim Journalismusfestival in Perugia werden Reaktionen auf die geänderte Mediennutzung präsentiert]]></wl:sentence>
@@ -29,11 +29,11 @@ class TestJesajaNeks(unittest.TestCase):
   <wl:sentence wl:dependency="1:amod 4:nsubj 1:adpmod 2:adpobj -1:ROOT 4:advmod 4:adpmod 8:amod 6:adpobj 8:cc 11:amod 8:conj 13:det 11:poss 21:p 21:adpmod 15:adpobj 21:adpmod 20:det 20:num 17:adpobj 4:rcmod 21:dobj 24:poss 22:poss 24:cc 27:poss 24:conj 21:xcomp 4:p" wl:id="2bd25044b69848d1d096c915409c4b71" wl:pos="ADJA NN KOKOM NE VVFIN ADV KOKOM ADJA NN KON ADJA NN ART NN $, APPR PDAT APPR PIAT CARD NN VVFIN NN PPOSAT NN KON PPOSAT NN VVIZU $." wl:significance="222.3186296147562" wl:token="0,5 6,17 18,21 22,30 31,37 38,45 46,49 50,58 59,74 75,79 80,95 96,109 110,113 114,125 125,126 127,130 131,137 138,141 142,150 151,158 159,171 172,181 182,195 196,201 202,205 206,209 210,214 215,223 224,236 236,237"><![CDATA[Große Unternehmen wie Facebook nutzen genauso wie kleinere Start-Up-Firmen oder journalistische Einzelkämpfer die Möglichkeit, bei diesem von mehreren hundert Journalisten besuchten Branchentreff ihren Weg und ihre Projekte vorzustellen.]]></wl:sentence>
   <wl:sentence wl:dependency="7:adpmod 0:adpmod 3:det 1:adpobj 3:cc 3:conj 3:appos 8:amod 16:nsubj 16:dep 9:p 12:det 16:nsubj 14:det 12:poss 14:appos -1:ROOT 19:det 19:amod 16:dobj 16:p 27:det 26:adpmod 24:det 22:adpobj 24:nmod 27:amod 16:conj 27:p 36:nsubj 31:advmod 36:advmod 36:advmod 36:dobj 33:cc 33:conj 27:rcmod 16:p" wl:id="c42d46eabbd8be93fb9ab9011672e57f" wl:pos="NN APPR ART NN KON NN NE VVFIN NN KON $. ART NN ART NN NE VAFIN ART ADJA NN $. ART APPR ART NN CARD ADJA NN $, PRELS ADV ADV ADJD NN KON NN VVINF $." wl:sem_orient="0.7580980435789034" wl:significance="559.0445660281754" wl:token="0,10 11,14 15,18 19,31 32,35 36,42 43,48 49,54 55,57 57,58 58,59 60,63 64,74 75,78 79,93 94,104 105,108 109,113 114,119 120,130 130,131 132,135 136,140 141,144 145,149 150,154 155,164 165,175 175,176 177,180 181,186 187,191 192,197 198,209 210,213 214,227 228,239 239,240"><![CDATA[Vorwiegend auf die Mobilnutzung und Social Media setzt AJ+. Der US-Ableger des Fernsehsenders Al-Jazerra hat eine klare Zielgruppe: die nach dem Jahr 2000 geborenen Millenials, die immer mehr mobil Nachrichten und Informationen konsumieren.]]></wl:sentence>
   <wl:sentence wl:dependency="16:adpmod 4:adpmod 3:det 1:adpobj 5:amod 0:adpobj 0:cc 0:conj 7:adpobj 8:p 8:conj 8:p 8:conj 8:cc 8:conj 0:cc -1:ROOT 19:det 19:amod 16:nsubj 16:advmod 16:prt 16:p" wl:id="ca25562a1422c88f51d70f631b5064a9" wl:pos="APPR APPR ART NN VVFIN NN KON APPR NE $, NN $, NN KON NN KON VVFIN ART ADJA NN PROAV PTKVZ $." wl:sem_orient="0.6085806194501846" wl:significance="222.3186296147562" wl:token="0,5 6,9 10,14 15,35 36,41 42,44 44,45 46,49 50,57 57,58 59,66 66,67 68,76 77,80 81,90 91,94 95,99 100,103 104,108 109,114 115,120 121,124 124,125"><![CDATA[Statt auf eine Nachrichtenplattform setzt AJ+ auf YouTube, Twitter, Facebook und Instagram und baut die neue Marke dafür auf.]]></wl:sentence>
-  <wl:sentence wl:dependency="2:p 2:nsubj -1:ROOT 4:neg 2:dobj 2:NMOD 2:NMOD 2:NMOD 7:adpmod 10:amod 8:adpobj 7:p 2:NMOD 15:advmod 15:compmod 2:NMOD 2:NMOD 2:NMOD 17:adpmod 18:adpobj 2:NMOD 20:adpobj 20:cc 2:NMOD 2:NMOD 24:adpobj 25:adpmod 26:adpobj 2:NMOD" wl:id="49cbcc3a127adcb186ae09a5d01c5131" wl:pos="' PPER VAFIN PIAT NN $, KON NN APPR ADJA NN ' $, ADV NE NE $, FM FM NN APPR NN KON $, APPRART NN APPR NE $." wl:sem_orient="0.7216878364870322" wl:significance="6302.26668899656" wl:token="0,1 1,4 5,10 11,16 17,24 24,25 26,33 34,41 42,45 46,53 54,60 60,61 61,62 63,65 66,71 72,77 77,78 79,83 84,86 87,97 98,101 102,104 104,105 105,106 107,109 110,120 121,123 124,131 131,132"><![CDATA["Wir haben keine Website, sondern Content für soziale Medien", so Jigar Mehta, Head of Engagement bei AJ+, am Donnerstag in Perugia.]]></wl:sentence>
+  <wl:sentence wl:dependency="2:p 2:nsubj -1:ROOT 4:neg 2:dobj 2:NMOD 2:NMOD 2:NMOD 7:adpmod 10:amod 8:adpobj 7:p 2:NMOD 15:advmod 15:compmod 2:NMOD 2:NMOD 2:NMOD 17:adpmod 18:adpobj 2:NMOD 20:adpobj 20:cc 2:NMOD 2:NMOD 24:adpobj 25:adpmod 26:adpobj 2:NMOD" wl:id="49cbcc3a127adcb186ae09a5d01c5131" wl:pos="" PPER VAFIN PIAT NN $, KON NN APPR ADJA NN " $, ADV NE NE $, FM FM NN APPR NN KON $, APPRART NN APPR NE $." wl:sem_orient="0.7216878364870322" wl:significance="6302.26668899656" wl:token="0,1 1,4 5,10 11,16 17,24 24,25 26,33 34,41 42,45 46,53 54,60 60,61 61,62 63,65 66,71 72,77 77,78 79,83 84,86 87,97 98,101 102,104 104,105 105,106 107,109 110,120 121,123 124,131 131,132"><![CDATA["Wir haben keine Website, sondern Content für soziale Medien", so Jigar Mehta, Head of Engagement bei AJ+, am Donnerstag in Perugia.]]></wl:sentence>
   <wl:sentence wl:id="47f7a2e7f09b2a1d564cabd6bc777240" wl:token="0,15"><![CDATA[Userbeteiligung]]></wl:sentence>
   <wl:sentence wl:dependency="-1:ROOT 0:NMOD 15:adpmod 5:det 5:amod 2:adpobj 7:amod 5:poss 5:cc 5:conj 15:auxpass 15:adpmod 14:det 14:amod 11:adpobj 0:NMOD 19:p 19:nsubj 19:advmod 0:NMOD 19:p 27:mark 27:nsubj 24:advmod 27:adpmod 24:adpobj 27:acomp 19:csubj 0:NMOD" wl:id="fd818a9d1ab59ae0a64623a034e46768" wl:pos="ADJA $, APPR ART ADJA NN ADJA NN KON NN VAFIN APPR ART ADJA NN VVPP $, NN ADV VVFIN $, KOUS PPER ADV APPR NN ADJD VAFIN $." wl:sem_orient="0.982946374365981" wl:significance="451.6501316857136" wl:token="0,5 5,6 7,10 11,14 15,20 21,31 32,45 46,52 53,56 57,65 66,72 73,76 77,80 81,87 88,95 96,106 106,107 108,113 114,116 117,127 127,128 129,133 134,137 138,142 143,147 148,151 152,164 165,169 169,170"><![CDATA[Kurze, auf die junge Zielgruppe ausgerichtete Videos und Grafiken werden für die mobile Nutzung abgestimmt, Filme so produziert, dass sie auch ohne Ton verständlich sind.]]></wl:sentence>
   <wl:sentence wl:dependency="1:advmod -1:ROOT 1:nsubj 1:dobj 1:advmod 1:adpmod 5:adpobj 1:adpmod 10:compmod 10:p 7:adpobj 1:adpmod 13:det 11:adpobj 1:p" wl:id="501201b3f8305ebd9f2d18b4945e972c" wl:pos="PROAV VVFIN PPER NE ADV APPR PIS APPR NN $[ ADV APPR PWAT NN $." wl:token="0,5 6,10 11,13 14,19 20,24 25,28 29,34 35,37 38,53 54,55 56,60 61,64 65,72 73,78 78,79"><![CDATA[Dabei geht es Mehta aber vor allem um Userbeteiligung - egal auf welchem Kanal.]]></wl:sentence>
-  <wl:sentence wl:dependency="8:p 8:adpmod 3:det 7:nmod 7:adpmod 6:poss 4:adpobj 1:adpmod -1:ROOT 14:p 14:aux 14:dobj 14:nsubj 14:advmod 8:NMOD 19:p 19:advmod 18:det 19:nsubj 8:NMOD 19:p 23:p 23:advmod 19:appos 8:NMOD" wl:id="586dfbf8990aaaa49365a2a43bc917ca" wl:pos="' KOUI ART NN APPR PPOSAT NN APPR VVFIN $, VMFIN PPER PPER ADV VVFIN $, PWAV ART NN VAFIN ' $, ADV NE $." wl:sem_orient="0.4303314829119352" wl:token="0,1 1,8 9,12 13,23 24,27 28,34 35,40 41,43 44,50 50,51 52,58 59,62 63,66 67,71 72,78 78,79 80,82 83,86 87,91 92,96 96,97 97,98 99,101 102,107 107,108"><![CDATA["Anstatt die Diskussion auf unsere Seite zu leiten, wollen wir sie dort führen, wo die User sind", so Mehta.]]></wl:sentence>
+  <wl:sentence wl:dependency="8:p 8:adpmod 3:det 7:nmod 7:adpmod 6:poss 4:adpobj 1:adpmod -1:ROOT 14:p 14:aux 14:dobj 14:nsubj 14:advmod 8:NMOD 19:p 19:advmod 18:det 19:nsubj 8:NMOD 19:p 23:p 23:advmod 19:appos 8:NMOD" wl:id="586dfbf8990aaaa49365a2a43bc917ca" wl:pos="" KOUI ART NN APPR PPOSAT NN APPR VVFIN $, VMFIN PPER PPER ADV VVFIN $, PWAV ART NN VAFIN " $, ADV NE $." wl:sem_orient="0.4303314829119352" wl:token="0,1 1,8 9,12 13,23 24,27 28,34 35,40 41,43 44,50 50,51 52,58 59,62 63,66 67,71 72,78 78,79 80,82 83,86 87,91 92,96 96,97 97,98 99,101 102,107 107,108"><![CDATA["Anstatt die Diskussion auf unsere Seite zu leiten, wollen wir sie dort führen, wo die User sind", so Mehta.]]></wl:sentence>
   <wl:sentence wl:dependency="1:advmod 5:adpmod 4:det 4:amod 1:adpobj -1:ROOT 5:nsubj 5:advmod 5:p 10:det 15:dobj 15:adpmod 14:det 14:amod 11:adpobj 5:xcomp 5:p" wl:id="bda47835db3a68d0026ed19f6b613a73" wl:pos="ADV APPR ART ADJA NN VVFIN PIS PROAV $, ART NN APPR ART ADJA NN VVIZU $." wl:token="0,4 5,7 8,13 14,22 23,30 31,36 37,40 41,46 46,47 48,51 52,62 63,66 67,70 71,84 85,109 110,126 126,127"><![CDATA[Erst in einem weiteren Schritt denkt man daran, die Kommentare auf den verschiedenen Social-Media-Plattformen zusammenzuführen.]]></wl:sentence>
   <wl:sentence wl:dependency="1:advmod 5:adpmod 4:det 4:amod 1:adpobj -1:ROOT 5:nsubj 8:det 5:dobj 5:p 5:adpmod 10:adpobj 5:NMOD 15:det 15:amod 12:iobj 15:appos 16:p 16:conj 16:cc 16:conj 12:p" wl:id="ddafa2bfc7a2c2806f288621912b1f09" wl:pos="ADJD APPR ART ADJA NN VVFIN PPER ART NN $. APPR NN VVFIN ART ADJA NN NN $, NN KON NN $." wl:sem_orient="-0.7001400420140049" wl:token="0,10 11,13 14,17 18,26 27,34 35,39 40,42 43,47 48,51 51,52 53,58 59,70 71,76 77,80 81,88 89,93 94,103 103,104 105,117 118,122 123,129 129,130"><![CDATA[Zusätzlich zu den sozialen Kanälen gibt es eine App. Neben Nachrichten macht ein kleines Team Kurzdokus, Erklärvideos oder Satire.]]></wl:sentence>
   <wl:sentence wl:dependency="1:num -1:adpobj 1:NMOD 2:adpmod 5:compmod 3:adpobj 2:adpmod 9:det 9:amod 6:adpobj 2:adpmod 12:det 10:adpobj 19:p 19:mark 16:det 19:nsubj 19:adpmod 17:adpobj 12:rcmod 2:p" wl:id="b76b963c88cefd14838084ec9e0a7ce7" wl:pos="CARD NN VVFIN APPR NE NE APPR ART ADJA NN APPR ART NN $, PRELS ART NN APPRART NN VAFIN $." wl:token="0,2 3,8 9,17 18,20 21,24 25,34 35,39 40,45 46,52 53,57 58,60 61,64 65,71 71,72 73,76 77,80 81,89 90,92 93,110 111,114 114,115"><![CDATA[80 Leute arbeiten in San Francisco seit einem halben Jahr an dem Medium, das ein Start-Up im Mediengroßkonzern ist.]]></wl:sentence>
@@ -66,25 +66,25 @@ class TestJesajaNeks(unittest.TestCase):
 </wl:page>
 """
 
-    JESAJA_URL = 'http://localhost:63002/rest/'
-    PROFILE_NAME = 'default'
-    STOPLIST_PROFILE_NAME = 'stoplist'
-    CORPUS_NAME = 'test_corpus_neks'
-    MATVIEW_NAME = 'unittest'
-    SAMPLE_DATA_FILE = get_full_path('xml_documents.pickle.gz')
-    SAMPLE_DATA_FILE = get_full_path('xml_documents_dach_at_media.pickle.gz')
+    JESAJA_URL = "http://localhost:63002/rest/"
+    PROFILE_NAME = "default"
+    STOPLIST_PROFILE_NAME = "stoplist"
+    CORPUS_NAME = "test_corpus_neks"
+    MATVIEW_NAME = "unittest"
+    SAMPLE_DATA_FILE = get_full_path("xml_documents.pickle.gz")
+    SAMPLE_DATA_FILE = get_full_path("xml_documents_dach_at_media.pickle.gz")
     PROFILE = {
-        'valid_pos_tags': ['NN', 'NNP', 'NNS'],  # ['NN', 'P', 'ADJ'],
-        'required_pos_tags': [],
-        'min_phrase_significance': 2.0,
-        'num_keywords': 5,
-        'keyword_algorithm': 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm',
-        'min_token_count': 1,
-        'min_ngram_length': 1,
-        'max_ngram_length': 3,
-        'skip_underrepresented_keywords': False,
-        'ground_annotations': True,
-        'stoplists': [],
+        "valid_pos_tags": ["NN", "NNP", "NNS"],  # ["NN", "P", "ADJ"],
+        "required_pos_tags": [],
+        "min_phrase_significance": 2.0,
+        "num_keywords": 5,
+        "keyword_algorithm": "com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm",
+        "min_token_count": 1,
+        "min_ngram_length": 1,
+        "max_ngram_length": 3,
+        "skip_underrepresented_keywords": False,
+        "ground_annotations": True,
+        "stoplists": [],
     }
 
     def setUp(self):
@@ -97,18 +97,18 @@ class TestJesajaNeks(unittest.TestCase):
         if self.service_is_online:
 
             STOPLIST_PROFILE = self.PROFILE.copy()
-            STOPLIST_PROFILE['stoplists'] = ['testList', 'anotherList']
+            STOPLIST_PROFILE["stoplists"] = ["testList", "anotherList"]
 
             with GzipFile(self.SAMPLE_DATA_FILE) as f:
                 sample_corpus = load(f)
-                print('Loaded corpus with %d entries' % (len(sample_corpus)))
+                print("Loaded corpus with %d entries" % (len(sample_corpus)))
 
-#             for doc in sample_corpus:
-#                 print(doc)
-            self.jesaja.set_stoplist('testList',
-                                     ('the', 'from', 'there', 'here'))
-            self.jesaja.set_stoplist('anotherList',
-                                     ('you', 'he', 'she', 'it', 'them'))
+            #             for doc in sample_corpus:
+            #                 print(doc)
+            self.jesaja.set_stoplist("testList",
+                                     ("the", "from", "there", "here"))
+            self.jesaja.set_stoplist("anotherList",
+                                     ("you", "he", "she", "it", "them"))
             self.jesaja.set_keyword_profile(self.PROFILE_NAME, self.PROFILE)
             self.jesaja.set_keyword_profile(
                 self.STOPLIST_PROFILE_NAME, STOPLIST_PROFILE)
@@ -119,13 +119,15 @@ class TestJesajaNeks(unittest.TestCase):
 
             # create the reference corpus
             if not self.jesaja.has_corpus(matview_id=self.MATVIEW_NAME):
-                while self.jesaja.rotate_shard(matview_id=self.MATVIEW_NAME) == 0:
-                    #                     csv_corpus = {'keystone':25, 'energy': 123, 'ana': 12, 'tom': 22, 'petra': 3, 'clima':5, 'Shihab': 12, 'Kirche':10}
+                while self.jesaja.rotate_shard(
+                        matview_id=self.MATVIEW_NAME) == 0:
+                    #                     csv_corpus = {"keystone":25, "energy": 123, "ana": 12, "tom": 22, "petra": 3, "clima":5, "Shihab": 12, "Kirche":10}
                     #                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
                     self.jesaja.add_documents(
                         matview_id=self.MATVIEW_NAME, documents=documents)
         else:
-            print('WARNING: Webservice is offline --> not executing all tests!!')
+            print(
+                "WARNING: Webservice is offline --> not executing all tests!!")
 
     def test_nek_annotation(self):
         """ test nek annotations """
@@ -138,12 +140,13 @@ class TestJesajaNeks(unittest.TestCase):
             result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME,
                                                          [xml_content])
             assert len(result)
-#            from pprint import pprint
-#            pprint(result)
-            assert '1243661964' in result
-            assert len(result['1243661964']) == 1
-            assert result['1243661964'][0]['key'] == 'http://de.dbpedia.org/resource/Barack_Obama'
+            #            from pprint import pprint
+            #            pprint(result)
+            assert "1243661964" in result
+            assert len(result["1243661964"]) == 1
+            assert result["1243661964"][0][
+                       "key"] == "http://de.dbpedia.org/resource/Barack_Obama"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
