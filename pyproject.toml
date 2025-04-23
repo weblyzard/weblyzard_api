@@ -12,7 +12,7 @@ requests = "^2.11.1"
 
 [tool.poetry]
 name = "weblyzard-api"
-version = "4.0.0-dev"
+version = "4.1.0-dev"
 description = "OS clients to webLyzard services"
 authors = ["Albert Weichselbraun <weichselbraun@weblyzard.com>"]
 readme = "README.md"
