@@ -62,7 +62,7 @@ class FusekiWrapper(TriplestoreWrapper1):
         elif variable_dict["type"] == "literal":
             if variable_dict.get("xml:lang", False):
                 if add_language_tag:
-                    return f"{variable_dict['value']}"@{variable_dict['xml:lang']}"
+                    return f"{variable_dict['value']}@{variable_dict['xml:lang']}"
                 else:
                     return variable_dict["value"]
             elif variable_dict.get("datatype", False):
