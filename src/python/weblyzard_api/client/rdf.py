@@ -9,7 +9,7 @@ from enum import Enum
 
 
 class Namespace(Enum):
-    XML = "http://www.w3.org/XML/1998/namespace/"
+    XML = "http://www.w3.org/XML/1998/namespace"
     XSD = "http://www.w3.org/2001/XMLSchema#"
     RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     RDFS = "http://www.w3.org/2000/01/rdf-schema#"
@@ -156,7 +156,7 @@ def to_fully_qualified(attribute: str) -> str:
         return attribute
 
     namespace, attr_name = attribute.split(":")
-    return "{%s}%s" % (Namespace.to_fully_qualified(namespace), attr_name)
+    return f"{{{Namespace.to_fully_qualified(namespace)}}}{attr_name}"
 
 
 def prefix_uri(uri: str, allow_partial: bool = False) -> str:

@@ -9,9 +9,9 @@ Created on 07.04.2014
 import hashlib
 import json
 import logging
-import unicodedata
 from datetime import date, datetime
 
+import unicodedata
 from lxml import etree
 
 from weblyzard_api.model.exceptions import (MalformedJSONException,
@@ -44,7 +44,7 @@ class DatesToStrings(json.JSONEncoder):
         return super(DatesToStrings, self).encode(self._encode(obj))
 
 
-class JSONParserBase(object):
+class JSONParserBase:
     """
     JSON Parser base class.
     """
@@ -209,7 +209,7 @@ class JSONParserBase(object):
         return "neutral"
 
 
-class XMLParser(object):
+class XMLParser:
     VERSION = None
     SUPPORTED_NAMESPACE = None
     DOCUMENT_NAMESPACES = {}
@@ -364,7 +364,8 @@ class XMLParser(object):
         for key, value in attributes.items():
             if mapping and key in mapping:
                 key = mapping.get(key, key)
-
+            else:
+                print("here")
             if value is None:
                 continue
             value = cls.decode_value(value)

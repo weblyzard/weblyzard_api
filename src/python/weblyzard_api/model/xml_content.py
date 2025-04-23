@@ -30,7 +30,7 @@ SENTENCE_ATTRIBUTES = ("pos_tags", "sem_orient", "significance", "md5sum",
                        "pos", "token", "dependency")
 
 
-class XMLContent(object):
+class XMLContent:
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
                               XMLDeprecated.VERSION: XMLDeprecated}

@@ -93,6 +93,8 @@ class XML2013(XMLParser):
         "has_container": ("has_container", "sioc"),
         # reference to direct parent (nested thread parent)
         "reply_of": ("reply_of", "sioc"),
+        # other relations
+        "related": ("related", "dc"),
 
         # DOCUMENT METRICS ####################################################
         "user_mentions": ("user_mentions", "wl"),

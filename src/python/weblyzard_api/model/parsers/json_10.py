@@ -6,7 +6,6 @@ JSON format.
 
     .. moduleauthor:: Fabian Fischer fabian.fischer@modul.ac.at
 """
-from __future__ import unicode_literals
 
 from weblyzard_api.model import Sentence
 from weblyzard_api.model.exceptions import MalformedJSONException

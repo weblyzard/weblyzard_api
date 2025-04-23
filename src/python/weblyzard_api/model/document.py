@@ -20,7 +20,7 @@ from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
 
-class Document(object):
+class Document:
     # supported partition keys
     FRAGMENT_KEY = "FRAGMENT"
     SENTENCE_KEY = u"SENTENCE"
