@@ -17,10 +17,10 @@ from os import makedirs, remove, getpid, link, getenv
 from os.path import exists, dirname, basename, join
 from pickle import dump, load
 from socket import gethostname
-from time import time
 from typing import Optional, List, Dict, Any
 
 import redis
+from time import time
 
 from weblyzard_api.util.pickleIterator import WritePickleIterator, \
     ReadPickleIterator
@@ -647,9 +647,9 @@ class HybridMemDiskCached(HybridMemoryCached):
             with GzipFile(f"{self.cache_file_name}") as f:
                 self._cacheData = load(f)
         except Exception as e:
-            logger.warn("No disk cached data found during initialization,"
-                        "this is expected at first instantiation",
-                        exc_info=True)
+            logger.warning("No disk cached data found during initialization,"
+                           "this is expected at first instantiation",
+                           exc_info=True)
             self._cacheData = {}
 
     def sync_upstream(self, priority: str = "local",

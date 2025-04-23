@@ -408,9 +408,9 @@ class Sentence(object):
             except ValueError as e:
                 # occasionally there appear to be missing spaces in token
                 # strings
-                logger.warn("Error parsing tokens for sentence {}; token "
-                            "string was {}; individual token identifier "
-                            "was {}. Original error was: {}".format(
+                logger.warning("Error parsing tokens for sentence {}; token "
+                               "string was {}; individual token identifier "
+                               "was {}. Original error was: {}".format(
                     self.value, self.token, token_pos, e
                 ), exc_info=True)
                 token_indices = [int(tok) for tok in token_indices]
