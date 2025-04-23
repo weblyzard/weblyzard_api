@@ -1,16 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from builtins import object
-import json
-import pytest
-import unittest
 
+import json
+import unittest
+from builtins import object
+
+import pytest
+
+from weblyzard_api.model.exceptions import (UnexpectedFieldException,
+                                            MissingFieldException)
 from weblyzard_api.model.parsers.json_10 import (JSON10ParserSentence,
                                                  MalformedJSONException,
                                                  JSON10ParserXMLContent)
-from weblyzard_api.model.exceptions import (UnexpectedFieldException,
-                                            MissingFieldException)
 from weblyzard_api.model.xml_content import Sentence, XMLContent
 
 
@@ -19,22 +21,22 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
     Tests for the JSON_10_Parser class.
     """
     test_xmlcontent_minimal_dict = {
-        'uri': 'derstandard.at/',
+        "uri": "derstandard.at/",
     }
     test_xmlcontent_maximal_dict = {
-        'uri': 'derstandard.at/',
-        'title': 'document title',
-        'language_id': 'en',
-        'sentences': [
+        "uri": "derstandard.at/",
+        "title": "document title",
+        "language_id": "en",
+        "sentences": [
             {
-                'value': 'Therefore we could show that "x>y" and "y<z.".',
-                'id': '6e4c1420b2edaa374ff9d2300b8df31d',
-                'is_title': False,
-                'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
-                'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
-                'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
-                'polarity': 0.0,
-                'significance': 0.0
+                "value": "Therefore we could show that 'x>y' and 'y<z.'.",
+                "id": "6e4c1420b2edaa374ff9d2300b8df31d",
+                "is_title": False,
+                "pos_list": "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+                "tok_list": "0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46",
+                "dep_tree": "2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT",
+                "polarity": 0.0,
+                "significance": 0.0
             },
         ],
     }
@@ -51,11 +53,11 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
         """
         Tests that the parser rejects documents with unexpected fields.
         """
-        testkey = 'testkey'
+        testkey = "testkey"
         assert testkey not in JSON10ParserXMLContent.FIELDS_REQUIRED
         assert testkey not in JSON10ParserXMLContent.FIELDS_OPTIONAL
         xmldict_ = dict(self.test_xmlcontent_minimal_dict)
-        xmldict_[testkey] = 'random'
+        xmldict_[testkey] = "random"
         with pytest.raises(UnexpectedFieldException):
             JSON10ParserXMLContent.from_json_string(
                 json.dumps(xmldict_))
@@ -104,31 +106,31 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
         api_dict = xml_content.to_api_dict(version=1.0)
 
         assert api_dict == {
-            'uri': 'http://www.heise.de',
-            'language_id': 'en',
-            'title': 'Global Dimming.',
-            'sentences': [
-                {'polarity': 0.0,
-                 'value': 'Global Dimming.',
-                 'pos_list': 'JJ NN .',
-                 'tok_list': '0,6 7,14 14,15',
-                 'is_title': 'True',
-                 'id': '27cd03a5aaac20ae0dba60038f17fdad',
-                 'significance': 1.5},
-                {'id': '7f3251087b6552159846493558742f18',
-                 'is_title': False,
-                 'polarity': 0.0,
-                 'pos_list': '( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP : PRP VBD PRP JJ NN .',
-                 'tok_list': '0,1 1,2 2,6 7,18 18,19 20,25 26,38 39,44 45,47 48,51 52,57 57,58 59,69 70,74 75,85 86,90 91,96 97,100 101,105 106,107 108,115 116,118 119,127 128,136 137,140 141,146 146,147 148,152 153,159 160,162 163,169 170,177 177,178',
-                 'value': '(*FULL DOCUMENTARY) Since measurements began in the 1950s, scientists have discovered that there has been a decline of sunlight reaching the Earth; they called it global dimming.',
-                 'significance': 0.0},
-                {'id': '93f56b9d196787d1cf662a06ab5f866b',
-                 'is_title': False,
-                 'polarity': 0.0,
-                 'pos_list': 'CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG .',
-                 'tok_list': '0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183',
-                 'value': 'But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.',
-                 'significance': 0.0},
+            "uri": "http://www.heise.de",
+            "language_id": "en",
+            "title": "Global Dimming.",
+            "sentences": [
+                {"polarity": 0.0,
+                 "value": "Global Dimming.",
+                 "pos_list": "JJ NN .",
+                 "tok_list": "0,6 7,14 14,15",
+                 "is_title": "True",
+                 "id": "27cd03a5aaac20ae0dba60038f17fdad",
+                 "significance": 1.5},
+                {"id": "7f3251087b6552159846493558742f18",
+                 "is_title": False,
+                 "polarity": 0.0,
+                 "pos_list": "( CD NNP NN ) IN NNS VBD IN DT CD , NNS VBP VBN IN EX VBZ VBN DT NN IN NN VBG DT NNP : PRP VBD PRP JJ NN .",
+                 "tok_list": "0,1 1,2 2,6 7,18 18,19 20,25 26,38 39,44 45,47 48,51 52,57 57,58 59,69 70,74 75,85 86,90 91,96 97,100 101,105 106,107 108,115 116,118 119,127 128,136 137,140 141,146 146,147 148,152 153,159 160,162 163,169 170,177 177,178",
+                 "value": "(*FULL DOCUMENTARY) Since measurements began in the 1950s, scientists have discovered that there has been a decline of sunlight reaching the Earth; they called it global dimming.",
+                 "significance": 0.0},
+                {"id": "93f56b9d196787d1cf662a06ab5f866b",
+                 "is_title": False,
+                 "polarity": 0.0,
+                 "pos_list": "CC VBG TO DT NN VBN IN DT NN IN NNP , DT NN VBD RB VB IN DT CD CC RB IN DT CD NNS VBP VBN DT JJ VBG .",
+                 "tok_list": "0,3 4,13 14,16 17,18 19,24 25,34 35,37 38,41 42,49 50,52 53,60 60,61 62,65 66,73 74,77 78,81 82,90 91,95 96,99 100,105 106,109 110,116 117,122 123,126 127,132 133,143 144,148 149,157 158,159 160,170 171,182 182,183",
+                 "value": "But according to a paper published in the journal of Science, the dimming did not continue into the 1990s and indeed since the 1980s scientists have observed a widespread brightening.",
+                 "significance": 0.0},
             ],
         }
 
@@ -139,32 +141,33 @@ class TestJSON10ParserXMLContent(unittest.TestCase):
         """
         xml_content = XMLContent(self.xml_content_string)
         api_dict = xml_content.to_api_dict(version=1.0)
-        api_dict['title'] = 'wrongtitle'
+        api_dict["title"] = "wrongtitle"
         try:
             xml_content = JSON10ParserXMLContent.from_api_dict(api_dict)
             assert xml_content == False
         except MalformedJSONException as e:
-            assert 'is_title' in str(e)  # [mig] exception.message doesn't exist in python3 anymore
+            assert "is_title" in str(
+                e)  # [mig] exception.message doesn"t exist in python3 anymore
 
 
 class TestJSON10ParserSentence(object):
     test_sentence = Sentence(
-        md5sum=u'6e4c1420b2edaa374ff9d2300b8df31d',
+        md5sum=u"6e4c1420b2edaa374ff9d2300b8df31d",
         pos=u"RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
         sem_orient=0.0,
         significance=0.0,
-        token=u'0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
-        value=u'Therefore we could show that "x>y" and "y<z.".',
+        token=u"0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46",
+        value=u"Therefore we could show that 'x>y' and 'y<z'.",
         is_title=False,
-        dependency=u'2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT')
+        dependency=u"2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT")
     test_sentence_dict = {
-        'value': 'Therefore we could show that "x>y" and "y<z.".',
-        'id': '6e4c1420b2edaa374ff9d2300b8df31d',
-        'is_title': False,
-        'pos_list': "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
-        'tok_list': '0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46',
-        'dep_tree': '2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT',
-        'polarity': 0.0,
+        "value": "Therefore we could show that 'x>y' and 'y<z'.",
+        "id": "6e4c1420b2edaa374ff9d2300b8df31d",
+        "is_title": False,
+        "pos_list": "RB PRP MD VB IN ' CC JJR JJ ' CC ' NN JJR CD ' .",
+        "tok_list": "0,9 10,12 13,18 19,23 24,28 29,30 30,31 31,32 32,33 33,34 35,38 39,40 40,41 41,42 42,44 44,45 45,46",
+        "dep_tree": "2:ADV 2:SBJ 16:DEP 2:VC 3:OBJ 3:P 16:DEP 8:AMOD 16:DEP 8:P 8:COORD 10:P 10:CONJ 14:NMOD 12:COORD 14:P -1:ROOT",
+        "polarity": 0.0,
     }
 
     def test_sentence_from_json(self):
@@ -176,5 +179,5 @@ class TestJSON10ParserSentence(object):
         assert new_sentence.as_dict() == self.test_sentence.as_dict()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
