@@ -18,11 +18,11 @@ class ExternalApiNg(MultiRESTClient):
                                  default_timeout=default_timeout)
 
     def submit_single_document(self, document):
-        result = self.request('checkDocumentRelevanceNg', document,
+        result = self.request("checkDocumentRelevanceNg", document,
                               pass_through_exceptions=True)
         return result
 
     def submit_batch_documents(self, documents):
-        result = self.request('checkDocumentRelevanceBatch', documents,
+        result = self.request("checkDocumentRelevanceBatch", documents,
                               pass_through_exceptions=True)
         return result

@@ -1,5 +1,7 @@
 from deprecated import deprecated
-from weblyzard_api.client.triplestore.fuseki import FusekiWrapper as NewFusekiWrapper
+
+from weblyzard_api.client.triplestore.fuseki import \
+    FusekiWrapper as NewFusekiWrapper
 
 
 @deprecated(reason="Class was moved, use triplestore.fuseki")

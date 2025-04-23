@@ -10,28 +10,27 @@ For details: `check Sesame REST API<http://openrdf.callimachus.net/sesame/2.7/do
 http://www.csee.umbc.edu/courses/graduate/691/spring14/01/examples/sesame/openrdf-sesame-2.6.10/docs/system/ch08.html
 
 """
-from __future__ import print_function
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
+
 import ast
-import httplib2
 import json
 import os
-import requests
-import urllib.request, urllib.parse, urllib.error
-
-from SPARQLWrapper import SPARQLWrapper, JSON
+import urllib.error
+import urllib.parse
+import urllib.request
 from collections import namedtuple
 from pprint import pprint
+
+import httplib2
+import requests
+from SPARQLWrapper import SPARQLWrapper, JSON
+
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
 
 QUERIES = {
-    'configured_profiles': """
+    "configured_profiles": """
                 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX re: <http://www.semanticlab.net/prj/recognize/voc/>
                 SELECT ?s ?profile_name ?analyzer
@@ -39,33 +38,32 @@ QUERIES = {
                        ?s rdfs:label  ?profile_name .
                        ?s re:analyzer ?analyzer .
                 }""",
-    'all_subjects': """
+    "all_subjects": """
             select distinct ?s where {?s ?p ?o}
         """
 }
 
-RepositoryDetail = namedtuple('RepositoryDetail', ['id', 'uri', 'title'])
+RepositoryDetail = namedtuple("RepositoryDetail", ["id", "uri", "title"])
 
 
 class OpenRdfClient(object):
-
-    DEFAULT_HEADERS = {'Accept': 'application/sparql-results+json'}
-    URL_MAPPING = {'get_repositories': ('/repositories', 'GET'),
-                   'fetch_statements_repository': ('', 'GET')}
+    DEFAULT_HEADERS = {"Accept": "application/sparql-results+json"}
+    URL_MAPPING = {"get_repositories": ("/repositories", "GET"),
+                   "fetch_statements_repository": ("", "GET")}
 
     def __init__(self, server_uri):
         """ initializes the client
         :param server_uri: URL of the server
         """
         plain_server_uri = server_uri
-        if not 'openrdf-sesame' in server_uri:
-            server_uri = '%s/openrdf-sesame' % server_uri
+        if not "openrdf-sesame" in server_uri:
+            server_uri = "%s/openrdf-sesame" % server_uri
 
         self.server_uri = server_uri
-        self.repository_url_tmplt = self.server_uri + '/repositories/%s'
-        server_update_uri = '%s/openrdf-workbench' % plain_server_uri
+        self.repository_url_tmplt = self.server_uri + "/repositories/%s"
+        server_update_uri = "%s/openrdf-workbench" % plain_server_uri
         self.repository_url_update_tmplt = server_update_uri + \
-            '/repositories/%s/update'
+                                           "/repositories/%s/update"
 
     def run_query(self, repository_name, query):
         sparql = SPARQLWrapper(self.repository_url_tmplt % repository_name)
@@ -73,34 +71,34 @@ class OpenRdfClient(object):
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
 
-        for result in results['results']['bindings']:
+        for result in results["results"]["bindings"]:
             yield result
 
     def update_query(self, repository_name, query):
         sparql = SPARQLWrapper(
             self.repository_url_update_tmplt % repository_name)
         sparql.setQuery(query.strip())
-        sparql.setMethod('POST')
+        sparql.setMethod("POST")
         sparql.query()
 
     def cleanup_config(self):
         """ """
         for orphan in self.get_orphaned_analyzers():
             self.delete_statements(self.config_repository,
-                                   subj='_:%s' % orphan,
+                                   subj="_:%s" % orphan,
                                    delete=True)
 
     def get_orphaned_analyzers(self):
         profiles = self.get_profiles()
         configured = []
         for profile in profiles.values():
-            configured.extend(profile['analyzers'])
+            configured.extend(profile["analyzers"])
 
         orphaned = []
-        query = QUERIES['all_subjects']
+        query = QUERIES["all_subjects"]
         for result in self.run_query(self.config_repository, query):
-            name = result['s']['value']
-            if name.startswith('genid'):
+            name = result["s"]["value"]
+            if name.startswith("genid"):
                 if name in configured:
                     pass
                 else:
@@ -113,17 +111,17 @@ class OpenRdfClient(object):
         """
         self.check_config_repo()
 
-        query = QUERIES['configured_profiles']
+        query = QUERIES["configured_profiles"]
         profiles = {}
 
         for result in self.run_query(self.config_repository, query):
             profile = {}
-            profile_name = result['profile_name']['value']
-            profile['subject_uri'] = result['s']['value']
-            profile['analyzers'] = [result['analyzer']['value']]
+            profile_name = result["profile_name"]["value"]
+            profile["subject_uri"] = result["s"]["value"]
+            profile["analyzers"] = [result["analyzer"]["value"]]
             if profile_name in profiles:
-                profiles[profile_name]['analyzers'].extend(
-                    profile['analyzers'])
+                profiles[profile_name]["analyzers"].extend(
+                    profile["analyzers"])
             else:
                 profiles[profile_name] = profile
 
@@ -135,18 +133,18 @@ class OpenRdfClient(object):
         profiles = self.get_profiles()
         if profile_name in profiles:
             profile = profiles[profile_name]
-            if not profile_name.startswith('pr:'):
-                profile_name = 'pr:%s' % profile_name
+            if not profile_name.startswith("pr:"):
+                profile_name = "pr:%s" % profile_name
 
             subject_uris.extend(
-                ['<%s>' % analyzer for analyzer in profile['analyzers']])
-            subject_uris.append('<%s>' % profile['subject_uri'])
+                ["<%s>" % analyzer for analyzer in profile["analyzers"]])
+            subject_uris.append("<%s>" % profile["subject_uri"])
 
         if len(subject_uris):
-            #             if not subject_uri.startswith('pr:'):
-            #                 subject_uri = 'pr:%s' % subject_uri
-            #             if not subject_uri.endswith('>'):
-            #                 subject_uri = '%s>' % subject_uri
+            #             if not subject_uri.startswith("pr:"):
+            #                 subject_uri = "pr:%s" % subject_uri
+            #             if not subject_uri.endswith(">"):
+            #                 subject_uri = "%s>" % subject_uri
             for subject_uri in subject_uris:
                 try:
                     self.delete_statements(self.config_repository,
@@ -161,53 +159,53 @@ class OpenRdfClient(object):
         profiles = self.get_profiles()
 
         if profile_name in profiles:
-            subject_uri = profiles[profile_name]['subject_uri']
+            subject_uri = profiles[profile_name]["subject_uri"]
 
-            if not subject_uri.endswith('>'):
-                subject_uri = '%s>' % subject_uri
+            if not subject_uri.endswith(">"):
+                subject_uri = "%s>" % subject_uri
 
             self.delete_statements(self.config_repository,
                                    subj=subject_uri,
                                    delete=True)
         self.upload_statement(content=profile_definition,
-                              context='config.weblyzard.com',
+                              context="config.weblyzard.com",
                               target_repository=self.config_repository)
 
     def check_config_repo(self):
         repositories = self.get_repositories()
 
         if not self.config_repository in repositories:
-            print('warning config repo "{}" does not exist'.format(
-                self.config_repository))
+            print(
+                "warning config repo \"{self.config_repository}\" does not exist")
 
     def request(self, function, data=None, params=None, delete=False,
-                content_type='applicatoni/rdf+json',
-                accept='application/sparql-results+json'):
+                content_type="applicatoni/rdf+json",
+                accept="application/sparql-results+json"):
         """ executes the requests to the TripleStores
         :param function: function (path) to request
         :param data: data to add to the POST request
         :returns: result of the server
         :rtype: json encoded dict
         """
-        print('{}/{}'.format(self.server_uri, function))
+        print("{}/{}".format(self.server_uri, function))
 
         if data:
-            method = 'POST'
-            headers = {'content-type': content_type}
+            method = "POST"
+            headers = {"content-type": content_type}
         else:
             if delete:
-                method = 'DELETE'
+                method = "DELETE"
             else:
-                method = 'GET'
-            headers = {'Accept': accept}
+                method = "GET"
+            headers = {"Accept": accept}
 
             if params:
-                function = '%s?%s' % (function, params)
+                function = "%s?%s" % (function, params)
 
-        print(method, '%{}/{}'.format(self.server_uri, function))
+        print(method, "%{}/{}".format(self.server_uri, function))
 
         r = requests.request(method,
-                             '%s/%s' % (self.server_uri, function),
+                             "%s/%s" % (self.server_uri, function),
                              data=data,
                              headers=headers)
         text = r.text
@@ -220,20 +218,20 @@ class OpenRdfClient(object):
 
     def get_repo_size(self, repo_id):
         """ """
-        result = self.request('repositories/%s/size' % repo_id)
-        print('get_repo_size', result)
+        result = self.request("repositories/%s/size" % repo_id)
+        print("get_repo_size", result)
 
     def get_repositories(self):
         """ """
-        result = self.request('repositories')
+        result = self.request("repositories")
         repositories = {}
 
-        if 'results' in result and 'bindings' in result['results']:
-            for repo in result['results']['bindings']:
-                repo_id = repo['id']['value']
+        if "results" in result and "bindings" in result["results"]:
+            for repo in result["results"]["bindings"]:
+                repo_id = repo["id"]["value"]
                 repositories[repo_id] = RepositoryDetail(repo_id,
-                                                         repo['uri']['value'],
-                                                         repo['title']['value'])
+                                                         repo["uri"]["value"],
+                                                         repo["title"]["value"])
 
         return repositories
 
@@ -241,22 +239,22 @@ class OpenRdfClient(object):
         return repository_name in self.get_repositories()
 
     def get_all_statements(self, repository_name):
-        result = self.request('repositories/%s/statements' % repository_name)
+        result = self.request("repositories/%s/statements" % repository_name)
         pprint(result)
 
     def delete_statements(self, repository_name, subj=None, pred=None, obj=None,
                           delete=False):
-        function = 'repositories/%s/statements' % repository_name
+        function = "repositories/%s/statements" % repository_name
 
         params = {}
         if subj:
-            params['subj'] = subj
+            params["subj"] = subj
         if pred:
-            params['pred'] = pred
+            params["pred"] = pred
         if obj:
-            params['obj'] = obj
+            params["obj"] = obj
         if params:
-            params = '&'.join(['%s=%s' % (k, v)
+            params = "&".join(["%s=%s" % (k, v)
                                for k, v in params.items()])
         else:
             params = None
@@ -265,91 +263,93 @@ class OpenRdfClient(object):
 
     def upload_statement(self, content, context, target_repository):
         """ """
-        print('uploading to {}'.format(target_repository))
-        params = 'context=%s' % context
-        function = 'repositories/%s/statements' % target_repository
+        print("uploading to {}".format(target_repository))
+        params = "context=%s" % context
+        function = "repositories/%s/statements" % target_repository
 
         self.request(function, content, params, delete=False,
-                     content_type='application/x-turtle;charset=UTF-8')
+                     content_type="application/x-turtle;charset=UTF-8")
 
     def check_exists(self, object, repository):
         """ """
-        query = 'describe <{}>'.format(object)
-        endpoint = "{}/repositories/{}" .format(self.server_uri, repository)
+        query = "describe <{}>".format(object)
+        endpoint = "{}/repositories/{}".format(self.server_uri, repository)
 
-#         print("POSTing SPARQL query to {}".format(endpoint))
-        params = {'query': query}
+        #         print("POSTing SPARQL query to {}".format(endpoint))
+        params = {"query": query}
         headers = {
-            'content-type': 'application/x-www-form-urlencoded',
-            #           'accept': 'application/sparql-results+json'
+            "content-type": "application/x-www-form-urlencoded",
+            #           "accept": "application/sparql-results+json"
         }
         (response, content) = httplib2.Http().request(endpoint,
-                                                      'POST',
-                                                      urllib.parse.urlencode(params),
+                                                      "POST",
+                                                      urllib.parse.urlencode(
+                                                          params),
                                                       headers=headers)
 
-#         print("Response %s" % response.status)
+        #         print("Response %s" % response.status)
         return (response, content)
 
     def execute_query(self, query, repository):
         """ """
-        params = {'query': query}
+        params = {"query": query}
         headers = {
-            'content-type': 'application/x-www-form-urlencoded',
-            'accept': 'application/sparql-results+json'
+            "content-type": "application/x-www-form-urlencoded",
+            "accept": "application/sparql-results+json"
         }
         endpoint = "{}/{}/statements".format(self.server_uri, repository)
         print(endpoint)
-        (response, content) = httplib2.Http().request(endpoint, 'POST',
+        (response, content) = httplib2.Http().request(endpoint, "POST",
                                                       urlencode(params),
                                                       headers=headers)
         return (response, ast.literal_eval(content))
 
     def execute_update(self, query, repository):
         """ """
-        params = {'update': query}
+        params = {"update": query}
         headers = {
-            'content-type': 'application/x-www-form-urlencoded',
-            'accept': 'application/sparql-results+json'
+            "content-type": "application/x-www-form-urlencoded",
+            "accept": "application/sparql-results+json"
         }
         repository_url = self.repository_url_tmplt % repository
         endpoint = "%s/statements" % (repository_url)
-        (response, content) = httplib2.Http().request(endpoint, 'POST',
+        (response, content) = httplib2.Http().request(endpoint, "POST",
                                                       urlencode(params),
                                                       headers=headers)
-        response = response['status']
-        return(response)
+        response = response["status"]
+        return (response)
 
     def delete_triples_by_types(self, repository, types):
         """ """
         for rdf_type in types:
-            query = 'DELETE ?s WHERE {?s ?p ?o FILTER(?s = <%s>)}' % rdf_type
+            query = "DELETE ?s WHERE {?s ?p ?o FILTER(?s = <%s>)}" % rdf_type
             self.execute_update(query, repository)
 
     def upload_repo_from_file(self, filename, repository):
         """ """
         base_fn = os.path.basename(filename)
 
-        assert base_fn.endswith('ttl')
+        assert base_fn.endswith("ttl")
 
-        graph = 'file://%s' % base_fn
-        params = {'context': '<' + graph + '>'}
+        graph = "file://%s" % base_fn
+        params = {"context": "<" + graph + ">"}
         endpoint = "%s/%s/statements?%s" % (self.server_uri, repository,
                                             urlencode(params))
 
         print("Loading %s into %s in Sesame" % (filename, endpoint))
 
-        data = open(filename, 'r').read()
-        (response, content) = httplib2.Http().request(endpoint, 'PUT',
+        data = open(filename, "r").read()
+        (response, content) = httplib2.Http().request(endpoint, "PUT",
                                                       body=data,
-                                                      headers={'content-type': 'application/x-turtle'})
+                                                      headers={
+                                                          "content-type": "application/x-turtle"})
         print("Response %s" % response.status)
         print(content)
 
 
 class RecognizeOpenRdfClient(OpenRdfClient):
 
-    def __init__(self, server_uri, config_repository='config.weblyzard.com'):
+    def __init__(self, server_uri, config_repository="config.weblyzard.com"):
         OpenRdfClient.__init__(self, server_uri)
         self.config_repository = config_repository
 
@@ -357,7 +357,7 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         """ """
         for orphan in self.get_orphaned_analyzers():
             self.delete_statements(self.config_repository,
-                                   subj='_:%s' % orphan,
+                                   subj="_:%s" % orphan,
                                    delete=True)
 
     def get_orphaned_analyzers(self):
@@ -365,13 +365,13 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         profiles = self.get_profiles()
         configured = []
         for profile in profiles.values():
-            configured.extend(profile['analyzers'])
+            configured.extend(profile["analyzers"])
 
         orphaned = []
-        query = QUERIES['all_subjects']
+        query = QUERIES["all_subjects"]
         for result in self.run_query(self.config_repository, query):
-            name = result['s']['value']
-            if name.startswith('genid'):
+            name = result["s"]["value"]
+            if name.startswith("genid"):
                 if name in configured:
                     pass
                 else:
@@ -384,17 +384,17 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         """
         self.check_config_repo()
 
-        query = QUERIES['configured_profiles']
+        query = QUERIES["configured_profiles"]
         profiles = {}
 
         for result in self.run_query(self.config_repository, query):
             profile = {}
-            profile_name = result['profile_name']['value']
-            profile['subject_uri'] = result['s']['value']
-            profile['analyzers'] = [result['analyzer']['value']]
+            profile_name = result["profile_name"]["value"]
+            profile["subject_uri"] = result["s"]["value"]
+            profile["analyzers"] = [result["analyzer"]["value"]]
             if profile_name in profiles:
-                profiles[profile_name]['analyzers'].extend(
-                    profile['analyzers'])
+                profiles[profile_name]["analyzers"].extend(
+                    profile["analyzers"])
             else:
                 profiles[profile_name] = profile
 
@@ -406,18 +406,18 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         profiles = self.get_profiles()
         if profile_name in profiles:
             profile = profiles[profile_name]
-            if not profile_name.startswith('pr:'):
-                profile_name = 'pr:%s' % profile_name
+            if not profile_name.startswith("pr:"):
+                profile_name = "pr:%s" % profile_name
 
             subject_uris.extend(
-                ['<%s>' % analyzer for analyzer in profile['analyzers']])
-            subject_uris.append('<%s>' % profile['subject_uri'])
+                ["<%s>" % analyzer for analyzer in profile["analyzers"]])
+            subject_uris.append("<%s>" % profile["subject_uri"])
 
         if len(subject_uris):
-            #             if not subject_uri.startswith('pr:'):
-            #                 subject_uri = 'pr:%s' % subject_uri
-            #             if not subject_uri.endswith('>'):
-            #                 subject_uri = '%s>' % subject_uri
+            #             if not subject_uri.startswith("pr:"):
+            #                 subject_uri = "pr:%s" % subject_uri
+            #             if not subject_uri.endswith(">"):
+            #                 subject_uri = "%s>" % subject_uri
             for subject_uri in subject_uris:
                 try:
                     self.delete_statements(self.config_repository,
@@ -433,17 +433,17 @@ class RecognizeOpenRdfClient(OpenRdfClient):
 
         if profile_name in profiles:
             print(profile_name)
-            subject_uri = profiles[profile_name]['subject_uri']
+            subject_uri = profiles[profile_name]["subject_uri"]
 
             # TODO: check why we need to fix this????
-            if not subject_uri.endswith('>'):
-                subject_uri = '%s>' % subject_uri
+            if not subject_uri.endswith(">"):
+                subject_uri = "%s>" % subject_uri
 
             self.delete_statements(self.config_repository,
                                    subj=subject_uri,
                                    delete=True)
         self.upload_statement(content=profile_definition,
-                              context='config.weblyzard.com',
+                              context="config.weblyzard.com",
                               target_repository=self.config_repository)
 
     def check_config_repo(self):
@@ -451,34 +451,27 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         repositories = self.get_repositories()
 
         if not self.config_repository in repositories:
-            print('warning config repo "{}" does not exist'.format(
-                self.config_repository)
-            )
+            print(
+                f"warning config repo \"{self.config_repository}\" does not exist")
 
-    def create_template(self, entity, entity_type, language='en'):
+    def create_template(self, entity: str, entity_type: str,
+                        language: str = "en"):
         """ """
-        if entity_type.lower() == 'person':
-            names = entity.split('/')[-1].split('_')
+        if entity_type.lower() == "person":
+            names = entity.split("/")[-1].split("_")
             surname = names[-1]
             first_names = names[:len(names) - 1]
-            first_name = ' '.join(first_names)
+            first_name = " ".join(first_names)
             tuples = [
-                '<{}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person> .'.format(
-                    entity),
-                '<{}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .'.format(
-                    entity),
-                '<{}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .'.format(
-                    entity),
-                '<{}> <http://dbpedia.org/property/name> "{}, {}"@{} .'.format(
-                    entity, surname, first_name, language),
-                '<{}> <http://xmlns.com/foaf/0.1/givenName> "{}"@{} .'.format(
-                    entity, first_name, language),
-                '<{}> <http://xmlns.com/foaf/0.1/surname> "{}"@{} .'.format(
-                    entity, surname, language),
-                '<{}> <http://www.w3.org/2000/01/rdf-schema#label> "{} {}"@{} . '.format(
-                    entity, first_name, surname, language)
+                f"<{entity}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person> .",
+                f"<{entity}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .",
+                f"<{entity}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .",
+                f"<{entity}> <http://dbpedia.org/property/name> \"{surname}, {first_name}\"@{language} .",
+                f"<{entity}> <http://xmlns.com/foaf/0.1/givenName> \"{first_name}\"@{language} ."
+                f"<{entity}> <http://xmlns.com/foaf/0.1/surname> \"{surname}\"@{language} .",
+                f"<{entity}> <http://www.w3.org/2000/01/rdf-schema#label> \"{first_name} {surname}\"@{language} . "
             ]
-            return '\n'.join(tuples)
+            return "\n".join(tuples)
 
     def add_dbpedia_entity_to_repository(self, repository, label, entity_type,
                                          language=None):
@@ -486,31 +479,31 @@ class RecognizeOpenRdfClient(OpenRdfClient):
         http://de.dbpedia.org/page/Matthias_Strolz?output=text%2Fplain
         """
 
-        base_url = 'http://dbpedia.org/page/'
-#         if language and language != 'en':
-#             base_url = 'http://{}.dbpedia.org/page/'.format(language)
-        format_suffix = '?output=text%2Fplain'
+        base_url = "http://dbpedia.org/page/"
+        #         if language and language != "en":
+        #             base_url = "http://{}.dbpedia.org/page/".format(language)
+        format_suffix = "?output=text%2Fplain"
 
-        label = label.replace(' ', '_')
+        label = label.replace(" ", "_")
 
-        entity = ''.join([base_url, label])
-#         entity = entity.format(entity.replace('page', 'resource'))
+        entity = "".join([base_url, label])
+        #         entity = entity.format(entity.replace("page", "resource"))
 
-#         content = self.create_template(entity, type, language)
+        #         content = self.create_template(entity, type, language)
 
         (result, content) = self.check_exists(entity, repository)
-#         print(result.status, entity, content)
-#         print(result)
+        #         print(result.status, entity, content)
+        #         print(result)
         if result.status and len(content):
-            print('Skipping: {} already exists in repository {}'.format(
+            print("Skipping: {} already exists in repository {}".format(
                 entity, repository))
             return None
-#         else:
-        #             url = ''.join([base_url, label, format_suffix])
-        #             dbpedia_url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=DESCRIBE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F{}%3E&format=text%2Fx-html-script-turtle'.format(
+        #         else:
+        #             url = "".join([base_url, label, format_suffix])
+        #             dbpedia_url = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=DESCRIBE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F{}%3E&format=text%2Fx-html-script-turtle".format(
         #                 label)
         #
-        #             context = ''
+        #             context = ""
         #             data = requests.get(dbpedia_url)
         #             content = data.content
         #             if not len(content):

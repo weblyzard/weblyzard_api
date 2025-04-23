@@ -4,22 +4,22 @@
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 """
-from __future__ import unicode_literals
 
 import urllib.error
+from random import random
+from time import sleep, time
 
 from future import standard_library
-from time import sleep, time
-from random import random
 
 from weblyzard_api.client import MultiRESTClient
-from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
+from weblyzard_api.model.xml_content import XMLContent
 
 standard_library.install_aliases()
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 # number of seconds to wait if the web service is occupied
@@ -60,24 +60,24 @@ class Jeremia(MultiRESTClient):
             from weblyzard_api.client.recognize import Recognize
             from pprint import pprint
 
-            docs = {'id': '192292',
-                    'title': 'The document title.',
-                    'body': 'This is the document text...',
-                    'format': 'text/html',
-                    'header': {}}
+            docs = {"id": "192292",
+                    "title": "The document title.",
+                    "body": "This is the document text...",
+                    "format": "text/html",
+                    "header": {}}
             client = Jeremia()
             result = client.submit_document(docs)
             pprint(result)
     """
-    URL_PATH = 'jeremia/rest'
-    ATTRIBUTE_MAPPING = {'content_id': 'id',
-                         'title': 'title',
-                         'sentences': 'sentence',
-                         'lang': 'lang',
-                         'sentences_map': {'pos': 'pos',
-                                           'token': 'token',
-                                           'value': 'value',
-                                           'md5sum': 'id'}}
+    URL_PATH = "jeremia/rest"
+    ATTRIBUTE_MAPPING = {"content_id": "id",
+                         "title": "title",
+                         "sentences": "sentence",
+                         "lang": "lang",
+                         "sentences_map": {"pos": "pos",
+                                           "token": "token",
+                                           "value": "value",
+                                           "md5sum": "id"}}
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
@@ -90,7 +90,7 @@ class Jeremia(MultiRESTClient):
                                  default_timeout=default_timeout,
                                  user=usr, password=pwd)
 
-    def submit_document(self, document, source_id:int=None,
+    def submit_document(self, document, source_id: int = None,
                         wait_time=DEFAULT_WAIT_TIME,
                         max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
                         max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
@@ -108,20 +108,21 @@ class Jeremia(MultiRESTClient):
 
             # submit the request
             try:
-                logger.debug('Submit_document: %s', document)
-                result = self.request(path='submit_document',
+                logger.debug("Submit_document: %s", document)
+                result = self.request(path="submit_document",
                                       source_id=source_id,
                                       parameters=document,
                                       pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                logger.warning('Submit_document failed... Sleeping before retry...')
+                logger.warning(
+                    "Submit_document failed... Sleeping before retry...")
                 sleep(max_retry_delay * random())
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the
         # requests above have failed.
-        return self.request(path='submit_document', source_id=source_id,
+        return self.request(path="submit_document", source_id=source_id,
                             parameters=document)
 
     def submit_documents(self, documents, source_id=-1,
@@ -134,9 +135,9 @@ class Jeremia(MultiRESTClient):
         :param documents: a list of dictionaries containing the document
         """
         if not documents:
-            raise ValueError('Cannot process an empty document list')
+            raise ValueError("Cannot process an empty document list")
 
-        request = 'submit_documents/%s/%d' % (source_id,
+        request = "submit_documents/%s/%d" % (source_id,
                                               double_sentence_threshold)
 
         # wait until the web service has available threads for processing
@@ -145,7 +146,8 @@ class Jeremia(MultiRESTClient):
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
             # wait until threads are available
-            while self.has_queued_threads(source_id=source_id) and time() - start_time < wait_time:
+            while self.has_queued_threads(
+                    source_id=source_id) and time() - start_time < wait_time:
                 sleep(max_retry_delay * random())
 
             # submit the request
@@ -158,7 +160,8 @@ class Jeremia(MultiRESTClient):
                                       pass_through_exceptions=True)
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                logger.warning(f'will retry (num_attempts:{attempts}) due to {e}')
+                logger.warning(
+                    f"will retry (num_attempts:{attempts}) due to {e}")
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the
@@ -170,57 +173,57 @@ class Jeremia(MultiRESTClient):
         """
         :returns: the status of the Jeremia web service.
         """
-        return self.request('status', return_plain=True)
+        return self.request("status", return_plain=True)
 
     def version(self):
         """
         :returns: the current version of the jeremia deployed on the server
         """
-        return self.request('version', return_plain=True)
+        return self.request("version", return_plain=True)
 
-    def get_xml_doc(self, text, content_id='1'):
+    def get_xml_doc(self, text, content_id="1"):
         """
         Processes text and returns a XMLContent object.
 
         :param text: the text to process
         :param content_id: optional content id
         """
-        batch = [{'id': content_id,
-                  'title': '',
-                  'body': text,
-                  'format': 'text/plain'}]
+        batch = [{"id": content_id,
+                  "title": "",
+                  "body": text,
+                  "format": "text/plain"}]
 
         results = self.submit_documents(batch)
         result = results[0]
-        return XMLContent(result['xml_content'])
+        return XMLContent(result["xml_content"])
 
     def update_blacklist(self, source_id, blacklist):
         """
         updates an existing blacklist cache
 
-        :param source_id: the blacklist's source id
+        :param source_id: the blacklist"s source id
         """
-        path = 'cache/update_blacklist/%s' % source_id
+        path = "cache/update_blacklist/%s" % source_id
         return self.request(path=path, source_id=source_id,
                             parameters=blacklist)
 
     def clear_blacklist(self, source_id):
         """
-        :param source_id: the blacklist's source id
+        :param source_id: the blacklist"s source id
 
         Empties the existing sentence blacklisting cache for the given source_id
         """
-        return self.request(path='cache/clear_blacklist/%s' % source_id,
+        return self.request(path="cache/clear_blacklist/%s" % source_id,
                             source_id=source_id)
 
-    def get_blacklist(self, source_id:int):
+    def get_blacklist(self, source_id: int):
         """
-        :param source_id: the blacklist's source id
+        :param source_id: the blacklist"s source id
         :returns: the sentence blacklist for the given source_id"""
-        return self.request(path='cache/get_blacklist/%s' % source_id,
+        return self.request(path="cache/get_blacklist/%s" % source_id,
                             source_id=source_id)
 
-    def has_queued_threads(self, source_id:int=None):
+    def has_queued_threads(self, source_id: int = None):
         """
         :param source_id: source id
         :returns:
@@ -232,7 +235,7 @@ class Jeremia(MultiRESTClient):
             will slow down the overall performance.
         """
         try:
-            result = self.request('has_queued_threads', source_id=source_id)
+            result = self.request("has_queued_threads", source_id=source_id)
         except Exception as e:
             result = True
         return result

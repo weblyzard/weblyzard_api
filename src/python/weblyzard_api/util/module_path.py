@@ -8,7 +8,7 @@ Created on November 17, 2021
 clone of eWRT.util.module_path
 """
 
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # (C)opyrights 2013 by Albert Weichselbraun <albert@weichselbraun.net>
@@ -30,30 +30,31 @@ __author__ = "Albert Weichselbraun"
 __revision__ = "$Id$"
 __copyright__ = "GPL"
 
-from six import string_types
 from os.path import dirname, join
+
+from six import string_types
 
 
 def get_resource(module_path, relative_path_list):
     """
-    Returns the path of the given resource relative to the module's directory.
+    Returns the path of the given resource relative to the module"s directory.
 
     ::param module_path: path to the given module (obtained from __file__)
     ::param relative_path_list: a string or a list of directories as used for os.path.join
     """
     if isinstance(relative_path_list, string_types):
-        relative_path_list = (relative_path_list, )
+        relative_path_list = (relative_path_list,)
     return join(dirname(module_path), *relative_path_list)
 
 
 def test_get_resource():
     """ verifies that get_resource yields the correct resource path """
-    path = get_resource(__file__, ('resources', 'test.xml'))
-    assert join(dirname(__file__), 'resources', 'test.xml') == path
+    path = get_resource(__file__, ("resources", "test.xml"))
+    assert join(dirname(__file__), "resources", "test.xml") == path
 
 
 def test_get_resource_single_string():
     """ verifies that get_resource yields the correct resource path for a
         single string argument """
-    path = get_resource(__file__, 'resources/test.xml')
-    assert join(dirname(__file__), 'resources', 'test.xml') == path
+    path = get_resource(__file__, "resources/test.xml")
+    assert join(dirname(__file__), "resources", "test.xml") == path

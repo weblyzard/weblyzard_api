@@ -3,7 +3,6 @@
 """
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 """
-from __future__ import unicode_literals
 from weblyzard_api.client import MultiRESTClient
 
 from weblyzard_api.client import (
@@ -26,7 +25,7 @@ class DomainSpecificity(MultiRESTClient):
         :func:`parse_documents` or 
         :func:`search_documents`.
     """
-    URL_PATH = 'rest/domain_specificity'
+    URL_PATH = "rest/domain_specificity"
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
@@ -46,7 +45,7 @@ class DomainSpecificity(MultiRESTClient):
         :param profile_mapping: a dictionary of keywords and their \
                                respective domain specificity values.
         """
-        return self.request('add_or_refresh_profile/%s' % profile_name,
+        return self.request("add_or_refresh_profile/%s" % profile_name,
                             profile_mapping, execute_all_services=True)
 
     def get_domain_specificity(self, profile_name, documents,
@@ -57,7 +56,7 @@ class DomainSpecificity(MultiRESTClient):
         :param documents: a list of dictionaries containing the document
         :param is_case_sensitive: whether to consider case or not (default: True) 
         """
-        return self.request('parse_documents/%s/%s' % (profile_name,
+        return self.request("parse_documents/%s/%s" % (profile_name,
                                                        is_case_sensitive),
                             documents)
 
@@ -73,7 +72,7 @@ class DomainSpecificity(MultiRESTClient):
         found_tags = {}
         for document_batch in self.get_document_batch(documents=documents,
                                                       batch_size=batch_size):
-            result = self.request('parse_documents/%s/%s' %
+            result = self.request("parse_documents/%s/%s" %
                                   (matview_name, is_case_sensitive),
                                   document_batch)
             if result:
@@ -81,8 +80,9 @@ class DomainSpecificity(MultiRESTClient):
 
         return found_tags
 
-    def search_documents(self, profile_name, documents, is_case_sensitive=False):
-        return self.request('search_documents/%s/%s' % (profile_name,
+    def search_documents(self, profile_name, documents,
+                         is_case_sensitive=False):
+        return self.request("search_documents/%s/%s" % (profile_name,
                                                         is_case_sensitive),
                             documents)
 
@@ -90,7 +90,7 @@ class DomainSpecificity(MultiRESTClient):
         """
         :returns: a list of all available domain specificity profiles.
         """
-        return self.request('list_profiles')
+        return self.request("list_profiles")
 
     def has_profile(self, profile_name):
         """
@@ -104,6 +104,6 @@ class DomainSpecificity(MultiRESTClient):
 
     def meminfo(self):
         """
-        :returns: Information on the web service's memory consumption
+        :returns: Information on the web service"s memory consumption
         """
-        return self.request('meminfo')
+        return self.request("meminfo")

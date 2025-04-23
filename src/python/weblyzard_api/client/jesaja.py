@@ -7,9 +7,9 @@
 from __future__ import unicode_literals
 
 from weblyzard_api.client import MultiRESTClient
-from weblyzard_api.model.xml_content import XMLContent
 from weblyzard_api.client import (
     WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
+from weblyzard_api.model.xml_content import XMLContent
 
 
 class Jesaja(MultiRESTClient):
@@ -19,21 +19,21 @@ class Jesaja(MultiRESTClient):
     Jesaja extracts associations (i.e. keywords) from text documents.
     """
 
-    VALID_CORPUS_FORMATS = ('xml', 'csv')
-    URL_PATH = 'jesaja/rest'
-    ATTRIBUTE_MAPPING = {'content_id': 'id',
-                         'title': 'title',
-                         'sentences': 'sentence',
-                         'body_annotations': 'body_annotation',
-                         'lang': 'xml:lang',
-                         'sentences_map': {'pos': 'pos',
-                                           'token': 'token',
-                                           'value': 'value',
-                                           'md5sum': 'id'},
-                         'annotations_map': {'start': 'start',
-                                             'end': 'end',
-                                             'key': 'key',
-                                             'surfaceForm': 'surfaceForm'
+    VALID_CORPUS_FORMATS = ("xml", "csv")
+    URL_PATH = "jesaja/rest"
+    ATTRIBUTE_MAPPING = {"content_id": "id",
+                         "title": "title",
+                         "sentences": "sentence",
+                         "body_annotations": "body_annotation",
+                         "lang": "xml:lang",
+                         "sentences_map": {"pos": "pos",
+                                           "token": "token",
+                                           "value": "value",
+                                           "md5sum": "id"},
+                         "annotations_map": {"start": "start",
+                                             "end": "end",
+                                             "key": "key",
+                                             "surfaceForm": "surfaceForm"
                                              }}
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
@@ -87,18 +87,18 @@ class Jesaja(MultiRESTClient):
             ::
 
                 { 
-                    'valid_pos_tags'                 : ['NN', 'P', 'ADJ'],
-                    'required_pos_tags'              : [],
-                    'corpus_name'                    : reference_corpus_name,
-                    'min_phrase_significance'        : 2.0,
-                    'num_keywords'                   : 5,
-                    'skip_underrepresented_keywords' : True,
-                    'keyword_algorithm'              : 'com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm', 
-                    'min_token_count'                : 5,
-                    'min_ngram_length'               : 1,
-                    'max_ngram_length'               : 3,
-                    'stoplists'                      : [],
-                    'groundAnnotations'              : False,
+                    "valid_pos_tags"                 : ["NN", "P", "ADJ"],
+                    "required_pos_tags"              : [],
+                    "corpus_name"                    : reference_corpus_name,
+                    "min_phrase_significance"        : 2.0,
+                    "num_keywords"                   : 5,
+                    "skip_underrepresented_keywords" : True,
+                    "keyword_algorithm"              : "com.weblyzard.backend.jesaja.algorithm.keywords.YatesKeywordSignificanceAlgorithm", 
+                    "min_token_count"                : 5,
+                    "min_ngram_length"               : 1,
+                    "max_ngram_length"               : 3,
+                    "stoplists"                      : [],
+                    "groundAnnotations"              : False,
 
                 }
 
@@ -108,7 +108,7 @@ class Jesaja(MultiRESTClient):
             * ``com.weblyzard.backend.jesaja.algorithm.keywords.LogLikelihoodKeywordSignificanceAlgorithm``
 
         """
-        return self.request('add_or_refresh_profile/%s' % profile_name,
+        return self.request("add_or_refresh_profile/%s" % profile_name,
                             keyword_calculation_profile)
 
     def add_or_update_corpus(self, corpus_name, corpus_format, corpus,
@@ -117,10 +117,10 @@ class Jesaja(MultiRESTClient):
         Adds/updates a corpus at Jesaja.
 
         :param corpus_name: the name of the corpus
-        :param corpus_format: either 'csv', 'xml', or wlxml
+        :param corpus_format: either "csv", "xml", or wlxml
         :param corpus: the corpus in the given format.
         :param profile_name: the name of the profile used for tokenization \
-            (only used in conjunction with corpus_format 'doc').
+            (only used in conjunction with corpus_format "doc").
 
         .. note:: Supported ``corpus_format``
 
@@ -141,20 +141,21 @@ class Jesaja(MultiRESTClient):
             profile_name = corpus_name
 
         # convert the wlxml format to doc, if required
-        if corpus_format == 'xml':
+        if corpus_format == "xml":
             if profile_name is None:
-                raise ValueError('Corpus_format "xml" requires spezifying a profile for tokenization')
+                raise ValueError(
+                    "Corpus_format \"xml\" requires spezifying a profile for tokenization")
             elif not skip_profile_check and not self.has_profile(profile_name):
-                raise ValueError('profile "%s" missing!' % (profile_name))
+                raise ValueError(f"profile \{profile_name}\" missing!")
 
             corpus = self.get_documents(corpus)
-            path = 'add_or_refresh_corpus/doc/%s/%s' % (corpus_name,
+            path = "add_or_refresh_corpus/doc/%s/%s" % (corpus_name,
                                                         profile_name)
         # handle csv corpora
-        elif corpus_format == 'csv':
-            path = 'add_or_refresh_corpus/csv/%s' % corpus_name
-        elif corpus_format == 'doc':
-            raise Exception('Format "doc" not supported anymore')
+        elif corpus_format == "csv":
+            path = "add_or_refresh_corpus/csv/%s" % corpus_name
+        elif corpus_format == "doc":
+            raise Exception("Format \"doc\" not supported anymore")
         else:
             raise ValueError("Unsupported format.")
 
@@ -177,45 +178,45 @@ class Jesaja(MultiRESTClient):
 
                 documents = [
                   {
-                     'title': 'Test document',
-                     'sentence': [
+                     "title": "Test document",
+                     "sentence": [
                          {
-                           'id': '27150b5fae553ebab63332fe7b94d518',
-                           'pos': 'NNP VBZ VBN IN VBZ NNP . NNP VBZ NNP .',
-                           'token': '0,5 6,8 9,16 17,19 20,27 28,43 43,44 45,48 49,54 55,61 61,62',
-                           'value': 'CDATA is wrapped as follows <![CDATA[aha]]>. Ana loves Martin.'
+                           "id": "27150b5fae553ebab63332fe7b94d518",
+                           "pos": "NNP VBZ VBN IN VBZ NNP . NNP VBZ NNP .",
+                           "token": "0,5 6,8 9,16 17,19 20,27 28,43 43,44 45,48 49,54 55,61 61,62",
+                           "value": "CDATA is wrapped as follows <![CDATA[aha]]>. Ana loves Martin."
                          },
                          {
-                           'id': 'f8ddd9b3c8cf4c7764a3348d14e84e79',
-                           'pos': 'NN IN CD \' IN JJR JJR JJR JJR CC CC CC : : JJ NN .',
-                           'token': '0,4 5,7 8,9 10,11 12,16 17,18 18,19 19,20 20,21 22,23 23,24 25,28 29,30 30,31 32,39 40,45 45,46',
-                           'value': '10µm in € ” with <><> && and // related stuff.'
+                           "id": "f8ddd9b3c8cf4c7764a3348d14e84e79",
+                           "pos": "NN IN CD \" IN JJR JJR JJR JJR CC CC CC : : JJ NN .",
+                           "token": "0,4 5,7 8,9 10,11 12,16 17,18 18,19 19,20 20,21 22,23 23,24 25,28 29,30 30,31 32,39 40,45 45,46",
+                           "value": "10µm in € ” with <><> && and // related stuff."
                          }
                      ],
-                     'content_id': '123k233',
-                     'lang': 'en',
+                     "content_id": "123k233",
+                     "lang": "en",
                      }
                 ]
         """
         if not self.has_profile(profile_name):
             raise Exception(
-                'Cannot compute keywords - unknown profile %s' % profile_name)
-        return self.request('get_keywords/%s' % profile_name, documents)
+                "Cannot compute keywords - unknown profile %s" % profile_name)
+        return self.request("get_keywords/%s" % profile_name, documents)
 
     def has_profile(self, profile_name):
         return profile_name in self.list_profiles()
 
     def list_profiles(self):
-        return self.request('list_profiles')
+        return self.request("list_profiles")
 
     def get_cache_stats(self):
-        return self.request('get_cache_stats', return_plain=True)
+        return self.request("get_cache_stats", return_plain=True)
 
     def get_cached_corpora(self):
-        return self.request('get_cached_corpora')
+        return self.request("get_cached_corpora")
 
     def get_corpus_size(self, profile_name):
-        return self.request('get_corpus_size/%s' % profile_name)
+        return self.request("get_corpus_size/%s" % profile_name)
 
     def add_or_update_stoplist(self, name, stoplist):
         """
@@ -229,13 +230,13 @@ class Jesaja(MultiRESTClient):
         :param name: name of the stopword list
         :param stoplist: a list of stopwords for the keyword computation
         """
-        return self.request('set_stoplist/%s' % name, stoplist)
+        return self.request("set_stoplist/%s" % name, stoplist)
 
     def list_stoplists(self):
         """
         :returns: a list of all available stopword lists.
         """
-        return self.request('list_stoplists')
+        return self.request("list_stoplists")
 
     def change_log_level(self, level):
         """
@@ -243,21 +244,21 @@ class Jesaja(MultiRESTClient):
 
         :param level: the new log level to use.
         """
-        return self.request('set_log_level/%s' % level, return_plain=True)
+        return self.request("set_log_level/%s" % level, return_plain=True)
 
     def finalize_corpora(self):
         """
         .. note::
 
-           This function needs to be called after uploading 'doc' or 'wlxml'
+           This function needs to be called after uploading "doc" or "wlxml"
            corpora, since it triggers the computations of the token counts
-           based on the 'valid_pos_tags' parameter.
+           based on the "valid_pos_tags" parameter.
         """
-        return self.request('finalize_corpora', return_plain=True)
+        return self.request("finalize_corpora", return_plain=True)
 
     def finalize_profile(self, profile_name):
-        return self.request('finalize_profile/%s' % profile_name,
+        return self.request("finalize_profile/%s" % profile_name,
                             return_plain=True)
 
     def meminfo(self):
-        return self.request('meminfo')
+        return self.request("meminfo")

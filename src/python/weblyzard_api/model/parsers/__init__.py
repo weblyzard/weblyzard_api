@@ -5,25 +5,19 @@ Created on 07.04.2014
 
 @author: heinz-peterlang
 """
-from __future__ import print_function
-from __future__ import unicode_literals
 
-from builtins import str
-from builtins import zip
-from builtins import object
+import hashlib
 import json
 import logging
-import hashlib
-import unicodedata
-
-from lxml import etree
 from datetime import date, datetime
+
+import unicodedata
+from lxml import etree
 
 from weblyzard_api.model.exceptions import (MalformedJSONException,
                                             UnexpectedFieldException,
                                             MissingFieldException,
                                             UnsupportedValueException)
-from weblyzard_api.client.rdf import Namespace
 
 logger = logging.getLogger(__name__)
 
@@ -38,9 +32,11 @@ class DatesToStrings(json.JSONEncoder):
         if isinstance(obj, dict):
 
             def transform_date(o):
-                return self._encode(o.isoformat() if isinstance(o, datetime) else o)
+                return self._encode(
+                    o.isoformat() if isinstance(o, datetime) else o)
 
-            return {transform_date(k): transform_date(v) for k, v in obj.items()}
+            return {transform_date(k): transform_date(v) for k, v in
+                    obj.items()}
         else:
             return obj
 
@@ -48,7 +44,7 @@ class DatesToStrings(json.JSONEncoder):
         return super(DatesToStrings, self).encode(self._encode(obj))
 
 
-class JSONParserBase(object):
+class JSONParserBase:
     """
     JSON Parser base class.
     """
@@ -61,8 +57,8 @@ class JSONParserBase(object):
 
     SUPPORTED_CONTENT_TYPES = {}
 
-    TEXT_FORMATS = ('text/plain', 'text', 'txt', 'txt/plain')
-    HTML_FORMATS = ('html')
+    TEXT_FORMATS = {"text/plain", "text", "txt", "txt/plain"}
+    HTML_FORMATS = {"html"}
 
     @classmethod
     def from_json_string(cls, json_string):
@@ -79,13 +75,14 @@ class JSONParserBase(object):
         """
         try:
             if isinstance(json_string, bytes):
-                json_string = json_string.decode('utf-8')
+                json_string = json_string.decode("utf-8")
 
             logger.debug(json_string)
 
             api_dict = json.loads(json_string)
         except Exception as e:
-            raise MalformedJSONException(f'JSON could not be parsed: {e}') from e
+            raise MalformedJSONException(
+                f"JSON could not be parsed: {e}") from e
         return cls.from_api_dict(api_dict)
 
     @classmethod
@@ -106,7 +103,7 @@ class JSONParserBase(object):
         for key in cls.FIELDS_REQUIRED:
             if key in api_dict:
                 # check if the fields contain non-null values
-                if api_dict[key] is None or api_dict[key] == '':
+                if api_dict[key] is None or api_dict[key] == "":
                     missing_fields.append(key)
             else:
                 missing_fields.append(key)
@@ -139,7 +136,7 @@ class JSONParserBase(object):
     def _check_document_format(cls, api_dict, strict=True):
         """
         Checks if the api_dict has all required fields and if there
-        are unexpected and unallowed keys.
+        are unexpected and un-allowed keys.
 
         :param api_dict: The dict to check.
         :type api_dict: dict
@@ -150,12 +147,12 @@ class JSONParserBase(object):
         missing_fields = cls._missing_fields(api_dict)
         if missing_fields is not None:
             raise MissingFieldException("Missing field(s) %s" %
-                                        ', '.join(missing_fields))
+                                        ", ".join(missing_fields))
         if strict:
             unexpected_fields = cls._unexpected_fields(api_dict)
             if unexpected_fields is not None:
                 raise UnexpectedFieldException("Got unexpected field(s): %s" %
-                                               ', '.join(unexpected_fields))
+                                               ", ".join(unexpected_fields))
 
     @classmethod
     def _validate_document(cls, json_document, strict=True):
@@ -165,52 +162,54 @@ class JSONParserBase(object):
                 if an unexpected key is contained in the dict.
         """
         cls._check_document_format(json_document, strict)
-        if 'content' in json_document and 'content_type' not in json_document:
+        if "content" in json_document and "content_type" not in json_document:
             raise MissingFieldException(
-                "When field 'content' is set, 'content_type' must be set, too.")
-        elif 'content_type' in json_document and 'content' not in json_document:
+                "When field \"content\" is set, \"content_type\" must be set, too.")
+        elif "content_type" in json_document and "content" not in json_document:
             raise MissingFieldException(
-                "When field 'content_type' is set, 'content' must be set, too.")
-        elif 'content' not in json_document and 'content_type' not in json_document and\
-                'sentences' not in json_document and 'uri' not in json_document:
+                "When field \"content_type\" is set, \"content\" must be set, too.")
+        elif "content" not in json_document and "content_type" not in json_document and \
+                "sentences" not in json_document and "uri" not in json_document:
             raise MissingFieldException(
-                "Either 'sentences' or 'content' and 'content_type' must be set.")
-        if 'content' in json_document and 'sentences' in json_document:
+                "Either \"sentences\" or \"content\" and \"content_type\" must be set.")
+        if "content" in json_document and "sentences" in json_document:
             raise MalformedJSONException(
-                "If 'sentences' is set, 'content' must not be set.")
-        if 'content_type' in json_document and not json_document['content_type'] in cls.SUPPORTED_CONTENT_TYPES:
-            raise UnsupportedValueException("content_type %s is not supported. Supported are %s" %
-                                            (json_document['content_type'],
-                                             cls.SUPPORTED_CONTENT_TYPES))
-        meta_data = json_document.get('meta_data', {})
+                "If \"sentences\" is set, \"content\" must not be set.")
+        if "content_type" in json_document and not json_document[
+                                                       "content_type"] in cls.SUPPORTED_CONTENT_TYPES:
+            raise UnsupportedValueException(
+                "content_type %s is not supported. Supported are %s" %
+                (json_document["content_type"],
+                 cls.SUPPORTED_CONTENT_TYPES))
+        meta_data = json_document.get("meta_data", {})
         valid_from = None
-        if 'published_date' in meta_data:
+        if "published_date" in meta_data:
             try:
-                if isinstance(meta_data['published_date'], str):
+                if isinstance(meta_data["published_date"], str):
                     from dateutil.parser import parse
-                    valid_from = parse(meta_data['published_date'])
-                elif isinstance(meta_data['published_date'], float) or \
-                        isinstance(meta_data['published_date'], int):
+                    valid_from = parse(meta_data["published_date"])
+                elif isinstance(meta_data["published_date"], float) or \
+                        isinstance(meta_data["published_date"], int):
                     valid_from = datetime.utcfromtimestamp(
-                        meta_data['published_date'])
+                        meta_data["published_date"])
             except Exception as e:
                 raise MissingFieldException(
-                    "Could not process published_date: %s" % meta_data['published_date'])
+                    "Could not process published_date: %s" % meta_data[
+                        "published_date"])
             if not isinstance(valid_from, datetime):
                 raise UnsupportedValueException(
-                    'Field published_date set but not parseable')
+                    "Field published_date set but not parseable")
 
     @classmethod
     def convert_sentiment(cls, value):
         if value <= -0.5:
-            return 'negative'
+            return "negative"
         elif value >= 0.5:
-            return 'positive'
-        return 'neutral'
+            return "positive"
+        return "neutral"
 
 
-class XMLParser(object):
-
+class XMLParser:
     VERSION = None
     SUPPORTED_NAMESPACE = None
     DOCUMENT_NAMESPACES = {}
@@ -220,7 +219,7 @@ class XMLParser(object):
     ANNOTATION_MAPPING = {}
     FEATURE_MAPPING = {}
     RELATION_MAPPING = {}
-    DEFAULT_NAMESPACE = 'wl'
+    DEFAULT_NAMESPACE = "wl"
 
     @classmethod
     def get_default_ns(cls):
@@ -228,14 +227,14 @@ class XMLParser(object):
 
     @classmethod
     def remove_control_characters(cls, value):
-        return ''.join(ch for ch in value if unicodedata.category(ch)[0] != 'C')
+        return "".join(ch for ch in value if unicodedata.category(ch)[0] != "C")
 
     @classmethod
     def encode_value(cls, value):
         if isinstance(value, str):
             return XMLParser.remove_control_characters(value)
         elif isinstance(value, bytes):
-            return XMLParser.remove_control_characters(value.decode('utf-8'))
+            return XMLParser.remove_control_characters(value.decode("utf-8"))
         elif isinstance(value, date):
             return value.isoformat()
         elif isinstance(value, datetime):
@@ -244,15 +243,15 @@ class XMLParser(object):
             try:
                 return json.dumps(value)
             except Exception as e:
-                logger.error('Could not encode %s: %s', value, e)
+                logger.error("Could not encode %s: %s", value, e)
                 return
 
     @classmethod
     def decode_value(cls, value):
         try:
             decoded = json.loads(value)
-            if decoded in (float('inf'), float('-inf'), float('nan')):
-                raise ValueError('deserializing of invalid json values')
+            if decoded in (float("inf"), float("-inf"), float("nan")):
+                raise ValueError("deserializing of invalid json values")
             else:
                 return decoded
         except ValueError:
@@ -262,9 +261,9 @@ class XMLParser(object):
     @classmethod
     def cast_item(cls, item):
         """ """
-        if item.lower() == 'true':
+        if item.lower() == "true":
             return True
-        elif item.lower() == 'false':
+        elif item.lower() == "false":
             return False
 
         try:
@@ -293,58 +292,63 @@ class XMLParser(object):
             elif isinstance(value, list) or isinstance(value, dict):
                 value = json.dumps(value, cls=DatesToStrings)
         except Exception as e:
-            logger.error('could not encode {}: {}'.format(value, e))
+            logger.error("could not encode {}: {}".format(value, e))
             value = str(value)
         return value
 
     @classmethod
     def is_supported(cls, xml_content):
-        return 'xmlns:wl="{}"'.format(cls.SUPPORTED_NAMESPACE) in xml_content
+        return "xmlns:wl=\"{}\"".format(cls.SUPPORTED_NAMESPACE) in xml_content
 
     @classmethod
-    def invert_mapping(cls, mapping):
+    def invert_mapping(cls, mapping: dict) -> dict:
         result = {}
 
-        if mapping == None:
+        if mapping is None:
             return result
+
         invert_mapping = dict(zip(mapping.values(),
                                   mapping.keys()))
         for key, value in invert_mapping.items():
             if isinstance(key, tuple):
                 key, namespace = key
                 if namespace is not None:
-                    key = '{%s}%s' % (cls.DOCUMENT_NAMESPACES[namespace], key)
+                    key = f"{{{cls.DOCUMENT_NAMESPACES[namespace]}}}{key}"
             result[key] = value
         return result
 
     @classmethod
-    def parse(cls, xml_content, remove_duplicates=True, raise_on_empty=True):
+    def parse(cls, xml_content: str, remove_duplicates: bool = True,
+              raise_on_empty: bool = True):
         """ """
         parser = etree.XMLParser(recover=True, strip_cdata=False)
-        cleaned_xml_content = xml_content.replace('encoding="UTF-8"', '')
+        cleaned_xml_content = xml_content.replace("encoding=\"UTF-8\"", "")
         root = etree.fromstring(cleaned_xml_content,
                                 parser=parser)
         if root is None:
-            raise ValueError(u'Failed to parse root of xml-content, check if '
-                             'this is valid xml: {}'.format(xml_content))
+            raise ValueError(f"Failed to parse root of xml-content, check if "
+                             f"this is valid xml: {xml_content}")
         try:
             invert_mapping = cls.invert_mapping(cls.ATTR_MAPPING)
             attributes = cls.load_attributes(root.attrib,
                                              mapping=invert_mapping)
         except Exception as e:
-            logger.warning('Could not process mapping %s: %s',
+            logger.warning("Could not process mapping %s: %s",
                            cls.ATTR_MAPPING, e)
             attributes = {}
 
         sentences = cls.load_sentences(
-            root, remove_duplicates=remove_duplicates, raise_on_empty=raise_on_empty)
-        title_sentence_ids = [sentence['md5sum'] for sentence in sentences
-                              if 'is_title' in sentence and sentence['is_title']]
+            root, remove_duplicates=remove_duplicates,
+            raise_on_empty=raise_on_empty)
+        title_sentence_ids = [sentence["md5sum"] for sentence in sentences
+                              if
+                              "is_title" in sentence and sentence["is_title"]]
 
         title_annotations = []
         body_annotations = []
         for annotation in cls.load_annotations(root):
-            if 'md5sum' in annotation and annotation['md5sum'] in title_sentence_ids:
+            if "md5sum" in annotation and annotation[
+                "md5sum"] in title_sentence_ids:
                 title_annotations.append(annotation)
             else:
                 body_annotations.append(annotation)
@@ -354,16 +358,19 @@ class XMLParser(object):
         return attributes, sentences, title_annotations, body_annotations, features, relations
 
     @classmethod
-    def load_attributes(cls, attributes, mapping):
-        new_attributes = {}
+    def load_attributes(cls, attributes, mapping: dict) -> dict:
+        new_attributes: dict = {}
 
         for key, value in attributes.items():
             if mapping and key in mapping:
                 key = mapping.get(key, key)
-
+            else:
+                print("here")
+            if value is None:
+                continue
             value = cls.decode_value(value)
 
-            if not value == 'None':
+            if not value == "None":
                 new_attributes[key] = value
 
         return new_attributes
@@ -375,44 +382,46 @@ class XMLParser(object):
 
         annotation_mapping = cls.invert_mapping(cls.ANNOTATION_MAPPING)
 
-        for annotation_element in root.iterfind('{%s}annotation' % cls.get_default_ns(),
-                                                namespaces=cls.DOCUMENT_NAMESPACES):
+        for annotation_element in root.iterfind(
+                "{%s}annotation" % cls.get_default_ns(),
+                namespaces=cls.DOCUMENT_NAMESPACES):
             annotations.append(cls.load_attributes(annotation_element.attrib,
                                                    mapping=annotation_mapping))
 
         return annotations
 
     @classmethod
-    def load_sentences(cls, root, remove_duplicates=True, raise_on_empty=False):
+    def load_sentences(cls, root, remove_duplicates: bool = True,
+                       raise_on_empty: bool = False):
         """ """
         sentences = []
         seen_sentences = []
 
         sentence_mapping = cls.invert_mapping(cls.SENTENCE_MAPPING)
 
-        for sent_element in root.iterfind('{%s}sentence' % cls.get_default_ns(),
+        for sent_element in root.iterfind(f"{{{cls.get_default_ns()}}}sentence",
                                           namespaces=cls.DOCUMENT_NAMESPACES):
             if sent_element.text:
                 sent_value = sent_element.text.strip()
             else:
-                sent_value = ''
+                sent_value = ""
             sent_attributes = cls.load_attributes(sent_element.attrib,
                                                   mapping=sentence_mapping)
-            sent_attributes['value'] = sent_value
+            sent_attributes["value"] = sent_value
 
-            if 'md5sum' in sent_attributes:
-                sent_id = sent_attributes['md5sum']
-            elif 'id' in sent_attributes:
-                sent_id = sent_attributes['id']
-                sent_attributes['md5sum'] = sent_id
-                del sent_attributes['id']
+            if "md5sum" in sent_attributes:
+                sent_id = sent_attributes["md5sum"]
+            elif "id" in sent_attributes:
+                sent_id = sent_attributes["id"]
+                sent_attributes["md5sum"] = sent_id
+                del sent_attributes["id"]
             else:
                 sent_id = hashlib.md5(
-                    sent_value.encode('utf-8')).hexdigest()
-                sent_attributes['md5sum'] = sent_id
+                    sent_value.encode("utf-8")).hexdigest()
+                sent_attributes["md5sum"] = sent_id
 
             if not sent_value:
-                logger.warning('Empty attribute for sentence %s', sent_id)
+                logger.warning("Empty attribute for sentence %s", sent_id)
                 if raise_on_empty:
                     raise EmptySentenceException
             if not sent_id in seen_sentences:
@@ -430,19 +439,19 @@ class XMLParser(object):
 
         # inverse feature mapping for loading
         feature_mapping = cls.invert_mapping(cls.FEATURE_MAPPING)
-        for feat_element in root.iterfind('{%s}feature' % cls.get_default_ns(),
+        for feat_element in root.iterfind("{%s}feature" % cls.get_default_ns(),
                                           namespaces=cls.DOCUMENT_NAMESPACES):
             feat_attributes = cls.load_attributes(feat_element.attrib,
                                                   mapping=feature_mapping)
-            if 'key' in feat_attributes and feat_attributes['key'] in features:
-                if not isinstance(features[feat_attributes['key']], list):
-                    features[feat_attributes['key']] = [
-                        features[feat_attributes['key']]]
+            if "key" in feat_attributes and feat_attributes["key"] in features:
+                if not isinstance(features[feat_attributes["key"]], list):
+                    features[feat_attributes["key"]] = [
+                        features[feat_attributes["key"]]]
                 if feat_element.text is not None:
-                    features[feat_attributes['key']].append(
+                    features[feat_attributes["key"]].append(
                         cls.cast_item(feat_element.text.strip()))
             elif feat_element.text is not None:
-                features[feat_attributes['key']] = cls.cast_item(
+                features[feat_attributes["key"]] = cls.cast_item(
                     feat_element.text.strip())
         return features
 
@@ -453,19 +462,19 @@ class XMLParser(object):
 
         # inverse relation mapping for loading
         relation_mapping = cls.invert_mapping(cls.RELATION_MAPPING)
-        for rel_element in root.iterfind('{%s}relation' % cls.get_default_ns(),
+        for rel_element in root.iterfind("{%s}relation" % cls.get_default_ns(),
                                          namespaces=cls.DOCUMENT_NAMESPACES):
             rel_attributes = cls.load_attributes(rel_element.attrib,
                                                  mapping=relation_mapping)
-            if 'key' in rel_attributes and rel_attributes['key'] in relations:
-                if not isinstance(relations[rel_attributes['key']], list):
-                    relations[rel_attributes['key']] = [
-                        relations[rel_attributes['key']]]
+            if "key" in rel_attributes and rel_attributes["key"] in relations:
+                if not isinstance(relations[rel_attributes["key"]], list):
+                    relations[rel_attributes["key"]] = [
+                        relations[rel_attributes["key"]]]
                 if rel_element.text is not None:
-                    relations[rel_attributes['key']].append(
+                    relations[rel_attributes["key"]].append(
                         cls.cast_item(rel_element.text.strip()))
             elif rel_element.text is not None:
-                relations[rel_attributes['key']] = cls.cast_item(
+                relations[rel_attributes["key"]] = cls.cast_item(
                     rel_element.text.strip())
         return relations
 
@@ -484,8 +493,8 @@ class XMLParser(object):
 
             if mapping and key in mapping:
                 key = mapping[key]
-            elif ':' in key:
-                s_key = key.split(':')
+            elif ":" in key:
+                s_key = key.split(":")
                 s_key.reverse()
                 key = tuple(s_key)
 
@@ -495,11 +504,11 @@ class XMLParser(object):
                     if namespace not in cls.DOCUMENT_NAMESPACES:
                         continue
                     elif resolve_namespaces:
-                        key = '{%s}%s' % (
+                        key = "{%s}%s" % (
                             cls.DOCUMENT_NAMESPACES[namespace], key)
                     else:
-                        key = '%s:%s' % (namespace, key)
-            if value is not None and value not in ('None', 'null', '0.0'):
+                        key = "%s:%s" % (namespace, key)
+            if value is not None and value not in ("None", "null", "0.0"):
                 if xml_encode_values:
                     new_attributes[key] = cls.encode_value(value)
                 else:
@@ -514,13 +523,13 @@ class XMLParser(object):
         for key, val in attributes.items():
             if not isinstance(key, str):
                 continue
-            if any(k in key for k in ('(', '@')):
+            if any(k in key for k in ("(", "@")):
                 continue
-            if any(k in val for k in ('{')):
+            if any(k in val for k in ("{")):
                 continue
             if key is None or val is None or isinstance(val, dict):
                 continue
-            if '@' in key:
+            if "@" in key:
                 continue
             result[key] = val
         return result
@@ -529,9 +538,9 @@ class XMLParser(object):
     def map_by_annotationtype(cls, itemlist):
         result = {}
         for item in itemlist:
-            if not item['annotationType'] in result:
-                result[item['annotationType']] = []
-            result[item['annotationType']].append(item)
+            if not item["annotationType"] in result:
+                result[item["annotationType"]] = []
+            result[item["annotationType"]].append(item)
         return result
 
     @classmethod
@@ -555,12 +564,13 @@ class XMLParser(object):
                     continue  # skip unknown attributes
 
                 if ns_prefix is not None and ns_prefix in cls.DOCUMENT_NAMESPACES:
-                    namespace = cls.DOCUMENT_NAMESPACES[cls.ATTR_MAPPING[att][1]]
+                    namespace = cls.DOCUMENT_NAMESPACES[
+                        cls.ATTR_MAPPING[att][1]]
                     result[ns_prefix] = namespace
         except Exception as e:
             pass
-        if not 'wl' in result:
-            result['wl'] = cls.DOCUMENT_NAMESPACES['wl']
+        if not "wl" in result:
+            result["wl"] = cls.DOCUMENT_NAMESPACES["wl"]
         return result
 
     @classmethod
@@ -575,7 +585,7 @@ class XMLParser(object):
                                                  sentences=sentences)
 
         if attributes:
-            assert isinstance(attributes, dict), 'dict required'
+            assert isinstance(attributes, dict), "dict required"
 
         attributes = cls.dump_xml_attributes(attributes=attributes,
                                              mapping=cls.ATTR_MAPPING)
@@ -583,15 +593,15 @@ class XMLParser(object):
             attributes = cls.clean_attributes(attributes)
         except Exception as e:
             logger.warning(e)
-        root = etree.Element('{%s}page' % cls.get_default_ns(),
+        root = etree.Element("{%s}page" % cls.get_default_ns(),
                              attrib=attributes,
                              nsmap=required_namespaces)
 
         for sent in sentences:
             sent = sent.as_dict()
-            assert isinstance(sent, dict), 'dict required'
-            value = sent['value']
-            del sent['value']
+            assert isinstance(sent, dict), "dict required"
+            value = sent["value"]
+            del sent["value"]
 
             if not value:
                 continue
@@ -600,13 +610,13 @@ class XMLParser(object):
             sent_attributes = cls.dump_xml_attributes(attributes=sent,
                                                       mapping=cls.SENTENCE_MAPPING)
             sent_elem = etree.SubElement(root,
-                                         '{%s}sentence' % cls.get_default_ns(),
+                                         "{%s}sentence" % cls.get_default_ns(),
                                          attrib=sent_attributes,
                                          nsmap=required_namespaces)
             try:
                 sent_elem.text = etree.CDATA(value)
             except Exception as e:
-                logger.debug('Skipping bad cdata: %s (%s)', value, e)
+                logger.debug("Skipping bad cdata: %s (%s)", value, e)
                 continue
 
         if annotations:
@@ -622,26 +632,26 @@ class XMLParser(object):
                 for annotation in a_items:
                     if not isinstance(annotation, dict):
                         continue
-                    assert isinstance(annotation, dict), 'dict required'
-                    if 'entities' in annotation:
-                        for entity in annotation['entities']:
+                    assert isinstance(annotation, dict), "dict required"
+                    if "entities" in annotation:
+                        for entity in annotation["entities"]:
                             entity = entity.copy()
-                            entity['annotation_type'] = a_type
-                            entity['key'] = annotation['key']
-                            preferred_name = annotation['preferredName']
+                            entity["annotation_type"] = a_type
+                            entity["key"] = annotation["key"]
+                            preferred_name = annotation["preferredName"]
                             if not isinstance(preferred_name, str):
-                                preferred_name = preferred_name.decode('utf-8')
-                            entity['preferredName'] = preferred_name
+                                preferred_name = preferred_name.decode("utf-8")
+                            entity["preferredName"] = preferred_name
 
                             annotation_attributes = cls.dump_xml_attributes(
                                 entity, mapping=cls.ANNOTATION_MAPPING)
 
                             try:
                                 etree.SubElement(
-                                        root,
-                                        f'{cls.get_default_ns()}annotation',
-                                        attrib=annotation_attributes,
-                                        nsmap=required_namespaces)
+                                    root,
+                                    f"{cls.get_default_ns()}annotation",
+                                    attrib=annotation_attributes,
+                                    nsmap=required_namespaces)
                             except Exception as e:
                                 continue
 
@@ -650,7 +660,7 @@ class XMLParser(object):
             features = {}
         if cls.FEATURE_MAPPING and len(cls.FEATURE_MAPPING):
             for key, items in features.items():
-                feature_attributes = cls.dump_xml_attributes({'key': key},
+                feature_attributes = cls.dump_xml_attributes({"key": key},
                                                              mapping=cls.FEATURE_MAPPING)
                 if not isinstance(items, list):
                     items = [items]
@@ -659,14 +669,14 @@ class XMLParser(object):
                     try:
                         value = cls.get_xml_value(value)
                         feat_elem = etree.SubElement(root,
-                                                     '{%s}feature' % cls.get_default_ns(
+                                                     "{%s}feature" % cls.get_default_ns(
                                                      ),
                                                      attrib=feature_attributes,
                                                      nsmap={})
                         feat_elem.text = etree.CDATA(value)
 
                     except Exception as e:
-                        print('Skipping bad cdata: %s (%s)' % (value, e))
+                        print("Skipping bad cdata: %s (%s)" % (value, e))
                         continue
 
         # relation mappings, if specified
@@ -675,14 +685,15 @@ class XMLParser(object):
         if cls.RELATION_MAPPING and len(cls.RELATION_MAPPING):
             for key, items in relations.items():
 
-                rel_attributes = {'key': key}
+                rel_attributes = {"key": key}
                 rel_items = []
 
                 if isinstance(items, dict):
                     for url, attributes in items.items():
-                        rel_attributes = {'key': key}
+                        rel_attributes = {"key": key}
                         attributes = {key: value for (
-                            key, value) in attributes.items() if key in cls.RELATION_MAPPING}
+                            key, value) in attributes.items() if
+                                      key in cls.RELATION_MAPPING}
                         rel_attributes.update(attributes)
                         rel_items.append((rel_attributes, url))
 
@@ -699,19 +710,20 @@ class XMLParser(object):
                     try:
                         urls = cls.get_xml_value(urls)
                         rel_elem = etree.SubElement(root,
-                                                    '{%s}relation' % cls.get_default_ns(
+                                                    "{%s}relation" % cls.get_default_ns(
                                                     ),
                                                     attrib=rel_attributes,
                                                     nsmap={})
                         rel_elem.text = etree.CDATA(urls)
 
                     except Exception as e:
-                        logger.warning('Skipping bad cdata: %s (%s)', value, e)
+                        logger.warning("Skipping bad cdata: %s (%s)", value, e)
                         continue
 
         return etree.tostring(root,
-                              encoding='unicode',
-                              pretty_print=True).replace("&quot;", "")  # [mig] lxml.etree returs `bytes` if encoding is NOT 'unicode'
+                              encoding="unicode",
+                              pretty_print=True).replace("&quot;",
+                                                         "")  # [mig] lxml.etree returs `bytes` if encoding is NOT "unicode"
         # [mig] somewhere along the migration path, if run by python2, this return above contains double quotes (") and their xml counterparts (&quot;) which is very unhelpful, so we just replace them. please use python3 to not have that issue :)
 
     @classmethod

@@ -3,13 +3,12 @@
 """
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 """
-from __future__ import unicode_literals
-
 import logging
 import urllib.error
 from random import random
-from time import sleep, time
 from typing import List
+
+from time import sleep, time
 
 from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
@@ -37,19 +36,19 @@ class Recognize(MultiRESTClient):
         * :func:`search_text` for plain text.
         * :func:`search_document` for document dictionaries.
     """
-    URL_PATH = 'rest/'
-    ATTRIBUTE_MAPPING = {'content_id': 'id',
-                         'lang': 'lang',
-                         'format': 'format',
-                         'nilsimsa': 'nilsimsa',
-                         'sentences': 'sentences',
-                         'sentences_map': {'pos': 'pos',
-                                           'token': 'token',
-                                           'significance': 'significance',
-                                           'is_title': 'is_title',
-                                           'md5sum': 'md5sum',
-                                           'value': 'text',
-                                           'dependency': 'dependency'}}
+    URL_PATH = "rest/"
+    ATTRIBUTE_MAPPING = {"content_id": "id",
+                         "lang": "lang",
+                         "format": "format",
+                         "nilsimsa": "nilsimsa",
+                         "sentences": "sentences",
+                         "sentences_map": {"pos": "pos",
+                                           "token": "token",
+                                           "significance": "significance",
+                                           "is_title": "is_title",
+                                           "md5sum": "md5sum",
+                                           "value": "text",
+                                           "dependency": "dependency"}}
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
@@ -66,7 +65,7 @@ class Recognize(MultiRESTClient):
         """
         :returns: the status of the Recognize web service.
         """
-        return self.request(path='status')
+        return self.request(path="status")
 
     def load_profile(self, profile_name):
         """ Load a given profile.
@@ -76,7 +75,7 @@ class Recognize(MultiRESTClient):
             return
 
         self.profile_cache.append(profile_name)  # only try to add once
-        return self.request(path='load_profile/{}'.format(profile_name))
+        return self.request(path="load_profile/{}".format(profile_name))
 
     def list_profiles(self):
         """ List all loaded profiles.
@@ -86,7 +85,7 @@ class Recognize(MultiRESTClient):
             >>> r.list_profiles()
             [u"MAXIMUM.COVERAGE",u"JOBCOCKPIT"]
         """
-        return self.request('list_profiles')
+        return self.request("list_profiles")
 
     def get_searcher_content(self, profile_name, entity_url):
         """
@@ -94,12 +93,12 @@ class Recognize(MultiRESTClient):
         :param profile_name: the profile to search in
         :param entity_url: long entity URL.
         """
-        content_type = 'application/json; charset=utf-8'
+        content_type = "application/json; charset=utf-8"
 
-        return self.request(path='getSearcherContent',
+        return self.request(path="getSearcherContent",
                             content_type=content_type,
-                            query_parameters={'profileName': profile_name,
-                                              'entityKey': entity_url})
+                            query_parameters={"profileName": profile_name,
+                                              "entityKey": entity_url})
 
     def search_text(self, profile_name, lang, text):
         """
@@ -109,13 +108,13 @@ class Recognize(MultiRESTClient):
         :param limit: maximum number of results to return
         :rtype: the tagged text
         """
-        content_type = 'application/json'
+        content_type = "application/json"
 
-        return self.request(path='corpus/annotate_unknown',
+        return self.request(path="corpus/annotate_unknown",
                             parameters=text,
                             content_type=content_type,
-                            query_parameters={'profileName': profile_name,
-                                              'lang': lang})
+                            query_parameters={"profileName": profile_name,
+                                              "lang": lang})
 
     def search_document(self, profile_name, document, limit=0):
         """
@@ -129,22 +128,22 @@ class Recognize(MultiRESTClient):
            .. code-block:: python
 
               # option 1: document dictionary
-              {'content_id': 12, 
-               'content': u'the text to analyze'}
+              {"content_id": 12, 
+               "content": u"the text to analyze"}
 
               # option 2: weblyzardXML
-              XMLContent('<?xml version="1.0"...').as_list()
+              XMLContent("<?xml version="1.0"...").as_list()
         """
         if not document:
             return
 
-        content_type = 'application/json; charset=utf-8'
-        search_command = 'search_document'
+        content_type = "application/json; charset=utf-8"
+        search_command = "search_document"
         return self.request(path=search_command,
                             parameters=document,
                             content_type=content_type,
-                            query_parameters={'profileName': profile_name,
-                                              'limit': limit
+                            query_parameters={"profileName": profile_name,
+                                              "limit": limit
                                               })
 
     def search_xmldocument(self, profile_name: str, document, limit: int):
@@ -155,11 +154,11 @@ class Recognize(MultiRESTClient):
         .. note:: Example document
 
            .. code-block:: python     
-                test_doc = {'id': 111,
-                            'body': 'Management Directive\nBill Gates\n Java Programmer',
-                            'title': 'Hello President! ',
-                            'format': 'text/html',
-                            'header': {}}
+                test_doc = {"id": 111,
+                            "body": "Management Directive\nBill Gates\n Java Programmer",
+                            "title": "Hello President! ",
+                            "format": "text/html",
+                            "header": {}}
 
                 jeremia_client = Jeremia()
                 jresult = jeremia_client.submit_document(test_doc2)
@@ -171,12 +170,12 @@ class Recognize(MultiRESTClient):
         if not document:
             return
 
-        content_type = 'application/json'
-        return self.request(path='search_xmldocument',
+        content_type = "application/json"
+        return self.request(path="search_xmldocument",
                             parameters=document,
                             content_type=content_type,
-                            query_parameters={'profileName': profile_name,
-                                              'limit': limit
+                            query_parameters={"profileName": profile_name,
+                                              "limit": limit
                                               })
 
     def search_documents(self, profile_name: str, document_list: List,
@@ -197,8 +196,8 @@ class Recognize(MultiRESTClient):
         if not document_list:
             return
 
-        content_type = 'application/json'
-        search_command = 'search_documents'
+        content_type = "application/json"
+        search_command = "search_documents"
 
         # wait until the web service has available threads for processing
         # the request
@@ -215,22 +214,22 @@ class Recognize(MultiRESTClient):
                                       parameters=document_list,
                                       content_type=content_type,
                                       query_parameters={
-                                          'profileName': profile_name,
-                                          'limit': limit
+                                          "profileName": profile_name,
+                                          "limit": limit
                                       })
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
                 logger.warning(
-                    f'Exception: {e}; Retry#{attempts} with profile_name={profile_name}')
+                    f"Exception: {e}; Retry#{attempts} with profile_name={profile_name}")
                 sleep(max_retry_delay * random())
                 attempts = attempts + 1
             except Exception as e:
                 print(e)
 
-        logger.warning(f'Final retry with profile_name={profile_name}')
+        logger.warning(f"Final retry with profile_name={profile_name}")
         return self.request(path=search_command,
                             parameters=document_list,
                             content_type=content_type,
-                            query_parameters={'profileName': profile_name,
-                                              'limit': limit
+                            query_parameters={"profileName": profile_name,
+                                              "limit": limit
                                               })
