@@ -136,6 +136,7 @@ class AbstractTriplestoreWrapper(ABC):
             if value.startswith('<http') and value[-1:] == '>':
                 return True
             return False
+        return False
 
     def ask(self, query: str, no_prefix: bool = False) -> bool:
         """

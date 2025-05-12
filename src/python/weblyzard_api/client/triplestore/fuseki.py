@@ -237,6 +237,7 @@ class FusekiWrapper(TriplestoreWrapper1):
                     break
             sub_list = [self.fix_uri(t) for t in sub_list]
             triples = '.\n'.join([' '.join(triple) for triple in sub_list])
+            triples = f'{triples}.'
             if graph_name:
                 query_body = f"""
                 graph <{graph_name}>
