@@ -1,10 +1,12 @@
 import logging
 import socket
+import time
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Generator, Optional
 
 from SPARQLWrapper import SPARQLWrapper2, JSON, SPARQLWrapper
+from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 
 from weblyzard_api.client.rdf import PREFIXES, NAMESPACES, parse_language_tagged_string
 
@@ -24,6 +26,11 @@ def _retry_with_backoff(decorated):  # @NoSelf
             try:
                 return decorated(*args, **kwargs)
                 success = True
+            except QueryBadFormed as e:
+                logger.warning(
+                    f'not retrying {decorated.__name__}, same result expected...')
+                logger.error(e)
+                break
             except Exception as e:
                 logger.warning(
                     f'retrying {decorated.__name__} in {retry_delay} seconds...')
