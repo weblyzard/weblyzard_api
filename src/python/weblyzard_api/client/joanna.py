@@ -5,18 +5,15 @@ Created on Oct 30, 2015
 
 @author: lucas
 """
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 import json
-import urllib.request, urllib.error
-
+import logging
+import urllib.error
+import urllib.request
 from random import random
 from time import sleep
 
 from weblyzard_api.client import MultiRESTClient
 
-import logging
 logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_RETRY_DELAY = 15
@@ -40,7 +37,7 @@ class PostRequest(object):
         req = urllib.request.Request(url=self.url)
         req.add_header("Content-Type", "application/json")
         req.get_method = lambda: "POST"
-        req.data = self.data.encode('utf-8')
+        req.data = self.data.encode("utf-8")
         try:
             conn = opener.open(req)
         except urllib.error.HTTPError as e:
@@ -78,7 +75,7 @@ class Joanna(object):
               If functioning it will return "ONLINE"
             - Python client function: status
         /batchIsSimilar/:portalName/:sourceId/:daysBack
-            - POST: make a batch of nilsimsa. If the sourceId isn't
+            - POST: make a batch of nilsimsa. If the sourceId isn"t
                present it will make a /load request instead.
                The client will try again to return the batch request.
             - Returns:
@@ -150,15 +147,15 @@ class Joanna(object):
             return
         if isinstance(contentIds_nilsimsa_dict, str):
             logger.error("Expected dict. Please use single_document")
-            raise ValueError('Expected a dictionary, got a string')
+            raise ValueError("Expected a dictionary, got a string")
         if isinstance(contentIds_nilsimsa_dict, list):
             logger.error("Expected dict. Got a list.")
-            raise ValueError('Expected a dictionary, got a list.')
+            raise ValueError("Expected a dictionary, got a list.")
 
         request_url = "batchIsSimilar/{}/{}/{}/{}".format(
             portalName, sourceId, daysBack, nilsimsa_threshold)
 
-        req = PostRequest(self.url + '/' + request_url,
+        req = PostRequest(self.url + "/" + request_url,
                           contentIds_nilsimsa_dict)
 
         attempts = 0
@@ -168,7 +165,7 @@ class Joanna(object):
             conn = req.request()
             conn_code = conn.code
             if conn.code == 200:
-                logger.info('successful request')
+                logger.info("successful request")
                 data = conn.read()
                 if data == "LOADED":
                     logger.info("Nilsimsas loaded from db. \
@@ -182,19 +179,19 @@ class Joanna(object):
                     json_data = json.loads(data)
                     for content_id, h in contentIds_nilsimsa_dict.items():
                         if h not in json_data:
-                            json_data[h] = 'true'
+                            json_data[h] = "true"
                     return json_data
             elif conn.code == 204:
                 data = conn.read()
-                logger.info('No content found attempts %s %s', attempts, data)
+                logger.info("No content found attempts %s %s", attempts, data)
             elif conn.code == 400:
-                logger.error('Bad request.. 404 error')
+                logger.error("Bad request.. 404 error")
                 data = conn.read()
-                logger.error('Err: %s', data)
+                logger.error("Err: %s", data)
             elif conn.code == 500:
                 data = conn.read()
                 logger.error(
-                    'Server failure: attempts %d %s', attempts, data)
+                    "Server failure: attempts %d %s", attempts, data)
             sleep(max_retry_delay * random())
             attempts += 1
 
@@ -205,10 +202,10 @@ class Joanna(object):
         return self.multiRestclient.request(request, return_plain=True)
 
     def status(self):
-        return self.multiRestclient.request('status', return_plain=True)
+        return self.multiRestclient.request("status", return_plain=True)
 
     def version(self):
-        return self.multiRestclient.request('version', return_plain=True)
+        return self.multiRestclient.request("version", return_plain=True)
 
     def rand_strings(self, num_docs):
         import os

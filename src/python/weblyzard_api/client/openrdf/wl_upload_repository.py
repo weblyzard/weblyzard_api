@@ -7,16 +7,14 @@ Before uploading a new repository, visit the web-interface and create the
 repository (type: Java Native store).
 ATTENTION: uploading the same dataset multiple times will lead to redundant data.
 """
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import range
+
 import os.path
 
 from weblyzard_api.client import WEBLYZARD_API_URL
+from weblyzard_api.client.openrdf import OpenRdfClient
+
 
 # DEFAULT_HEADERS = {'content-type': }
-
-from weblyzard_api.client.openrdf import OpenRdfClient
 
 
 def chunks(l, n):
@@ -93,9 +91,9 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description='Uploads triples to an existing '
-                            'Sesame repository. The script will not create '
-                            'the repository, therefore create the repository '
-                            'in the web-interface (type: java native type)')
+                                        'Sesame repository. The script will not create '
+                                        'the repository, therefore create the repository '
+                                        'in the web-interface (type: java native type)')
     parser.add_argument('--source-dir', dest='source_directory', required=True,
                         help='source directory containing nt files')
     parser.add_argument('--server-url', dest='server_url',
@@ -104,7 +102,7 @@ if __name__ == '__main__':
     parser.add_argument('--repository', help='name of the target repository')
     parser.add_argument('--graph-name', dest='graph_name',
                         help='name of the graph, e.g. http://dbpedia.org or'
-                        ' http://geonames.org')
+                             ' http://geonames.org')
     parser.add_argument('--chunk-size', dest='chunk_size',
                         type=int, default=100000)
     parser.add_argument('--num-retries', dest='retries', type=int, default=5)

@@ -8,13 +8,14 @@ from typing import Generator, Optional
 from SPARQLWrapper import SPARQLWrapper2, JSON, SPARQLWrapper
 from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 
-from weblyzard_api.client.rdf import PREFIXES, NAMESPACES, parse_language_tagged_string
+from weblyzard_api.client.rdf import PREFIXES, NAMESPACES, \
+    parse_language_tagged_string
 
 logger = logging.getLogger(__name__)
 
-
 USER_AGENT = "Mozilla/5.0 (compatible; ecoresearchSparlClient/0.9; +http://www.ecoresearch.net)"
 TIMEOUT = 600000000
+
 
 def _retry_with_backoff(decorated):  # @NoSelf
     def decorator(*args, **kwargs):
@@ -33,7 +34,7 @@ def _retry_with_backoff(decorated):  # @NoSelf
                 break
             except Exception as e:
                 logger.warning(
-                    f'retrying {decorated.__name__} in {retry_delay} seconds...')
+                    f"retrying {decorated.__name__} in {retry_delay} seconds...")
                 time.sleep(retry_delay)
                 num_retries = num_retries + 1
                 retry_delay = retry_delay * 2
@@ -44,7 +45,6 @@ def _retry_with_backoff(decorated):  # @NoSelf
 
 
 class AbstractTriplestoreWrapper(ABC):
-
     PREFIXES = PREFIXES
 
     def __init__(self, sparql_endpoint, debug=False):
@@ -60,7 +60,8 @@ class AbstractTriplestoreWrapper(ABC):
         if self.debug_:
             print(string_)
 
-    def remove_duplicate_prefixes(self, query: str, prefixes: Optional[str] = None) -> str:
+    def remove_duplicate_prefixes(self, query: str,
+                                  prefixes: Optional[str] = None) -> str:
         """
         Remove duplicate prefix declarations between prefixes and the query that can cause a `QueryBadFormed` Error.
         :param query: sparql query string
@@ -73,8 +74,9 @@ class AbstractTriplestoreWrapper(ABC):
         else:
             considered_prefixes = prefixes
 
-        prefixes = "\n".join([prefix for prefix in considered_prefixes.split("\n")
-                              if prefix not in query])
+        prefixes = "\n".join(
+            [prefix for prefix in considered_prefixes.split("\n")
+             if prefix not in query])
         return prefixes
 
     def retrieve_only_used_prefixes(self, query: str) -> str:
@@ -83,9 +85,9 @@ class AbstractTriplestoreWrapper(ABC):
         for prefix in prefixes:
             if not prefix:
                 continue
-            pref, *args = prefix.split(':', 1)
-            _, pref = pref.split(' ', 1)
-            if f'{pref}:' in query:
+            pref, *args = prefix.split(":", 1)
+            _, pref = pref.split(" ", 1)
+            if f"{pref}:" in query:
                 used_prefixes.append(prefix)
 
         prefixes = "\n".join([pref.strip() for pref in used_prefixes])
@@ -114,9 +116,9 @@ class AbstractTriplestoreWrapper(ABC):
             return self.fix_uri(o[0]), self.fix_uri(o[1]), self.fix_uri(o[2])
         elif isinstance(o, (str, bytes)):
             if isinstance(o, bytes):
-                o = o.decode('utf-8')
-            if o.startswith('http'):
-                o = u'<{}>'.format(o)
+                o = o.decode("utf-8")
+            if o.startswith("http"):
+                o = u"<{}>".format(o)
             return o
         else:
             return str(o)
@@ -129,11 +131,11 @@ class AbstractTriplestoreWrapper(ABC):
             return False
         elif isinstance(value, (str, bytes)):
             if isinstance(value, bytes):
-                value = value.decode('utf-8')
+                value = value.decode("utf-8")
             for prefix in list(NAMESPACES.values()):
                 if value.startswith(prefix):
                     return True
-            if value.startswith('<http') and value[-1:] == '>':
+            if value.startswith("<http") and value[-1:] == ">":
                 return True
             return False
         return False
@@ -145,15 +147,16 @@ class AbstractTriplestoreWrapper(ABC):
         :param no_prefix: do not preface with rdf PREFIXES
         """
         if not no_prefix:
-            query = f'{self.PREFIXES}{query}'
-        self.debug(f'running the following ask query against {self.query_endpoint}\n{query}')
+            query = f"{self.PREFIXES}{query}"
+        self.debug(
+            f"running the following ask query against {self.query_endpoint}\n{query}")
         try:
             self.query_wrapper.setQuery(query)
             res = self.query_wrapper.query().convert()
             return res["boolean"]
         except socket.error as e:
             logger.warning(
-                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+                f"socket error {self.query_endpoint}: {e}", exc_info=True)
             raise e
 
     def exists(self, uri) -> bool:
@@ -162,12 +165,12 @@ class AbstractTriplestoreWrapper(ABC):
         """
         if uri in self.uri_cache:
             return True
-        query = f'''
+        query = f"""
                 SELECT ?p WHERE {{
                   {{ <{uri}> ?p ?o. }} UNION {{?s ?p <{uri}> }} .
                 }}
                 LIMIT 1
-        '''
+        """
         result = list(self.run_query(query=query))
         if len(result) > 0:
             self.uri_cache.add(uri)
@@ -189,8 +192,8 @@ class TriplestoreWrapper1(AbstractTriplestoreWrapper):
     Uses SPARQLWrapper.SPARQLWrapper
     Query results are returned as dictionaries with `type` and `value`.
 
-    > {'uri': {'type': 'uri', 'value': 'http://www.wikidata.org/entity/Q155004'},
-       'occupation': {'type': 'uri', 'value': 'http://www.wikidata.org/entity/Q82955'}}
+    > {"uri": {"type": "uri", "value": "http://www.wikidata.org/entity/Q155004"},
+       "occupation": {"type": "uri", "value": "http://www.wikidata.org/entity/Q82955"}}
     """
 
     def __init__(self, sparql_endpoint, debug=False):
@@ -199,28 +202,29 @@ class TriplestoreWrapper1(AbstractTriplestoreWrapper):
 
         # init for updates
         self.update_wrapper = SPARQLWrapper(self.update_endpoint)
-        self.update_wrapper.method = 'POST'
+        self.update_wrapper.method = "POST"
         self.update_wrapper.setReturnFormat(JSON)
         self.update_wrapper.setTimeout(TIMEOUT)
 
         # init for query
-        self.query_wrapper = SPARQLWrapper(self.query_endpoint, agent=USER_AGENT)
-        self.query_wrapper.method = 'GET'
+        self.query_wrapper = SPARQLWrapper(self.query_endpoint,
+                                           agent=USER_AGENT)
+        self.query_wrapper.method = "GET"
         self.query_wrapper.setReturnFormat(JSON)
         self.query_wrapper.setTimeout(TIMEOUT)
 
     def populate_uri_cache(self):
-        query = u'''
+        query = u"""
         SELECT ?s ?o WHERE {{
           {{ ?s ?p ?o. }} .
         }}
-        '''
+        """
         result = self.run_query(query=query)
         for row in result:
-            if row['s']['type'] == 'uri':
-                self.uri_cache.add(row['s']['value'])
-            if row['o']['type'] == 'uri':
-                self.uri_cache.add(row['o']['value'])
+            if row["s"]["type"] == "uri":
+                self.uri_cache.add(row["s"]["value"])
+            if row["o"]["type"] == "uri":
+                self.uri_cache.add(row["o"]["value"])
 
 
 class TriplestoreWrapper2(AbstractTriplestoreWrapper):
@@ -228,18 +232,19 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
     Uses SPARQLWrapper.SPARQLWrapper2
     Query results are returned as SPARQLWrapper.Value items.
 
-    > {'uri': Value(uri:'http://www.wikidata.org/entity/Q1875721'),
-       'label': Value(literal:'Luftlandepioniere'),
-       'country': Value(uri:'http://www.wikidata.org/entity/Q183')}
+    > {"uri": Value(uri:"http://www.wikidata.org/entity/Q1875721"),
+       "label": Value(literal:"Luftlandepioniere"),
+       "country": Value(uri:"http://www.wikidata.org/entity/Q183")}
 
     """
+
     def __init__(self, sparql_endpoint, debug=False):
         super().__init__(sparql_endpoint=sparql_endpoint,
                          debug=debug)
 
         # only query implemented!
         self.query_wrapper = SPARQLWrapper2(self.query_endpoint)
-        self.query_wrapper.method = 'GET'
+        self.query_wrapper.method = "GET"
         self.query_wrapper.setReturnFormat(JSON)
         self.query_wrapper.setTimeout(TIMEOUT)
 
@@ -248,11 +253,11 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         Switch to POST if the query is too long.
         """
         if len(query) > 500:  # not sure if this is the correct cutoff
-            self.query_wrapper.method = 'POST'
+            self.query_wrapper.method = "POST"
 
     def run_query(self, query, no_prefix=False):
         """
-        Run a given query and return the result's bindings.
+        Run a given query and return the result"s bindings.
         :param query: The SPARQL query to run.
         :param no_prefix: if True does not inject PREFIX values
         """
@@ -260,7 +265,8 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         if not no_prefix:
             query = self.cleanup_prefixes_in_query(query)
         self.query_wrapper.setQuery(query)
-        self.debug(f'running the following query against {self.query_endpoint}\n{query}')
+        self.debug(
+            f"running the following query against {self.query_endpoint}\n{query}")
 
         res = self.query_wrapper.query()
         for binding in res.bindings:
@@ -270,12 +276,12 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         raise NotImplementedError
 
     @staticmethod
-    def group_bindings(bindings, key: str = 'uri') -> Generator:
+    def group_bindings(bindings, key: str = "uri") -> Generator:
         """
-        Group a query result's bindings, using `key` as a grouping indicator.
+        Group a query result"s bindings, using `key` as a grouping indicator.
         Result bindings need to be ordered by `key` var for grouping.
         Yields defaultdicts with sets for _all_ dictionary values!
-        :param bindings: a query result's bindings
+        :param bindings: a query result"s bindings
         :param key: the query var by which the results are grouped
         """
         uri = None
@@ -289,9 +295,9 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
             uri = row[key].value
             for row_key, row_value in row.items():
                 if row_value.lang:
-                    value = f'{row_value.value}@{row_value.lang}'
+                    value = f"{row_value.value}@{row_value.lang}"
                 else:
-                    value = f'{row_value.value}'
+                    value = f"{row_value.value}"
                 result[row_key].add(value)
         yield result
 
@@ -307,15 +313,16 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         for row in bindings:
             for row_key, row_value in row.items():
                 if row_value.lang:
-                    value = f'{row_value.value}@{row_value.lang}'
+                    value = f"{row_value.value}@{row_value.lang}"
                 else:
-                    value = f'{row_value.value}'
+                    value = f"{row_value.value}"
                 if value not in result[row_key]:
                     result[row_key].append(value)
         return result
 
     @staticmethod
-    def get_value_from_grouped_bindings(grouped_bindings: dict, field: str, language: str = None) -> Optional[str]:
+    def get_value_from_grouped_bindings(grouped_bindings: dict, field: str,
+                                        language: str = None) -> Optional[str]:
         lang_agnostic_value = None
         for value in list(grouped_bindings.get(field, [])):
             try:

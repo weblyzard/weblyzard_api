@@ -8,20 +8,20 @@ Created on 19.04.2013
 Test helper module to load test files from TEST_DATA directory
 
 """
-from __future__ import print_function
-from __future__ import unicode_literals
-import os
+
 import io
+import os
 import pickle
 
 
 def get_test_data(fn, data_dir=None, return_file=False):
-    with io.open(get_full_path(fn, data_dir), 'r', encoding='utf-8') as f:  # [mig] removed 'b' option such that files are not read in binary format
+    with io.open(get_full_path(fn, data_dir), "r",
+                 encoding="utf-8") as f:  # [mig] removed "b" option such that files are not read in binary format
 
         if return_file:
             return f
 
-        if fn.lower().endswith('.pickle'):
+        if fn.lower().endswith(".pickle"):
             content = pickle.load(f)
         else:
             content = f.read()
@@ -39,12 +39,13 @@ def get_test_data_dir():
 
     Usage:
     >>> get_test_data_dir() # doctest: +ELLIPSIS
-    '.../wl_mirroring/test/data'
+    ".../wl_mirroring/test/data"
     """
-    print(os.path.abspath(os.path.join(os.path.dirname(__file__), 'data')))
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), 'data'))
+    print(os.path.abspath(os.path.join(os.path.dirname(__file__), "data")))
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

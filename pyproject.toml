@@ -22,8 +22,6 @@ packages = [{ include = "weblyzard_api", from = "src/python" }]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.8",
     "Operating System :: OS Independent",
 ]
 
@@ -33,18 +31,22 @@ url = "https://nexus.semanticlab.net/repository/pypi-group/simple"
 priority = "primary"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
-future = "*"
-nose = "*"
-lxml = "*"
-redis = "*"
+python = ">=3.10,<3.12"
+future = "^1.0.0"
+nose = "^1.3.7"
+lxml = "^5.3.2"
+redis = "^5.2.1"
 requests = "^2.11.1"
-python-dotenv = "*"
-sparqlwrapper = "*"
-mock = "*"
+python-dotenv = "^1.1.0"
+sparqlwrapper = "^2.0.0"
+mock = "^5.2.0"
+python-dateutil = "^2.9.0"
+deprecated = "^1.2.18"
+httplib2 = "*"
+
 
 [tool.coverage.run]
-source = ["src"]
+source = ["src/python"]
 
 [tool.pylint]
 max-line-length = 88
@@ -58,4 +60,9 @@ disable = [
     "W0105", # (pointless-string-statement)
 ]
 
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "serial",
+]
 

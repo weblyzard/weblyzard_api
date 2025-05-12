@@ -14,10 +14,8 @@ from future import standard_library
 standard_library.install_aliases()
 
 from os import getenv
-from typing import List, Dict
+from typing import List, Dict, Union
 
-from builtins import range
-from builtins import object
 import traceback
 import logging
 import random
@@ -27,7 +25,6 @@ from urllib.parse import urlencode
 from six import string_types
 from json import dumps, loads
 from functools import partial
-from socket import setdefaulttimeout
 
 from weblyzard_api.util.http import Retrieve
 
@@ -48,15 +45,15 @@ class RESTClient(object):
     """
 
     def __init__(self, service_url: str, user: str = None, password: str = None,
-                 authentication_method: str = 'basic',
-                 module_name: str = 'eWRT.REST',
+                 authentication_method: str = "basic",
+                 module_name: str = "eWRT.REST",
                  default_timeout: int = WS_DEFAULT_TIMEOUT):
         """ 
         :param service_url: the base url of the web service
         :param user: username
         :param password: password
         :param authentication_method: authentication method to use
-                                        ('basic'*, 'digest').
+                                        ("basic"*, "digest").
         :param default_timeout: default request timeout
         """
         # remove superfluous slashes, if required
@@ -79,7 +76,7 @@ class RESTClient(object):
     def _json_request(self, url: str, parameters: Dict = None,
                       parse_result: bool = True, return_plain: bool = False,
                       json_encode_arguments: bool = True,
-                      content_type: str = 'application/json'):
+                      content_type: str = "application/json"):
         """ Execute a given JSON request.
         :param url: the url to query
         :param parameters: optional parameters
@@ -88,13 +85,13 @@ class RESTClient(object):
                              deserialization using json.load (False*)
         :param json_encode_arguments: whether to json encode the parameters
                                       (True*)
-        :param content_type: one of 'application/json', 'application/xml'
+        :param content_type: one of "application/json", "application/xml"
         """
         if parameters:
             handle = self.retrieve(
                 url=url,
                 data=dumps(parameters) if json_encode_arguments else parameters,
-                headers={'Content-Type': content_type})
+                headers={"Content-Type": content_type})
         else:
             handle = self.retrieve(url)
 
@@ -102,7 +99,7 @@ class RESTClient(object):
             response = handle.read()
             if response:
                 return response if return_plain else loads(
-                    response.decode('utf8'))
+                    response.decode("utf8"))
             else:
                 # this will also return empty list, dicts ...
                 return response
@@ -123,7 +120,7 @@ class RESTClient(object):
         if command.startswith("/"):
             command = command[1:]
 
-        url = '%s/%s/%s' % (service_url, command, identifier) \
+        url = "%s/%s/%s" % (service_url, command, identifier) \
             if identifier else "%s/%s" % (service_url, command)
 
         # add query string, if necessary
@@ -137,7 +134,7 @@ class RESTClient(object):
                 parse_result: bool = True, return_plain: bool = False,
                 json_encode_arguments: bool = True,
                 query_parameters: str = None,
-                content_type: str = 'application/json'):
+                content_type: str = "application/json"):
         """ Execute a given JSON command on the given web service
         :param content_type:
         :param command: the command to execute
@@ -153,7 +150,7 @@ class RESTClient(object):
         url = self.get_request_url(self.service_url, command, identifier,
                                    query_parameters)
 
-        logger.debug(f'Requesting url {url}')
+        logger.debug(f"Requesting url {url}")
 
         return self._json_request(url=url, parameters=parameters,
                                   parse_result=parse_result,
@@ -165,7 +162,7 @@ class RESTClient(object):
 class MultiRESTClient(object):
     """ Allow multiple URLs for access REST services """
     MAX_BATCH_SIZE = 500
-    URL_PATH: str = ''
+    URL_PATH: str = ""
 
     def __init__(self, service_urls, user=None, password=None,
                  default_timeout=WS_DEFAULT_TIMEOUT, use_random_server=True):
@@ -178,9 +175,9 @@ class MultiRESTClient(object):
         self.clients = self._connect_clients(self._service_urls,
                                              default_timeout=default_timeout)
 
-    def is_online(self):
+    def is_online(self) -> bool:
         try:
-            self.request('status')
+            self.request("status")
             return True
         except:
             return False
@@ -203,14 +200,14 @@ class MultiRESTClient(object):
             urls = [urls]
 
         for url in urls:
-            if not url.endswith('/'):
-                url = '%s/' % url
+            if not url.endswith("/"):
+                url = "%s/" % url
 
-            if not '/rest' in url:
+            if not "/rest" in url:
                 if cls.URL_PATH and not url.endswith(cls.URL_PATH):
-                    if cls.URL_PATH.startswith('/'):
+                    if cls.URL_PATH.startswith("/"):
                         cls.URL_PATH = cls.URL_PATH[1:]
-                    url = '%s%s' % (url, cls.URL_PATH)
+                    url = "%s%s" % (url, cls.URL_PATH)
 
             if user and password:
                 url = Retrieve.add_user_password(url, user, password)
@@ -228,16 +225,16 @@ class MultiRESTClient(object):
         for url in service_urls:
             if not isinstance(url, str):
                 continue
-            if url.startswith('{'):
+            if url.startswith("{"):
                 url = json.loads(url)
                 count = len(url.keys())
-            elif '<' in url:
+            elif "<" in url:
                 param = url[url.find("<") + 1:url.find(">")]
-                if '%' in param:
-                    _, count = param.split('%')
+                if "%" in param:
+                    _, count = param.split("%")
                     count = int(count)
                     for i in range(0, count):
-                        url_i = url.replace(f'<{param}>', f'{i}')
+                        url_i = url.replace(f"<{param}>", f"{i}")
 
                         if user is None and password is None:
                             url_i, user, password = Retrieve.get_user_password(
@@ -263,8 +260,8 @@ class MultiRESTClient(object):
     def request(self, path: str, parameters: Dict = None, source_id: int = None,
                 parse_result: bool = True, return_plain: bool = False,
                 json_encode_arguments: bool = True,
-                query_parameters: str = None,
-                content_type: str = 'application/json',
+                query_parameters: Union[str, Dict] = None,
+                content_type: str = "application/json",
                 execute_all_services: bool = False, pass_through_exceptions=()):
         """ Execute a given JSON request.
         :param json_encode_arguments:
@@ -310,17 +307,17 @@ class MultiRESTClient(object):
                 if pass_through_exceptions:
                     raise e
                 else:
-                    msg = 'Could not execute %s %s, error %s\n%s' % (
+                    msg = "Could not execute %s %s, error %s\n%s" % (
                         client.service_url, path, e,
                         traceback.format_exc())
                     logger.warning(msg, exc_info=True)
                     errors.append(msg)
 
         if len(errors) == len(self.clients):
-            print('\n'.join(errors))
-            raise Exception('Could not make request to path %s: %s' % (
+            print("\n".join(errors))
+            raise Exception("Could not make request to path %s: %s" % (
                 path,
-                '\n'.join(errors)))
+                "\n".join(errors)))
 
         return response
 

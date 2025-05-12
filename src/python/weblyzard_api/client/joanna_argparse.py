@@ -5,17 +5,13 @@ Created on Oct 30, 2015
 
 @author: lucas
 """
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import str
-from builtins import range
 
-from time import sleep
+import logging
 from random import random
+from time import sleep
 
 from weblyzard_api.client.joanna import Joanna
 
-import logging
 logger = logging.getLogger(__name__)
 
 DAYS_BACK_DEFAULT = 20
@@ -29,14 +25,14 @@ def check_arguments(args):
     if args.host_url:
         jo = Joanna(url=args.host_url)
     else:
-        print('host url required..')
+        print("host url required..")
         return
     if args.status:
         status = jo.status()
-        print('status {}'.format(status))
+        print("status {}".format(status))
     elif args.api_version:
         version = jo.version()
-        print('version: {}'.format(version))
+        print("version: {}".format(version))
     elif args.get_hashes:
         if None in (args.sourceId, args.portal_db):
             print("SourceId and portal_db required..")
@@ -45,10 +41,10 @@ def check_arguments(args):
             print(hashes)
     elif args.clean_hashes:
         clean = jo.clean_hashes()
-        print('Hashes cleaned {}'.format(clean))
+        print("Hashes cleaned {}".format(clean))
     elif args.reload:
         if None in (args.sourceId, args.portal_db):
-            print('invalid arguments. Requires sourceId and portal_db')
+            print("invalid arguments. Requires sourceId and portal_db")
             return
         if args.repeat_test:
             for i in range(args.repeat_test):
@@ -63,27 +59,28 @@ def check_arguments(args):
             print("Reloaded: {}".format(reloaded))
     elif args.send_document:
         if None in (args.sourceId, args.nilsimsa, args.portal_db):
-            print('invalid arguments. Requires sourceId, \
-            portal_db and nilsimsa list..')
+            print("invalid arguments. Requires sourceId, \
+            portal_db and nilsimsa list..")
             return
         else:
             if args.days_back is None:
-                print('Using days back default {}'.format(
+                print("Using days back default {}".format(
                     DAYS_BACK_DEFAULT))
             result = jo.similar_document(
                 args.sourceId, args.nilsimsa, args.portal_db)
             print("Result {}".format(result))
     elif args.batch_document:
         if None in (args.sourceId, args.nilsimsa_list, args.portal_db):
-            print('invalid arguments. Requires sourceId, \
-            nilsimsa list and portal_db..')
+            print("invalid arguments. Requires sourceId, \
+            nilsimsa list and portal_db..")
             return
         else:
             if args.days_back is None:
-                print('Using days back default {}'.format(
+                print("Using days back default {}".format(
                     DAYS_BACK_DEFAULT))
 
-            nilsimsa_dict = {str(random_content_id()): i for i in args.nilsimsa_list}
+            nilsimsa_dict = {str(random_content_id()): i for i in
+                             args.nilsimsa_list}
             print("Sending similar documents {}".format(nilsimsa_dict))
 
             result = jo.similar_documents(
@@ -91,10 +88,10 @@ def check_arguments(args):
                 daysBack=args.days_back)
             print("Result {}".format(result))
     elif args.nilsimsa_list and args.batch_document is False:
-        print('need to specify --batch-document with nilsimsa-list')
+        print("need to specify --batch-document with nilsimsa-list")
 
     elif args.nilsimsa and args.send_document is False:
-        print('need to specify --send-document with a nilsimsa')
+        print("need to specify --send-document with a nilsimsa")
 
 
 def random_content_id():
@@ -108,40 +105,40 @@ def main():
 
     parser = ArgumentParser()
     parser.add_argument(
-        '--host-url', dest='host_url', required=True,
+        "--host-url", dest="host_url", required=True,
         help="Host where web service is running. \
             e.g http://localhost:8080")
-    parser.add_argument('--sourceId', type=int)
-    parser.add_argument('--portal-db', dest='portal_db')
-    parser.add_argument('--nilsimsa', dest='nilsimsa')
+    parser.add_argument("--sourceId", type=int)
+    parser.add_argument("--portal-db", dest="portal_db")
+    parser.add_argument("--nilsimsa", dest="nilsimsa")
     parser.add_argument(
-        '--nilsimsa-list', dest='nilsimsa_list', nargs='+')
-    parser.add_argument('--days-back', dest='days_back', type=int)
-    parser.add_argument('--status', action='store_true')
-    parser.add_argument('--api-version', dest='api_version',
-                        action='store_true')
+        "--nilsimsa-list", dest="nilsimsa_list", nargs="+")
+    parser.add_argument("--days-back", dest="days_back", type=int)
+    parser.add_argument("--status", action="store_true")
+    parser.add_argument("--api-version", dest="api_version",
+                        action="store_true")
     parser.add_argument(
-        '--reload', action='store_true',
+        "--reload", action="store_true",
         help="""load nilsimsa hashes from db.
                     Requires sourceId, portalDb, days back args""")
     parser.add_argument(
-        '--get-hashes', dest='get_hashes', action='store_true')
-    parser.add_argument('--clean-hashes', dest='clean_hashes',
-                        action='store_true')
+        "--get-hashes", dest="get_hashes", action="store_true")
+    parser.add_argument("--clean-hashes", dest="clean_hashes",
+                        action="store_true")
     parser.add_argument(
-        '--send-document', dest='send_document',
-        action='store_true', help="""send a single nilsimsa hash.
+        "--send-document", dest="send_document",
+        action="store_true", help="""send a single nilsimsa hash.
             Requires sourceId and nilsimsa""")
     parser.add_argument(
-        '--batch-document', dest='batch_document',
-        action='store_true', help="""load nilsimsa hashes from db.
+        "--batch-document", dest="batch_document",
+        action="store_true", help="""load nilsimsa hashes from db.
             Requires sourceId, portalDb, days back args""")
-    parser.add_argument('--num-docs', dest='num_docs', type=int)
-    parser.add_argument('--repeat-test', type=int,
-                        dest='repeat_test', help="repeat X times")
+    parser.add_argument("--num-docs", dest="num_docs", type=int)
+    parser.add_argument("--repeat-test", type=int,
+                        dest="repeat_test", help="repeat X times")
     args = parser.parse_args()
     check_arguments(args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

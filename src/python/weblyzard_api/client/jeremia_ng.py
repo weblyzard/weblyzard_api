@@ -4,23 +4,20 @@
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 """
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-
-import urllib.request, urllib.error, urllib.parse
-from typing import List
-
-from time import sleep, time
-from random import random
-
-from weblyzard_api.client import MultiRESTClient
-
-from weblyzard_api.model.xml_content import XMLContent
-from weblyzard_api.client import (
-    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
 
 import logging
+import urllib.error
+import urllib.parse
+import urllib.request
+from random import random
+from time import sleep, time
+from typing import List
+
+from weblyzard_api.client import MultiRESTClient
+from weblyzard_api.client import (
+    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
+from weblyzard_api.model.xml_content import XMLContent
+
 logger = logging.getLogger(__name__)
 
 # number of seconds to wait if the web service is occupied
@@ -61,27 +58,27 @@ class JeremiaNg(MultiRESTClient):
             from weblyzard_api.client.recognize import Recognize
             from pprint import pprint
 
-            docs = {'id': '192292',
-                    'title': 'The document title.',
-                    'body': 'This is the document text...',
-                    'format': 'text/html',
-                    'header': {}}
+            docs = {"id": "192292",
+                    "title": "The document title.",
+                    "body": "This is the document text...",
+                    "format": "text/html",
+                    "header": {}}
             client = Jeremia()
             result = client.submit_document(docs)
             pprint(result)
     """
-    URL_PATH = 'rest'
-    ATTRIBUTE_MAPPING = {'content_id': 'id',
-                         'title': 'title',
-                         'sentences': 'sentence',
-                         'lang': 'lang',
-                         'sentences_map': {'pos': 'pos',
-                                           'token': 'token',
-                                           'value': 'value',
-                                           'md5sum': 'id'}}
+    URL_PATH = "rest"
+    ATTRIBUTE_MAPPING = {"content_id": "id",
+                         "title": "title",
+                         "sentences": "sentence",
+                         "lang": "lang",
+                         "sentences_map": {"pos": "pos",
+                                           "token": "token",
+                                           "value": "value",
+                                           "md5sum": "id"}}
 
     # these are hard-coded as no new languages are expected to be added
-    SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'es', 'it', 'nl']
+    SUPPORTED_LANGUAGES = ["en", "de", "fr", "es", "it", "nl"]
 
     def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
                  pwd=WEBLYZARD_API_PASS, default_timeout=None):
@@ -97,7 +94,7 @@ class JeremiaNg(MultiRESTClient):
         """ Process a single document with jeremia (annotates a single document)
         :param document: the document to be processed
         """
-        return self.request('submit_document', document)
+        return self.request("submit_document", document)
 
     def submit_documents(self, documents, source_id=-1,
                          double_sentence_threshold=10,
@@ -114,9 +111,9 @@ class JeremiaNg(MultiRESTClient):
         :param max_retry_attempts:
         """
         if not documents:
-            raise ValueError('Cannot process an empty document list')
+            raise ValueError("Cannot process an empty document list")
 
-        request = 'submit_documents/%s/%d' % (source_id,
+        request = "submit_documents/%s/%d" % (source_id,
                                               double_sentence_threshold)
 
         # wait until the web service has available threads for processing
@@ -145,52 +142,52 @@ class JeremiaNg(MultiRESTClient):
         """
         :returns: the status of the Jeremia web service.
         """
-        return self.request('status', return_plain=True)
+        return self.request("status", return_plain=True)
 
     def version(self):
         """
         :returns: the current version of the jeremia deployed on the server
         """
-        return self.request('version', return_plain=True)
+        return self.request("version", return_plain=True)
 
-    def get_xml_doc(self, text, content_id='1'):
+    def get_xml_doc(self, text, content_id="1"):
         """
         Processes text and returns a XMLContent object.
 
         :param text: the text to process
         :param content_id: optional content id
         """
-        batch = [{'id': content_id,
-                  'title': '',
-                  'body': text,
-                  'format': 'text/plain'}]
+        batch = [{"id": content_id,
+                  "title": "",
+                  "body": text,
+                  "format": "text/plain"}]
 
         results = self.submit_documents(batch)
         result = results[0]
-        return XMLContent(result['xml_content'])
+        return XMLContent(result["xml_content"])
 
     def update_blacklist(self, source_id, blacklist):
         """
         updates an existing blacklist cache
 
-        :param source_id: the blacklist's source id
+        :param source_id: the blacklist"s source id
         """
-        url = 'cache/update_blacklist/%s' % source_id
+        url = "cache/update_blacklist/%s" % source_id
         return self.request(url, blacklist)
 
     def clear_blacklist(self, source_id):
         """
-        :param source_id: the blacklist's source id
+        :param source_id: the blacklist"s source id
 
         Empties the existing sentence blacklisting cache for the given source_id
         """
-        return self.request('cache/clear_blacklist/%s' % source_id)
+        return self.request("cache/clear_blacklist/%s" % source_id)
 
     def get_blacklist(self, source_id):
         """
-        :param source_id: the blacklist's source id
+        :param source_id: the blacklist"s source id
         :returns: the sentence blacklist for the given source_id"""
-        return self.request('cache/get_blacklist/%s' % source_id)
+        return self.request("cache/get_blacklist/%s" % source_id)
 
     def has_queued_threads(self):
         """
@@ -203,7 +200,7 @@ class JeremiaNg(MultiRESTClient):
             will slow down the overall performance.
         """
         try:
-            result = self.request('has_queued_threads')
+            result = self.request("has_queued_threads")
         except Exception as e:
             result = True
         return result

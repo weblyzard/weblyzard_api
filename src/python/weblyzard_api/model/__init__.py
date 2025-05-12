@@ -7,14 +7,14 @@ Created on May 14, 2018
 """
 from __future__ import print_function
 from __future__ import unicode_literals
-from builtins import map
-from builtins import str
-from builtins import object
-import json
-import hashlib
-import logging
 
+import hashlib
+import json
+import logging
 from collections import namedtuple
+
+from builtins import object
+from builtins import str
 
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
@@ -26,20 +26,20 @@ logger = logging.getLogger(__name__)
 
 
 class CharSpan(object):
-    SPAN_TYPE = 'CharSpan'
+    SPAN_TYPE = "CharSpan"
 
-    DICT_MAPPING = {'span_type': 'span_type',
-                    '@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end'}
+    DICT_MAPPING = {"span_type": "span_type",
+                    "@type": "span_type",
+                    "start": "start",
+                    "end": "end"}
 
-    API_MAPPING = {'@type': '@type',
-                   'start': 'start',
-                   'end': 'end',
-                   'md5sum': 'id',
-                   'semOrient': 'semOrient',
-                   'significance': 'significance',
-                   'pos': 'pos'
+    API_MAPPING = {"@type": "@type",
+                   "start": "start",
+                   "end": "end",
+                   "md5sum": "id",
+                   "semOrient": "semOrient",
+                   "significance": "significance",
+                   "pos": "pos"
                    }
 
     def __init__(self, start: int, end: int, span_type: str = SPAN_TYPE):
@@ -62,7 +62,7 @@ class CharSpan(object):
 
     def __eq__(self, other):
         if not isinstance(other, CharSpan):
-            # don't attempt to compare against unrelated types
+            # don"t attempt to compare against unrelated types
             return NotImplemented
 
         return self.to_dict() == other.to_dict()
@@ -75,8 +75,8 @@ class CharSpan(object):
         #    pass  # debugging
         kwargs = {cls.DICT_MAPPING.get(k, k): v for k, v in dict_.items()}
         try:
-            if 'span_type' in kwargs:
-                del kwargs['span_type']
+            if "span_type" in kwargs:
+                del kwargs["span_type"]
             return cls(**kwargs)
         except TypeError as e:
             raise e
@@ -89,15 +89,15 @@ class CharSpan(object):
 
 
 class TokenCharSpan(CharSpan):
-    SPAN_TYPE = 'TokenCharSpan'
+    SPAN_TYPE = "TokenCharSpan"
 
-    DICT_MAPPING = {'@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end',
-                    'pos': 'pos',
-                    'dep': 'dependency',
-                    'dependency': 'dependency'}
-    DEFAULT_POS = 'XY'
+    DICT_MAPPING = {"@type": "span_type",
+                    "start": "start",
+                    "end": "end",
+                    "pos": "pos",
+                    "dep": "dependency",
+                    "dependency": "dependency"}
+    DEFAULT_POS = "XY"
 
     def __init__(self, start: int, end: int, span_type: str = SPAN_TYPE,
                  pos: str = None, dependency: str = None, text: str = None):
@@ -111,28 +111,28 @@ class TokenCharSpan(CharSpan):
         self.dependency = dependency
 
     def to_dict(self):
-        return ({'@type': self.span_type,
-                'start': self.start,
-                'end': self.end,
-                'pos': self.pos})
-                # ,)
-                # 'dependency': self.dependency}
+        return ({"@type": self.span_type,
+                 "start": self.start,
+                 "end": self.end,
+                 "pos": self.pos})
+        # ,)
+        # "dependency": self.dependency}
 
     def __repr__(self, *args, **kwargs):
         return json.dumps(self.to_dict())
 
 
 class SentenceCharSpan(CharSpan):
-    SPAN_TYPE = 'SentenceCharSpan'
+    SPAN_TYPE = "SentenceCharSpan"
 
-    DICT_MAPPING = {'@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end',
-                    'md5sum': 'md5sum',
-                    'semOrient': 'sem_orient',
-                    'significance': 'significance',
-                    'emotions': 'emotions',
-                    'id': 'md5sum'}
+    DICT_MAPPING = {"@type": "span_type",
+                    "start": "start",
+                    "end": "end",
+                    "md5sum": "md5sum",
+                    "semOrient": "sem_orient",
+                    "significance": "significance",
+                    "emotions": "emotions",
+                    "id": "md5sum"}
 
     def __init__(self, start: int, end: int,
                  md5sum: str = None, significance: float = 0.0,
@@ -147,8 +147,8 @@ class SentenceCharSpan(CharSpan):
             try:
                 assert not multimodal_sentiment
             except AssertionError:
-                logger.warning('Deprecated parameter `multimodal_sentiment` '
-                               'use `emotions` instead!', exc_info=True)
+                logger.warning("Deprecated parameter `multimodal_sentiment` "
+                               "use `emotions` instead!", exc_info=True)
                 self.emotions = multimodal_sentiment
 
     def __repr__(self, *args, **kwargs):
@@ -156,12 +156,12 @@ class SentenceCharSpan(CharSpan):
 
 
 class MultiplierCharSpan(CharSpan):
-    SPAN_TYPE = 'MultiplierCharSpan'
+    SPAN_TYPE = "MultiplierCharSpan"
 
-    DICT_MAPPING = {'@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end',
-                    'value': 'value'}
+    DICT_MAPPING = {"@type": "span_type",
+                    "start": "start",
+                    "end": "end",
+                    "value": "value"}
 
     def __init__(self, start: int, end: int, value=None):
         super(MultiplierCharSpan, self).__init__(span_type=self.SPAN_TYPE,
@@ -171,15 +171,15 @@ class MultiplierCharSpan(CharSpan):
 
 
 class SentimentCharSpan(CharSpan):
-    SPAN_TYPE = 'SentimentCharSpan'
+    SPAN_TYPE = "SentimentCharSpan"
 
-    DICT_MAPPING = {'@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end',
-                    'value': 'value',
-                    'modality': 'modality'}
+    DICT_MAPPING = {"@type": "span_type",
+                    "start": "start",
+                    "end": "end",
+                    "value": "value",
+                    "modality": "modality"}
 
-    def __init__(self, start, end, value, modality='polarity'):
+    def __init__(self, start, end, value, modality="polarity"):
         super(SentimentCharSpan, self).__init__(span_type=self.SPAN_TYPE,
                                                 start=start, end=end)
         self.value = value
@@ -187,12 +187,12 @@ class SentimentCharSpan(CharSpan):
 
 
 class NerCharSpan(CharSpan):
-    SPAN_TYPE = 'NamedEntityCharSpan'
+    SPAN_TYPE = "NamedEntityCharSpan"
 
-    DICT_MAPPING = {'@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end',
-                    'label': 'label'}
+    DICT_MAPPING = {"@type": "span_type",
+                    "start": "start",
+                    "end": "end",
+                    "label": "label"}
 
     def __init__(self, start, end, entity=None, label=None):
         super(NerCharSpan, self).__init__(span_type=self.SPAN_TYPE,
@@ -202,19 +202,19 @@ class NerCharSpan(CharSpan):
 
 
 class LayoutCharSpan(CharSpan):
-    SPAN_TYPE = 'LayoutCharSpan'
+    SPAN_TYPE = "LayoutCharSpan"
 
-    DICT_MAPPING = {'@type': 'span_type',
-                    'start': 'start',
-                    'end': 'end',
-                    'layout': 'layout',
-                    'title': 'title',
-                    'semOrient': 'sem_orient',
-                    'emotions': 'emotions',
-                    'level': 'level'}
+    DICT_MAPPING = {"@type": "span_type",
+                    "start": "start",
+                    "end": "end",
+                    "layout": "layout",
+                    "title": "title",
+                    "semOrient": "sem_orient",
+                    "emotions": "emotions",
+                    "level": "level"}
 
     def __init__(self, start: int, end: int, layout, title: str, level: int,
-                    sem_orient: float = 0.0, emotions = None):
+                 sem_orient: float = 0.0, emotions=None):
         CharSpan.__init__(self, span_type=self.SPAN_TYPE, start=start, end=end)
         self.layout = layout
         self.title = title
@@ -222,15 +222,16 @@ class LayoutCharSpan(CharSpan):
         self.sem_orient = sem_orient
         self.emotions = emotions or {}
 
+
 class SpanFactory(object):
     SPAN_TYPE_TO_CLASS = {
-        'CharSpan': CharSpan,
-        'TokenCharSpan': TokenCharSpan,
-        'SentimentCharSpan': SentimentCharSpan,
-        'MultiplierCharSpan': MultiplierCharSpan,
-        'SentenceCharSpan': SentenceCharSpan,
-        'LayoutCharSpan': LayoutCharSpan,
-        'NamedEntityCharSpan': NerCharSpan
+        "CharSpan": CharSpan,
+        "TokenCharSpan": TokenCharSpan,
+        "SentimentCharSpan": SentimentCharSpan,
+        "MultiplierCharSpan": MultiplierCharSpan,
+        "SentenceCharSpan": SentenceCharSpan,
+        "LayoutCharSpan": LayoutCharSpan,
+        "NamedEntityCharSpan": NerCharSpan
     }
 
     @classmethod
@@ -239,12 +240,12 @@ class SpanFactory(object):
             return span
 
         span_type = None
-        if '@type' in span:
-            span_type = span['@type']
-        elif 'span_type' in span:
-            span_type = span['span_type']
-        elif 'dep' in span:
-            span_type = 'TokenCharSpan'  # TODO: workaround until text_tagger gets fixed
+        if "@type" in span:
+            span_type = span["@type"]
+        elif "span_type" in span:
+            span_type = span["span_type"]
+        elif "dep" in span:
+            span_type = "TokenCharSpan"  # TODO: workaround until text_tagger gets fixed
 
         if span_type is not None and span_type in cls.SPAN_TYPE_TO_CLASS:
             try:
@@ -284,31 +285,31 @@ class Sentence(object):
         the class provides convenient properties for accessing pos tags and tokens:
 
         * s.sentence: sentence text
-        * s.tokens  : provides a list of tokens (e.g. ['A', 'new', 'day'])
-        * s.pos_tags: provides a list of pos tags (e.g. ['DET', 'CC', 'NN'])
+        * s.tokens  : provides a list of tokens (e.g. ["A", "new", "day"])
+        * s.pos_tags: provides a list of pos tags (e.g. ["DET", "CC", "NN"])
     """
     # :  Maps the keys of the attributes to the corresponding key for the API JSON
     API_MAPPINGS = {
         1.0: {
-            'md5sum': 'id',
-            'value': 'value',
-            'pos': 'pos_list',
-            'sem_orient': 'polarity',
-            'token': 'tok_list',
-            'is_title': 'is_title',
-            'dependency': 'dep_tree',
-            'significance': 'significance'
+            "md5sum": "id",
+            "value": "value",
+            "pos": "pos_list",
+            "sem_orient": "polarity",
+            "token": "tok_list",
+            "is_title": "is_title",
+            "dependency": "dep_tree",
+            "significance": "significance"
         }
     }
 
     # Delimiter between items (POS, TOKEN, DEPENDENCY)
-    ITEM_DELIMITER = ' '
+    ITEM_DELIMITER = " "
 
     # Delimiter for a single token
-    TOKEN_DELIMITER = ','
+    TOKEN_DELIMITER = ","
 
     # Delimiter for a single dependency
-    DEPENDENCY_DELIMITER = ':'
+    DEPENDENCY_DELIMITER = ":"
 
     def __init__(self, md5sum=None, pos=None, sem_orient=None,
                  significance=None,
@@ -318,9 +319,9 @@ class Sentence(object):
         if not md5sum and value:
             try:
                 m = hashlib.md5()
-                m.update(value.encode('utf-8')
+                m.update(value.encode("utf-8")
                          if isinstance(value, str) else str(value).encode(
-                    'utf-8'))
+                    "utf-8"))
                 md5sum = m.hexdigest()
             except Exception as e:
                 print(e)
@@ -340,7 +341,7 @@ class Sentence(object):
         :returns: a dictionary representation of the sentence object.
         """
         return dict((k, v) for k, v in self.__dict__.items() if
-                    not k.startswith('_'))
+                    not k.startswith("_"))
 
     def get_sentence(self):
         return self.value
@@ -352,9 +353,9 @@ class Sentence(object):
         """
         Get the POS Tags as list.
 
-        >>> sentence = Sentence(pos = 'PRP ADV NN')
+        >>> sentence = Sentence(pos = "PRP ADV NN")
         >>> sentence.get_pos_tags()
-        ['PRP', 'ADV', 'NN']
+        ["PRP", "ADV", "NN"]
         """
         if self.pos:
             return self.pos.strip().split(self.ITEM_DELIMITER)
@@ -368,11 +369,11 @@ class Sentence(object):
 
     def get_pos_tags_list(self):
         """
-        :returns: list of the sentence's POS tags
+        :returns: list of the sentence"s POS tags
 
-        >>> sentence = Sentence(pos = 'PRP ADV NN')
+        >>> sentence = Sentence(pos = "PRP ADV NN")
         >>> sentence.get_pos_tags_list()
-        ['PRP', 'ADV', 'NN']
+        ["PRP", "ADV", "NN"]
         """
         return [] if not self.pos_tag_string else self.get_pos_tags()
 
@@ -381,11 +382,11 @@ class Sentence(object):
 
     def get_pos_tags_string(self):
         """
-        :returns: String of the sentence's POS tags
+        :returns: String of the sentence"s POS tags
 
-        >>> sentence = Sentence(pos = 'PRP ADV NN')
+        >>> sentence = Sentence(pos = "PRP ADV NN")
         >>> sentence.get_pos_tags_string()
-        'PRP ADV NN'
+        "PRP ADV NN"
         """
         return self.pos
 
@@ -394,11 +395,11 @@ class Sentence(object):
 
     def get_tokens(self):
         """
-        :returns: an iterator providing the sentence's tokens 
+        :returns: an iterator providing the sentence"s tokens 
         """
         if not self.token:
             return
-        correction_offset = int(self.token.split(',')[0] or 0)
+        correction_offset = int(self.token.split(",")[0] or 0)
         for token_pos in self.token.split(self.ITEM_DELIMITER):
             token_indices = token_pos.split(self.TOKEN_DELIMITER)
             try:
@@ -407,9 +408,9 @@ class Sentence(object):
             except ValueError as e:
                 # occasionally there appear to be missing spaces in token
                 # strings
-                logger.warn('Error parsing tokens for sentence {}; token '
-                            'string was {}; individual token identifier '
-                            'was {}. Original error was: {}'.format(
+                logger.warning("Error parsing tokens for sentence {}; token "
+                               "string was {}; individual token identifier "
+                               "was {}. Original error was: {}".format(
                     self.value, self.token, token_pos, e
                 ), exc_info=True)
                 token_indices = [int(tok) for tok in token_indices]
@@ -438,12 +439,12 @@ class Sentence(object):
         :rtype: :py:class:`list` of :py:class:\
             `weblyzard_api.model.xml_content.LabeledDependency` objects
 
-        >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
+        >>> s = Sentence(pos="RB PRP MD", dependency="1:SUB -1:ROOT 1:OBJ")
         >>> s.dependency_list
         [
-        LabeledDependency(parent='1', pos='RB', label='SUB'),
-        LabeledDependency(parent='-1', pos='PRP', label='ROOT'),
-        LabeledDependency(parent='1', pos='MD', label='OBJ')
+        LabeledDependency(parent="1", pos="RB", label="SUB"),
+        LabeledDependency(parent="-1", pos="PRP", label="ROOT"),
+        LabeledDependency(parent="1", pos="MD", label="OBJ")
         ]
         """
         if self.dependency:
@@ -459,28 +460,28 @@ class Sentence(object):
                             assert self.is_digit(parent)
                         except AssertionError:
                             logger.info(
-                                'Unable to parse dependeny annotation {} for sentence '
-                                '{} with dependency string {} as tuple of '
-                                '(parent index, dependency label), treating it as '
-                                'parent index only'.format(dep, self.value,
+                                "Unable to parse dependeny annotation {} for sentence "
+                                "{} with dependency string {} as tuple of "
+                                "(parent index, dependency label), treating it as "
+                                "parent index only".format(dep, self.value,
                                                            self.dependency))
-                            parent, label = -1, 'XX'
+                            parent, label = -1, "XX"
                 elif self.is_digit(dep):
                     parent, label = dep, None
                     logger.info(
-                        'Unable to parse dependeny annotation {} for sentence '
-                        '{} with dependency string {} as tuple of '
-                        '(parent index, dependency label), treating it as '
-                        'parent index only'.format(dep, self.value,
+                        "Unable to parse dependeny annotation {} for sentence "
+                        "{} with dependency string {} as tuple of "
+                        "(parent index, dependency label), treating it as "
+                        "parent index only".format(dep, self.value,
                                                    self.dependency))
                 else:
                     parent, dep = -1, dep
                     logger.info(
-                        'Unable to parse dependeny annotation {} for sente'
-                        'nce '
-                        '{} with dependency string {} as tuple of '
-                        '(parent index, dependency label), treating it as '
-                        'dependency label only'.format(dep, self.value,
+                        "Unable to parse dependeny annotation {} for sente"
+                        "nce "
+                        "{} with dependency string {} as tuple of "
+                        "(parent index, dependency label), treating it as "
+                        "dependency label only".format(dep, self.value,
                                                        self.dependency))
                 result.append(LabeledDependency(parent,
                                                 self.pos_tags_list[index],
@@ -499,14 +500,14 @@ class Sentence(object):
         .. note:: The list must contain items of the type \
             :py:class:`weblyzard_api.model.xml_content.LabeledDependency`
 
-        >>> s = Sentence(pos='RB PRP MD', dependency='1:SUB -1:ROOT 1:OBJ')
+        >>> s = Sentence(pos="RB PRP MD", dependency="1:SUB -1:ROOT 1:OBJ")
         >>> s.dependency_list
-        [LabeledDependency(parent='1', pos='RB', label='SUB'),
-        LabeledDependency(parent='-1', pos='PRP', label='ROOT'),
-        LabeledDependency(parent='1', pos='MD', label='OBJ')]
-        >>> s.dependency_list = [LabeledDependency(parent='-1', pos='MD', label='ROOT'), ]
+        [LabeledDependency(parent="1", pos="RB", label="SUB"),
+        LabeledDependency(parent="-1", pos="PRP", label="ROOT"),
+        LabeledDependency(parent="1", pos="MD", label="OBJ")]
+        >>> s.dependency_list = [LabeledDependency(parent="-1", pos="MD", label="ROOT"), ]
         >>> s.dependency_list
-        [LabeledDependency(parent='-1', pos='MD', label='ROOT')]
+        [LabeledDependency(parent="-1", pos="MD", label="ROOT")]
         """
         if not dependencies:
             return

@@ -17,53 +17,51 @@ Remove functions:
  - compatibility fixes for namespaces, encodings etc.
  - support for the old POS tags mapping.
 """
-from __future__ import unicode_literals
-from builtins import str
-from builtins import object
+
 import json
 
-from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
+from weblyzard_api.model import Sentence, Annotation
+from weblyzard_api.model.parsers import EmptySentenceException
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
-from weblyzard_api.model.parsers import EmptySentenceException
-from weblyzard_api.model import Sentence, Annotation
+from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 
-SENTENCE_ATTRIBUTES = ('pos_tags', 'sem_orient', 'significance', 'md5sum',
-                       'pos', 'token', 'dependency')
+SENTENCE_ATTRIBUTES = ("pos_tags", "sem_orient", "significance", "md5sum",
+                       "pos", "token", "dependency")
 
 
-class XMLContent(object):
+class XMLContent:
     SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
                               XML2013.VERSION: XML2013,
                               XMLDeprecated.VERSION: XMLDeprecated}
     API_MAPPINGS = {
         1.0: {
-            'language_id': 'language_id',
-            'lang': 'language_id',
-            'xml:lang': 'language_id',
-            'title': 'title',
-            'uri': 'uri'
+            "language_id": "language_id",
+            "lang": "language_id",
+            "xml:lang": "language_id",
+            "title": "title",
+            "uri": "uri"
         }
     }
 
-    ATTRIBUTE_MAPPING = {'uri': 'uri',
-                         'content_id': 'id',
-                         'title': 'title',
-                         'sentences': 'sentences',
-                         'body_annotations': 'annotations',
-                         'lang': 'xml:lang',
-                         'language_id': 'xml:lang',
-                         'sentences_map': {'pos': 'pos',
-                                           'token': 'token',
-                                           'value': 'value',
-                                           'md5sum': 'id'},
-                         'annotations_map': {'start': 'start',
-                                             'end': 'end',
-                                             'key': 'key',
-                                             'surfaceForm': 'surfaceForm'
+    ATTRIBUTE_MAPPING = {"uri": "uri",
+                         "content_id": "id",
+                         "title": "title",
+                         "sentences": "sentences",
+                         "body_annotations": "annotations",
+                         "lang": "xml:lang",
+                         "language_id": "xml:lang",
+                         "sentences_map": {"pos": "pos",
+                                           "token": "token",
+                                           "value": "value",
+                                           "md5sum": "id"},
+                         "annotations_map": {"start": "start",
+                                             "end": "end",
+                                             "key": "key",
+                                             "surfaceForm": "surfaceForm"
                                              }}
 
-    def __init__(self, xml_content, remove_duplicates=True):
+    def __init__(self, xml_content, remove_duplicates: bool = True):
         self.xml_version = None
         self.attributes = {}
         self.sentence_objects = []
@@ -84,12 +82,12 @@ class XMLContent(object):
         pass
 
     @classmethod
-    def convert(cls, xml_content, target_version):
+    def convert(cls, xml_content, target_version: int):
         xml = XMLContent(xml_content)
         return xml.get_xml_document(xml_version=target_version)
 
     @classmethod
-    def parse_xml_content(cls, xml_content, remove_duplicates=True):
+    def parse_xml_content(cls, xml_content, remove_duplicates: bool = True):
         xml_version = cls.get_xml_version(xml_content)
 
         if not xml_version or not xml_content:
@@ -100,26 +98,28 @@ class XMLContent(object):
         parser = cls.SUPPORTED_XML_VERSIONS[xml_version]
         try:
             attributes, sentences, title_annotations, body_annotations, features, \
-                relations = parser.parse(xml_content, remove_duplicates, raise_on_empty=True)
+                relations = parser.parse(xml_content, remove_duplicates,
+                                         raise_on_empty=True)
         except EmptySentenceException as e:
-            raise EmptySentenceException('Empty sentence object: {}'.format(
+            raise EmptySentenceException("Empty sentence object: {}".format(
                 xml_content
             ))
         titles = []
         for sentence in sentences:
             try:
                 sent_obj = Sentence(**sentence)
-            except:
-                sent_obj = Sentence(**{k: v for k, v in sentence.items() if k in Sentence.API_MAPPINGS[1.0]})
+            except Exception as e:
+                sent_obj = Sentence(**{k: v for k, v in sentence.items() if
+                                       k in Sentence.API_MAPPINGS[1.0]})
 
             if sent_obj.is_title:
                 titles.append(sent_obj)
             else:
                 sentence_objects.append(sent_obj)
 
-        if len(titles) == 0 and 'title' in attributes:
+        if len(titles) == 0 and "title" in attributes:
             # fall back titles from attributes
-            titles = [Sentence(value=attributes['title'], is_title=True)]
+            titles = [Sentence(value=attributes["title"], is_title=True)]
 
         for annotation in body_annotations:
             annotation_obj = Annotation(**annotation)
@@ -136,32 +136,33 @@ class XMLContent(object):
             if xml_parser.is_supported(xml_content):
                 return version
 
-    def get_xml_document(self, header_fields='all',
+    def get_xml_document(self, header_fields="all",
                          sentence_attributes=SENTENCE_ATTRIBUTES,
                          annotations=None,
                          features=None,
                          relations=None,
-                         ignore_title=False,
-                         xml_version=XML2013.VERSION):
+                         ignore_title: bool = False,
+                         xml_version: int = XML2013.VERSION):
         """
+        :param ignore_title:
         :param header_fields: the header_fields to include
         :param sentence_attributes: sentence attributes to include
         :param annotations, optionally
         :param features, optionally to overwrite
         :param relations, optionally to overwrite
-        :param xml_version: version of the webLyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
-        :returns: the XML representation of the webLyzard XML object
+        :param xml_version: version of the weblyzard XML format to use (XML2005.VERSION, *XML2013.VERSION*)
+        :returns: the XML representation of the weblyzard XML object
         """
 
         if not xml_version:
             xml_version = self.xml_version
 
-        if not hasattr(self, 'features'):
+        if not hasattr(self, "features"):
             self.features = {}
         if features is None:
             features = self.features
 
-        if not hasattr(self, 'relations'):
+        if not hasattr(self, "relations"):
             self.relations = {}
         if relations is None:
             relations = self.relations
@@ -177,20 +178,21 @@ class XMLContent(object):
                                                                  features=features,
                                                                  relations=relations)
 
-    def get_plain_text(self, include_title=False):
+    def get_plain_text(self, include_title: bool = False) -> str:
         """ :returns: the plain text of the XML content """
         if not len(self.all_sentences):
-            return ''
+            return ""
         if not include_title:
-            return '\n'.join([s.value for s in self.all_sentences if not s.is_title])
+            return "\n".join(
+                [s.value for s in self.all_sentences if not s.is_title])
         else:
-            return '\n'.join([s.value for s in self.all_sentences])
+            return "\n".join([s.value for s in self.all_sentences])
 
     @classmethod
     def get_text(cls, text):
         """ :returns: the utf-8 encoded text """
         if isinstance(text, str):
-            text = text.decode('utf-8')
+            text = text.decode("utf-8")
         return text
 
     def add_attribute(self, key, value):
@@ -198,7 +200,7 @@ class XMLContent(object):
             self.attributes = {}
         self.attributes[key] = value
 
-    def update_attributes(self, new_attributes):
+    def update_attributes(self, new_attributes: dict):
         """
         Updates the existing attributes with new ones 
 
@@ -214,28 +216,28 @@ class XMLContent(object):
         for k, v in new_attributes.items():
             self.attributes[str(k)] = v
 
-    def update_features(self, new_features):
+    def update_features(self, new_features: dict):
         if not new_features or not isinstance(new_features, dict):
             return
 
         for k, v in new_features.items():
             self.features[str(k)] = v
 
-    def update_relations(self, new_relations):
+    def update_relations(self, new_relations: dict):
         if not new_relations or not isinstance(new_relations, dict):
             return
 
         for k, v in new_relations.items():
             self.relations[str(k)] = v
 
-    def as_dict(self, mapping=None, ignore_non_sentence=False,
-                ignore_features=False, ignore_relations=False,
-                add_titles_to_sentences=False):
+    def as_dict(self, mapping=None, ignore_non_sentence: bool = False,
+                ignore_features: bool = False, ignore_relations: bool = False,
+                add_titles_to_sentences: bool = False):
         """ convert the XML content to a dictionary.
 
         :param mapping: an optional mapping by which to restrict/rename \
             the returned dictionary
-        :param ignore_non_sentence: if true, sentences without without POS tags \
+        :param ignore_non_sentence: if true, sentences without POS tags \
             are omitted from the result
         :param ignore_features: if true, document features do not get serialized
         :param ignore_relations: if true, document relations do not get serialized
@@ -246,11 +248,12 @@ class XMLContent(object):
                 mapping = self.ATTRIBUTE_MAPPING
 
             result = self.apply_dict_mapping(self.attributes, mapping)
-            sentence_attr_name = mapping['sentences'] if 'sentences' in mapping else 'sentences'
+            sentence_attr_name = mapping[
+                "sentences"] if "sentences" in mapping else "sentences"
 
-            if 'sentences_map' in mapping:
+            if "sentences_map" in mapping:
                 result[sentence_attr_name] = []
-                sent_mapping = mapping['sentences_map']
+                sent_mapping = mapping["sentences_map"]
 
                 if add_titles_to_sentences and len(self.titles):
                     sentences = self.titles + self.sentences
@@ -266,31 +269,33 @@ class XMLContent(object):
                                                               sent_mapping)
                     result[sentence_attr_name].append(sent_attributes)
 
-            annotation_attr_name = mapping['body_annotations'] \
-                if 'body_annotations' in mapping else 'body_annotations'
-            if 'annotations_map' in mapping:
+            annotation_attr_name = mapping["body_annotations"] \
+                if "body_annotations" in mapping else "body_annotations"
+            if "annotations_map" in mapping:
                 result[annotation_attr_name] = []
-                annotation_mapping = mapping['annotations_map']
+                annotation_mapping = mapping["annotations_map"]
                 for annotation in self.body_annotations:
-                    annotation_attributes = self.apply_dict_mapping(annotation.as_dict(),
-                                                                    annotation_mapping)
+                    annotation_attributes = self.apply_dict_mapping(
+                        annotation.as_dict(),
+                        annotation_mapping)
                     result[annotation_attr_name].append(annotation_attributes)
 
             if not ignore_features and self.features:
-                result['features'] = self.features
+                result["features"] = self.features
 
             if not ignore_relations and self.relations:
-                result['relations'] = self.relations
+                result["relations"] = self.relations
 
         except Exception as e:
             result = self.attributes
-            result.update({'sentences': [sent.as_dict()
+            result.update({"sentences": [sent.as_dict()
                                          for sent in self.sentences]})
 
         return result
 
     @classmethod
-    def apply_dict_mapping(cls, attributes, mapping=None):
+    def apply_dict_mapping(cls, attributes: dict,
+                           mapping: dict | None = None) -> dict:
         result = attributes
 
         if mapping:
@@ -301,7 +306,7 @@ class XMLContent(object):
 
         return result
 
-    def to_api_dict(self, version=1.0):
+    def to_api_dict(self, version: float = 1.0) -> dict:
         """
         Transforms the XMLContent object to a dict analoguous to the
         API JSON definition in the given version.
@@ -319,28 +324,28 @@ class XMLContent(object):
                     document_dict[key]
         if self.sentences and len(self.sentences) > 0:
             sentences = [s.to_api_dict(version) for s in self.sentences]
-            api_dict['sentences'] = sentences
+            api_dict["sentences"] = sentences
         if self.titles and len(self.titles) > 0:
             for t in self.titles:
-                api_dict['sentences'] = [t.to_api_dict(
-                    version)] + api_dict.get('sentences', [])
-                if 'title' not in api_dict:
-                    api_dict['title'] = t.value
-        #                 elif api_dict['title'] != t.value:
-        #                     raise Exception('Mismatch between sentence marked as title and '+\
-        #                                     'title attribute:\n'+\
-        #                                     '%s != %s' % (t.value, api_dict['title']))
-        annotations = document_dict.get('annotations', None)
+                api_dict["sentences"] = [t.to_api_dict(
+                    version)] + api_dict.get("sentences", [])
+                if "title" not in api_dict:
+                    api_dict["title"] = t.value
+        #                 elif api_dict["title"] != t.value:
+        #                     raise Exception("Mismatch between sentence marked as title and "+\
+        #                                     "title attribute:\n"+\
+        #                                     "%s != %s" % (t.value, api_dict["title"]))
+        annotations = document_dict.get("annotations", None)
         if annotations:
-            api_dict['annotations'] = annotations
+            api_dict["annotations"] = annotations
 
         if self.features and len(self.features) > 0:
-            api_dict['features'] = self.features
+            api_dict["features"] = self.features
         if self.relations and len(self.relations) > 0:
-            api_dict['relations'] = self.relations
+            api_dict["relations"] = self.relations
         return api_dict
 
-    def to_json(self, version=1.0):
+    def to_json(self, version: float = 1.0):
         """
         Serializes the XMLContent object to JSON according to the
         specified version.
@@ -352,29 +357,29 @@ class XMLContent(object):
         """
         return json.dumps(self.to_api_dict(version=version))
 
-    def _get_attribute(self, attr_name):
+    def _get_attribute(self, attr_name: str):
         """ ::returns: the attribute for the given name """
         return self.attributes.get(attr_name, None)
 
     def get_nilsimsa(self):
-        return self._get_attribute('nilsimsa')
+        return self._get_attribute("nilsimsa")
 
     def get_content_type(self):
-        return self._get_attribute('content_type')
+        return self._get_attribute("content_type")
 
     def get_title(self):
-        return self._get_attribute('title')
+        return self._get_attribute("title")
 
     def get_lang(self):
-        if self._get_attribute('language_id') is not None:
-            return self._get_attribute('language_id')
-        return self._get_attribute('lang')
+        if self._get_attribute("language_id") is not None:
+            return self._get_attribute("language_id")
+        return self._get_attribute("lang")
 
     def get_content_id(self):
-        content_id = self._get_attribute('content_id')
+        content_id = self._get_attribute("content_id")
         return int(content_id) if content_id else content_id
 
-    def get_sentences(self, include_title_sentences=False):
+    def get_sentences(self, include_title_sentences: bool = False):
         return self.titles * include_title_sentences + \
             self.sentence_objects
 

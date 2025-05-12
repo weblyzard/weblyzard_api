@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 from __future__ import unicode_literals
-import unittest
-import os
 
+import os
+import unittest
 from pickle import load
 
 from weblyzard_api.model.parsers import XMLParser
@@ -17,39 +17,41 @@ class TestXMLParser(unittest.TestCase):
     def test_illegal_document_headers_for_lxml(self):
         test_data_path = os.path.join(
             os.path.dirname(__file__),
-            '../../data',
-            'xml_content_with_illegal_header_attributes.pkl')
-        with open(test_data_path, 'rb') as f:  # [mig] readig binary files needs to be specified now ('rb')
+            "../../data",
+            "xml_content_with_illegal_header_attributes.pkl")
+        with open(test_data_path,
+                  "rb") as f:  # [mig] readig binary files needs to be specified now ("rb")
             xml_content = load(f)
             xml_string = xml_content.get_xml_document()
             print(xml_string)
             assert xml_string
-
-#     def test_incomplete_xml_parsing(self):
-#         test_data_path = os.path.join(
-#             os.path.dirname(__file__),
-#             'data',
-#             'failing_xml.xml')
-#         with open(test_data_path) as f:
-#             xml_string = f.read()
-#             assert len(xml_string) > 100
-#             attributes, sentences, title_annotations, body_annotations, features, \
-#                 relations = XML2013.parse(xml_string)
-#
-#             xml_content = XMLContent(xml_string)
-#             assert len(xml_content.sentences) > 0
+    
+    #     def test_incomplete_xml_parsing(self):
+    #         test_data_path = os.path.join(
+    #             os.path.dirname(__file__),
+    #             "data",
+    #             "failing_xml.xml")
+    #         with open(test_data_path) as f:
+    #             xml_string = f.read()
+    #             assert len(xml_string) > 100
+    #             attributes, sentences, title_annotations, body_annotations, features, \
+    #                 relations = XML2013.parse(xml_string)
+    #
+    #             xml_content = XMLContent(xml_string)
+    #             assert len(xml_content.sentences) > 0
 
     def test_scientific_notation_bug(self):
         """
-        make sure that a decoding bug for strings in scientific notation yielding infinity doesn't occur
+        make sure that a decoding bug for strings in scientific notation yielding infinity doesn"t occur
         """
         import hashlib
 
         m = hashlib.md5()
         m.update(
-            "\"That triumph for more military spending was an anomaly in the budget blueprint, which would cut spending $5.5 trillion over the next decade.".encode('utf-8'))  # [mig] unicode strings need to be encoded before hashing
+            "\"That triumph for more military spending was an anomaly in the budget blueprint, which would cut spending $5.5 trillion over the next decade.".encode(
+                "utf-8"))  # [mig] unicode strings need to be encoded before hashing
         md5sum = m.hexdigest()
-        expected = '3120900866903065837e521458088467'
+        expected = "3120900866903065837e521458088467"
         self.assertEqual(md5sum, expected)
         self.assertEqual(XMLParser.decode_value(md5sum), expected)
 
@@ -77,11 +79,11 @@ class TestXML2005(unittest.TestCase):
             relations = XML2005.parse(xml)
         assert len(attributes) == 5
         assert len(sentences) == 1
-        assert all(attr in attributes for attr in ('content_id', 'content_type',
-                                                   'lang', 'nilsimsa'))
+        assert all(attr in attributes for attr in ("content_id", "content_type",
+                                                   "lang", "nilsimsa"))
         for sent in sentences:
-            assert 'id' not in sent
-            assert 'md5sum' in sent
+            assert "id" not in sent
+            assert "md5sum" in sent
 
 
 class TestXML2013(unittest.TestCase):
@@ -114,12 +116,12 @@ class TestXML2013(unittest.TestCase):
 
         assert len(attributes) == 4
         assert len(sentences) == 1
-        assert all(attr in attributes for attr in ('content_id', 'content_type',
-                                                   'language_id', 'nilsimsa'))
+        assert all(attr in attributes for attr in ("content_id", "content_type",
+                                                   "language_id", "nilsimsa"))
         for sent in sentences:
-            assert 'id' not in sent
-            assert 'md5sum' in sent
+            assert "id" not in sent
+            assert "md5sum" in sent
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

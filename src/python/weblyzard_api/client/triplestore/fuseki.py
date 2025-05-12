@@ -1,14 +1,13 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This module provides a class that provides some convenience methods
 to access a fuseki triplestore.
-'''
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from builtins import object
 import hashlib
 import io
 import json
@@ -37,16 +36,16 @@ class FusekiWrapper(TriplestoreWrapper1):
                          debug=debug)
 
         # set query/update endpoint accordingly
-        if 'query' in sparql_endpoint:
+        if "query" in sparql_endpoint:
             self.query_endpoint = sparql_endpoint
-            self.update_endpoint = sparql_endpoint.replace('query', 'update')
-        elif 'update' in sparql_endpoint:
+            self.update_endpoint = sparql_endpoint.replace("query", "update")
+        elif "update" in sparql_endpoint:
             self.update_endpoint = sparql_endpoint
-            self.query_endpoint = sparql_endpoint.replace('update', 'query')
+            self.query_endpoint = sparql_endpoint.replace("update", "query")
         else:
-            sparql_endpoint = sparql_endpoint[:-1] if sparql_endpoint.endswith('/') else sparql_endpoint
-            self.update_endpoint = '/'.join([sparql_endpoint, 'update'])
-            self.query_endpoint = '/'.join([sparql_endpoint, 'query'])
+            sparql_endpoint = sparql_endpoint[:-1] if sparql_endpoint.endswith("/") else sparql_endpoint
+            self.update_endpoint = "/".join([sparql_endpoint, "update"])
+            self.query_endpoint = "/".join([sparql_endpoint, "query"])
 
     def variable_to_python(self, variable_dict, add_language_tag=False):
         """
@@ -58,40 +57,37 @@ class FusekiWrapper(TriplestoreWrapper1):
         :type add_language_tag: `bool`
         :rtype: `object`
         """
-        if variable_dict['type'] == 'uri':
-            return variable_dict['value']
-        elif variable_dict['type'] == 'literal':
-            if variable_dict.get('xml:lang', False):
+        if variable_dict["type"] == "uri":
+            return variable_dict["value"]
+        elif variable_dict["type"] == "literal":
+            if variable_dict.get("xml:lang", False):
                 if add_language_tag:
-                    return u'"{}"@{}'.format(
-                        variable_dict['value'],
-                        variable_dict['xml:lang']
-                    )
+                    return f"{variable_dict['value']}@{variable_dict['xml:lang']}"
                 else:
-                    return variable_dict['value']
-            elif variable_dict.get('datatype', False):
-                datatype = variable_dict['datatype']
+                    return variable_dict["value"]
+            elif variable_dict.get("datatype", False):
+                datatype = variable_dict["datatype"]
                 uri_ref = rdflib.term.URIRef(datatype)
                 mapping_function = rdflib.term._toPythonMapping.get(
                     uri_ref, None)
                 if mapping_function is None:
-                    return variable_dict['value']
+                    return variable_dict["value"]
                 else:
-                    return mapping_function(variable_dict['value'])
+                    return mapping_function(variable_dict["value"])
             else:
                 try:
-                    return int(variable_dict['value'])
+                    return int(variable_dict["value"])
                 except ValueError:
                     pass
                 try:
-                    return float(variable_dict['value'])
+                    return float(variable_dict["value"])
                 except ValueError:
-                    return variable_dict['value']
+                    return variable_dict["value"]
         else:
-            return variable_dict['value']
+            return variable_dict["value"]
 
     @_retry_with_backoff
-    def execute_query(self, query, caching=False, on_fly_json_decoding=False):
+    def execute_query(self, query: str | bytes, caching: bool=False, on_fly_json_decoding: bool=False):
 
         def parse_and_yield(result):
             """
@@ -99,34 +95,34 @@ class FusekiWrapper(TriplestoreWrapper1):
             response without parsing it all at once, but result line by
             result line.
             """
-            row = ''
+            row = ""
             in_bindings = False
             for line in result:
                 if in_bindings:
-                    if line.startswith('      }'):
-                        yield json.loads(''.join([row, '}']))
-                        row = ''
+                    if line.startswith("      }"):
+                        yield json.loads("".join([row, "}"]))
+                        row = ""
                     else:
-                        row = '\n'.join([row, line])
-                if '"bindings"' in line:
+                        row = "\n".join([row, line])
+                if "bindings" in line:
                     in_bindings = True
 
         try:
             self.query_wrapper.setQuery(query)
-            self.debug(u'running the following query against {endpoint}\n{query}'.format(
+            self.debug(u"running the following query against {endpoint}\n{query}".format(
                 query=query,
                 endpoint=self.query_endpoint))
             if caching:
-                filename = 'query_cache/{}.json'.format(
+                filename = "query_cache/{}.json".format(
                     hashlib.md5(query).hexdigest())
                 if not os.path.isfile(filename):
                     result = self.query_wrapper.query()
-                    with open(filename, 'ab') as f:
+                    with open(filename, "ab") as f:
                         f.writelines(result)
-                    print('written result to cache file')
+                    print("written result to cache file")
                 else:
-                    print('file dump found, not querying triplestore')
-                with io.open(filename, 'rb') as f:
+                    print("file dump found, not querying triplestore")
+                with io.open(filename, "rb") as f:
                     for r in parse_and_yield(f):
                         yield r
             else:
@@ -135,17 +131,17 @@ class FusekiWrapper(TriplestoreWrapper1):
                         yield r
                 else:
                     res = self.query_wrapper.query().convert()
-                    for r in res['results']['bindings']:
+                    for r in res["results"]["bindings"]:
                         yield r
         except socket.error as e:
             logger.warning(
-                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+                f"socket error {self.query_endpoint}: {e}", exc_info=True)
             raise e
 
     def run_query(self, query, no_prefix=False, batch_size=None,
                   order_by_stmt=None, caching=False):
         """
-        Run a given query and return the result's bindings.
+        Run a given query and return the result"s bindings.
         :param no_prefix: if True does not inject all PREFIX values
         :param batch_size: controls LIMIT and OFFSET in batch queries
         :param order_by_stmt: accepts and ORDER BY query part for batch updates
@@ -156,13 +152,13 @@ class FusekiWrapper(TriplestoreWrapper1):
             query = self.cleanup_prefixes_in_query(query)
         if batch_size:
             assert order_by_stmt is not None
-            query = u'{}\n{}'.format(query, order_by_stmt)
+            query = u"{}\n{}".format(query, order_by_stmt)
         if batch_size:
             last_batch = -1
             offset = 0
             while last_batch < offset:
                 last_batch = offset
-                batch_query = '{}\nLIMIT {}\nOFFSET {}'.format(
+                batch_query = "{}\nLIMIT {}\nOFFSET {}".format(
                     query,
                     batch_size,
                     offset)
@@ -194,7 +190,7 @@ class FusekiWrapper(TriplestoreWrapper1):
             self.update_wrapper.query()
         except socket.error as e:
             logger.warning(
-                f'socket error {self.query_endpoint}: {e}', exc_info=True)
+                f"socket error {self.query_endpoint}: {e}", exc_info=True)
             raise e
 
     def get_new_uri(self, base_uri):
@@ -208,12 +204,12 @@ class FusekiWrapper(TriplestoreWrapper1):
             return candidate_uri
         else:
             suffix = 1
-            candidate_uri = u'{}_{}'.format(base_uri, suffix)
+            candidate_uri = u"{}_{}".format(base_uri, suffix)
             while not (candidate_uri not in self.uri_cache and not self.exists(candidate_uri)):
                 if candidate_uri not in self.uri_cache:
                     self.uri_cache.add(candidate_uri)
                 suffix += 1
-                candidate_uri = u'{}_{}'.format(base_uri, suffix)
+                candidate_uri = u"{}_{}".format(base_uri, suffix)
             return candidate_uri
 
     def insert_triples(self, triple_list: List[Tuple], graph_name: str = None) -> None:
@@ -230,13 +226,13 @@ class FusekiWrapper(TriplestoreWrapper1):
             sub_list = triple_list[lower:upper]
             # make sure that no blank node triples get sliced into different sublists
             for t in triple_list[upper:]:
-                if t[0][:2] == '_:':
+                if t[0][:2] == "_:":
                     sub_list.append(t)
                     upper += 1
                 else:
                     break
             sub_list = [self.fix_uri(t) for t in sub_list]
-            triples = '.\n'.join([' '.join(triple) for triple in sub_list])
+            triples = ".\n".join([" ".join(triple) for triple in sub_list])
             triples = f'{triples}.'
             if graph_name:
                 query_body = f"""
@@ -267,7 +263,7 @@ class FusekiWrapper(TriplestoreWrapper1):
         :param o: object
         :param graph_name: if provided, adds to that named GRAPH
         """
-        triple = ' '.join([self.fix_uri(s), self.fix_uri(p), self.fix_uri(o)])
+        triple = " ".join([self.fix_uri(s), self.fix_uri(p), self.fix_uri(o)])
         if graph_name:
             query_body = f"""
             graph <{graph_name}> 
