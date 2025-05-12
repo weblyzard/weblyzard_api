@@ -91,6 +91,18 @@ class AbstractTriplestoreWrapper(ABC):
         prefixes = "\n".join([pref.strip() for pref in used_prefixes])
         return prefixes
 
+    def cleanup_prefixes_in_query(self, query):
+        prefixes = None
+        try:
+            prefixes = self.retrieve_only_used_prefixes(query)
+        except Exception as e:
+            pass # injects all known PREFIX values
+
+        prefixes = self.remove_duplicate_prefixes(query,
+                                                  prefixes=prefixes)
+        query = f'{prefixes}{query}'
+        return query
+
     def fix_uri(self, o):
         """
         If a uri is only the full uri, i.e. not prefixed, it needs
@@ -245,15 +257,7 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         """
         self._set_query_method(query)
         if not no_prefix:
-            prefixes = None
-            try:
-                prefixes = self.retrieve_only_used_prefixes(query)
-            except Exception as e:
-                pass # injects all known PREFIX values
-
-            prefixes = self.remove_duplicate_prefixes(query,
-                                                      prefixes=prefixes)
-            query = f'{prefixes}{query}'
+            query = self.cleanup_prefixes_in_query(query)
         self.query_wrapper.setQuery(query)
         self.debug(f'running the following query against {self.query_endpoint}\n{query}')
 
