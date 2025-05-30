@@ -1,10 +1,12 @@
 import logging
 import socket
+import time
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Generator, Optional
 
 from SPARQLWrapper import SPARQLWrapper2, JSON, SPARQLWrapper
+from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 
 from weblyzard_api.client.rdf import PREFIXES, NAMESPACES, \
     parse_language_tagged_string
@@ -25,6 +27,11 @@ def _retry_with_backoff(decorated):  # @NoSelf
             try:
                 return decorated(*args, **kwargs)
                 success = True
+            except QueryBadFormed as e:
+                logger.warning(
+                    f'not retrying {decorated.__name__}, same result expected...')
+                logger.error(e)
+                break
             except Exception as e:
                 logger.warning(
                     f"retrying {decorated.__name__} in {retry_delay} seconds...")
@@ -86,6 +93,18 @@ class AbstractTriplestoreWrapper(ABC):
         prefixes = "\n".join([pref.strip() for pref in used_prefixes])
         return prefixes
 
+    def cleanup_prefixes_in_query(self, query):
+        prefixes = None
+        try:
+            prefixes = self.retrieve_only_used_prefixes(query)
+        except Exception as e:
+            pass # injects all known PREFIX values
+
+        prefixes = self.remove_duplicate_prefixes(query,
+                                                  prefixes=prefixes)
+        query = f'{prefixes}{query}'
+        return query
+
     def fix_uri(self, o):
         """
         If a uri is only the full uri, i.e. not prefixed, it needs
@@ -119,6 +138,7 @@ class AbstractTriplestoreWrapper(ABC):
             if value.startswith("<http") and value[-1:] == ">":
                 return True
             return False
+        return False
 
     def ask(self, query: str, no_prefix: bool = False) -> bool:
         """
@@ -243,15 +263,7 @@ class TriplestoreWrapper2(AbstractTriplestoreWrapper):
         """
         self._set_query_method(query)
         if not no_prefix:
-            prefixes = None
-            try:
-                prefixes = self.retrieve_only_used_prefixes(query)
-            except Exception as e:
-                pass  # injects all known PREFIX values
-
-            prefixes = self.remove_duplicate_prefixes(query,
-                                                      prefixes=prefixes)
-            query = f"{prefixes}{query}"
+            query = self.cleanup_prefixes_in_query(query)
         self.query_wrapper.setQuery(query)
         self.debug(
             f"running the following query against {self.query_endpoint}\n{query}")

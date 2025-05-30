@@ -149,7 +149,7 @@ class FusekiWrapper(TriplestoreWrapper1):
         :param query: the SPARQL query to run.
         """
         if not no_prefix:
-            query = u"{}{}".format(self.PREFIXES, query)
+            query = self.cleanup_prefixes_in_query(query)
         if batch_size:
             assert order_by_stmt is not None
             query = u"{}\n{}".format(query, order_by_stmt)
@@ -178,8 +178,8 @@ class FusekiWrapper(TriplestoreWrapper1):
         :param query: The query (insert, update) to run.
         """
         if not no_prefix:
-            query = u"{}{}".format(self.PREFIXES, query)
-        self.debug(u"running the following update query against {endpoint}\n{query}".format(
+            query = self.cleanup_prefixes_in_query(query)
+        self.debug(u'running the following update query against {endpoint}\n{query}'.format(
             query=query,
             endpoint=self.update_endpoint))
         if self.debug_:
@@ -233,6 +233,7 @@ class FusekiWrapper(TriplestoreWrapper1):
                     break
             sub_list = [self.fix_uri(t) for t in sub_list]
             triples = ".\n".join([" ".join(triple) for triple in sub_list])
+            triples = f'{triples}.'
             if graph_name:
                 query_body = f"""
                 graph <{graph_name}>
