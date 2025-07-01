@@ -365,7 +365,7 @@ class XMLParser:
             if mapping and key in mapping:
                 key = mapping.get(key, key)
             else:
-                print("here")
+                logger.debug("here")
             if value is None:
                 continue
             value = cls.decode_value(value)
