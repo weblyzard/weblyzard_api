@@ -9,12 +9,13 @@ import html
 import json
 from datetime import datetime
 from decimal import Decimal
-
 from itertools import chain
 
 from weblyzard_api.model import Sentence, SpanFactory, CharSpan
-from weblyzard_api.model.exceptions import (MissingFieldException,
-                                            UnexpectedFieldException)
+from weblyzard_api.model.exceptions import (
+    MissingFieldException,
+    UnexpectedFieldException,
+)
 from weblyzard_api.model.parsers.xml_2005 import XML2005
 from weblyzard_api.model.parsers.xml_2013 import XML2013
 from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
@@ -23,37 +24,56 @@ from weblyzard_api.model.parsers.xml_deprecated import XMLDeprecated
 class Document:
     # supported partition keys
     FRAGMENT_KEY = "FRAGMENT"
-    SENTENCE_KEY = u"SENTENCE"
-    DUPLICATE_KEY = u"DUPLICATE"
-    TITLE_KEY = u"TITLE"
-    BODY_KEY = u"BODY"
-    TOKEN_KEY = u"TOKEN"
-    LAYOUT_KEY = u"LAYOUT"
-    SENTIMENT_KEY = u"SENTIMENT_SCOPE"
-    # NEGATION_KEY = u"NEGATION_SCOPE"
+    SENTENCE_KEY = "SENTENCE"
+    DUPLICATE_KEY = "DUPLICATE"
+    TITLE_KEY = "TITLE"
+    BODY_KEY = "BODY"
+    TOKEN_KEY = "TOKEN"
+    LAYOUT_KEY = "LAYOUT"
+    SENTIMENT_KEY = "SENTIMENT_SCOPE"
+    # NEGATION_KEY = "NEGATION_SCOPE"
     MULTIPLIER_KEY = "MULTIPLIER_SCOPE"
 
     # mapping from document attributes to serialized JSON fields
-    MAPPING = {"content_id": "id",
-               "md5sum": "id",
-               "span_type": "@type",
-               "header": "header",
-               "content_type": "format",
-               "sem_orient": "semOrient"}
+    MAPPING = {
+        "content_id": "id",
+        "md5sum": "id",
+        "span_type": "@type",
+        "header": "header",
+        "content_type": "format",
+        "sem_orient": "semOrient",
+    }
 
     # list of required attributes
-    REQUIRED_FIELDS = ["id", "format", "lang",
-                       "content"]
+    REQUIRED_FIELDS = ["id", "format", "lang", "content"]
 
     # list of optional attributes
-    OPTIONAL_FIELDS = ["partitions", "annotations", "encoding",
-                       "features", "relations", "header", "nilsimsa"]
-    SUPPORTED_XML_VERSIONS = {XML2005.VERSION: XML2005,
-                              XML2013.VERSION: XML2013,
-                              XMLDeprecated.VERSION: XMLDeprecated}
+    OPTIONAL_FIELDS = [
+        "partitions",
+        "annotations",
+        "encoding",
+        "features",
+        "relations",
+        "header",
+        "nilsimsa",
+    ]
+    SUPPORTED_XML_VERSIONS = {
+        XML2005.VERSION: XML2005,
+        XML2013.VERSION: XML2013,
+        XMLDeprecated.VERSION: XMLDeprecated,
+    }
 
-    def __init__(self, content_id, content, content_type, lang, nilsimsa=None,
-                 partitions=None, header=None, annotations=None):
+    def __init__(
+            self,
+            content_id,
+            content,
+            content_type,
+            lang,
+            nilsimsa=None,
+            partitions=None,
+            header=None,
+            annotations=None,
+    ):
         """ """
         self.content_id = content_id
 
@@ -74,7 +94,8 @@ class Document:
         else:
             self.partitions = {
                 label: [SpanFactory.new_span(span) for span in spans]
-                for label, spans in partitions.items()}
+                for label, spans in partitions.items()
+            }
         self.header = header if header else {}
         self.annotations = annotations if annotations else []
 
@@ -83,7 +104,7 @@ class Document:
             return ""
         if self.BODY_KEY in self.partitions:
             body_spans = self.partitions[self.BODY_KEY]
-            spans = [self.content[span.start:span.end] for span in body_spans]
+            spans = [self.content[span.start: span.end] for span in body_spans]
             return " ".join(spans)
         return ""
 
@@ -92,7 +113,8 @@ class Document:
             return ""
         if self.TITLE_KEY in self.partitions:
             title_spans = self.partitions[self.TITLE_KEY]
-            titles = [self.content[span.start:span.end] for span in title_spans]
+            titles = [self.content[span.start: span.end] for span in
+                      title_spans]
             return " ".join(titles)
         return ""
 
@@ -101,11 +123,9 @@ class Document:
         assert title in self.content
         start_index = self.content.index(title)
         end_index = start_index + len(title)
-        self.partitions[self.TITLE_KEY] = [{
-            "@type": "CharSpan",
-            "start": start_index,
-            "end": end_index
-        }]
+        self.partitions[self.TITLE_KEY] = [
+            {"@type": "CharSpan", "start": start_index, "end": end_index}
+        ]
 
     title = property(get_title, set_title)
 
@@ -114,8 +134,8 @@ class Document:
 
     @classmethod
     def _dict_transform(cls, data, mapping=None):
-        """ 
-        Recursively transform a document object to a JSON serializable dict, 
+        """
+        Recursively transform a document object to a JSON serializable dict,
         with MAPPING applied as well as empty results removed.
         :param data, the data to be transformed to a dict
         :return a dictionary of a document, ready for JSON serialization
@@ -176,14 +196,14 @@ class Document:
                         value = value.upper()
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
-                        result[key] = cls._dict_transform(
-                            value, mapping=mapping)
+                        result[key] = cls._dict_transform(value,
+                                                          mapping=mapping)
             return result
         return None
 
     @classmethod
     def from_json(cls, json_payload):
-        """ 
+        """
         Convert a JSON object into a content model.
         :param json_payload, the string representation of the JSON content model
         """
@@ -215,33 +235,45 @@ class Document:
         parsed_content["content_id"] = parsed_content.pop("md5sum")
 
         # populate default dicts:
-        partitions = {label: [SpanFactory.new_span(span) for span in spans]
-                      for label, spans in parsed_content["partitions"].items()} \
-            if "partitions" in parsed_content else {}
+        partitions = (
+            {
+                label: [SpanFactory.new_span(span) for span in spans]
+                for label, spans in parsed_content["partitions"].items()
+            }
+            if "partitions" in parsed_content
+            else {}
+        )
 
-        header = parsed_content["header"] \
+        header = (
+            parsed_content["header"]
             if "header" in parsed_content and parsed_content[
-            "header"] is not None else {}
+                "header"] is not None
+            else {}
+        )
 
         if not len(header):
-            header = parsed_content["header"] \
-                if "header" in parsed_content else {}
+            header = parsed_content[
+                "header"] if "header" in parsed_content else {}
 
-        annotations = parsed_content["annotations"] \
-            if "annotations" in parsed_content else {}
+        annotations = (
+            parsed_content[
+                "annotations"] if "annotations" in parsed_content else {}
+        )
 
-        return cls(content_id=int(parsed_content["content_id"]),
-                   content=parsed_content.get("content"),
-                   nilsimsa=parsed_content.get("nilsimsa"),
-                   lang=parsed_content.get("lang"),
-                   content_type=parsed_content.get("content_type"),
-                   partitions=partitions,
-                   header=header,
-                   annotations=annotations)
+        return cls(
+            content_id=int(parsed_content["content_id"]),
+            content=parsed_content.get("content"),
+            nilsimsa=parsed_content.get("nilsimsa"),
+            lang=parsed_content.get("lang"),
+            content_type=parsed_content.get("content_type"),
+            partitions=partitions,
+            header=header,
+            annotations=annotations,
+        )
 
     def to_json(self):
         """
-        Serialize a document to JSON """
+        Serialize a document to JSON"""
         return json.dumps(self.to_dict())
 
     def to_dict(self):
@@ -251,11 +283,15 @@ class Document:
         result = self._dict_transform(self)
         return result
 
-    def to_xml(self, ignore_title=False, include_fragments=False,
-               xml_version=XML2013.VERSION):
-        """ 
+    def to_xml(
+            self,
+            ignore_title: bool = False,
+            include_fragments: bool = False,
+            xml_version: int = XML2013.VERSION,
+    ):
+        """
         Serialize a document to XML.
-        :param ignore_titles: if set, titles will not be serialized.
+        :param ignore_title:
         :param include_fragments: non-sentence fragments will be included.
         :param xml_version: the version of XML to be used (defaults to 2013)
         :return: the serialized XML
@@ -275,27 +311,29 @@ class Document:
         return self.SUPPORTED_XML_VERSIONS[xml_version].dump_xml(
             titles=titles,
             attributes=self.header,
-            sentences=self.get_sentences(include_fragments=include_fragments))
+            sentences=self.get_sentences(include_fragments=include_fragments),
+        )
 
     def get_text_by_span(self, span: CharSpan):
-        """ 
-        Return the textual content of a span. 
+        """
+        Return the textual content of a span.
         :param span, the span to extract content for.
         """
         if not isinstance(span, CharSpan):
             span = SpanFactory.new_span(span)
-        return self.content[span.start:span.end]
+        return self.content[span.start: span.end]
 
     @classmethod
     def overlapping(cls, spanA: CharSpan, spanB: CharSpan):
-        """ Return whether two spans overlap. """
-        return (spanB.start <= spanA.start and spanB.end > spanA.start) or \
-            (spanA.start <= spanB.start and spanA.end > spanB.start)
+        """Return whether two spans overlap."""
+        return (spanB.start <= spanA.start < spanB.end) or (
+                spanA.start <= spanB.start < spanA.end
+        )
 
     def get_partition_overlaps(self, search_span: CharSpan,
                                target_partition_key: str):
-        """ Return all spans from a given target_partition_key that overlap 
-        the search span. 
+        """Return all spans from a given target_partition_key that overlap
+        the search span.
         :param search_span, the span to search for overlaps by.
         :param target_partition_key, the target partition"""
         result = []
@@ -326,9 +364,12 @@ class Document:
                 return token_span.pos
         return None
 
-    def get_sentences(self, zero_based: bool = False,
-                      include_title: bool = True,
-                      include_fragments: bool = False):
+    def get_sentences(
+            self,
+            zero_based: bool = False,
+            include_title: bool = True,
+            include_fragments: bool = False,
+    ):
         """
         Legacy method to extract weblyzard sentences from content model.
         :param zero_based: if True, enforce token indices starting at 0
@@ -359,24 +400,36 @@ class Document:
 
             # get tokens
             token_spans = self.get_partition_overlaps(
-                search_span=sentence_span,
-                target_partition_key=self.TOKEN_KEY)
-            is_title = len(
-                self.get_partition_overlaps(search_span=sentence_span,
-                                            target_partition_key=self.TITLE_KEY)) > 0
+                search_span=sentence_span, target_partition_key=self.TOKEN_KEY
+            )
+            is_title = (
+                    len(
+                        self.get_partition_overlaps(
+                            search_span=sentence_span,
+                            target_partition_key=self.TITLE_KEY
+                        )
+                    )
+                    > 0
+            )
             if not include_title and is_title:
                 continue
 
-            # serialize POS, tokens, and dependecy to string
+            # serialize POS, tokens, and dependency to string
             pos_sequence = " ".join([ts.pos for ts in token_spans])
             tok_sequence = " ".join(
-                ["{},{}".format(ts.start - offset, ts.end - offset) for ts in
-                 token_spans])
+                [
+                    "{},{}".format(ts.start - offset, ts.end - offset)
+                    for ts in token_spans
+                ]
+            )
             try:
                 dep_sequence = " ".join(
                     ["{}:{}".format(*ts.dependency.values()) for ts in
-                     token_spans])
+                     token_spans]
+                )
             except AttributeError:
+                dep_sequence = None
+            except IndexError:
                 dep_sequence = None
 
             # prefer semOrient over sem_orient, if both are annotated and non-zero
@@ -385,12 +438,18 @@ class Document:
             # finally, extract the sentence text.
             value = self.get_text_by_span(sentence_span)
 
-            result.append(Sentence(md5sum=sentence_span.md5sum,
-                                   sem_orient=sem_orient,
-                                   significance=sentence_span.significance,
-                                   pos=pos_sequence, token=tok_sequence,
-                                   value=value, is_title=is_title,
-                                   dependency=dep_sequence,
-                                   emotions=sentence_span.emotions))
+            result.append(
+                Sentence(
+                    md5sum=sentence_span.md5sum,
+                    sem_orient=sem_orient,
+                    significance=sentence_span.significance,
+                    pos=pos_sequence,
+                    token=tok_sequence,
+                    value=value,
+                    is_title=is_title,
+                    dependency=dep_sequence,
+                    emotions=sentence_span.emotions,
+                )
+            )
 
         return result
