@@ -8,8 +8,7 @@ class TextQualityClient(MultiRESTClient):
         MultiRESTClient.__init__(self, service_urls=url)
 
     def get_document_text_quality(self, body: str, fetch_passive: bool = True,
-                                  fetch_transition_words: bool = True):
-
+                                  fetch_transition_words: bool = True) -> dict:
         """
         "fetch_passive" means that the tokens indicating passive voice and
         the sentences containing them will be returned.
@@ -43,12 +42,14 @@ class TextQualityClient(MultiRESTClient):
                                  "webservice timed out %d times" % retries}
         return result
 
-    def get_sentences_count_from_text(self, body: str):
+    def get_sentences_count_from_text(self, body: str) -> int | None:
         if body:
             result = self.get_document_text_quality(body=body)
             return len(result["raw_annotation"]["partitions"]["SENTENCE"])
+        return None
 
-    def get_passive_sentences_count_from_text(self, body: str):
+    def get_passive_sentences_count_from_text(self, body: str) -> int:
+        count = 0
         if body:
             result = self.get_document_text_quality(body=body)
             count = 0
@@ -59,21 +60,20 @@ class TextQualityClient(MultiRESTClient):
         return count
 
     # accept input sentence, returns True if passive False otherwise
-    def is_single_sentence_passive(self, sentence: str):
+    def is_single_sentence_passive(self, sentence: str) -> bool:
+        out = False
         if sentence:
             result = self.get_document_text_quality(body=sentence)
             if len(result["passive"]) > 0:
                 out = True
-            else:
-                out = False
         return out
 
     # return a list of words indicating the passive content
-    def get_single_sentence_passive_words(self, sentence: str):
+    def get_single_sentence_passive_words(self, sentence: str) -> list[str]:
+        words = []
         if sentence:
 
             result = self.get_document_text_quality(body=sentence)
-            words = []
 
             if len(result["passive"]) > 0:
                 for word in result["passive"][1:]:
