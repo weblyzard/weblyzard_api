@@ -7,8 +7,10 @@ class TextQualityClient(MultiRESTClient):
     def __init__(self, url):
         MultiRESTClient.__init__(self, service_urls=url)
 
-    def get_document_text_quality(self, body: str, fetch_passive: bool = True,
-                                  fetch_transition_words: bool = True) -> dict:
+    def get_document_text_quality(
+            self, body: str, fetch_passive: bool = True,
+            fetch_transition_words: bool = True
+    ) -> dict:
         """
         "fetch_passive" means that the tokens indicating passive voice and
         the sentences containing them will be returned.
@@ -29,8 +31,8 @@ class TextQualityClient(MultiRESTClient):
                     parameters={
                         "passive": fetch_passive,
                         "body": body,
-                        "transition_words": fetch_transition_words
-                    }
+                        "transition_words": fetch_transition_words,
+                    },
                 )
                 break
             except Exception as e:
@@ -39,7 +41,8 @@ class TextQualityClient(MultiRESTClient):
                 else:
                     result = {
                         "error": "Request to text quality "
-                                 "webservice timed out %d times" % retries}
+                                 "webservice timed out %d times" % retries
+                    }
         return result
 
     def get_sentences_count_from_text(self, body: str) -> int | None:
@@ -72,7 +75,6 @@ class TextQualityClient(MultiRESTClient):
     def get_single_sentence_passive_words(self, sentence: str) -> list[str]:
         words = []
         if sentence:
-
             result = self.get_document_text_quality(body=sentence)
 
             if len(result["passive"]) > 0:
