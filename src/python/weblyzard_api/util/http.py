@@ -28,7 +28,7 @@ from random import randint
 
 # set default socket timeout (otherwise urllib might hang!)
 from socket import setdefaulttimeout
-from typing import Dict
+from typing import Dict, Any
 from urllib.parse import urlsplit, urlunsplit
 
 log = logging.getLogger(__name__)
@@ -97,10 +97,10 @@ class Retrieve:
     def open(
             self,
             url: str,
-            user: str = None,
-            pwd: str = None,
-            data=None,
-            headers: Dict = None,
+            user: str | None = None,
+            pwd: str | None = None,
+            data: Any | None = None,
+            headers: Dict | None = None,
             retry: int = 0,
             authentication_method: str = "basic",
             accept_gzip: bool = True,
