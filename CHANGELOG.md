@@ -1,6 +1,12 @@
 ## weblyzard_api 0.2.2.2-SNAPSHOT
 * Introduced new DocumentPartitions `FRAGMENT` and `DUPLICATE`, breaking change to all Java services/packages using `webLyzard_api`, please recompile
 
+## v4.1.0 (2025-08-01)
+
+### Feat
+
+- bump version
+
 ## v4.0.0 (2025-08-01)
 
 ### Fix
