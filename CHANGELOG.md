@@ -1,2 +1,364 @@
 ## weblyzard_api 0.2.2.2-SNAPSHOT
 * Introduced new DocumentPartitions `FRAGMENT` and `DUPLICATE`, breaking change to all Java services/packages using `webLyzard_api`, please recompile
+
+## v4.0.0 (2025-08-01)
+
+### Fix
+
+- fix: dependency parsing error for pt, update lxml>=6
+- unittest
+- unittest
+- unittest
+- unittest
+- default return value, guarantee triples update end with period
+- missing import, do not retry on SPARQLException QueryBadFormed (current solution retries once then exits)
+- OGER_API_URL
+- remove internal ts instance references
+- check if dictable object in transform
+- fixed typo, extended test
+- test_cache
+- base URL
+- bump guava from 30.1.1-jre to 32.0.0-jre
+- remove duplicate prefixes that cause errors
+- service url
+- workaround text_sense bug
+- Uncontrolled Resource Consumption in Jackson-databind
+- get_service_urls function for py3.X
+- order of request params for backward compatibility
+- jackson version.
+- header
+- keyword search
+- remove obsolete code
+- wlt search API
+- NotImplementedError
+- sonarqube
+- correctly parse lang also for `zh-hant` and `zh-hans`
+- double var assignment
+- openthesaurus normalization
+- param name
+- sl4j2 patch
+- jackson-databind security issue.
+- normalize lambda takes only single arg
+- unittest
+- break out for non-200 responses
+- es search api client
+- return s,p,o as string if they are of other type, not None
+- keep namespaced header attrs
+- unitest
+- attr->xml, chg: cleanup
+- error handling, chg: cleanup
+- version in path
+- insert queries default graph
+- typo
+- revert double insertion of graph specification
+- check if lang/pos are in NEK uri to clean kw data for SKB
+- updated guava version + contact data.
+- deal with None partitions
+- jackson databind security issue.
+- remove geo normalization
+- fragment inclusion on request, default to False
+- sort spans, not sentences
+- sentence transform respects fragment spans
+- jackson version.
+- upgraded jackson-databind to fix CVE-2020-14060+
+- int-cast num_keywords
+- span overlap
+- revert to vanilla replace
+- variable naming conflict
+- check for positive kw count
+- typo
+- do not include titles explicitly
+- typo, url path
+- sentence without multimodal_sentiment
+- rm unneeded attribute MULTIMODAL_SENTIMENT: Merged with SENTIMENT_KEY
+- twitter user_id
+- check for length
+- sonar with sonar 7.9+
+- sonar issue.
+- upped jackson databind version.
+- support for json qnames according to specification
+- import NAMESPACES
+- decode bytes if necessary
+- skip already qualified attributes
+- unittest
+- typo
+- import
+- skb response parsing
+- remove basestring
+- remove basestring
+- remove basestring
+- sentimentcharspan, new: lang mapping
+- joanna request data for py3
+- unittest
+- remove content features due to API conflict
+- skip bad values in attrs
+- builtin isdigit rejects negative numbers
+- catch for reversed order of parent, label in dependency annotations
+- better fallback for unparsable dependencies
+- correctly not add lang tag if none can be extracted
+- call to encode before hashing
+- use getter to avoid key error when document.partitions does not contain TITLE
+- use getter to avoid key error when document.partitions does not contain TITLE
+- fallback for malformed token strings (missing spaces)
+- dutch content comes with dep labels of type aux:pass, leading to errors where we also use : as separator
+- removed dependency on weblyzard_toolkit
+- test Dutch string
+- correct for off-by-one token indices in xml content
+- pytest 5.0.0 is python 3 only + version up
+- use sem_orient if semOrient==0.0
+- map object not subscriptable in py3
+- python2 unicode=python3 str
+- addition to namespace from py2/dev branch
+- bytes/str comparisons and unneeded list conversion of `items`.
+- title overlaps
+- reinsert dependency
+- sentence-level sem_orient for NG workflow (JSON)
+- include dependency relations in sentences from Document.get_sentences
+- get_titles wrongly returns empty string unconditionally
+- lower expected sentiment value with correct parse of second sentence (charspan issue)
+- remove annotation_type
+- optionally force sentence attribute tokens to be aligned with start of sentence
+- lower output and expected to avoid false nagative because of inconsistent caps
+- include dependency relations in sentences from Document.get_sentences
+- get_titles wrongly returns empty string unconditionally
+- lower expected sentiment value with correct parse of second sentence (charspan issue)
+- optionally force sentence attribute tokens to be aligned with start of sentence
+- unicode/bytes encoding issues  of local dictionaries
+- unittest
+- localhost
+- jesaja client compression issue and sonar issues.
+- upped checkstyle to address a security issue in the build pipeline
+- type and name of validGrammarGroupPatterns
+- upped jackson-databind to 2.8.11.3
+- none check before upper
+- wrong path for entity batch specified
+- not setting force_update flag properly in the url
+- Checking for string length before accessing by position
+- ? instead of &
+- typo
+- support both camels and kebaps, upped version
+- minor fix for response length in test
+- fixes OGER offset errors
+- removes old client code
+- removed unneeded variable
+- fixes OGER error and removes unnecessary code
+- fixes tests
+- minor API url fix
+- changed url for oger and added test scaffolding
+- type
+- missing keywords in mapping.
+- missing keywords in mapping.
+- check for profileName before querying for it
+- document payload
+- store annotation confidence
+- Check that only non-empty lists get submitted to the SKB
+- schema.org namespace was incorrect (included description)
+- bug in replace_prefix function fixed
+- path
+- removed obsolete requirements.txt, upped version
+- adjusted version in java-examples.
+- update to jackson-databind 2.9.7 to fix a servere security issue.
+- unittest
+- geonames as gn prefix
+- skbprop->skbentity
+- applying transform also when deserializing (before only when serializing)
+- reverting to always put the content_format into the request to sentiment WS
+- document rewrite
+- metadata parsing with None
+- Jeremia returns `semOrient`, not `sem_orient`
+- removed return_plain from requests
+- document model
+- serviceUrl handling; improved documentation.
+- missing jaxb dependencies.
+- keyword extraction example.
+- javadoc
+- added indicator_id to add observation wrapper
+- more docstrings
+- removed duplicate code, added more unit tests
+- unittest
+- changed endpoints wrt latest jairo (master)
+- javadoc.
+- consider get/put priniple for generics.
+- allow CharSpan subclasses in partition lists.
+- get_required_namespaces, chg: upped version
+- check attribute mapping existence, upped version
+- sentence mapping
+- indentation
+- jairo unit test
+- import
+- threshold should be an integer, not double
+- neks unit test
+- version number
+- corrected header serialization & deserialization.
+- missing import
+- fixes search_text; client works now
+- Checking the response's status code: if it is >=400 return None, else return the response body
+- image url.
+- initialize all parameters for AnnotationSurface
+- maven resource specification.
+- maven resource definitions
+- corrected deserialization of MD5Digests!
+- duplicate titles in xml_content
+- Raising ValueError if a list is supplied. Updated error message (we expect a dict now, not lists anymore)
+- now for real
+- multiple math packages.
+- >= instead of > for lxml version
+- narrowed down allowed major versions for requests[security] and lxml
+- ignore empty or Null annotations
+- check for content_type existence before reading
+- quotations
+- do not serialize md5sum chg: upped version
+- disabled xdoclint due to building issues
+- copy enities so not to overwrite the referenced object
+- -dev version
+- removed more docstring for maven-javadoc-plugin
+- removed obsolete docstring throws
+- use correct namespace for lang attribute for JAXB
+- annotation surface call (wrong argument order)
+- revert moving of unmapped attributes to features
+- argparse store-true fix: adapted to new inheritence structure chg: constructor call
+- inverted attribute mapping for 1-to-many relations
+- merge conflict
+- nullPointer if isTitle is not set
+- 'annotation' not marked as ignorable
+- Clients should not log http-messages by default
+- invalid xmlRepresentation #42
+- BooleanAdapter is not applicable to the field type boolean. #42
+- "JAXB can't handle interfaces." #42
+- Status 204 is allowed and should return an empty (or null) result
+- missing part in Jairo-path
+- set snapshot attribute to ensure stable versions.
+- fixed JesajaClient.addDocuments
+- removed hard-coded source index for keyword search
+- exception handling
+- use @JsonProperty to unify xml and json serialization.
+- code structure
+- directory structure.
+- adjust directory structure & pom import
+- GemetEntity annotations have a preferredName, which was not supported by Annotation object until now
+- wrong signature
+- error
+- ignore features/relations if not specified
+- broken indent
+- check for None elements
+- added sparqlwrapper dependency
+- unicode issue
+- use pickled xml_content directly, since document is not available in project scope
+- unit test 2005
+- unit test
+- use JesajaNg class to use the new keyword service.
+- ignore bad cdata values on xml parseing
+- main to unit test
+- (java) configured pom.xml to enable mvn test/install
+- added check if repos is available on machine
+- required eWRT version.
+- improved robustness with http errors.
+- catch URLError to increase the stability of Jeremia requests.
+- Fixed the comment on where the lexicon files are copied
+- support ng files
+- handle non-json data
+- backported changes from master.
+- improved jeremia retries.
+- needed changes for service dependencies
+- improved jeremia retries.
+- typo in args var chg: ttl as default file
+- remove title check from api document conversion
+- Added test cases for several languages, including non-ASCII chars
+- version number conflict
+- small bug in sleep time, change api method for single doc
+- fix logger error
+- Always retried submitting document to sentiment webservice
+- fix code quality, pep8 standards
+- setup.py conflict
+- Adapted annotate test: the dep_tree changed, added some casts to string for content_id
+- use_random_server parameter removed...
+- iteritems() not needed/expected when iterating over annotations
+- title assignment bug fix: allow for None annotations
+- docstrings updated
+- more sophisticated exception test
+- Further refined title handling, significance of sentences defaults now to 0.0 instead of None
+- Further refined title handling, significance of sentences defaults now to 0.0 instead of None
+- reverted to strict mapping and found workaround if sentece with title=true exists but title attribute is not set
+- The JSON10ParserXMLContent put the title twice into the XMLContent.
+- Changed XMLContent to/from JSON since some things moved to Document class
+- Fixed handling of annotations
+- Removed obsolete file.
+- helloworld is no longer in use, replace with status
+- Adapted annotate test: the dep_tree changed, added some casts to string for content_id
+- use_random_server parameter removed...
+- jeremia add max_retry_attempts on has_queued_threads
+- add profile handling
+- iteritems() not needed/expected when iterating over annotations
+- A method had the defunct submit_documents/commit pattern
+- title assignment bug fix: allow for None annotations
+- docstrings updated
+- more sophisticated exception test
+- Further refined title handling, significance of sentences defaults now to 0.0 instead of None
+- Further refined title handling, significance of sentences defaults now to 0.0 instead of None
+- reverted to strict mapping and found workaround if sentece with title=true exists but title attribute is not set
+- The JSON10ParserXMLContent put the title twice into the XMLContent.
+- Changed XMLContent to/from JSON since some things moved to Document class
+- Fixed handling of annotations
+- Removed obsolete file.
+- removed bucketsize function - already done by get_document_batch
+- removed '<>' from resource uris
+- fixed landscape issues
+- don't decode infinity and nan values
+- check, whether the download server is online
+- XML file now validates using xmllint.
+- Fixed spelling errors, implemented comments from albert
+- add lxml as dependency.
+- add nose as dependency.
+- provide correct dependeny link.
+- set zip_safe to false.
+- set zip_safe to false.
+- provide ewrt package version in dependency link.
+- provide ewrt zip as dependency.
+- error in setup.py.
+- add dependency link for ewrt.
+- minor documentation fixes.
+- merge conflicts.
+- changed return value to dict (as docstring says) that contains error key:value if an error ocurred, otherwise content and polarity key:value pairs
+- better semantics for check_domain_relevance
+- return the mediacriticism score rather than a boolean.
+- reactivated/fixed unit tests
+- call unittest if no arguments are provided.
+- uncommented unittests as they break everything, if recognize isn't installed locally @tmp
+- removed import of StringTypes (according to the documentation they are outdated), instead using isinstance(var, basestring)
+- adjusted code to python guidlines.
+- return annotation object with the results.
+- removed print statement
+- indention
+- Added documentation of the source of the dictionary files to wl_dictionaries
+- fixed paths for non-xml document arguments, cleanups
+- converting int to string to prevent exception while adding the value to the lxml object
+- get_tokens --> using updated fields
+- added support for tokens
+- skip non-existing recognize profiles with a warning
+- convert_document returns dictionary directly new: flag to skip the profile_check, when adding documents to the corpus chg: updated .gitignore
+- restored previous version new: pushed version to 0.4.4
+- mapping xml 2005
+- using the correct sentence identifier
+- using corpus_name if portal_name is None
+- multiple PEP8 coding style fixes new: calling client tests only if the webservice is online
+- activated unittests again
+- attribute mapping as global var
+- allow for sentences mapping
+- error if generating md5sum for other types than str new: support to skip non_sentences in the output
+- adjust multi-search in recognyze to deal with new profile dict, change localhost base url to Recognize/rest...
+- mapping pos_tags -> pos
+- code cleanup --> following PEP8
+- added is_title to the sentence attributes
+- scriptpath
+- variable names new: version
+- called wrong path to get corpus size
+- changes in weblyzard_api, which replaced public functions and broke core functions
+- added add_or_update_stoplist for backward compability @critical
+- dependencies
+- wrong jeremia url
+- get_attribute
+- calling superclass correctly
+
+### Refactor
+
+- introduce method to clean up prefixes and remove the ones not used in the sparql query
