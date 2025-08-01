@@ -1,50 +1,68 @@
 [build-system]
-requires = ["poetry-core", "toml", "mock"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry.group.test.dependencies]
-pytest = "^7.2.2"
-requests-mock = "^1.10.0"
-elasticsearch_dsl = "*"
-parameterized = "*"
-requests = "^2.32.3"
-
-
-[tool.poetry]
+[project]
 name = "weblyzard-api"
 version = "4.0.0-dev"
 description = "OS clients to webLyzard services"
-authors = ["Albert Weichselbraun <weichselbraun@weblyzard.com>"]
+authors = [{ name = "Albert Weichselbraun", email = "weichselbraun@weblyzard.com" }]
+requires-python = ">=3.10,<3.13"
 readme = "README.md"
-license = "Proprietary"
-packages = [{ include = "weblyzard_api", from = "src/python" }]
-
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "future>=1.0.0,<2",
+    "nose>=1.3.7,<2",
+    "requests>=2.32.3,<3",
+    "python-dotenv>=1.1.0,<2",
+    "sparqlwrapper>=2.0.0,<3",
+    "mock>=5.2.0,<6",
+    "python-dateutil>=2.9.0,<3",
+    "deprecated>=1.2.18,<2",
+    "httplib2",
+    "lxml>=6.0.0,<7",
+    "redis>=6.2.0,<7",
+]
 
-[[tool.poetry.source]]
+[dependency-groups]
+dev = [
+    "commitizen>=4.8.3",
+    "pre-commit>=3.5.0",
+    "ruff>=0.12.7",
+    "types-python-dateutil>=2.9.0.20250708",
+    "types-pyyaml>=6.0.12.20250516",
+    "types-requests>=2.32.4.20250611",
+]
+test = [
+    "pytest>=7.2.2,<8",
+    "requests-mock>=1.10.0,<2",
+    "elasticsearch_dsl",
+    "parameterized",
+    "requests>=2.32.3,<3",
+]
+
+[tool.uv]
+default-groups = ["test"]
+
+[[tool.uv.index]]
 name = "wlt_nexus"
 url = "https://nexus.semanticlab.net/repository/pypi-group/simple"
-priority = "primary"
+publish-url = "https://nexus.semanticlab.net/repository/pypi-group/simple"
+default = true
 
-[tool.poetry.dependencies]
-python = ">=3.10,<3.13"
-future = "^1.0.0"
-nose = "^1.3.7"
-requests = "^2.32.3"
-python-dotenv = "^1.1.0"
-sparqlwrapper = "^2.0.0"
-mock = "^5.2.0"
-python-dateutil = "^2.9.0"
-deprecated = "^1.2.18"
-httplib2 = "*"
-lxml = "^6.0.0"
-redis = "^6.2.0"
+[tool.hatch.build.targets.sdist]
+include = ["src/python/weblyzard_api"]
 
+[tool.hatch.build.targets.wheel]
+include = ["src/python/weblyzard_api"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/python/weblyzard_api" = "weblyzard_api"
 
 [tool.coverage.run]
 source = ["src/python"]
@@ -66,4 +84,3 @@ markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "serial",
 ]
-
