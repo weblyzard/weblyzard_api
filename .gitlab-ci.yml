@@ -6,6 +6,7 @@
 .python_defaults: &py_anchor  # using anchor magic
   image: registry.gitlab.semanticlab.net/docker/py3base:3.12
   before_script:
+    - export TESTSDIR=src/python/weblyzard_api/tests/always_run/
     - git submodule sync --recursive
     - git submodule update --init --recursive --remote
     - rsync -av --exclude='README.md' --exclude='.git' wl_python_utils/ .
@@ -34,7 +35,7 @@ pytest:
     - export UV_INDEX_WLT_NEXUS_USERNAME=${NEXUS_USER}
     - export UV_INDEX_WLT_NEXUS_PASSWORD=${NEXUS_PW}
     - uv sync --index-strategy unsafe-best-match
-    - uv run pytest
+    - uv run pytest ${TESTSDIR}
     - PROJECT=${PROJECT} VERSION=${VERSION} sonar-scanner -D sonar.host.url=${sonarhost}  -D sonar.login=${sonarlogin}
   tags:
     - backend-runner
