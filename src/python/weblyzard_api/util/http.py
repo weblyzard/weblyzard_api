@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #     @package weblyzard_api.utils.http
 #     provides access to resources using http
 
@@ -18,22 +17,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from typing import Dict
-
-from future import standard_library
-
-standard_library.install_aliases()
-
-import time
 import io
-import urllib.request
-
-from gzip import GzipFile
-from random import randint
-from urllib.parse import urlsplit, urlunsplit
 
 # logging
 import logging
+import time
+import urllib.request
+from gzip import GzipFile
+from random import randint
+
+# set default socket timeout (otherwise urllib might hang!)
+from socket import setdefaulttimeout
+from typing import Dict
+from urllib.parse import urlsplit, urlunsplit
 
 log = logging.getLogger(__name__)
 
@@ -45,56 +41,72 @@ RETRY_WAIT_TIME_RANGE = (2, 60)  # in seconds
 # error codes which might trigger a retry:
 HTTP_TEMPORARY_ERROR_CODES = (502, 503, 504)
 
-# set default socket timeout (otherwise urllib might hang!)
-from socket import setdefaulttimeout
-
 DEFAULT_TIMEOUT = 60
 
 
-def getHostName(x): return "://".join(urlsplit(x)[:2])
+def getHostName(x):
+    return "://".join(urlsplit(x)[:2])
 
 
-class Retrieve(object):
-    """ @class Retrieve
-        retrieves URLs using HTTP
+class Retrieve:
+    """@class Retrieve
+    retrieves URLs using HTTP
 
-        .. remarks:
-           this class supports transparent
-           - authentication and
-           - compression
-           - support for the context protocol (python)
-           - automatic throttling support
+    .. remarks:
+       this class supports transparent
+       - authentication and
+       - compression
+       - support for the context protocol (python)
+       - automatic throttling support
 
-        @warning
-        There are certain urls such as
-        http://www.mfsa.com.mt/insguide/english/glossarysearch.jsp?letter=all
-        which are _not_ handled correctly by the underlying urllib2 library(!)
-        Please use urllib in such cases.
+    @warning
+    There are certain urls such as
+    http://www.mfsa.com.mt/insguide/english/glossarysearch.jsp?letter=all
+    which are _not_ handled correctly by the underlying urllib2 library(!)
+    Please use urllib in such cases.
 
     """
 
-    __slots__ = ("module", "sleep_time", "last_access_time", "user_agent",
-                 "_supported_http_authentication_methods")
+    __slots__ = (
+        "module",
+        "sleep_time",
+        "last_access_time",
+        "user_agent",
+        "_supported_http_authentication_methods",
+    )
 
-    def __init__(self, module, sleep_time=DEFAULT_WEB_REQUEST_SLEEP_TIME,
-                 user_agent=USER_AGENT, default_timeout=DEFAULT_TIMEOUT):
+    def __init__(
+            self,
+            module,
+            sleep_time=DEFAULT_WEB_REQUEST_SLEEP_TIME,
+            user_agent=USER_AGENT,
+            default_timeout=DEFAULT_TIMEOUT,
+    ):
         setdefaulttimeout(default_timeout)
         self.module = module
         self.sleep_time = sleep_time
         self.last_access_time = 0
 
         self._supported_http_authentication_methods = {
-            "basic": Retrieve._getHTTPBasicAuthOpener,
-            "digest": Retrieve._getHTTPDigestAuthOpener}
+            "basic": Retrieve._get_http_basic_auth_opener,
+            "digest": Retrieve._get_http_digest_auth_opener,
+        }
 
-        self.user_agent = user_agent % self.module \
-            if "%s" in user_agent else user_agent
+        self.user_agent = user_agent % self.module if "%s" in user_agent else user_agent
 
-    def open(self, url: str, user: str = None, pwd: str = None,
-             data=None, headers: Dict = None, retry: int = 0,
-             authentication_method: str = "basic", accept_gzip: bool = True,
-             head_only: bool = False):
-        """ Open a URL and returns the matching file object
+    def open(
+            self,
+            url: str,
+            user: str = None,
+            pwd: str = None,
+            data=None,
+            headers: Dict = None,
+            retry: int = 0,
+            authentication_method: str = "basic",
+            accept_gzip: bool = True,
+            head_only: bool = False,
+    ):
+        """Open a URL and returns the matching file object
         :param url: the URL to open
         :param user: optional username
         :param pwd: optional password
@@ -109,7 +121,8 @@ class Retrieve(object):
         :returns a file object for reading the url
         """
         auth_handler = self._supported_http_authentication_methods[
-            authentication_method]
+            authentication_method
+        ]
         response = None
         tries = 0
 
@@ -144,7 +157,8 @@ class Retrieve(object):
                 if e.code in HTTP_TEMPORARY_ERROR_CODES and tries < retry:
                     sleep_time = randint(*RETRY_WAIT_TIME_RANGE)
                     log.warning(
-                        f"retrying in {sleep_time}; received {e.code} from {url}")
+                        f"retrying in {sleep_time}; received {e.code} from {url}"
+                    )
                     time.sleep(sleep_time)
                     tries += 1
                     continue
@@ -153,13 +167,13 @@ class Retrieve(object):
 
             # check whether the data stream is compressed
             if response.headers.get("Content-Encoding") == "gzip":
-                return self._getUncompressedStream(response)
+                return self._get_uncompressed_stream(response)
 
         return response
 
     @staticmethod
-    def _getHTTPBasicAuthOpener(url: str, user: str, pwd: str):
-        """ Return an opener, capable of handling http-auth.
+    def _get_http_basic_auth_opener(url: str, user: str, pwd: str):
+        """Return an opener, capable of handling http-auth.
         :param url:
         :param user:
         :param pwd:
@@ -170,8 +184,8 @@ class Retrieve(object):
         return auth_handler
 
     @staticmethod
-    def _getHTTPDigestAuthOpener(url: str, user: str, pwd: str):
-        """ Return an HTTP opener, capable of handling http-digest authentication.
+    def _get_http_digest_auth_opener(url: str, user: str, pwd: str):
+        """Return an HTTP opener, capable of handling http-digest authentication.
         :param url:
         :param user:
         :param pwd:
@@ -182,49 +196,50 @@ class Retrieve(object):
         return auth_handler
 
     @staticmethod
-    def _getUncompressedStream(urlObj):
-        """ Transparently uncompress a given data stream.
-        :param urlObj:
+    def _get_uncompressed_stream(url_obj):
+        """Transparently uncompress a given data stream.
+        :param url_obj:
         :returns: an urlObj containing the uncompressed data
         """
-        compressedStream = io.BytesIO(urlObj.read())
-        return GzipFile(fileobj=compressedStream)
+        compressed_stream = io.BytesIO(url_obj.read())
+        return GzipFile(fileobj=compressed_stream)
 
     def _throttle(self):
-        """ delays web access according to the content provider"s policy """
+        """delays web access according to the content provider"s policy"""
 
-        if (time.time() - self.last_access_time) < \
-                DEFAULT_WEB_REQUEST_SLEEP_TIME:
+        if (
+                time.time() - self.last_access_time) < DEFAULT_WEB_REQUEST_SLEEP_TIME:
             time.sleep(self.sleep_time)
         self.last_access_time = time.time()
 
     def __enter__(self):
-        """ support of the context protocol """
+        """support of the context protocol"""
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """ context protocol support """
+        """context protocol support"""
         if exc_type is not None:
-            log.critical("%s" % exc_type)
+            log.critical(f"{exc_type}")
 
     @staticmethod
     def get_user_password(url: str):
-        """ Extract username and password from a URL, if present.
+        """Extract username and password from a URL, if present.
         :param url: well-formed url, starting with a schema
-        :return: tuple (new_url, user, password) """
+        :return: tuple (new_url, user, password)"""
         if not url.startswith("http"):
-            url = "http://%s" % url
+            url = f"http://{url}"
 
         split_url = urlsplit(url)
         user = split_url.username
         password = split_url.password
         if user and password:
-            new_url = (split_url.scheme,
-                       split_url.netloc.replace("%s:%s@" % (user, password),
-                                                ""),
-                       split_url.path,
-                       split_url.query,
-                       split_url.fragment)
+            new_url = (
+                split_url.scheme,
+                split_url.netloc.replace(f"{user}:{password}@", ""),
+                split_url.path,
+                split_url.query,
+                split_url.fragment,
+            )
             url = urlunsplit(new_url)
         else:
             assert not user and not password, "if set, user AND pwd required"
@@ -234,8 +249,12 @@ class Retrieve(object):
     @staticmethod
     def add_user_password(url: str, user: str, password: str):
         split_url = urlsplit(url)
-        return urlunsplit((split_url.scheme,
-                           "%s:%s@%s" % (user, password, split_url.netloc),
-                           split_url.path,
-                           split_url.query,
-                           split_url.fragment))
+        return urlunsplit(
+            (
+                split_url.scheme,
+                f"{user}:{password}@{split_url.netloc}",
+                split_url.path,
+                split_url.query,
+                split_url.fragment,
+            )
+        )

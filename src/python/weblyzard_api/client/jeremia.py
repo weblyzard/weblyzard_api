@@ -1,24 +1,22 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 """
 .. codeauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 .. codeauthor:: Heinz-Peter Lang <lang@weblyzard.com>
 """
 
+import logging
 import urllib.error
 from random import random
 from time import sleep, time
 
-from future import standard_library
-
-from weblyzard_api.client import MultiRESTClient
 from weblyzard_api.client import (
-    WEBLYZARD_API_URL, WEBLYZARD_API_USER, WEBLYZARD_API_PASS)
+    WEBLYZARD_API_PASS,
+    WEBLYZARD_API_URL,
+    WEBLYZARD_API_USER,
+    MultiRESTClient,
+)
 from weblyzard_api.model.xml_content import XMLContent
 
-standard_library.install_aliases()
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -69,31 +67,49 @@ class Jeremia(MultiRESTClient):
             result = client.submit_document(docs)
             pprint(result)
     """
-    URL_PATH = "jeremia/rest"
-    ATTRIBUTE_MAPPING = {"content_id": "id",
-                         "title": "title",
-                         "sentences": "sentence",
-                         "lang": "lang",
-                         "sentences_map": {"pos": "pos",
-                                           "token": "token",
-                                           "value": "value",
-                                           "md5sum": "id"}}
 
-    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
-                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
+    URL_PATH = "jeremia/rest"
+    ATTRIBUTE_MAPPING = {
+        "content_id": "id",
+        "title": "title",
+        "sentences": "sentence",
+        "lang": "lang",
+        "sentences_map": {
+            "pos": "pos",
+            "token": "token",
+            "value": "value",
+            "md5sum": "id",
+        },
+    }
+
+    def __init__(
+        self,
+        url=WEBLYZARD_API_URL,
+        usr=WEBLYZARD_API_USER,
+        pwd=WEBLYZARD_API_PASS,
+        default_timeout=None,
+    ):
         """
         :param url: URL of the jeremia web service
         :param usr: optional user name
         :param pwd: optional password
         """
-        MultiRESTClient.__init__(self, service_urls=url,
-                                 default_timeout=default_timeout,
-                                 user=usr, password=pwd)
+        MultiRESTClient.__init__(
+            self,
+            service_urls=url,
+            default_timeout=default_timeout,
+            user=usr,
+            password=pwd,
+        )
 
-    def submit_document(self, document, source_id: int = None,
-                        wait_time=DEFAULT_WAIT_TIME,
-                        max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
-                        max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
+    def submit_document(
+        self,
+        document,
+        source_id: int = None,
+        wait_time=DEFAULT_WAIT_TIME,
+        max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
+        max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS,
+    ):
         """
         processes a single document with jeremia (annotates a single document)
 
@@ -105,31 +121,36 @@ class Jeremia(MultiRESTClient):
         attempts = 0
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
-
             # submit the request
             try:
                 logger.debug("Submit_document: %s", document)
-                result = self.request(path="submit_document",
-                                      source_id=source_id,
-                                      parameters=document,
-                                      pass_through_exceptions=True)
+                result = self.request(
+                    path="submit_document",
+                    source_id=source_id,
+                    parameters=document,
+                    pass_through_exceptions=True,
+                )
                 return result
-            except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                logger.warning(
-                    "Submit_document failed... Sleeping before retry...")
+            except (urllib.error.HTTPError, urllib.error.URLError):
+                logger.warning("Submit_document failed... Sleeping before retry...")
                 sleep(max_retry_delay * random())
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the
         # requests above have failed.
-        return self.request(path="submit_document", source_id=source_id,
-                            parameters=document)
+        return self.request(
+            path="submit_document", source_id=source_id, parameters=document
+        )
 
-    def submit_documents(self, documents, source_id=-1,
-                         double_sentence_threshold=10,
-                         wait_time=DEFAULT_WAIT_TIME,
-                         max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
-                         max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS):
+    def submit_documents(
+        self,
+        documents,
+        source_id=-1,
+        double_sentence_threshold=10,
+        wait_time=DEFAULT_WAIT_TIME,
+        max_retry_delay=DEFAULT_MAX_RETRY_DELAY,
+        max_retry_attempts=DEFAULT_MAX_RETRY_ATTEMPTS,
+    ):
         """
         :param batch_id: batch_id to use for the given submission
         :param documents: a list of dictionaries containing the document
@@ -137,8 +158,7 @@ class Jeremia(MultiRESTClient):
         if not documents:
             raise ValueError("Cannot process an empty document list")
 
-        request = "submit_documents/%s/%d" % (source_id,
-                                              double_sentence_threshold)
+        request = "submit_documents/%s/%d" % (source_id, double_sentence_threshold)
 
         # wait until the web service has available threads for processing
         # the request
@@ -146,8 +166,10 @@ class Jeremia(MultiRESTClient):
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
             # wait until threads are available
-            while self.has_queued_threads(
-                    source_id=source_id) and time() - start_time < wait_time:
+            while (
+                self.has_queued_threads(source_id=source_id)
+                and time() - start_time < wait_time
+            ):
                 sleep(max_retry_delay * random())
 
             # submit the request
@@ -155,19 +177,20 @@ class Jeremia(MultiRESTClient):
             #   case that has_queued_threads has not been
             #   up to date.
             try:
-                result = self.request(path=request, source_id=source_id,
-                                      parameters=documents,
-                                      pass_through_exceptions=True)
+                result = self.request(
+                    path=request,
+                    source_id=source_id,
+                    parameters=documents,
+                    pass_through_exceptions=True,
+                )
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                logger.warning(
-                    f"will retry (num_attempts:{attempts}) due to {e}")
+                logger.warning(f"will retry (num_attempts:{attempts}) due to {e}")
                 attempts = attempts + 1
 
         # this access most certainly causes an exception since the
         # requests above have failed.
-        return self.request(path=request, source_id=source_id,
-                            parameters=documents)
+        return self.request(path=request, source_id=source_id, parameters=documents)
 
     def status(self):
         """
@@ -188,10 +211,7 @@ class Jeremia(MultiRESTClient):
         :param text: the text to process
         :param content_id: optional content id
         """
-        batch = [{"id": content_id,
-                  "title": "",
-                  "body": text,
-                  "format": "text/plain"}]
+        batch = [{"id": content_id, "title": "", "body": text, "format": "text/plain"}]
 
         results = self.submit_documents(batch)
         result = results[0]
@@ -204,8 +224,7 @@ class Jeremia(MultiRESTClient):
         :param source_id: the blacklist"s source id
         """
         path = "cache/update_blacklist/%s" % source_id
-        return self.request(path=path, source_id=source_id,
-                            parameters=blacklist)
+        return self.request(path=path, source_id=source_id, parameters=blacklist)
 
     def clear_blacklist(self, source_id):
         """
@@ -213,15 +232,17 @@ class Jeremia(MultiRESTClient):
 
         Empties the existing sentence blacklisting cache for the given source_id
         """
-        return self.request(path="cache/clear_blacklist/%s" % source_id,
-                            source_id=source_id)
+        return self.request(
+            path="cache/clear_blacklist/%s" % source_id, source_id=source_id
+        )
 
     def get_blacklist(self, source_id: int):
         """
         :param source_id: the blacklist"s source id
         :returns: the sentence blacklist for the given source_id"""
-        return self.request(path="cache/get_blacklist/%s" % source_id,
-                            source_id=source_id)
+        return self.request(
+            path="cache/get_blacklist/%s" % source_id, source_id=source_id
+        )
 
     def has_queued_threads(self, source_id: int = None):
         """
@@ -236,6 +257,6 @@ class Jeremia(MultiRESTClient):
         """
         try:
             result = self.request("has_queued_threads", source_id=source_id)
-        except Exception as e:
+        except Exception:
             result = True
         return result

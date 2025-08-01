@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 """
 Created on November 17, 2021
 
@@ -24,13 +23,11 @@ original author Albert Weichselbraun.
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from future import standard_library
-
-standard_library.install_aliases()
 __copyright__ = "GPL"
 
 import gzip
-from binascii import b2a_base64, a2b_base64
+from binascii import a2b_base64, b2a_base64
+
 
 try:
     from pickle import dumps, loads
@@ -38,7 +35,7 @@ except ImportError:
     from pickle import dumps, loads
 
 
-class AbstractIterator(object):
+class AbstractIterator:
     """
     Abstract Iterator class used to implement ReadPickleIterator
     and WritePickleIterator
@@ -46,8 +43,9 @@ class AbstractIterator(object):
 
     def __init__(self, fname, file_mode=None):
         self.fname = self.get_filename(fname)
-        self.f = gzip.open(
-            self.fname, file_mode) if file_mode else gzip.open(self.fname)
+        self.f = (
+            gzip.open(self.fname, file_mode) if file_mode else gzip.open(self.fname)
+        )
 
     def __iter__(self):
         return self
@@ -64,19 +62,19 @@ class AbstractIterator(object):
 
 
 class WritePickleIterator(AbstractIterator):
-    """ writes pickeled elements (available as iterator) to a file """
+    """writes pickeled elements (available as iterator) to a file"""
 
     def __init__(self, fname):
         AbstractIterator.__init__(self, fname, file_mode="w")
 
     def dump(self, obj):
-        """ dumps the following object to the pickle file """
+        """dumps the following object to the pickle file"""
         p = b2a_base64(dumps(obj))
         self.f.write(p)
 
 
 class ReadPickleIterator(AbstractIterator):
-    """ provides an iterator over pickeled elements """
+    """provides an iterator over pickeled elements"""
 
     def __init__(self, fname):
         AbstractIterator.__init__(self, fname)
@@ -85,7 +83,7 @@ class ReadPickleIterator(AbstractIterator):
         return self
 
     def __next__(self):
-        """ returns the next pickled element in the file """
+        """returns the next pickled element in the file"""
         line = self.f.readline()
         if not line:
             raise StopIteration

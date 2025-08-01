@@ -1,23 +1,15 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 """
 Created on Aug 30, 2016
 
 .. codeauthor: max goebel <mcgoebel@gmail.com>
 """
-from __future__ import print_function
-from __future__ import unicode_literals
 
-from future import standard_library
-
-standard_library.install_aliases()
 import unittest
-
 from gzip import GzipFile
 from pickle import load
 
 from weblyzard_api.client.jesaja_ng import JesajaNg
-
 from weblyzard_api.tests.test_helper import get_full_path
 
 
@@ -95,7 +87,6 @@ class TestJesajaNeks(unittest.TestCase):
         self.service_is_online = self.jesaja.is_online()
 
         if self.service_is_online:
-
             STOPLIST_PROFILE = self.PROFILE.copy()
             STOPLIST_PROFILE["stoplists"] = ["testList", "anotherList"]
 
@@ -105,47 +96,47 @@ class TestJesajaNeks(unittest.TestCase):
 
             #             for doc in sample_corpus:
             #                 print(doc)
-            self.jesaja.set_stoplist("testList",
-                                     ("the", "from", "there", "here"))
-            self.jesaja.set_stoplist("anotherList",
-                                     ("you", "he", "she", "it", "them"))
+            self.jesaja.set_stoplist("testList", ("the", "from", "there", "here"))
+            self.jesaja.set_stoplist("anotherList", ("you", "he", "she", "it", "them"))
             self.jesaja.set_keyword_profile(self.PROFILE_NAME, self.PROFILE)
             self.jesaja.set_keyword_profile(
-                self.STOPLIST_PROFILE_NAME, STOPLIST_PROFILE)
-            self.jesaja.set_matview_profile(
-                self.MATVIEW_NAME, self.PROFILE_NAME)
+                self.STOPLIST_PROFILE_NAME, STOPLIST_PROFILE
+            )
+            self.jesaja.set_matview_profile(self.MATVIEW_NAME, self.PROFILE_NAME)
 
             documents = [self.xml_content]
 
             # create the reference corpus
             if not self.jesaja.has_corpus(matview_id=self.MATVIEW_NAME):
-                while self.jesaja.rotate_shard(
-                        matview_id=self.MATVIEW_NAME) == 0:
+                while self.jesaja.rotate_shard(matview_id=self.MATVIEW_NAME) == 0:
                     #                     csv_corpus = {"keystone":25, "energy": 123, "ana": 12, "tom": 22, "petra": 3, "clima":5, "Shihab": 12, "Kirche":10}
                     #                     self.jesaja.add_csv(matview_id=self.MATVIEW_NAME, keyword_count_map=csv_corpus )
                     self.jesaja.add_documents(
-                        matview_id=self.MATVIEW_NAME, documents=documents)
+                        matview_id=self.MATVIEW_NAME, documents=documents
+                    )
         else:
-            print(
-                "WARNING: Webservice is offline --> not executing all tests!!")
+            print("WARNING: Webservice is offline --> not executing all tests!!")
 
     def test_nek_annotation(self):
-        """ test nek annotations """
+        """test nek annotations"""
         xml_content = """<wl:page xmlns:wl="http://www.weblyzard.com/wl/2013#" xmlns:ma="http://www.w3.org/ns/ma-ont#" xmlns:dc="http://purl.org/dc/elements/1.1/" original_request_url="http://derstandard.at/2000014426852/Soziale-Medien-fuer-die-Nachrichtenverbreitung?ref=rss" source_id="11467" dc:format="text/html" dc:title="Journalismus - Social Media für die Nachrichtenverbreitung" xml:lang="de" wl:id="1243661964" wl:jonas_type="http" wl:nilsimsa="7b30d8322a12a94e12618a60fef8cae144aaae914951a1f59d132a90ca35f247">
                             <wl:sentence> Did you hear about Obama? This is a really good story.</wl:sentence>
                             <wl:sentence wl:dependency="1:advmod -1:ROOT 1:advmod 1:advmod 1:adpmod 6:det 4:adpobj 6:adpmod 7:adpobj 10:compmod 8:appos 1:p" wl:id="312ea95b45c50be0c5dd4a215d5adaaf" wl:pos="ADV VVFIN ADV ADV APPR ART NN APPR NN NE NE $." wl:token="0,2 3,12 13,17 18,24 25,28 29,34 35,44 45,48 49,61 62,68 69,74 74,75"><![CDATA[So geschehen auch jüngst bei einem Interview mit US-Präsident Barack Obama.]]></wl:sentence>
                             <wl:annotation wl:sentence="1" wl:entity_type="PersonEntity" wl:end="74" wl:key="http://de.dbpedia.org/resource/Barack_Obama" wl:md5sum="312ea95b45c50be0c5dd4a215d5adaaf" wl:preferredName="Barack Obama" wl:start="62" wl:surfaceForm="Barack Obama"/>
                          </wl:page>"""
         if self.service_is_online:
-            result = self.jesaja.get_keyword_annotations(self.MATVIEW_NAME,
-                                                         [xml_content])
+            result = self.jesaja.get_keyword_annotations(
+                self.MATVIEW_NAME, [xml_content]
+            )
             assert len(result)
             #            from pprint import pprint
             #            pprint(result)
             assert "1243661964" in result
             assert len(result["1243661964"]) == 1
-            assert result["1243661964"][0][
-                       "key"] == "http://de.dbpedia.org/resource/Barack_Obama"
+            assert (
+                result["1243661964"][0]["key"]
+                == "http://de.dbpedia.org/resource/Barack_Obama"
+            )
 
 
 if __name__ == "__main__":
