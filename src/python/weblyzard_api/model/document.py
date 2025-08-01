@@ -1,17 +1,17 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 """
 Created on Jan 25, 2018
 
 .. codeauthor: Max Goebel <goebel@weblyzard.com>
 """
+
 import html
 import json
 from datetime import datetime
 from decimal import Decimal
 from itertools import chain
 
-from weblyzard_api.model import Sentence, SpanFactory, CharSpan
+from weblyzard_api.model import CharSpan, Sentence, SpanFactory
 from weblyzard_api.model.exceptions import (
     MissingFieldException,
     UnexpectedFieldException,
@@ -64,15 +64,15 @@ class Document:
     }
 
     def __init__(
-            self,
-            content_id,
-            content,
-            content_type,
-            lang,
-            nilsimsa=None,
-            partitions=None,
-            header=None,
-            annotations=None,
+        self,
+        content_id,
+        content,
+        content_type,
+        lang,
+        nilsimsa=None,
+        partitions=None,
+        header=None,
+        annotations=None,
     ):
         """ """
         self.content_id = content_id
@@ -80,7 +80,7 @@ class Document:
         # unescape existing HTML entities
         try:
             content = html.unescape(content)
-        except Exception as e:
+        except Exception:
             pass  # ignore
 
         self.content = content
@@ -104,7 +104,7 @@ class Document:
             return ""
         if self.BODY_KEY in self.partitions:
             body_spans = self.partitions[self.BODY_KEY]
-            spans = [self.content[span.start: span.end] for span in body_spans]
+            spans = [self.content[span.start : span.end] for span in body_spans]
             return " ".join(spans)
         return ""
 
@@ -113,8 +113,7 @@ class Document:
             return ""
         if self.TITLE_KEY in self.partitions:
             title_spans = self.partitions[self.TITLE_KEY]
-            titles = [self.content[span.start: span.end] for span in
-                      title_spans]
+            titles = [self.content[span.start : span.end] for span in title_spans]
             return " ".join(titles)
         return ""
 
@@ -130,7 +129,7 @@ class Document:
     title = property(get_title, set_title)
 
     def __repr__(self):
-        return "Document: {}".format(self.__dict__)
+        return f"Document: {self.__dict__}"
 
     @classmethod
     def _dict_transform(cls, data, mapping=None):
@@ -196,8 +195,7 @@ class Document:
                         value = value.upper()
                     value = cls._dict_transform(value, mapping=mapping)
                     if value is not None:
-                        result[key] = cls._dict_transform(value,
-                                                          mapping=mapping)
+                        result[key] = cls._dict_transform(value, mapping=mapping)
             return result
         return None
 
@@ -219,19 +217,17 @@ class Document:
         """
         # validation
         for required_field in cls.REQUIRED_FIELDS:
-            if not required_field in dict_:
+            if required_field not in dict_:
                 raise MissingFieldException(required_field)
 
         for key in dict_.keys():
-            if not key in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
+            if key not in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
                 raise UnexpectedFieldException(key)
 
         # This is tricky ... the mapping cannot be easily inversed
         # making the md5sum to content_id conversion at the top level necessary
-        inverse_mapping = {v: k for k, v in cls.MAPPING.items() if
-                           k != "content_id"}
-        parsed_content = Document._dict_transform(dict_,
-                                                  mapping=inverse_mapping)
+        inverse_mapping = {v: k for k, v in cls.MAPPING.items() if k != "content_id"}
+        parsed_content = Document._dict_transform(dict_, mapping=inverse_mapping)
         parsed_content["content_id"] = parsed_content.pop("md5sum")
 
         # populate default dicts:
@@ -246,18 +242,15 @@ class Document:
 
         header = (
             parsed_content["header"]
-            if "header" in parsed_content and parsed_content[
-                "header"] is not None
+            if "header" in parsed_content and parsed_content["header"] is not None
             else {}
         )
 
         if not len(header):
-            header = parsed_content[
-                "header"] if "header" in parsed_content else {}
+            header = parsed_content["header"] if "header" in parsed_content else {}
 
         annotations = (
-            parsed_content[
-                "annotations"] if "annotations" in parsed_content else {}
+            parsed_content["annotations"] if "annotations" in parsed_content else {}
         )
 
         return cls(
@@ -284,10 +277,10 @@ class Document:
         return result
 
     def to_xml(
-            self,
-            ignore_title: bool = False,
-            include_fragments: bool = False,
-            xml_version: int = XML2013.VERSION,
+        self,
+        ignore_title: bool = False,
+        include_fragments: bool = False,
+        xml_version: int = XML2013.VERSION,
     ):
         """
         Serialize a document to XML.
@@ -321,24 +314,23 @@ class Document:
         """
         if not isinstance(span, CharSpan):
             span = SpanFactory.new_span(span)
-        return self.content[span.start: span.end]
+        return self.content[span.start : span.end]
 
     @classmethod
     def overlapping(cls, spanA: CharSpan, spanB: CharSpan):
         """Return whether two spans overlap."""
         return (spanB.start <= spanA.start < spanB.end) or (
-                spanA.start <= spanB.start < spanA.end
+            spanA.start <= spanB.start < spanA.end
         )
 
-    def get_partition_overlaps(self, search_span: CharSpan,
-                               target_partition_key: str):
+    def get_partition_overlaps(self, search_span: CharSpan, target_partition_key: str):
         """Return all spans from a given target_partition_key that overlap
         the search span.
         :param search_span, the span to search for overlaps by.
         :param target_partition_key, the target partition"""
         result = []
 
-        if not target_partition_key in self.partitions:
+        if target_partition_key not in self.partitions:
             return result
 
         for other_span in self.partitions[target_partition_key]:
@@ -365,10 +357,10 @@ class Document:
         return None
 
     def get_sentences(
-            self,
-            zero_based: bool = False,
-            include_title: bool = True,
-            include_fragments: bool = False,
+        self,
+        zero_based: bool = False,
+        include_title: bool = True,
+        include_fragments: bool = False,
     ):
         """
         Legacy method to extract weblyzard sentences from content model.
@@ -403,13 +395,12 @@ class Document:
                 search_span=sentence_span, target_partition_key=self.TOKEN_KEY
             )
             is_title = (
-                    len(
-                        self.get_partition_overlaps(
-                            search_span=sentence_span,
-                            target_partition_key=self.TITLE_KEY
-                        )
+                len(
+                    self.get_partition_overlaps(
+                        search_span=sentence_span, target_partition_key=self.TITLE_KEY
                     )
-                    > 0
+                )
+                > 0
             )
             if not include_title and is_title:
                 continue
@@ -417,15 +408,11 @@ class Document:
             # serialize POS, tokens, and dependency to string
             pos_sequence = " ".join([ts.pos for ts in token_spans])
             tok_sequence = " ".join(
-                [
-                    "{},{}".format(ts.start - offset, ts.end - offset)
-                    for ts in token_spans
-                ]
+                [f"{ts.start - offset},{ts.end - offset}" for ts in token_spans]
             )
             try:
                 dep_sequence = " ".join(
-                    ["{}:{}".format(*ts.dependency.values()) for ts in
-                     token_spans]
+                    ["{}:{}".format(*ts.dependency.values()) for ts in token_spans]
                 )
             except AttributeError:
                 dep_sequence = None

@@ -1,18 +1,21 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
 """
 .. moduleauthor:: Albert Weichselbraun <albert.weichselbraun@htwchur.ch>
 """
+
 import logging
 import urllib.error
 from random import random
+from time import sleep, time
 from typing import List
 
-from time import sleep, time
+from weblyzard_api.client import (
+    WEBLYZARD_API_PASS,
+    WEBLYZARD_API_URL,
+    WEBLYZARD_API_USER,
+    MultiRESTClient,
+)
 
-from weblyzard_api.client import MultiRESTClient
-from weblyzard_api.client import (WEBLYZARD_API_URL, WEBLYZARD_API_USER,
-                                  WEBLYZARD_API_PASS)
 
 logger = logging.getLogger(__name__)
 
@@ -36,29 +39,44 @@ class Recognize(MultiRESTClient):
         * :func:`search_text` for plain text.
         * :func:`search_document` for document dictionaries.
     """
-    URL_PATH = "rest/"
-    ATTRIBUTE_MAPPING = {"content_id": "id",
-                         "lang": "lang",
-                         "format": "format",
-                         "nilsimsa": "nilsimsa",
-                         "sentences": "sentences",
-                         "sentences_map": {"pos": "pos",
-                                           "token": "token",
-                                           "significance": "significance",
-                                           "is_title": "is_title",
-                                           "md5sum": "md5sum",
-                                           "value": "text",
-                                           "dependency": "dependency"}}
 
-    def __init__(self, url=WEBLYZARD_API_URL, usr=WEBLYZARD_API_USER,
-                 pwd=WEBLYZARD_API_PASS, default_timeout=None):
+    URL_PATH = "rest/"
+    ATTRIBUTE_MAPPING = {
+        "content_id": "id",
+        "lang": "lang",
+        "format": "format",
+        "nilsimsa": "nilsimsa",
+        "sentences": "sentences",
+        "sentences_map": {
+            "pos": "pos",
+            "token": "token",
+            "significance": "significance",
+            "is_title": "is_title",
+            "md5sum": "md5sum",
+            "value": "text",
+            "dependency": "dependency",
+        },
+    }
+
+    def __init__(
+        self,
+        url=WEBLYZARD_API_URL,
+        usr=WEBLYZARD_API_USER,
+        pwd=WEBLYZARD_API_PASS,
+        default_timeout=None,
+    ):
         """
         :param url: URL of the jeremia web service
-        :param usr: optional user name
+        :param usr: optional username
         :param pwd: optional password
         """
-        MultiRESTClient.__init__(self, service_urls=url, user=usr, password=pwd,
-                                 default_timeout=default_timeout)
+        MultiRESTClient.__init__(
+            self,
+            service_urls=url,
+            user=usr,
+            password=pwd,
+            default_timeout=default_timeout,
+        )
         self.profile_cache = []
 
     def status(self):
@@ -68,17 +86,17 @@ class Recognize(MultiRESTClient):
         return self.request(path="status")
 
     def load_profile(self, profile_name):
-        """ Load a given profile.
+        """Load a given profile.
         :param profile_name: name of the profile to load.
         """
         if profile_name in self.profile_cache:
             return
 
         self.profile_cache.append(profile_name)  # only try to add once
-        return self.request(path="load_profile/{}".format(profile_name))
+        return self.request(path=f"load_profile/{profile_name}")
 
     def list_profiles(self):
-        """ List all loaded profiles.
+        """List all loaded profiles.
         :returns: a list of all pre-loaded profiles
             .. code-block:: python
             >>> r=Recognize()
@@ -95,10 +113,11 @@ class Recognize(MultiRESTClient):
         """
         content_type = "application/json; charset=utf-8"
 
-        return self.request(path="getSearcherContent",
-                            content_type=content_type,
-                            query_parameters={"profileName": profile_name,
-                                              "entityKey": entity_url})
+        return self.request(
+            path="getSearcherContent",
+            content_type=content_type,
+            query_parameters={"profileName": profile_name, "entityKey": entity_url},
+        )
 
     def search_text(self, profile_name, lang, text):
         """
@@ -110,11 +129,12 @@ class Recognize(MultiRESTClient):
         """
         content_type = "application/json"
 
-        return self.request(path="corpus/annotate_unknown",
-                            parameters=text,
-                            content_type=content_type,
-                            query_parameters={"profileName": profile_name,
-                                              "lang": lang})
+        return self.request(
+            path="corpus/annotate_unknown",
+            parameters=text,
+            content_type=content_type,
+            query_parameters={"profileName": profile_name, "lang": lang},
+        )
 
     def search_document(self, profile_name, document, limit=0):
         """
@@ -128,7 +148,7 @@ class Recognize(MultiRESTClient):
            .. code-block:: python
 
               # option 1: document dictionary
-              {"content_id": 12, 
+              {"content_id": 12,
                "content": u"the text to analyze"}
 
               # option 2: weblyzardXML
@@ -139,12 +159,12 @@ class Recognize(MultiRESTClient):
 
         content_type = "application/json; charset=utf-8"
         search_command = "search_document"
-        return self.request(path=search_command,
-                            parameters=document,
-                            content_type=content_type,
-                            query_parameters={"profileName": profile_name,
-                                              "limit": limit
-                                              })
+        return self.request(
+            path=search_command,
+            parameters=document,
+            content_type=content_type,
+            query_parameters={"profileName": profile_name, "limit": limit},
+        )
 
     def search_xmldocument(self, profile_name: str, document, limit: int):
         """
@@ -153,7 +173,7 @@ class Recognize(MultiRESTClient):
 
         .. note:: Example document
 
-           .. code-block:: python     
+           .. code-block:: python
                 test_doc = {"id": 111,
                             "body": "Management Directive\nBill Gates\n Java Programmer",
                             "title": "Hello President! ",
@@ -162,7 +182,7 @@ class Recognize(MultiRESTClient):
 
                 jeremia_client = Jeremia()
                 jresult = jeremia_client.submit_document(test_doc2)
-                newresult = r.search_xmldocument(profile_name=profile, document=jresult, limit=0)   
+                newresult = r.search_xmldocument(profile_name=profile, document=jresult, limit=0)
         :param profile_name: the profile to search in
         :param document: the document to search in
         :param limit: maximum number of results to return
@@ -171,18 +191,22 @@ class Recognize(MultiRESTClient):
             return
 
         content_type = "application/json"
-        return self.request(path="search_xmldocument",
-                            parameters=document,
-                            content_type=content_type,
-                            query_parameters={"profileName": profile_name,
-                                              "limit": limit
-                                              })
+        return self.request(
+            path="search_xmldocument",
+            parameters=document,
+            content_type=content_type,
+            query_parameters={"profileName": profile_name, "limit": limit},
+        )
 
-    def search_documents(self, profile_name: str, document_list: List,
-                         limit: int,
-                         wait_time: int = DEFAULT_WAIT_TIME,
-                         max_retry_delay: int = DEFAULT_MAX_RETRY_DELAY,
-                         max_retry_attempts: int = DEFAULT_MAX_RETRY_ATTEMPTS):
+    def search_documents(
+        self,
+        profile_name: str,
+        document_list: List,
+        limit: int,
+        wait_time: int = DEFAULT_WAIT_TIME,
+        max_retry_delay: int = DEFAULT_MAX_RETRY_DELAY,
+        max_retry_attempts: int = DEFAULT_MAX_RETRY_ATTEMPTS,
+    ):
         """
         Search the given document for entities specified in the given profiles.
         :param profile_name: the profile to search in
@@ -204,32 +228,31 @@ class Recognize(MultiRESTClient):
         attempts = 0
         start_time = time()
         while time() - start_time < wait_time and attempts < max_retry_attempts:
-
             # submit the request
             # - here we need to check for a 502 and 503 error in
             #   case that has_queued_threads has not been
             #   up to date.
             try:
-                result = self.request(path=search_command,
-                                      parameters=document_list,
-                                      content_type=content_type,
-                                      query_parameters={
-                                          "profileName": profile_name,
-                                          "limit": limit
-                                      })
+                result = self.request(
+                    path=search_command,
+                    parameters=document_list,
+                    content_type=content_type,
+                    query_parameters={"profileName": profile_name, "limit": limit},
+                )
                 return result
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
                 logger.warning(
-                    f"Exception: {e}; Retry#{attempts} with profile_name={profile_name}")
+                    f"Exception: {e}; Retry#{attempts} with profile_name={profile_name}"
+                )
                 sleep(max_retry_delay * random())
                 attempts = attempts + 1
             except Exception as e:
                 print(e)
 
         logger.warning(f"Final retry with profile_name={profile_name}")
-        return self.request(path=search_command,
-                            parameters=document_list,
-                            content_type=content_type,
-                            query_parameters={"profileName": profile_name,
-                                              "limit": limit
-                                              })
+        return self.request(
+            path=search_command,
+            parameters=document_list,
+            content_type=content_type,
+            query_parameters={"profileName": profile_name, "limit": limit},
+        )
