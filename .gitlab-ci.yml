@@ -1,21 +1,23 @@
-# CI config 
+# CI config
 
 # shared key for the python jobs to not have redundant config parameters
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
 # cp -no-clobber copies files but doesn't overwrite existing ones (e.g. sonar property settings)
 .python_defaults: &py_anchor  # using anchor magic
-  image: registry.gitlab.semanticlab.net/docker/py3full:3.10
+  image: registry.gitlab.semanticlab.net/docker/py3base:3.12
   before_script:
+    - export TESTSDIR=src/python/weblyzard_api/tests/always_run/
     - git submodule sync --recursive
     - git submodule update --init --recursive --remote
-    - cp --no-clobber wl_python_utils/python3/* .
+    - rsync -av --exclude='README.md' --exclude='.git' wl_python_utils/ .
+    - uv tool install pyproject-parser[cli]
     - sed -i s/-dev/".$(date +%Y%m%d.%H%M)"/g pyproject.toml
-    - if test -f "version.txt"; then cat version.txt; else poetry version | awk {'print $2'} > version.txt; fi
-    - export PROJECT=`poetry version | awk {'print $1'}`
-    - export VERSION=`poetry version | awk {'print $2'}`
-    - export TESTSDIR=src/python/weblyzard_api/tests/always_run/
-    - export SRCDIR=src/python/weblyzard_api/
-    - python3.10 -m pip install tox
+    - export PATH="~/.local/bin:$PATH"
+    - export PROJECT=`pyproject-info project.name | xargs`
+    - if test -f "version.txt"; then cat version.txt; else pyproject-info project.version | xargs > version.txt; fi
+    - export VERSION=`cat version.txt`
+    - echo $PROJECT
+    - echo $VERSION
 
 
 stages:
@@ -30,12 +32,17 @@ pytest:
   only:
     - branches
   script:
-    - poetry config repositories.wlt_nexus ${NEXUS_URL}
-    - poetry config http-basic.wlt_nexus ${NEXUS_USER} ${NEXUS_PW}
-    - poetry install
-    - poetry run pytest ${TESTSDIR}
+    - export UV_INDEX_WLT_NEXUS_USERNAME=${NEXUS_USER}
+    - export UV_INDEX_WLT_NEXUS_PASSWORD=${NEXUS_PW}
+    - uv sync --index-strategy unsafe-best-match
+    - uv run pytest ${TESTSDIR}
+    - PROJECT=${PROJECT} VERSION=${VERSION} sonar-scanner -D sonar.host.url=${sonarhost}  -D sonar.login=${sonarlogin}
   tags:
     - backend-runner
+  artifacts:
+    paths:
+      - version.txt
+    expire_in: 4 weeks
 
 pylint:
   <<: *py_anchor
@@ -58,11 +65,14 @@ vulture:
 
 job_build_package:
   stage: build-package
+  rules:
+    - if: $CI_COMMIT_TAG # Run this job when a tag is created
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push" # or on push to master
   script:
-    - chmod +x build-package.sh
-    - ./build-package.sh
-  only:
-    - master
+    - export UV_INDEX_WLT_NEXUS_USERNAME=${NEXUS_USER}
+    - export UV_INDEX_WLT_NEXUS_PASSWORD=${NEXUS_PW}
+    - echo "Running build package job for tag $CI_COMMIT_TAG"
+    - make build
   tags:
     - backend-runner
   when: manual
