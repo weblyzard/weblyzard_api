@@ -1,4 +1,8 @@
 # CI config
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+  GIT_SUBMODULE_DEPTH: 1 # or higher depending on requirement
 
 # shared key for the python jobs to not have redundant config parameters
 # PROJECT, TESTSDIR, SRCDIR are used in the tox.ini
