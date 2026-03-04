@@ -122,13 +122,13 @@
 		</extensions>
 		<resources>
 			<resource>
-				<directory>src/main/resources</directory>
+				<directory>src/resources/main</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>src/test/resources</directory>
+				<directory>src/resources/test</directory>
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
