@@ -11,8 +11,7 @@ variables:
   image: registry.gitlab.semanticlab.net/docker/py3base:3.12
   before_script:
     - export TESTSDIR=src/python/weblyzard_api/tests/always_run/
-    - git submodule sync --recursive
-    - git submodule update --init --recursive --remote
+    - apt-get update && apt-get install -y rsync
     - rsync -av --exclude='README.md' --exclude='.git' wl_python_utils/ .
     - uv tool install pyproject-parser[cli]
     - sed -i s/-dev/".$(date +%Y%m%d.%H%M)"/g pyproject.toml
