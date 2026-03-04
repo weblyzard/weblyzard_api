@@ -5,7 +5,7 @@
 
 	<groupId>com.weblyzard.api</groupId>
 	<artifactId>weblyzard-api</artifactId>
-	<version>0.2.2.2-SNAPSHOT</version>
+	<version>0.2.2.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>com.weblyzard.api.weblyzard-api</name>
@@ -49,13 +49,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<jersey2.version>2.28</jersey2.version>
+		<jersey2.version>2.39</jersey2.version>
 		<jaxb.version>2.3.0</jaxb.version>
-        <jackson.version>2.14.0-rc2</jackson.version>
+		<jackson.version>2.15.3</jackson.version>
+		<guava.version>32.0.0-jre</guava.version>
+		<checkstyle.version>10.12.7</checkstyle.version>
+		<log4j.version>2.20.0</log4j.version>
 	</properties>
 
 	<!-- profiles for the maven deployments -->
-	
+
 	<profiles>
 		<profile>
 			<id>profile-semanticlab</id>
@@ -119,13 +122,13 @@
 		</extensions>
 		<resources>
 			<resource>
-				<directory>src/resources/main</directory>
+				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>src/resources/test</directory>
+				<directory>src/test/resources</directory>
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
@@ -194,14 +197,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>3.1.0</version>
-					<dependencies>
-						<dependency>
-							<groupId>com.puppycrawl.tools</groupId>
-							<artifactId>checkstyle</artifactId>
-							<version>8.29</version>
-						</dependency>
-					</dependencies>
+					<version>${checkstyle.version}</version>
 					<executions>
 						<execution>
 							<id>checkstyle</id>
@@ -261,11 +257,11 @@
 			<artifactId>jackson-dataformat-yaml</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-	    <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
@@ -281,33 +277,10 @@
 			<artifactId>jersey-hk2</artifactId>
 			<version>${jersey2.version}</version>
 		</dependency>
-
-		<!-- JAX-RS & json -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.8</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.1</version>
-		</dependency>
-
-
-		<!-- test dependencies -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.4.0-M1</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>32.0.0-jre</version>
+			<version>${guava.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -330,7 +303,19 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.16.0</version>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.28</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.9.3</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
